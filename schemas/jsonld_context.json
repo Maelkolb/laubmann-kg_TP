@@ -1,3 +1,34 @@
 {
-  "@context": {}
+  "@context": {
+    "lkg": "https://lkg.example.org/ontology#",
+    "dwc": "http://rs.tdwg.org/dwc/terms/",
+    "dwciri": "http://rs.tdwg.org/dwc/iri/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "oa": "http://www.w3.org/ns/oa#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "data": "https://lkg.example.org/data/",
+    "entryDate": {"@id": "lkg:entryDate", "@type": "xsd:date"},
+    "rawText": "lkg:rawText",
+    "verbatimEventDate": "dwc:verbatimEventDate",
+    "hasVolume": {"@id": "lkg:hasVolume", "@type": "@id"},
+    "hasPage": {"@id": "lkg:hasPage", "@type": "@id"},
+    "containsObservation": {"@id": "lkg:containsObservation", "@type": "@id"},
+    "observedTaxon": {"@id": "lkg:observedTaxon", "@type": "@id"},
+    "observedAt": {"@id": "lkg:observedAt", "@type": "@id"},
+    "derivedFromEntry": {"@id": "lkg:derivedFromEntry", "@type": "@id"},
+    "hasEvidence": {"@id": "lkg:hasEvidence", "@type": "@id"},
+    "hasBehaviour": {"@id": "lkg:hasBehaviour", "@type": "@id"},
+    "individualCount": {"@id": "lkg:individualCount", "@type": "xsd:integer"},
+    "countQualifier": "lkg:countQualifier",
+    "verbatimNotes": "lkg:verbatimNotes",
+    "vernacularNameDE": "lkg:vernacularNameDE",
+    "scientificName": "lkg:scientificName",
+    "callTranscription": "lkg:callTranscription",
+    "callType": "lkg:callType",
+    "verbatimLocality": "lkg:verbatimLocality"
+  }
 }

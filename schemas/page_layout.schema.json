@@ -1,5 +1,26 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PageLayout",
+  "description": "Layout regions of a scanned page. Produced upstream by HistOrniGraph.",
   "type": "object",
-  "properties": {}
+  "required": ["page_uid", "regions"],
+  "properties": {
+    "page_uid": {"type": "string"},
+    "page_id": {"type": "string"},
+    "volume": {"type": ["integer", "string"]},
+    "scan": {"type": ["string", "integer"]},
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["region_uid", "region_type"],
+        "properties": {
+          "region_uid": {"type": "string"},
+          "region_type": {"type": "string"},
+          "reading_order": {"type": ["integer", "string"]},
+          "crop": {"type": "string"}
+        }
+      }
+    }
+  }
 }

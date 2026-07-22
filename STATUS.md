@@ -1,0 +1,106 @@
+# STATUS
+
+First end-to-end knowledge-graph build on a fixed sample. Numbers below are
+**real**, from the Vol. 2 run — not projected. The full 34-volume build is
+deferred until the deduplicated corpus is available (switching is a config path
+change; see `INTERFACES.md`).
+
+## Sample run (Vol. 2, offline rule-based extraction)
+
+Command:
+
+```bash
+laubmann-kg export-jsonld --config configs/sample.yaml --input-dir data/corpus --output-dir data/exports
+laubmann-kg export-dwca   --config configs/sample.yaml --input-dir data/corpus --output-dir data/exports
+```
+
+| Metric | Value |
+|---|---|
+| Diary entries (all dated) | 233 |
+| Entries yielding ≥1 observation | 211 (90.6%) |
+| Observations | 1158 |
+| Distinct taxa | 78 (all resolved to a scientific name via seed gazetteer) |
+| Observations with a place | 1156 (99.8%) |
+| Observations with an integer count | 474 |
+| Observations with a count qualifier | 596 |
+| Bird-call (auditory) evidence records | 309 |
+| Nest evidence / breeding behaviour | 139 |
+| Specimen evidence | 1 |
+| Multimodal regions joined (DwC-A multimedia) | 15 |
+| RDF triples | 16,965 |
+| **SHACL** | **0 violations**, 22 warnings |
+| DwC-A | event=233, occurrence=1158, measurementOrFact=2071, multimedia=15 — **valid** |
+
+The 22 SHACL warnings are the 22 entries with no matched bird name (weather- or
+travel-only text, or a species outside the seed gazetteer) — a recall limit of
+the deterministic extractor, not a data error. All are `sh:Warning`, so the
+graph conforms.
+
+## Competency questions
+
+| ID | Answerable? | Note |
+|---|---|---|
+| CQ1 species frequency | yes | |
+| CQ2 observations by date | yes | 207 distinct dates in sample |
+| CQ3 species at a place | yes | by locality label; coords partial |
+| CQ4 auditory observations | yes | 309 bird-call records |
+| CQ5 unresolved taxa | yes | returns 0 in sample (gazetteer covers all matches) |
+| CQ6 provenance | yes | entry date + page per observation |
+| Travel / route questions | blocked | travel extraction is future work |
+| Cross-dataset taxon IRIs | blocked | needs `links_long` (see INTERFACES.md) |
+
+## Ontology coverage
+
+`populated` = emitted by the sample build; `partial` = supported/validated but
+sparsely or conditionally populated; `not yet` = modelled + SHACL-validated but
+not produced by current extraction.
+
+### Classes
+
+| Class | Status |
+|---|---|
+| `lkg:DiaryVolume` | populated |
+| `lkg:DiaryPage` | populated |
+| `lkg:DiaryEntry` | populated |
+| `lkg:SourceRegion` | not yet (region provenance kept in DwC-A multimedia) |
+| `lkg:ObservationEvent` | populated |
+| `lkg:Taxon` | populated |
+| `lkg:Place` | populated (coords partial) |
+| `lkg:Habitat` | not yet |
+| `lkg:ObservationEvidence` | populated |
+| `lkg:BirdCall` | populated |
+| `lkg:BehaviourNote` | populated |
+| `lkg:TravelEvent` / `lkg:TravelLeg` / `lkg:Route` | not yet |
+| `lkg:TimeEstimate` | not yet |
+| `lkg:Person` | partial (extracted in `entities`, not yet emitted to RDF) |
+
+### Properties
+
+| Property | Status |
+|---|---|
+| `lkg:hasVolume`, `lkg:hasPage` | populated |
+| `lkg:entryDate`, `lkg:rawText` | populated |
+| `lkg:containsObservation` | populated |
+| `lkg:observedTaxon`, `lkg:derivedFromEntry` | populated |
+| `lkg:observedAt` | populated |
+| `lkg:verbatimNotes` | populated |
+| `lkg:individualCount`, `lkg:countQualifier` | populated |
+| `lkg:hasEvidence`, `lkg:hasBehaviour` | populated |
+| `lkg:callType`, `lkg:callTranscription` | populated |
+| `lkg:vernacularNameDE` | populated |
+| `lkg:scientificName` | populated (gazetteer; no external IRIs yet) |
+| `lkg:verbatimLocality`, `geo:lat`, `geo:long` | partial |
+| `lkg:containsTravelEvent`, `lkg:hasLeg`, travel/route/time props | not yet |
+| `lkg:hasHabitat` | not yet |
+| `lkg:observedDuring`, `lkg:hasTimeEstimate` | not yet |
+
+## Deferred / not done
+
+- Full 34-volume build (waits on `corpus_*_dedup/`).
+- Travel/route/time extraction.
+- External taxon IRIs and GBIF/Avibase alignment (needs `links_long`).
+- `preprocess` / `detect-layout` / `transcribe` stages remain stubs (handled
+  upstream by HistOrniGraph, per the task brief).
+- LLM extraction backend: infrastructure (cache, retry, structured output,
+  client abstraction) is implemented and tested offline; provider adapters
+  require credentials and are out of scope for this network-free build.

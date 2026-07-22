@@ -1,5 +1,12 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Transcription",
+  "description": "Transcribed text of a region. Produced upstream by HistOrniGraph.",
   "type": "object",
-  "properties": {}
+  "required": ["region_uid", "text"],
+  "properties": {
+    "region_uid": {"type": "string"},
+    "text": {"type": "string"},
+    "uncertainty": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+  }
 }

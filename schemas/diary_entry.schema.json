@@ -1,5 +1,20 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "DiaryEntry",
+  "description": "A dated diary entry from the corpus interface (entries.csv row).",
   "type": "object",
-  "properties": {}
+  "required": ["entry_uid", "volume", "text_clean"],
+  "properties": {
+    "entry_uid": {"type": "string"},
+    "entry_id": {"type": "string"},
+    "volume": {"type": ["integer", "string"]},
+    "page_uid": {"type": "string"},
+    "page_id": {"type": "string"},
+    "region_uid": {"type": ["string", "null"]},
+    "scan": {"type": ["string", "null"]},
+    "date_raw": {"type": ["string", "null"]},
+    "date_norm": {"type": ["string", "null"]},
+    "location_raw": {"type": ["string", "null"]},
+    "text_clean": {"type": "string"}
+  }
 }

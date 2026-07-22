@@ -9,6 +9,25 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Added
 
+- **Korpus→KG-Builder (erster End-to-End-Lauf auf Vol.-2-Sample).** Deterministische, netzwerkfreie Extraktion und Export gemäß bestehender Ontologie/SHACL.
+- `pipeline.py`: lädt den Korpus (`entries.csv` + `multimodal.md`), baut Domänenobjekte, führt Extraktion aus; Sample→Volltext ist reine Konfigsache (`configs/sample.yaml`).
+- Domänenmodell `kg/model.py` als Dataclasses gespiegelt zu `laubmann.ttl`; inhaltsadressierte, reproduzierbare UIDs.
+- Regelbasierte Extraktion: `extraction/observations.py` (Taxa-Gazetteer-Matching, Evidenz-/Ruf-/Zähl-/Verhaltensheuristik), `extraction/entities.py`, `extraction/citations.py`.
+- Normalisierung: `normalization/{dates,places,persons,taxa}.py`; deutscher Vogel-Gazetteer und `TaxonResolver`-Interface mit Offline-Seed- und `links_long`-Implementierung (nie erfundene Taxon-IRIs).
+- LLM-Infrastruktur: `llm/{cache,retry,structured_output,prompts,clients}.py` — inhaltsgehashter On-Disk-Cache, deterministischer Retry, jsonschema-Validierung, Offline-Client als Default.
+- KG-Export: `kg/{rdf,jsonld,sparql}.py` und Orchestrierung in `kg/__init__.py` — Turtle + JSON-LD, SHACL-validiert (0 Violations auf dem Sample).
+- DwC-A-Export: `dwca/{event,occurrence,measurement_or_fact,multimedia,meta_xml,archive,validate}.py` — Event-Core-Sternschema (Event + Occurrence + MeasurementOrFact + Multimedia), gezippt und strukturell validiert.
+- `io/{csv,json,metadata}.py`: toleranter `entries.csv`-Reader und `multimodal.md`-Parser (auch `multimodal.csv`).
+- Ausgefüllte JSON-Schemas, JSON-LD-Kontext, Prompt-Vorlagen (Observation/Entity/Taxon) und SKOS-Controlled-Vocabularies (Spiegel der `sh:in`-Listen).
+- Neue/erweiterte Tests: Datumsnormalisierung, Taxa-Matching/Resolver, Extraktion, Pipeline-Determinismus, LLM-Cache/Retry, SHACL-valider JSON-LD-Export, valider DwC-A.
+- Dokumentation: `docs/data_model.md`, `docs/competency_questions.md`, `STATUS.md`, `INTERFACES.md`.
+- Abhängigkeiten `rdflib`, `pyshacl`, `jsonschema` in `pyproject.toml`.
+
+### Changed
+
+- `configs/dwca.yaml` auf Event-Core-Layout aktualisiert (ein Core + drei Extensions, Join über `eventID`).
+- Platzhalter-Tests für Export-Stages durch echte End-to-End-Tests ersetzt.
+
 - Python-Paket `laubmann_kg` mit `src`-Layout und `pyproject.toml` (Hatchling, Python ≥ 3.10)
 - Typer-CLI `laubmann-kg` mit acht Pipeline-Befehlen: `preprocess`, `detect-layout`, `detect-entries`, `transcribe`, `extract-observations`, `export-jsonld`, `export-dwca`, `evaluate`
 - Gemeinsame CLI-Optionen `--config`, `--input-dir`, `--output-dir` für alle Stages

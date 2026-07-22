@@ -1,5 +1,19 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "DwCAOccurrence",
+  "description": "A Darwin Core occurrence record row (occurrence.txt).",
   "type": "object",
-  "properties": {}
+  "required": ["occurrenceID", "eventID", "basisOfRecord"],
+  "properties": {
+    "occurrenceID": {"type": "string"},
+    "eventID": {"type": "string"},
+    "basisOfRecord": {"type": "string", "enum": ["HumanObservation", "PreservedSpecimen", "MaterialSample"]},
+    "scientificName": {"type": "string"},
+    "vernacularName": {"type": "string"},
+    "individualCount": {"type": "string"},
+    "occurrenceStatus": {"type": "string"},
+    "occurrenceRemarks": {"type": "string"},
+    "recordedBy": {"type": "string"},
+    "associatedMedia": {"type": "string"}
+  }
 }

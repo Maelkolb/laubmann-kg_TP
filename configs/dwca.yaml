@@ -1,9 +1,10 @@
-# Darwin Core Archive export configuration
+# Darwin Core Archive export configuration.
+# Layout: Event-core sampling-event star schema (one core + three extensions),
+# joined by eventID. Each diary entry is an Event; each observation an Occurrence.
 publisher: Laubmann KG Project
 license: CC-BY-4.0
-core:
-  - occurrence
-  - event
+core: event
 extensions:
-  - multimedia
+  - occurrence
   - measurement_or_fact
+  - multimedia

@@ -1,3 +1,50 @@
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+# =============================================================
+# HistOrniGraph / Laubmann Knowledge Graph
+# Controlled Vocabularies (SKOS)
+# Mirrors the sh:in enumerations in shacl_shapes.ttl so extraction
+# and validation share one source of truth.
+# =============================================================
 
-# TODO: define controlled vocabularies
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix lkg:  <https://lkg.example.org/ontology#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# --- Transport modes (TravelLeg.transportMode) ---------------
+lkg:transportModeScheme a skos:ConceptScheme ;
+    skos:prefLabel "Transport modes"@en .
+
+lkg:transport_train   a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "train"@en, "Zug"@de .
+lkg:transport_foot    a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "foot"@en, "zu Fuß"@de .
+lkg:transport_boat    a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "boat"@en, "Boot"@de .
+lkg:transport_car     a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "car"@en, "Auto"@de .
+lkg:transport_carriage a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "carriage"@en, "Kutsche"@de .
+lkg:transport_bicycle a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "bicycle"@en, "Fahrrad"@de .
+lkg:transport_unknown a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
+
+# --- Call types (BirdCall.callType) --------------------------
+lkg:callTypeScheme a skos:ConceptScheme ;
+    skos:prefLabel "Bird call types"@en .
+
+lkg:call_song     a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "song"@en, "Gesang"@de .
+lkg:call_call     a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "call"@en, "Ruf"@de .
+lkg:call_alarm    a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "alarm"@en, "Warnruf"@de .
+lkg:call_drumming a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "drumming"@en, "Trommeln"@de .
+lkg:call_unknown  a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
+
+# --- Count qualifiers (ObservationEvent.countQualifier) ------
+lkg:countQualifierScheme a skos:ConceptScheme ;
+    skos:prefLabel "Count qualifiers"@en .
+
+lkg:count_exact              a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "exact"@en .
+lkg:count_minimum            a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "minimum"@en .
+lkg:count_approximate        a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "approximate"@en .
+lkg:count_plural_unspecified a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "plural-unspecified"@en .
+
+# --- Evidence kinds (ObservationEvidence) --------------------
+lkg:evidenceKindScheme a skos:ConceptScheme ;
+    skos:prefLabel "Observation evidence kinds"@en .
+
+lkg:evidence_visual   a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "visual"@en, "Sichtbeobachtung"@de .
+lkg:evidence_auditory a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "auditory"@en, "Lautäußerung"@de .
+lkg:evidence_nest     a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "nest"@en, "Nestfund"@de .
+lkg:evidence_specimen a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "specimen"@en, "Beleg"@de .

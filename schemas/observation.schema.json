@@ -1,5 +1,32 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Observation",
+  "description": "One ornithological observation extracted from a diary entry.",
   "type": "object",
-  "properties": {}
+  "required": ["vernacular_de", "verbatim_notes"],
+  "additionalProperties": false,
+  "properties": {
+    "vernacular_de": {"type": "string", "minLength": 1},
+    "scientific_name": {"type": ["string", "null"]},
+    "verbatim_notes": {"type": "string", "minLength": 1},
+    "individual_count": {"type": ["integer", "null"], "minimum": 1},
+    "count_qualifier": {
+      "type": ["string", "null"],
+      "enum": ["exact", "minimum", "approximate", "plural-unspecified", null]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": {"type": "string", "enum": ["visual", "auditory", "nest", "specimen"]},
+          "call_type": {"type": ["string", "null"], "enum": ["song", "call", "alarm", "drumming", "unknown", null]},
+          "call_transcription": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "behaviour": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+  }
 }

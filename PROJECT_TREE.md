@@ -1,6 +1,6 @@
 # Projektstruktur — laubmann-kg
 
-Stand: 2026-07-21. Ausgeschlossen: `.git/`, `__pycache__/`, `.pytest_cache/`, `.venv/`.
+Stand: 2026-07-22. Ausgeschlossen: `.git/`, `__pycache__/`, `.pytest_cache/`, `.venv/`.
 
 ```text
 laubmann-kg/
@@ -8,8 +8,10 @@ laubmann-kg/
 ├── .env.example
 ├── .gitignore
 ├── CHANGELOG.md
+├── INTERFACES.md              # Korpus- und links_long-Vertrag
 ├── PROJECT_TREE.md
 ├── README.md
+├── STATUS.md                  # Ontologie-Abdeckung + Sample-Kennzahlen
 ├── pyproject.toml
 │
 ├── configs/
@@ -17,7 +19,8 @@ laubmann-kg/
 │   ├── models.yaml
 │   ├── ontology.yaml
 │   ├── pipeline.yaml
-│   └── prompts.yaml
+│   ├── prompts.yaml
+│   └── sample.yaml            # Vol.-2-Sample; Umschalten auf Volltext nur hier
 │
 ├── data/
 │   ├── annotations/
@@ -101,6 +104,7 @@ laubmann-kg/
 │       ├── __init__.py
 │       ├── cli.py
 │       ├── logging_config.py
+│       ├── pipeline.py             # Korpus → Modell → Extraktion (Stage-übergreifend)
 │       ├── py.typed
 │       ├── diary/
 │       │   ├── __init__.py
@@ -185,12 +189,18 @@ laubmann-kg/
 │           └── uncertainty.py
 │
 └── tests/
+    ├── conftest.py                 # sample_config-Fixture
     ├── fixtures/
     │   ├── .gitkeep
-    │   └── lkg_full.ttl
+    │   ├── lkg_full.ttl
+    │   └── sample_entries.csv       # Mini-Korpus für Offline-Tests
     ├── test_date_normalization.py
     ├── test_dwca_export.py
+    ├── test_extraction.py
     ├── test_jsonld_generation.py
+    ├── test_llm_cache.py
     ├── test_observation_schema.py
-    └── test_region_schema.py
+    ├── test_pipeline.py
+    ├── test_region_schema.py
+    └── test_taxa.py
 ```

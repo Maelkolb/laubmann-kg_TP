@@ -1,0 +1,28 @@
+# Sample build configuration.
+# Switching to the deduplicated corpus is a path change here only:
+#   corpus.entries -> corpus_<date>_dedup/entries.csv, and drop sample.volume.
+corpus:
+  entries: data/corpus/entries.csv
+  multimodal: data/corpus/multimodal.md
+
+# Fixed, contamination-free sample (Vol. 2). Vols 1/15 are excluded upstream
+# until dedup removes their 77 shared page_ids. Set to null for the full corpus.
+sample:
+  volume: 2
+
+extraction:
+  backend: offline          # rule-based, deterministic, network-free
+
+taxa:
+  links_long_path: null     # set to the linker's long table when available
+
+paths:
+  ontology: ontologies/laubmann.ttl
+  shapes: ontologies/shacl_shapes.ttl
+  jsonld_context: schemas/jsonld_context.json
+
+dwca:
+  publisher: Laubmann KG Project
+  license: CC-BY-4.0
+
+validate: true
