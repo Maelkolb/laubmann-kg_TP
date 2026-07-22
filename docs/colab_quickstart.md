@@ -9,8 +9,8 @@ in the repo (they are large and gitignored); you supply `entries.csv` and
 
 ```python
 # Colab cell
-!git clone https://github.com/<YOUR_GITHUB_USER>/laubmann-kg.git
-%cd laubmann-kg
+!git clone https://github.com/Maelkolb/laubmann-kg_TP.git
+%cd laubmann-kg_TP
 !pip -q install -e .
 ```
 
