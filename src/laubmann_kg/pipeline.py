@@ -74,10 +74,38 @@ def build_entry(row: dict) -> DiaryEntry:
     )
 
 
+def _build_extractor(config: dict):
+    """Return an ``extract(entry, place) -> list[Observation]`` callable selected
+    by ``extraction.backend`` (offline rule-based, or an LLM provider)."""
+    extraction = config.get("extraction", {})
+    backend = (extraction.get("backend") or "offline").lower()
+    resolver = build_resolver(config.get("taxa"))
+
+    if backend in ("offline", "rule", "rules", "gazetteer"):
+        return lambda entry, place: extract_observations(entry, resolver, place)
+
+    from laubmann_kg.extraction.llm_observations import extract_observations_llm, load_array_schema
+    from laubmann_kg.llm.clients import build_client
+    from laubmann_kg.llm.prompts import PromptLibrary
+
+    client = build_client({
+        "backend": extraction.get("provider", "google"),
+        "model": extraction.get("model"),
+        "api_key_env": extraction.get("api_key_env", "GOOGLE_API_KEY"),
+        "temperature": extraction.get("temperature", 0.0),
+    })
+    prompts = PromptLibrary(Path(extraction.get("prompt_dir", "prompts")))
+    schema = load_array_schema(extraction.get("schema"))
+    logger.info("extraction backend=%s provider=%s model=%s", backend,
+                extraction.get("provider", "google"), extraction.get("model"))
+    return lambda entry, place: extract_observations_llm(
+        entry, client, resolver, place, prompts, schema)
+
+
 def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionResult:
     entries_csv, multimodal_path = _resolve_corpus(config, input_dir)
     volume = config.get("sample", {}).get("volume")
-    resolver = build_resolver(config.get("taxa"))
+    extract = _build_extractor(config)
 
     rows = read_entries(entries_csv, volume=int(volume) if volume is not None else None)
     result = ExtractionResult()
@@ -86,7 +114,7 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
         place = normalize_place(entry.location_raw)
         if place is not None:
             result.places.setdefault(place.uid, place)
-        entry.observations = extract_observations(entry, resolver, place)
+        entry.observations = extract(entry, place)
         result.entries.append(entry)
 
     if multimodal_path is not None:

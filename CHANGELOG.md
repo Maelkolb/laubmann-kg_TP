@@ -9,6 +9,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Added
 
+- **LLM-Extraktions-Backend (Gemini) an die Pipeline angebunden.** `extraction/llm_observations.py` rendert den Prompt pro Eintrag, ruft einen gecachten Gemini-Client (Temperature 0, JSON-Ausgabe) und mappt die strukturierte Antwort auf SHACL-konforme `Observation`-Objekte; wissenschaftliche Namen werden gegen den Resolver abgesichert, Taxon-IRIs nie erfunden. Umschaltung über `extraction.backend: llm` (`configs/sample_llm.yaml`), Provider-Adapter `GeminiClient` in `llm/clients.py`, optionales Extra `[llm]` (`google-genai`). Verdrahtung/Mapping offline mit Fake-Client getestet; Live-Läufe brauchen `GOOGLE_API_KEY`.
 - **Korpus→KG-Builder (erster End-to-End-Lauf auf Vol.-2-Sample).** Deterministische, netzwerkfreie Extraktion und Export gemäß bestehender Ontologie/SHACL.
 - `pipeline.py`: lädt den Korpus (`entries.csv` + `multimodal.md`), baut Domänenobjekte, führt Extraktion aus; Sample→Volltext ist reine Konfigsache (`configs/sample.yaml`).
 - Domänenmodell `kg/model.py` als Dataclasses gespiegelt zu `laubmann.ttl`; inhaltsadressierte, reproduzierbare UIDs.

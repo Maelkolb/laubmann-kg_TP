@@ -19,6 +19,9 @@ dependencies = [
 dev = [
     "pytest>=8.0",
 ]
+llm = [
+    "google-genai>=0.3",
+]
 
 [project.scripts]
 laubmann-kg = "laubmann_kg.cli:app"

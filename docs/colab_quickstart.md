@@ -71,9 +71,36 @@ from google.colab import files
 files.download('data/exports/dwca/laubmann_sample_dwca.zip')
 ```
 
+## LLM extraction backend (Gemini)
+
+The default build uses deterministic rule-based extraction. To use Gemini instead
+(higher recall on rare species, extracts counts/behaviour the rules miss):
+
+```python
+# install the Gemini SDK and set your key
+!pip -q install -e ".[llm]"
+import os
+os.environ['GOOGLE_API_KEY'] = 'YOUR_API_KEY'   # from https://aistudio.google.com/apikey
+
+# run with the LLM config (adjust extraction.model to an available Gemini model)
+!laubmann-kg export-jsonld --config configs/sample_llm.yaml --input-dir data/corpus --output-dir data/exports
+!laubmann-kg export-dwca   --config configs/sample_llm.yaml --input-dir data/corpus --output-dir data/exports
+```
+
+- Calls run at temperature 0 and are cached under `data/cache/llm/`, so re-runs
+  are free and reproducible. Mount that folder to Drive to persist the cache
+  across Colab sessions.
+- One LLM call per entry (~233 for Vol. 2), so a full-volume run is cheap.
+- Scientific names the model returns are kept, but a taxon IRI is only taken from
+  the resolver — the model never invents IRIs. Names it cannot resolve keep the
+  verbatim German term with an uncertainty note.
+- Tune quality by editing `prompts/observation_extraction.md` (add few-shot
+  examples from real entries), or set `extraction.model` to a stronger model
+  (e.g. `gemini-1.5-pro`) in `configs/sample_llm.yaml`.
+
 ## Notes
 
-- The build is deterministic and offline (rule-based extraction, no API key).
+- The default build is deterministic and offline (rule-based extraction, no API key).
 - SHACL warnings for entries with no matched bird name are expected (weather- or
   travel-only entries); they are warnings, not errors.
 - To resolve taxa via the Vol. 35 index linker later, set `taxa.links_long_path`

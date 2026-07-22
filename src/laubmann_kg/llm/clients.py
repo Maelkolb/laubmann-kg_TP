@@ -71,8 +71,70 @@ def build_client(config: Optional[dict] = None, cache: Optional[LLMCache] = None
     return CachedClient(inner, cache=cache)
 
 
-def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cover - needs creds
+def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cover - needs creds/network
+    if backend in ("google", "gemini"):
+        return GeminiClient(
+            model=config.get("model", "gemini-1.5-flash"),
+            api_key_env=config.get("api_key_env", "GOOGLE_API_KEY"),
+            temperature=float(config.get("temperature", 0.0)),
+        )
     raise NotImplementedError(
-        f"LLM backend '{backend}' is not configured in this environment. "
-        "Set credentials and implement the provider adapter, or use backend=offline."
+        f"LLM backend '{backend}' is not configured. Supported: offline, google/gemini. "
+        "Add an adapter or use backend=offline."
     )
+
+
+class GeminiClient:  # pragma: no cover - needs credentials + network
+    """Google Gemini adapter. Lazy-imports the SDK (new ``google-genai`` first,
+    then legacy ``google-generativeai``) and forces JSON output at temperature 0
+    for deterministic, cacheable extraction."""
+
+    def __init__(self, model: str, api_key_env: str = "GOOGLE_API_KEY",
+                 temperature: float = 0.0) -> None:
+        self.model = model
+        self._api_key_env = api_key_env
+        self._temperature = temperature
+        self._impl: Optional[tuple[str, object]] = None
+
+    def _ensure(self) -> None:
+        if self._impl is not None:
+            return
+        import os
+
+        key = os.environ.get(self._api_key_env) or os.environ.get("GEMINI_API_KEY")
+        if not key:
+            raise RuntimeError(
+                f"No API key found. Set {self._api_key_env} (or GEMINI_API_KEY) "
+                "to use the Gemini extraction backend."
+            )
+        try:
+            from google import genai  # new unified SDK
+
+            self._impl = ("genai", genai.Client(api_key=key))
+        except ImportError:
+            import google.generativeai as gga  # legacy SDK
+
+            gga.configure(api_key=key)
+            self._impl = ("legacy", gga.GenerativeModel(self.model))
+
+    def complete(self, prompt: str) -> str:
+        self._ensure()
+        kind, obj = self._impl  # type: ignore[misc]
+        if kind == "genai":
+            from google.genai import types
+
+            resp = obj.models.generate_content(  # type: ignore[attr-defined]
+                model=self.model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=self._temperature,
+                    response_mime_type="application/json",
+                ),
+            )
+            return resp.text
+        resp = obj.generate_content(  # type: ignore[attr-defined]
+            prompt,
+            generation_config={"temperature": self._temperature,
+                               "response_mime_type": "application/json"},
+        )
+        return resp.text

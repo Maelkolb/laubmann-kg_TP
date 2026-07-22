@@ -1,0 +1,32 @@
+# Sample build using the Gemini LLM extraction backend.
+# Requires: pip install -e ".[llm]"  and an API key in the environment
+#   export GOOGLE_API_KEY=...        (or GEMINI_API_KEY)
+# Calls are cached (data/cache/llm) and run at temperature 0, so re-runs are
+# free and reproducible. Switch back to rules by using configs/sample.yaml.
+corpus:
+  entries: data/corpus/entries.csv
+  multimodal: data/corpus/multimodal.md
+
+sample:
+  volume: 2
+
+extraction:
+  backend: llm
+  provider: google
+  model: gemini-1.5-flash       # set to an available model (e.g. gemini-1.5-pro)
+  api_key_env: GOOGLE_API_KEY
+  temperature: 0.0
+
+taxa:
+  links_long_path: null
+
+paths:
+  ontology: ontologies/laubmann.ttl
+  shapes: ontologies/shacl_shapes.ttl
+  jsonld_context: schemas/jsonld_context.json
+
+dwca:
+  publisher: Laubmann KG Project
+  license: CC-BY-4.0
+
+validate: true

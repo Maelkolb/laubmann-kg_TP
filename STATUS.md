@@ -101,6 +101,10 @@ not produced by current extraction.
 - External taxon IRIs and GBIF/Avibase alignment (needs `links_long`).
 - `preprocess` / `detect-layout` / `transcribe` stages remain stubs (handled
   upstream by HistOrniGraph, per the task brief).
-- LLM extraction backend: infrastructure (cache, retry, structured output,
-  client abstraction) is implemented and tested offline; provider adapters
-  require credentials and are out of scope for this network-free build.
+- LLM extraction backend: **wired**. A Gemini provider adapter and an
+  LLM extractor are connected via `extraction.backend: llm`
+  (`configs/sample_llm.yaml`); calls are cached and run at temperature 0. The
+  wiring/mapping is tested offline with a fake client; live runs need an API key
+  (`pip install -e ".[llm]"`, set `GOOGLE_API_KEY`). OpenAI/Anthropic adapters
+  are not yet added. No formal LLM-vs-gold evaluation harness yet
+  (`evaluation/` modules remain stubs) — quality is currently judged by review.
