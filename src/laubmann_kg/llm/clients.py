@@ -77,6 +77,8 @@ def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cove
             model=config.get("model", "gemini-1.5-flash"),
             api_key_env=config.get("api_key_env", "GOOGLE_API_KEY"),
             temperature=float(config.get("temperature", 0.0)),
+            max_output_tokens=int(config.get("max_output_tokens", 4096)),
+            timeout_s=float(config.get("timeout", 120)),
         )
     raise NotImplementedError(
         f"LLM backend '{backend}' is not configured. Supported: offline, google/gemini. "
@@ -87,13 +89,22 @@ def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cove
 class GeminiClient:  # pragma: no cover - needs credentials + network
     """Google Gemini adapter. Lazy-imports the SDK (new ``google-genai`` first,
     then legacy ``google-generativeai``) and forces JSON output at temperature 0
-    for deterministic, cacheable extraction."""
+    for deterministic, cacheable extraction.
+
+    ``max_output_tokens`` caps each response so a runaway generation cannot spiral
+    to the model's hard token ceiling (which is slow, costly, and yields the
+    truncated JSON the repair pass then has to salvage). ``timeout_s`` bounds each
+    request so a stalled call fails instead of hanging the whole run.
+    """
 
     def __init__(self, model: str, api_key_env: str = "GOOGLE_API_KEY",
-                 temperature: float = 0.0) -> None:
+                 temperature: float = 0.0, max_output_tokens: int = 4096,
+                 timeout_s: float = 120) -> None:
         self.model = model
         self._api_key_env = api_key_env
         self._temperature = temperature
+        self._max_output_tokens = max_output_tokens
+        self._timeout_ms = int(timeout_s * 1000)
         self._impl: Optional[tuple[str, object]] = None
 
     def _ensure(self) -> None:
@@ -109,17 +120,24 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
             )
         try:
             from google import genai  # new unified SDK
+            from google.genai import types
 
-            self._impl = ("genai", genai.Client(api_key=key))
+            self._impl = ("genai", genai.Client(
+                api_key=key,
+                http_options=types.HttpOptions(timeout=self._timeout_ms)))
         except ImportError:
             import google.generativeai as gga  # legacy SDK
 
             gga.configure(api_key=key)
             self._impl = ("legacy", gga.GenerativeModel(self.model))
+        logger.info(
+            "Gemini backend ready: model=%s temperature=%s max_output_tokens=%s timeout=%.0fs",
+            self.model, self._temperature, self._max_output_tokens, self._timeout_ms / 1000)
 
     def complete(self, prompt: str) -> str:
         self._ensure()
         kind, obj = self._impl  # type: ignore[misc]
+        logger.debug("Gemini call: model=%s prompt_chars=%d", self.model, len(prompt))
         if kind == "genai":
             from google.genai import types
 
@@ -129,12 +147,15 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
                 config=types.GenerateContentConfig(
                     temperature=self._temperature,
                     response_mime_type="application/json",
+                    max_output_tokens=self._max_output_tokens,
                 ),
             )
             return resp.text
         resp = obj.generate_content(  # type: ignore[attr-defined]
             prompt,
             generation_config={"temperature": self._temperature,
-                               "response_mime_type": "application/json"},
+                               "response_mime_type": "application/json",
+                               "max_output_tokens": self._max_output_tokens},
+            request_options={"timeout": self._timeout_ms / 1000.0},
         )
         return resp.text

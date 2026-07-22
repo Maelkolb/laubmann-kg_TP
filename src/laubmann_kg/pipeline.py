@@ -93,6 +93,8 @@ def _build_extractor(config: dict):
         "model": extraction.get("model"),
         "api_key_env": extraction.get("api_key_env", "GOOGLE_API_KEY"),
         "temperature": extraction.get("temperature", 0.0),
+        "max_output_tokens": extraction.get("max_output_tokens", 4096),
+        "timeout": extraction.get("timeout", 120),
     })
     prompts = PromptLibrary(Path(extraction.get("prompt_dir", "prompts")))
     schema = load_array_schema(extraction.get("schema"))
@@ -108,21 +110,36 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     extract = _build_extractor(config)
 
     rows = read_entries(entries_csv, volume=int(volume) if volume is not None else None)
+    total = len(rows)
+    backend = (config.get("extraction", {}).get("backend") or "offline").lower()
+    logger.info("extracting %d entries (volume=%s, backend=%s)", total, volume, backend)
+
     result = ExtractionResult()
-    for row in rows:
+    empty = failed = 0
+    for i, row in enumerate(rows, 1):
         entry = build_entry(row)
         place = normalize_place(entry.location_raw)
         if place is not None:
             result.places.setdefault(place.uid, place)
-        entry.observations = extract(entry, place)
+        try:
+            entry.observations = extract(entry, place)
+        except Exception as exc:  # noqa: BLE001 - one bad entry must not abort the run
+            logger.error("[%d/%d] %s extraction failed: %s -- skipping", i, total,
+                         entry.entry_id, exc)
+            entry.observations = []
+            failed += 1
+        if not entry.observations:
+            empty += 1
         result.entries.append(entry)
+        logger.info("[%d/%d] %s -> %d observations", i, total, entry.entry_id,
+                    len(entry.observations))
 
     if multimodal_path is not None:
         entry_uids = {e.entry_uid for e in result.entries}
         result.multimodal = [r for r in read_multimodal(multimodal_path)
                              if r.get("entry_uid") in entry_uids]
 
-    logger.info("pipeline: %d entries, %d observations, %d places, %d media",
-                len(result.entries), len(result.observations),
-                len(result.places), len(result.multimodal))
+    logger.info("pipeline: %d entries (%d empty, %d failed), %d observations, "
+                "%d places, %d media", len(result.entries), empty, failed,
+                len(result.observations), len(result.places), len(result.multimodal))
     return result

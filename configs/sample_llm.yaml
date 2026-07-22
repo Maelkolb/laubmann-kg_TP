@@ -16,6 +16,8 @@ extraction:
   model: gemini-1.5-flash       # set to an available model (e.g. gemini-1.5-pro)
   api_key_env: GOOGLE_API_KEY
   temperature: 0.0
+  max_output_tokens: 4096       # caps each response; stops runaway generation
+  timeout: 120                  # seconds per request; a stalled call fails, not hangs
 
 taxa:
   links_long_path: null
