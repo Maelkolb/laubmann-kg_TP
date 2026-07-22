@@ -14,6 +14,7 @@ from typing import Optional
 
 import yaml
 
+from laubmann_kg.extraction.citations import extract_citations
 from laubmann_kg.extraction.observations import extract_observations
 from laubmann_kg.io.csv import read_entries
 from laubmann_kg.io.metadata import read_multimodal
@@ -118,6 +119,7 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     empty = failed = 0
     for i, row in enumerate(rows, 1):
         entry = build_entry(row)
+        entry.citations = [c.verbatim for c in extract_citations(entry.text_clean)]
         place = normalize_place(entry.location_raw)
         if place is not None:
             result.places.setdefault(place.uid, place)
@@ -128,6 +130,11 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
                          entry.entry_id, exc)
             entry.observations = []
             failed += 1
+        if entry.citations:  # attach the entry's source attribution to its occurrences
+            remark = "Quellenangabe: " + "; ".join(entry.citations)
+            for obs in entry.observations:
+                if obs.occurrence_remarks is None:
+                    obs.occurrence_remarks = remark
         if not entry.observations:
             empty += 1
         result.entries.append(entry)

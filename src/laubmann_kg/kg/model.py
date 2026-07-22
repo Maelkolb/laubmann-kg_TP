@@ -132,6 +132,7 @@ class DiaryEntry:
     location_raw: Optional[str]
     text_clean: str
     observations: list[Observation] = field(default_factory=list)
+    citations: list[str] = field(default_factory=list)
 
     @property
     def uid(self) -> str:

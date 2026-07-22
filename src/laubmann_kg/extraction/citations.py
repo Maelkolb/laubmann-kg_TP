@@ -13,9 +13,17 @@ from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
+# Attribution markers only. Requires a following capitalized name so that travel
+# ("nach München"), foraging ("nach Nahrung"), and "laut rufend" (loud, not
+# "according to") are not mistaken for source references.
+_NAME = r"[A-ZÄÖÜ][\wäöüß.\-]*(?:\s+[A-ZÄÖÜ][\wäöüß.\-]*)?"
 _CITATION_RE = re.compile(
-    r"\b(?:teste|nach\s+(?:Angabe|Mitteilung|Beobachtung)\s+von|laut|cf\.|vgl\.|"
-    r"nach\s+[A-ZÄÖÜ][a-zäöüß]+)\b[^.;]*",
+    r"\b(?:"
+    rf"teste\s+{_NAME}"
+    rf"|nach\s+(?:Angabe|Mitteilung|Beobachtung|Bericht)\s+(?:von\s+)?{_NAME}"
+    rf"|laut\s+(?:Angabe|Mitteilung)\s+(?:von\s+)?{_NAME}"
+    r"|(?:cf\.|vgl\.)\s+[A-ZÄÖÜ][^.;,]{0,40}"
+    r")",
     re.UNICODE,
 )
 

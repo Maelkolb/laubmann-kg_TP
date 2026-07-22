@@ -133,6 +133,8 @@ def _add_entry(graph: Graph, entry: DiaryEntry) -> None:
         graph.add((node, DWC.verbatimEventDate, Literal(entry.verbatim_event_date)))
     if entry.text_clean:
         graph.add((node, LKG.rawText, Literal(entry.text_clean)))
+    for citation in entry.citations:
+        graph.add((node, DWC.associatedReferences, Literal(citation, lang=DE)))
     volume = DiaryVolume(entry.volume)
     graph.add((node, LKG.hasVolume, _uri(volume.uid)))
     graph.add((_uri(volume.uid), RDF.type, LKG.DiaryVolume))
