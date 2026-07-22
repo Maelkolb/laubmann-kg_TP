@@ -75,8 +75,8 @@ def _add_place(graph: Graph, place: Place) -> URIRef:
     return node
 
 
-def _add_evidence(graph: Graph, obs_uid: str, evidence: Evidence) -> URIRef:
-    node = _uri(evidence.uid(obs_uid))
+def _add_evidence(graph: Graph, obs_uid: str, evidence: Evidence, index: int = 0) -> URIRef:
+    node = _uri(evidence.uid(obs_uid, index))
     cls = LKG.BirdCall if evidence.is_call else LKG.ObservationEvidence
     graph.add((node, RDF.type, cls))
     graph.add((node, RDFS.label, Literal(evidence.label, lang=DE)))
@@ -117,8 +117,8 @@ def _add_observation(graph: Graph, obs: Observation) -> Optional[URIRef]:
         graph.add((node, LKG.countQualifier, Literal(obs.count_qualifier)))
     if obs.occurrence_remarks:
         graph.add((node, DWC.occurrenceRemarks, Literal(obs.occurrence_remarks, lang=DE)))
-    for evidence in obs.evidence:
-        graph.add((node, LKG.hasEvidence, _add_evidence(graph, obs.uid, evidence)))
+    for i, evidence in enumerate(obs.evidence):
+        graph.add((node, LKG.hasEvidence, _add_evidence(graph, obs.uid, evidence, i)))
     for behaviour in obs.behaviour:
         graph.add((node, LKG.hasBehaviour, _add_behaviour(graph, obs.uid, behaviour)))
     return node

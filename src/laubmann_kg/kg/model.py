@@ -83,8 +83,11 @@ class Evidence:
     call_type: Optional[str] = None
     call_transcription: Optional[str] = None
 
-    def uid(self, obs_uid: str) -> str:
-        return f"evidence_{obs_uid}_{self.kind}"
+    def uid(self, obs_uid: str, index: int = 0) -> str:
+        # index keeps evidences of the same kind on one observation distinct, so
+        # e.g. two bird calls do not collapse onto one node (SHACL callTranscription
+        # requires exactly one value per BirdCall).
+        return f"evidence_{obs_uid}_{self.kind}_{index}"
 
 
 @dataclass(frozen=True)
