@@ -154,6 +154,17 @@ def find_taxa(text: str, stems: Optional[list[_Stem]] = None) -> list[TaxonMenti
     return sorted(seen.values(), key=lambda m: m.start)
 
 
+def looks_like_bird(text: str, stems: Optional[list[_Stem]] = None) -> bool:
+    """True if ``text`` is essentially a bird vernacular (whole-string match).
+
+    Used to reject bird names that upstream page segmentation mislabelled as a
+    locality (e.g. "Rauchschwalben" appearing in the ``location_raw`` column)."""
+    stems = stems if stems is not None else _STEMS
+    norm = _norm((text or "").strip())
+    return any(norm.startswith(s.stem) and norm[len(s.stem):] in _ALLOWED_SUFFIXES
+               for s in stems)
+
+
 @dataclass
 class TaxonResolution:
     scientific_name: Optional[str]
