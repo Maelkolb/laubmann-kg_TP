@@ -21,6 +21,7 @@ dev = [
 ]
 llm = [
     "google-genai>=0.3",
+    "json-repair>=0.25",
 ]
 
 [project.scripts]

@@ -120,7 +120,8 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
         try:
             items = extract_json(raw)
         except Exception:
-            logger.error("could not parse LLM output for %s; skipping", entry.entry_id)
+            logger.error("could not parse LLM output for %s; skipping. raw=%r",
+                         entry.entry_id, (raw or "")[:800])
             return []
     if not isinstance(items, list):
         items = [items]
