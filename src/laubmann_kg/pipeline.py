@@ -31,6 +31,7 @@ class ExtractionResult:
     entries: list[DiaryEntry] = field(default_factory=list)
     places: dict[str, Place] = field(default_factory=dict)
     multimodal: list[dict] = field(default_factory=list)
+    qa_flags: list = field(default_factory=list)
 
     @property
     def observations(self) -> list:
@@ -140,6 +141,15 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
         result.entries.append(entry)
         logger.info("[%d/%d] %s -> %d observations", i, total, entry.entry_id,
                     len(entry.observations))
+
+    qa_cfg = config.get("qa", {})
+    if qa_cfg.get("enabled", True):
+        from laubmann_kg.qa import run_qa
+        before = len(result.entries)
+        kept, result.qa_flags = run_qa(result.entries, qa_cfg)
+        result.entries = kept
+        logger.info("QA: %d flags, %d/%d entries excluded", len(result.qa_flags),
+                    before - len(kept), before)
 
     if multimodal_path is not None:
         entry_uids = {e.entry_uid for e in result.entries}

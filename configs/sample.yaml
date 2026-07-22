@@ -16,6 +16,12 @@ extraction:
 taxa:
   links_long_path: null     # set to the linker's long table when available
 
+qa:
+  enabled: true
+  exclude: true             # drop misdated entries + garbage taxa; recorded to review/qa_flags.csv
+  # year_min: 1918          # optional explicit span; else derived from the data (median +/- 2)
+  # year_max: 1919
+
 paths:
   ontology: ontologies/laubmann.ttl
   shapes: ontologies/shacl_shapes.ttl

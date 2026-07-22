@@ -17,9 +17,13 @@ def export(config: dict, input_dir: Optional[Path], output_dir: Path,
            validate: bool = True) -> dict:
     from laubmann_kg.pipeline import run_pipeline
     result = run_pipeline(config, input_dir)
-    graph = build_graph(result)
 
     output_dir = Path(output_dir)
+    if result.qa_flags:
+        from laubmann_kg.qa import write_review_table
+        write_review_table(result.qa_flags, output_dir / "review" / "qa_flags.csv")
+
+    graph = build_graph(result)
     ttl_path = output_dir / "rdf" / "laubmann_sample.ttl"
     jsonld_path = output_dir / "jsonld" / "laubmann_sample.jsonld"
     serialize_turtle(graph, ttl_path)
