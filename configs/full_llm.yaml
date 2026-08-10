@@ -1,0 +1,42 @@
+# Full 34-volume build against the DEDUPLICATED corpus, Gemini backend.
+# Point corpus.entries at the corpus_*_dedup/ produced by
+# HistOrniGraph_addons/dedup/apply_dedup.py (or pass --input-dir on the CLI).
+# Requires: pip install -e ".[llm]"  and GOOGLE_API_KEY (or GEMINI_API_KEY).
+# Calls are cached (data/cache/llm) at temperature 0, so an interrupted run
+# resumes for free.
+corpus:
+  entries: data/corpus_dedup/entries.csv
+  multimodal: data/corpus_dedup/multimodal.md
+
+# null = all volumes. Set to a number to restrict to one volume.
+sample:
+  volume: null
+
+extraction:
+  backend: llm
+  provider: google
+  model: gemini-3.5-flash
+  api_key_env: GOOGLE_API_KEY
+  temperature: 0.0
+  max_output_tokens: 4096
+  timeout: 120
+  # cache_dir: /content/drive/MyDrive/HistOrniGraph_output/llm_cache  # put the
+  #   cache on Drive in Colab so interrupted runs resume across sessions
+
+taxa:
+  links_long_path: null       # set to the index linker's long table when available
+
+qa:
+  enabled: true
+  exclude: true               # drop misdated entries + garbage taxa; recorded to review/qa_flags.csv
+
+paths:
+  ontology: ontologies/laubmann.ttl
+  shapes: ontologies/shacl_shapes.ttl
+  jsonld_context: schemas/jsonld_context.json
+
+dwca:
+  publisher: Laubmann KG Project
+  license: CC-BY-4.0
+
+validate: true

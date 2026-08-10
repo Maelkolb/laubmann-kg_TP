@@ -13,7 +13,7 @@ sample:
 extraction:
   backend: llm
   provider: google
-  model: gemini-1.5-flash       # set to an available model (e.g. gemini-1.5-pro)
+  model: gemini-3.5-flash       # keep in sync with configs/models.yaml extraction.model
   api_key_env: GOOGLE_API_KEY
   temperature: 0.0
   max_output_tokens: 4096       # caps each response; stops runaway generation

@@ -1,9 +1,15 @@
 # Projektstruktur — laubmann-kg
 
-Stand: 2026-07-22. Ausgeschlossen: `.git/`, `__pycache__/`, `.pytest_cache/`, `.venv/`.
+Stand: 2026-08-10. Ausgeschlossen: `.git/`, `__pycache__/`, `.pytest_cache/`, `.venv/`.
 
 ```text
 laubmann-kg/
+├── HistOrniGraph_addons/      # Korpus-Builder + Dedup-Toolchain (siehe COMBINED_GUIDE.md darin)
+│   ├── build_corpus.py
+│   ├── build_multimodal_corpus.py
+│   ├── laubmann_corpus/       # loading, stream, entries, render, corpus, multimodal, report, ids
+│   └── dedup/                 # laubmann_dedup.py, detect_duplicates.py, build_review_gui.py,
+│                              #   apply_dedup.py, md_to_corpus.py, METHODS.md, 13 Unit-Tests
 ├── .cursorrules
 ├── .env.example
 ├── .gitignore
@@ -20,6 +26,8 @@ laubmann-kg/
 │   ├── ontology.yaml
 │   ├── pipeline.yaml
 │   ├── prompts.yaml
+│   ├── full_llm.yaml          # 34-Bände-Lauf gegen corpus_*_dedup (Gemini)
+│   ├── sample_llm.yaml
 │   └── sample.yaml            # Vol.-2-Sample; Umschalten auf Volltext nur hier
 │
 ├── data/
@@ -63,7 +71,10 @@ laubmann-kg/
 │   ├── 01_explore_pages.ipynb
 │   ├── 02_evaluate_layout.ipynb
 │   ├── 03_evaluate_transcription.ipynb
-│   └── 04_evaluate_observation_extraction.ipynb
+│   ├── 04_evaluate_observation_extraction.ipynb
+│   ├── 05_corpus_dedup_colab.ipynb        # Colab: Korpus bauen + Dedup
+│   ├── 06_kg_book2_colab.ipynb            # Colab: Band-2-KG-Lauf (Gemini)
+│   └── 07_full_workflow_colab.ipynb       # Colab: alle 34 Bände end-to-end
 │
 ├── ontologies/
 │   ├── controlled_vocabularies.ttl

@@ -87,10 +87,12 @@ def _build_extractor(config: dict):
         return lambda entry, place: extract_observations(entry, resolver, place)
 
     from laubmann_kg.extraction.llm_observations import extract_observations_llm, load_array_schema
+    from laubmann_kg.llm.cache import LLMCache
     from laubmann_kg.llm.clients import build_client
     from laubmann_kg.llm.prompts import PromptLibrary
 
-    client = build_client({
+    cache = LLMCache(Path(extraction["cache_dir"])) if extraction.get("cache_dir") else None
+    client = build_client(cache=cache, config={
         "backend": extraction.get("provider", "google"),
         "model": extraction.get("model"),
         "api_key_env": extraction.get("api_key_env", "GOOGLE_API_KEY"),

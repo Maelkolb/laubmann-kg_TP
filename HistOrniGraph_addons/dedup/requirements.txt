@@ -1,0 +1,8 @@
+rapidfuzz>=3.0
+datasketch>=1.6
+
+# Optional — only needed for the image-hash confirmation layer
+# (detect_duplicates.py --image-root). The pipeline degrades
+# gracefully to text+structure signals if these are absent.
+imagehash>=4.3
+Pillow>=10.0

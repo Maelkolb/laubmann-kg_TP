@@ -94,9 +94,24 @@ not produced by current extraction.
 | `lkg:hasHabitat` | not yet |
 | `lkg:observedDuring`, `lkg:hasTimeEstimate` | not yet |
 
+## Dedup toolchain (integrated 2026-08-10)
+
+The corpus/dedup add-ons now live in `HistOrniGraph_addons/` in this repo
+(corpus builder + duplicate detector + review GUI + non-destructive apply;
+13 unit tests, all passing). `apply_dedup.py` regenerates `entries.csv` with
+the same segmentation and `entry_uid`/`page_uid`/`region_uid` derivation as
+the builder, so the deduped corpus drops straight into the KG stage
+(`--input-dir corpus_*_dedup`). Verified locally end-to-end on a synthetic
+corpus: build → detect → decisions → apply → `export-jsonld` (SHACL: 0/0).
+
+Remaining human step: adjudicate `review.html` for the full corpus and export
+`dedup_decisions.json` (see `notebooks/07_full_workflow_colab.ipynb`, stage B).
+
 ## Deferred / not done
 
-- Full 34-volume build (waits on `corpus_*_dedup/`).
+- Full 34-volume build: **unblocked** — run
+  `notebooks/07_full_workflow_colab.ipynb` (needs the dedup review decisions
+  and a Gemini key; `configs/full_llm.yaml` is the run config).
 - Travel/route/time extraction.
 - External taxon IRIs and GBIF/Avibase alignment (needs `links_long`).
 - `preprocess` / `detect-layout` / `transcribe` stages remain stubs (handled
@@ -108,3 +123,8 @@ not produced by current extraction.
   (`pip install -e ".[llm]"`, set `GOOGLE_API_KEY`). OpenAI/Anthropic adapters
   are not yet added. No formal LLM-vs-gold evaluation harness yet
   (`evaluation/` modules remain stubs) — quality is currently judged by review.
+- Live Gemini run on Vol. 2 (Colab, 2026-08): 233 entries → 1,573 observations,
+  28,298 triples. The 6 `callTranscription` SHACL violations seen in that run
+  came from an export made before da5739f (evidence URIs without the index
+  suffix); current HEAD always writes a transcription and unique evidence URIs,
+  so a re-export should validate clean.

@@ -9,6 +9,16 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Added
 
+- **HistOrniGraph-Add-ons ins Repo integriert** (`HistOrniGraph_addons/`): Korpus-Builder (`build_corpus.py` + `laubmann_corpus/`-Paket) und Dedup-Toolchain (`dedup/`: Erkennung, Review-GUI, nicht-destruktives Anwenden, 13 Unit-Tests). Damit läuft der komplette Workflow Korpus → Dedup → KG aus einem Klon.
+- `apply_dedup.py` regeneriert `entries.csv` jetzt über `laubmann_corpus.stream` (identische Segmentierung wie der Builder) und schreibt damit auch `entry_uid`/`page_uid`/`region_uid` + Provenienz-Spalten — ohne diese kollabierten alle Einträge im KG auf eine einzige Entry-URI. Zusätzlich tolerant gegenüber `id`/`region_id`-Schreibweisen und Warnung bei Decisions ohne `drop`-Liste.
+- `configs/full_llm.yaml`: 34-Bände-Lauf gegen das deduplizierte Korpus (`sample.volume: null`), Gemini-Backend, QA an.
+- `extraction.cache_dir` konfigurierbar (LLM-Cache z. B. auf Drive für unterbrechungsfeste Colab-Läufe).
+- Colab-Notebooks in `notebooks/`: `05_corpus_dedup_colab` (Korpus + Dedup), `06_kg_book2_colab` (Band-2-KG-Lauf), `07_full_workflow_colab` (alle 34 Bände end-to-end: Korpus → Dedup-Review → KG + DwC-A + CQ-Check).
+
+### Changed (Dedup-Integration)
+
+- `configs/sample_llm.yaml`: Extraktionsmodell auf `gemini-3.5-flash` (synchron mit `configs/models.yaml`); vorher musste das Notebook das Modell zur Laufzeit patchen.
+
 - **LLM-Extraktions-Backend (Gemini) an die Pipeline angebunden.** `extraction/llm_observations.py` rendert den Prompt pro Eintrag, ruft einen gecachten Gemini-Client (Temperature 0, JSON-Ausgabe) und mappt die strukturierte Antwort auf SHACL-konforme `Observation`-Objekte; wissenschaftliche Namen werden gegen den Resolver abgesichert, Taxon-IRIs nie erfunden. Umschaltung über `extraction.backend: llm` (`configs/sample_llm.yaml`), Provider-Adapter `GeminiClient` in `llm/clients.py`, optionales Extra `[llm]` (`google-genai`). Verdrahtung/Mapping offline mit Fake-Client getestet; Live-Läufe brauchen `GOOGLE_API_KEY`.
 - **Korpus→KG-Builder (erster End-to-End-Lauf auf Vol.-2-Sample).** Deterministische, netzwerkfreie Extraktion und Export gemäß bestehender Ontologie/SHACL.
 - `pipeline.py`: lädt den Korpus (`entries.csv` + `multimodal.md`), baut Domänenobjekte, führt Extraktion aus; Sample→Volltext ist reine Konfigsache (`configs/sample.yaml`).
