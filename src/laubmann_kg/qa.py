@@ -71,15 +71,29 @@ class QAFlag:
     value: str = ""
 
 
-def _year_range(entries, config: dict) -> Optional[tuple[int, int]]:
+def _year_ranges(entries, config: dict) -> dict[int, tuple[int, int]]:
+    """Plausible year span PER VOLUME: {volume: (lo, hi)}.
+
+    Each diary volume covers a narrow stretch of Laubmann's life, so the
+    misdate test must be scoped to the volume's own median — a single global
+    median across a multi-volume run would exclude almost every entry outside
+    a few years mid-corpus. Explicit ``year_min``/``year_max`` in the config
+    override the medians and apply to every volume."""
     lo, hi = config.get("year_min"), config.get("year_max")
-    if lo and hi:
-        return int(lo), int(hi)
-    years = sorted(int(e.entry_date[:4]) for e in entries if e.entry_date)
-    if not years:
-        return None
-    median = years[len(years) // 2]
-    return median - 2, median + 2
+    tol = int(config.get("year_tolerance", 2))
+    by_vol: dict[int, list[int]] = {}
+    for e in entries:
+        if e.entry_date:
+            by_vol.setdefault(e.volume, []).append(int(e.entry_date[:4]))
+    ranges: dict[int, tuple[int, int]] = {}
+    for vol, years in by_vol.items():
+        if lo and hi:
+            ranges[vol] = (int(lo), int(hi))
+            continue
+        years.sort()
+        median = years[len(years) // 2]
+        ranges[vol] = (median - tol, median + tol)
+    return ranges
 
 
 def run_qa(entries, config: Optional[dict] = None):
@@ -87,18 +101,19 @@ def run_qa(entries, config: Optional[dict] = None):
     drop excluded observations when ``exclude`` is on."""
     config = config or {}
     exclude = config.get("exclude", True)
-    yr = _year_range(entries, config)
+    ranges = _year_ranges(entries, config)
     flags: list[QAFlag] = []
     kept = []
 
     for e in entries:
         drop_entry = False
 
+        yr = ranges.get(e.volume)
         if yr and e.entry_date:
             year = int(e.entry_date[:4])
             if not yr[0] <= year <= yr[1]:
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "misdate",
-                    f"Jahr {year} ausserhalb {yr[0]}-{yr[1]}",
+                    f"Jahr {year} ausserhalb {yr[0]}-{yr[1]} (Band {e.volume})",
                     "excluded" if exclude else "flagged", e.entry_date))
                 drop_entry = exclude
 

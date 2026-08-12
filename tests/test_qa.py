@@ -2,10 +2,11 @@ from laubmann_kg.qa import QAFlag, plausible_bird, run_qa, write_review_table
 from laubmann_kg.kg.model import DiaryEntry, Observation, Taxon
 
 
-def _entry(eid, date, loc="München", obs=None):
-    return DiaryEntry(entry_uid="u_" + eid, entry_id=eid, volume=2, page_uid="p", page_id="pg",
-                      region_uid=None, scan=None, entry_date=date, verbatim_event_date=date,
-                      location_raw=loc, text_clean="x", observations=obs or [])
+def _entry(eid, date, loc="München", obs=None, volume=2):
+    return DiaryEntry(entry_uid="u_" + eid, entry_id=eid, volume=volume, page_uid="p",
+                      page_id="pg", region_uid=None, scan=None, entry_date=date,
+                      verbatim_event_date=date, location_raw=loc, text_clean="x",
+                      observations=obs or [])
 
 
 def _obs(vern, sci=None):
@@ -28,6 +29,20 @@ def test_misdate_entry_excluded():
     assert {e.entry_id for e in kept} == {"good"}
     assert any(f.reason == "misdate" and f.action == "excluded" and f.entry_id == "bad"
                for f in flags)
+
+
+def test_misdate_span_is_per_volume():
+    # Regression: the full 34-volume corpus spans decades. A GLOBAL median±2
+    # excluded 89% of all entries; the span must be computed per volume.
+    ok = _obs("Buchfink", "Fringilla coelebs")
+    entries = ([_entry(f"v2-{i}", "1918-05-01", obs=[ok], volume=2) for i in range(3)]
+               + [_entry(f"v30-{i}", "1955-06-01", obs=[ok], volume=30) for i in range(3)]
+               + [_entry("v2-bad", "1859-05-01", obs=[ok], volume=2)])
+    kept, flags = run_qa(entries, {"exclude": True})
+    assert {e.entry_id for e in kept} == {f"v2-{i}" for i in range(3)} | {f"v30-{i}" for i in range(3)}
+    misdates = [f for f in flags if f.reason == "misdate"]
+    assert len(misdates) == 1 and misdates[0].entry_id == "v2-bad"
+    assert "Band 2" in misdates[0].detail
 
 
 def test_garbage_taxon_observation_excluded():
