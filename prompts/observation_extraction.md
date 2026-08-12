@@ -42,7 +42,8 @@ Every array may be empty.
   of `visual`, `auditory`, `nest`, `specimen`. Use `auditory` with a `call_type`
   (`song`/`call`/`alarm`/`drumming`) when a vocalisation is described, and put
   the diarist's phonetic rendering ("zick zick") in `call_transcription`.
-- `behaviour`: short German phrases as written ("singt", "brütet", "zieht nach S").
+- `behaviour`: JSON array of short German phrases as written
+  (`["singt", "brütet"]`); `[]` when none.
 - `habitat`: the habitat/biotope the bird was in, if the text states one
   ("Schilfrand", "Auwald", "Isarauen"); else `null`.
 - `confidence`: your confidence in the identification, 0–1.
@@ -54,7 +55,7 @@ One event per coherent journey; `legs` is an array with one object per segment:
 - `departure_place` / `arrival_place`: place names as written. `arrival_place`
   is required; leave `departure_place` `null` when the text only implies leaving
   the current location.
-- `via_places`: intermediate stations or waypoints, in order.
+- `via_places`: JSON array of intermediate stations or waypoints, in order.
 - `transport_mode`: `train`, `foot`, `boat`, `car`, `carriage`, `bicycle`, or
   `unknown`.
 - `departure_time` / `arrival_time`: 24h `"HH:MM"` if stated ("8¼ Uhr" →

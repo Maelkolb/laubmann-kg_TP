@@ -15,7 +15,7 @@
       "enum": ["exact", "minimum", "approximate", "plural-unspecified", null]
     },
     "evidence": {
-      "type": "array",
+      "type": ["array", "null"],
       "items": {
         "type": "object",
         "required": ["kind"],
@@ -26,7 +26,7 @@
         }
       }
     },
-    "behaviour": {"type": "array", "items": {"type": "string"}},
+    "behaviour": {"type": ["array", "string", "null"], "items": {"type": "string"}},
     "habitat": {"type": ["string", "null"]},
     "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
   }

@@ -109,6 +109,32 @@ def test_leg_without_endpoint_dropped() -> None:
     assert entry.travel_events == []                   # no valid leg → no event
 
 
+def test_scalar_behaviour_and_null_evidence_coerced() -> None:
+    # Exactly what gemini-3.5-flash emitted on the first live entries: behaviour
+    # as a bare sentence (or null) instead of an array. Must map to ONE
+    # behaviour node, never char-split, and must pass strict schema validation.
+    payload = json.dumps({"observations": [
+        {"vernacular_de": "Alpensegler", "verbatim_notes": "schreien laut",
+         "behaviour": "schreien laut durcheinander, fast wie auf den Brutplätzen",
+         "evidence": None},
+        {"vernacular_de": "Amsel", "verbatim_notes": "eine Amsel", "behaviour": None},
+    ]})
+    entry, obs = _run(payload)
+    assert [b.label for b in obs[0].behaviour] == [
+        "schreien laut durcheinander, fast wie auf den Brutplätzen"]
+    assert obs[1].behaviour == []
+    assert obs[0].evidence[0].kind == "visual"  # default when evidence is null
+
+
+def test_scalar_via_places_coerced() -> None:
+    payload = json.dumps({"observations": [], "travel_events": [{"legs": [
+        {"departure_place": "München", "arrival_place": "Freising",
+         "via_places": "Moosach", "transport_mode": "train"}]}]})
+    entry, _ = _run(payload)
+    vias = entry.travel_events[0].legs[0].via_places
+    assert len(vias) == 1 and vias[0].name == "Moosach"
+
+
 def test_legacy_array_payload_still_maps() -> None:
     payload = json.dumps([{"vernacular_de": "Amsel", "verbatim_notes": "eine Amsel"}])
     entry, obs = _run(payload)

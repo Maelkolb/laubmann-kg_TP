@@ -68,9 +68,22 @@ def load_entry_schema(schema_path: Optional[Path] = None) -> dict:
     return entry
 
 
-def _evidence_from(items: list) -> list[Evidence]:
+def _as_list(value) -> list:
+    """Coerce model output to a list: None → [], list → list (minus Nones),
+    scalar/dict → [value]. Guards against a bare string being iterated
+    character-by-character downstream."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [v for v in value if v is not None]
+    return [value]
+
+
+def _evidence_from(items) -> list[Evidence]:
     out: list[Evidence] = []
-    for item in items or []:
+    for item in _as_list(items):
+        if not isinstance(item, dict):
+            continue
         kind = (item.get("kind") or "").lower()
         if kind not in vocab.EVIDENCE_KINDS:
             continue
@@ -112,7 +125,8 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
         resolution = resolver.resolve(vernacular)
         llm_sci = (item.get("scientific_name") or "").strip() or None
         scientific = llm_sci or resolution.scientific_name
-        behaviour = [Behaviour(str(b)) for b in (item.get("behaviour") or []) if str(b).strip()]
+        behaviour = [Behaviour(str(b).strip()) for b in _as_list(item.get("behaviour"))
+                     if str(b).strip()]
         if any(e.kind == "nest" for e in _evidence_from(item.get("evidence"))):
             behaviour.append(Behaviour("Brüten / besetztes Nest", reproductive_condition="breeding"))
         taxon = Taxon(
@@ -193,7 +207,7 @@ def map_travel(entry: DiaryEntry, items: list,
                 departure_place=departure,
                 arrival_place=arrival,
                 via_places=tuple(p for p in (_travel_place(v) for v in
-                                             (raw_leg.get("via_places") or [])) if p),
+                                             _as_list(raw_leg.get("via_places"))) if p),
                 transport_mode=vocab.normalize_transport_mode(raw_leg.get("transport_mode")),
                 departure_time=dep_t,
                 arrival_time=arr_t,

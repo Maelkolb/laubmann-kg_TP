@@ -24,7 +24,7 @@
               "properties": {
                 "departure_place": {"type": ["string", "null"]},
                 "arrival_place": {"type": "string", "minLength": 1},
-                "via_places": {"type": "array", "items": {"type": "string"}},
+                "via_places": {"type": ["array", "string", "null"], "items": {"type": "string"}},
                 "transport_mode": {
                   "type": ["string", "null"],
                   "enum": ["train", "foot", "boat", "car", "carriage", "bicycle", "unknown", null]
