@@ -75,6 +75,50 @@ class Place:
 
 
 @dataclass(frozen=True)
+class Habitat:
+    label: str
+
+    @property
+    def uid(self) -> str:
+        return f"habitat_{_slug(self.label.lower())}"
+
+
+@dataclass(frozen=True)
+class Person:
+    name: str
+    role: Optional[str] = None  # companion | source | collector | cited-author | other
+
+    @property
+    def uid(self) -> str:
+        return f"person_{_slug(self.name.lower())}"
+
+
+@dataclass(frozen=True)
+class TravelLeg:
+    departure_place: Place
+    arrival_place: Place
+    via_places: tuple[Place, ...] = ()
+    transport_mode: str = "unknown"
+    departure_time: Optional[str] = None  # xsd:dateTime (entry date + stated clock time)
+    arrival_time: Optional[str] = None
+    verbatim: Optional[str] = None
+
+    def uid(self, event_uid: str, index: int) -> str:
+        return f"leg_{event_uid}_{index}"
+
+
+@dataclass
+class TravelEvent:
+    entry_uid: str
+    legs: list[TravelLeg] = field(default_factory=list)
+    index: int = 0
+
+    @property
+    def uid(self) -> str:
+        return f"travel_{self.entry_uid}_{self.index}"
+
+
+@dataclass(frozen=True)
 class Evidence:
     kind: str  # visual | auditory | nest | specimen
     label: str
@@ -109,6 +153,7 @@ class Observation:
     count_qualifier: Optional[str] = None
     evidence: list[Evidence] = field(default_factory=list)
     behaviour: list[Behaviour] = field(default_factory=list)
+    habitat: Optional[Habitat] = None
     occurrence_remarks: Optional[str] = None
     index: int = 0
 
@@ -132,6 +177,8 @@ class DiaryEntry:
     location_raw: Optional[str]
     text_clean: str
     observations: list[Observation] = field(default_factory=list)
+    travel_events: list[TravelEvent] = field(default_factory=list)
+    persons: list[Person] = field(default_factory=list)
     citations: list[str] = field(default_factory=list)
 
     @property

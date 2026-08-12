@@ -374,3 +374,11 @@ lkg:hasAnnotation
     a owl:ObjectProperty ;
     rdfs:label "has annotation"@en ;
     rdfs:range oa:Annotation .
+
+lkg:mentionsPerson
+    a owl:ObjectProperty ;
+    rdfs:label "mentions person"@en , "erwähnt Person"@de ;
+    rdfs:comment "Links a diary entry to a person it mentions (companion, source, collector, cited author)."@en ;
+    rdfs:domain lkg:DiaryEntry ;
+    rdfs:range lkg:Person ;
+    rdfs:subPropertyOf schema:mentions .

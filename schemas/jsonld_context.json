@@ -29,6 +29,17 @@
     "scientificName": "lkg:scientificName",
     "callTranscription": "lkg:callTranscription",
     "callType": "lkg:callType",
-    "verbatimLocality": "lkg:verbatimLocality"
+    "verbatimLocality": "lkg:verbatimLocality",
+    "hasHabitat": {"@id": "lkg:hasHabitat", "@type": "@id"},
+    "habitat": "dwc:habitat",
+    "mentionsPerson": {"@id": "lkg:mentionsPerson", "@type": "@id"},
+    "containsTravelEvent": {"@id": "lkg:containsTravelEvent", "@type": "@id"},
+    "hasLeg": {"@id": "lkg:hasLeg", "@type": "@id"},
+    "departurePlace": {"@id": "lkg:departurePlace", "@type": "@id"},
+    "arrivalPlace": {"@id": "lkg:arrivalPlace", "@type": "@id"},
+    "viaPlace": {"@id": "lkg:viaPlace", "@type": "@id"},
+    "transportMode": "lkg:transportMode",
+    "departureTime": {"@id": "lkg:departureTime", "@type": "xsd:dateTime"},
+    "arrivalTime": {"@id": "lkg:arrivalTime", "@type": "xsd:dateTime"}
   }
 }

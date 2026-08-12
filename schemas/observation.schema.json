@@ -27,6 +27,7 @@
       }
     },
     "behaviour": {"type": "array", "items": {"type": "string"}},
+    "habitat": {"type": ["string", "null"]},
     "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
   }
 }

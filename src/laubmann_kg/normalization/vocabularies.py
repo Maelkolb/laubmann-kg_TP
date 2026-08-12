@@ -19,6 +19,31 @@ SPECIMEN_CUES = ("erlegt", "geschossen", "gesammelt", "eingesandt", "präpar", "
 SONG_CUES = ("gesang", "singt", "singen", "sang", "schlägt", "schlagen", "schwirrt")
 DRUMMING_CUES = ("trommelt", "trommeln")
 
+# Diary phrasing → transport mode, for when the LLM answers in German instead of
+# the vocabulary term. Order matters: "kraftwagen" must hit car before "wagen"
+# hits carriage.
+TRANSPORT_MODE_CUES = (
+    ("train", ("bahn", "zug", "eisenbahn", "d-zug", "lokal", "express")),
+    ("boat", ("dampfer", "boot", "schiff", "kahn", "fähre", "floß")),
+    ("bicycle", ("fahrrad", "rad", "velo")),
+    ("car", ("auto", "kraftwagen", "automobil")),
+    ("carriage", ("kutsche", "droschke", "fuhrwerk", "chaise", "wagen")),
+    ("foot", ("fuß", "fuss", "gegangen", "gelaufen", "marsch", "wander", "spazier")),
+)
+
+
+def normalize_transport_mode(raw: object) -> str:
+    """Map an LLM-supplied transport mode onto the SHACL vocabulary."""
+    if not raw:
+        return "unknown"
+    value = str(raw).strip().lower()
+    if value in TRANSPORT_MODES:
+        return value
+    for mode, cues in TRANSPORT_MODE_CUES:
+        if any(cue in value for cue in cues):
+            return mode
+    return "unknown"
+
 # Approximate / plural quantity cues (no exact integer available).
 PLURAL_CUES = (
     "einige", "mehrere", "viele", "zahlreiche", "etliche", "manche",

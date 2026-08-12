@@ -17,9 +17,12 @@ from laubmann_kg.kg.model import (
     DiaryPage,
     DiaryVolume,
     Evidence,
+    Habitat,
     Observation,
+    Person,
     Place,
     Taxon,
+    TravelEvent,
 )
 
 if TYPE_CHECKING:
@@ -89,6 +92,52 @@ def _add_evidence(graph: Graph, obs_uid: str, evidence: Evidence, index: int = 0
     return node
 
 
+def _add_habitat(graph: Graph, habitat: Habitat) -> URIRef:
+    node = _uri(habitat.uid)
+    if (node, RDF.type, LKG.Habitat) not in graph:
+        graph.add((node, RDF.type, LKG.Habitat))
+        graph.add((node, RDFS.label, Literal(habitat.label, lang=DE)))
+        graph.add((node, DWC.habitat, Literal(habitat.label, lang=DE)))
+    return node
+
+
+def _add_person(graph: Graph, person: Person) -> URIRef:
+    node = _uri(person.uid)
+    if (node, RDF.type, LKG.Person) not in graph:
+        graph.add((node, RDF.type, LKG.Person))
+        graph.add((node, RDFS.label, Literal(person.name)))
+        if person.role:
+            graph.add((node, SKOS.note, Literal(person.role)))
+    return node
+
+
+def _add_travel_event(graph: Graph, entry_node: URIRef, event: TravelEvent) -> None:
+    ev = _uri(event.uid)
+    graph.add((ev, RDF.type, LKG.TravelEvent))
+    graph.add((ev, RDFS.label,
+               Literal(f"Reise · {len(event.legs)} Etappe(n)", lang=DE)))
+    graph.add((entry_node, LKG.containsTravelEvent, ev))
+    for i, leg in enumerate(event.legs):
+        node = _uri(leg.uid(event.uid, i))
+        graph.add((node, RDF.type, LKG.TravelLeg))
+        graph.add((ev, LKG.hasLeg, node))
+        graph.add((node, LKG.departurePlace, _add_place(graph, leg.departure_place)))
+        graph.add((node, LKG.arrivalPlace, _add_place(graph, leg.arrival_place)))
+        for via in leg.via_places:
+            graph.add((node, LKG.viaPlace, _add_place(graph, via)))
+        graph.add((node, LKG.transportMode, Literal(leg.transport_mode)))
+        if leg.departure_time:
+            graph.add((node, LKG.departureTime,
+                       Literal(leg.departure_time, datatype=XSD.dateTime)))
+        if leg.arrival_time:
+            graph.add((node, LKG.arrivalTime,
+                       Literal(leg.arrival_time, datatype=XSD.dateTime)))
+        if leg.verbatim:
+            # skos:note, NOT lkg:verbatimNotes — that property's rdfs:domain is
+            # ObservationEvent and would re-type the leg under RDFS inference.
+            graph.add((node, SKOS.note, Literal(leg.verbatim, lang=DE)))
+
+
 def _add_behaviour(graph: Graph, obs_uid: str, behaviour: Behaviour) -> URIRef:
     node = _uri(behaviour.uid(obs_uid))
     graph.add((node, RDF.type, LKG.BehaviourNote))
@@ -121,6 +170,8 @@ def _add_observation(graph: Graph, obs: Observation) -> Optional[URIRef]:
         graph.add((node, LKG.hasEvidence, _add_evidence(graph, obs.uid, evidence, i)))
     for behaviour in obs.behaviour:
         graph.add((node, LKG.hasBehaviour, _add_behaviour(graph, obs.uid, behaviour)))
+    if obs.habitat is not None:
+        graph.add((node, LKG.hasHabitat, _add_habitat(graph, obs.habitat)))
     return node
 
 
@@ -148,6 +199,10 @@ def _add_entry(graph: Graph, entry: DiaryEntry) -> None:
         obs_node = _add_observation(graph, obs)
         if obs_node is not None:
             graph.add((node, LKG.containsObservation, obs_node))
+    for event in entry.travel_events:
+        _add_travel_event(graph, node, event)
+    for person in entry.persons:
+        graph.add((node, LKG.mentionsPerson, _add_person(graph, person)))
 
 
 def build_graph(result: "ExtractionResult") -> Graph:

@@ -86,7 +86,7 @@ def _build_extractor(config: dict):
     if backend in ("offline", "rule", "rules", "gazetteer"):
         return lambda entry, place: extract_observations(entry, resolver, place)
 
-    from laubmann_kg.extraction.llm_observations import extract_observations_llm, load_array_schema
+    from laubmann_kg.extraction.llm_observations import extract_observations_llm, load_entry_schema
     from laubmann_kg.llm.cache import LLMCache
     from laubmann_kg.llm.clients import build_client
     from laubmann_kg.llm.prompts import PromptLibrary
@@ -101,7 +101,7 @@ def _build_extractor(config: dict):
         "timeout": extraction.get("timeout", 120),
     })
     prompts = PromptLibrary(Path(extraction.get("prompt_dir", "prompts")))
-    schema = load_array_schema(extraction.get("schema"))
+    schema = load_entry_schema(extraction.get("schema"))
     logger.info("extraction backend=%s provider=%s model=%s", backend,
                 extraction.get("provider", "google"), extraction.get("model"))
     return lambda entry, place: extract_observations_llm(
@@ -159,6 +159,9 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
                              if r.get("entry_uid") in entry_uids]
 
     logger.info("pipeline: %d entries (%d empty, %d failed), %d observations, "
-                "%d places, %d media", len(result.entries), empty, failed,
-                len(result.observations), len(result.places), len(result.multimodal))
+                "%d travel events, %d persons, %d places, %d media",
+                len(result.entries), empty, failed, len(result.observations),
+                sum(len(e.travel_events) for e in result.entries),
+                sum(len(e.persons) for e in result.entries),
+                len(result.places), len(result.multimodal))
     return result
