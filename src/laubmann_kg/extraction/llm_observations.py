@@ -184,12 +184,17 @@ def map_travel(entry: DiaryEntry, items: list,
     that still lack either endpoint are dropped; events without surviving legs
     are dropped (TravelEventShape requires >= 1 leg)."""
     events: list[TravelEvent] = []
-    for ti, item in enumerate(items or []):
+    for ti, item in enumerate(_as_list(items)):
         if not isinstance(item, dict):
             continue
+        raw_legs = _as_list(item.get("legs"))
+        if not raw_legs and ("arrival_place" in item or "departure_place" in item):
+            # The model frequently emits the event as a bare leg object without
+            # the legs wrapper — treat the event itself as its single leg.
+            raw_legs = [item]
         legs: list[TravelLeg] = []
         prev_arrival: Optional[Place] = None
-        for raw_leg in item.get("legs") or []:
+        for raw_leg in raw_legs:
             if not isinstance(raw_leg, dict):
                 continue
             arrival = _travel_place(raw_leg.get("arrival_place"))
@@ -222,7 +227,7 @@ def map_travel(entry: DiaryEntry, items: list,
 def map_persons(items: list) -> list[Person]:
     out: list[Person] = []
     seen: set[str] = set()
-    for item in items or []:
+    for item in _as_list(items):
         if not isinstance(item, dict):
             continue
         name = (item.get("name") or "").strip()

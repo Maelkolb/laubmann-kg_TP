@@ -135,6 +135,38 @@ def test_scalar_via_places_coerced() -> None:
     assert len(vias) == 1 and vias[0].name == "Moosach"
 
 
+def test_flat_travel_event_without_legs_wrapper() -> None:
+    # Dominant live shape from gemini-3.5-flash: the event IS the leg, no
+    # {legs: [...]} wrapper. Must validate strictly and map to one leg.
+    payload = json.dumps({"observations": [], "travel_events": [
+        {"departure_place": "Kaufbeuren", "arrival_place": "Biessenhofen",
+         "via_places": [], "transport_mode": "train", "departure_time": None,
+         "arrival_time": None,
+         "verbatim": "Längs der Bahn zwischen Kaufbeuren und Biessenhofen"}]})
+    from laubmann_kg.llm.structured_output import parse_structured
+    parse_structured(payload, SCHEMA)          # strict path, no lenient fallback
+    entry, _ = _run(payload)
+    assert len(entry.travel_events) == 1
+    leg = entry.travel_events[0].legs[0]
+    assert leg.departure_place.name and leg.arrival_place.name
+    assert leg.transport_mode == "train"
+
+
+def test_live_warning_payloads_now_validate_strictly() -> None:
+    # Shapes that pushed live entries onto the lenient path: observation
+    # without verbatim_notes, individual_count 0, evidence "".
+    from laubmann_kg.llm.structured_output import parse_structured
+    payload = json.dumps({"observations": [
+        {"vernacular_de": "Haubenlerche", "scientific_name": "Galerida cristata"},
+        {"vernacular_de": "Amsel", "verbatim_notes": "Amseln", "individual_count": 0,
+         "evidence": ""}]})
+    parse_structured(payload, SCHEMA)
+    entry, obs = _run(payload)
+    assert obs[0].verbatim_notes                 # falls back to entry text
+    assert obs[1].individual_count is None       # sanitizer drops 0
+    assert obs[1].evidence[0].kind == "visual"   # default evidence
+
+
 def test_legacy_array_payload_still_maps() -> None:
     payload = json.dumps([{"vernacular_de": "Amsel", "verbatim_notes": "eine Amsel"}])
     entry, obs = _run(payload)

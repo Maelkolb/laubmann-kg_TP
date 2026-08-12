@@ -1,56 +1,53 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "EntryExtraction",
-  "description": "Full structured reading of one diary entry: observations, travel events, and mentioned persons. The observation item schema is injected at load time from observation.schema.json (single source of truth).",
+  "description": "Full structured reading of one diary entry: observations, travel events, and mentioned persons. The observation item schema is injected at load time from observation.schema.json (single source of truth). Deliberately tolerant: the model may emit a travel event either as {legs: [...]} or as a bare leg object; type-level correctness (vocabularies, time consistency, required endpoints) is enforced by the mapper, not here.",
   "type": "object",
   "required": ["observations"],
   "additionalProperties": false,
+  "$defs": {
+    "leg": {
+      "type": "object",
+      "properties": {
+        "departure_place": {"type": ["string", "null"]},
+        "arrival_place": {"type": ["string", "null"]},
+        "via_places": {"type": ["array", "string", "null"], "items": {"type": "string"}},
+        "transport_mode": {"type": ["string", "null"]},
+        "departure_time": {"type": ["string", "null"]},
+        "arrival_time": {"type": ["string", "null"]},
+        "verbatim": {"type": ["string", "null"]}
+      }
+    }
+  },
   "properties": {
     "observations": {"type": "array", "items": {}},
     "travel_events": {
-      "type": "array",
+      "type": ["array", "null"],
       "items": {
-        "type": "object",
-        "required": ["legs"],
-        "additionalProperties": false,
-        "properties": {
-          "legs": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "required": ["arrival_place"],
-              "additionalProperties": false,
-              "properties": {
-                "departure_place": {"type": ["string", "null"]},
-                "arrival_place": {"type": "string", "minLength": 1},
-                "via_places": {"type": ["array", "string", "null"], "items": {"type": "string"}},
-                "transport_mode": {
-                  "type": ["string", "null"],
-                  "enum": ["train", "foot", "boat", "car", "carriage", "bicycle", "unknown", null]
-                },
-                "departure_time": {"type": ["string", "null"]},
-                "arrival_time": {"type": ["string", "null"]},
-                "verbatim": {"type": ["string", "null"]}
-              }
+        "anyOf": [
+          {
+            "type": "object",
+            "required": ["legs"],
+            "properties": {
+              "legs": {
+                "type": "array",
+                "items": {"$ref": "#/$defs/leg"}
+              },
+              "verbatim": {"type": ["string", "null"]}
             }
           },
-          "verbatim": {"type": ["string", "null"]}
-        }
+          {"$ref": "#/$defs/leg"}
+        ]
       }
     },
     "persons": {
-      "type": "array",
+      "type": ["array", "null"],
       "items": {
         "type": "object",
         "required": ["name"],
-        "additionalProperties": false,
         "properties": {
           "name": {"type": "string", "minLength": 1},
-          "role": {
-            "type": ["string", "null"],
-            "enum": ["companion", "source", "collector", "cited-author", "other", null]
-          },
+          "role": {"type": ["string", "null"]},
           "verbatim": {"type": ["string", "null"]}
         }
       }

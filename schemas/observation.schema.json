@@ -3,19 +3,19 @@
   "title": "Observation",
   "description": "One ornithological observation extracted from a diary entry.",
   "type": "object",
-  "required": ["vernacular_de", "verbatim_notes"],
+  "required": ["vernacular_de"],
   "additionalProperties": false,
   "properties": {
     "vernacular_de": {"type": "string", "minLength": 1},
     "scientific_name": {"type": ["string", "null"]},
-    "verbatim_notes": {"type": "string", "minLength": 1},
-    "individual_count": {"type": ["integer", "null"], "minimum": 1},
+    "verbatim_notes": {"type": ["string", "null"]},
+    "individual_count": {"type": ["integer", "string", "null"]},
     "count_qualifier": {
       "type": ["string", "null"],
       "enum": ["exact", "minimum", "approximate", "plural-unspecified", null]
     },
     "evidence": {
-      "type": ["array", "null"],
+      "type": ["array", "string", "null"],
       "items": {
         "type": "object",
         "required": ["kind"],
