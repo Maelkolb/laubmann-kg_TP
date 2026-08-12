@@ -82,6 +82,10 @@ def _add_evidence(graph: Graph, obs_uid: str, evidence: Evidence, index: int = 0
     node = _uri(evidence.uid(obs_uid, index))
     cls = LKG.BirdCall if evidence.is_call else LKG.ObservationEvidence
     graph.add((node, RDF.type, cls))
+    if evidence.is_call:
+        # Materialize the superclass so SHACL sh:class checks hold without
+        # running RDFS inference over the full graph (prohibitive at 1M+ triples).
+        graph.add((node, RDF.type, LKG.ObservationEvidence))
     graph.add((node, RDFS.label, Literal(evidence.label, lang=DE)))
     if evidence.is_call:
         graph.add((node, LKG.callTranscription, Literal(evidence.call_transcription or "Ruf")))
@@ -96,6 +100,7 @@ def _add_habitat(graph: Graph, habitat: Habitat) -> URIRef:
     node = _uri(habitat.uid)
     if (node, RDF.type, LKG.Habitat) not in graph:
         graph.add((node, RDF.type, LKG.Habitat))
+        graph.add((node, RDF.type, LKG.Place))  # materialized superclass, see _add_evidence
         graph.add((node, RDFS.label, Literal(habitat.label, lang=DE)))
         graph.add((node, DWC.habitat, Literal(habitat.label, lang=DE)))
     return node

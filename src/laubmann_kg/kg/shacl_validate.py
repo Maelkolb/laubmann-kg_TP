@@ -32,12 +32,22 @@ from pyshacl import validate
 SH = Namespace("http://www.w3.org/ns/shacl#")
 
 
-def run_validation(data_path: str, ontology_path: str, shapes_path: str) -> Graph:
-    """Lädt Daten + Ontologie zusammen (für RDFS-Subklassen-Inferenz)
-    und validiert gegen die SHACL-Shapes."""
+def run_validation(data_path: str, ontology_path: str, shapes_path: str,
+                   inference: str = "none") -> Graph:
+    """Lädt Daten + Ontologie und validiert gegen die SHACL-Shapes.
+
+    ``inference`` ist standardmäßig "none": der RDF-Emitter materialisiert die
+    benötigten Superklassen (BirdCall→ObservationEvidence, Habitat→Place)
+    bereits beim Schreiben. Eine volle RDFS-Closure via owlrl skaliert nicht
+    auf den 34-Bände-Graph (>1M Tripel, Stunden Laufzeit); für kleine Graphen
+    kann weiterhin inference="rdfs" übergeben werden."""
+    import time
+    t0 = time.time()
     data_graph = Graph()
     data_graph.parse(data_path, format="turtle")
     data_graph.parse(ontology_path, format="turtle")
+    print(f"SHACL: {len(data_graph):,} Tripel geladen in {time.time()-t0:.0f}s — "
+          f"validiere (inference={inference}) …", flush=True)
 
     shapes_graph = Graph()
     shapes_graph.parse(shapes_path, format="turtle")
@@ -45,11 +55,12 @@ def run_validation(data_path: str, ontology_path: str, shapes_path: str) -> Grap
     conforms, report_graph, _ = validate(
         data_graph,
         shacl_graph=shapes_graph,
-        inference="rdfs",
+        inference=inference,
         abort_on_first=False,
         meta_shacl=False,
         debug=False,
     )
+    print(f"SHACL: Validierung fertig nach {time.time()-t0:.0f}s", flush=True)
     return report_graph
 
 
