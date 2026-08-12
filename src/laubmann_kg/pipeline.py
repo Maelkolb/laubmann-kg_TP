@@ -8,6 +8,7 @@ deduped corpus is a path change in the config, not a code change.
 from __future__ import annotations
 
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -99,6 +100,9 @@ def _build_extractor(config: dict):
         "temperature": extraction.get("temperature", 0.0),
         "max_output_tokens": extraction.get("max_output_tokens", 4096),
         "timeout": extraction.get("timeout", 120),
+        "thinking_level": extraction.get("thinking_level"),
+        "retry_attempts": extraction.get("retry_attempts", 3),
+        "retry_backoff": extraction.get("retry_backoff", 2.0),
     })
     prompts = PromptLibrary(Path(extraction.get("prompt_dir", "prompts")))
     schema = load_entry_schema(extraction.get("schema"))
@@ -115,34 +119,52 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
 
     rows = read_entries(entries_csv, volume=int(volume) if volume is not None else None)
     total = len(rows)
-    backend = (config.get("extraction", {}).get("backend") or "offline").lower()
-    logger.info("extracting %d entries (volume=%s, backend=%s)", total, volume, backend)
+    extraction_cfg = config.get("extraction", {})
+    backend = (extraction_cfg.get("backend") or "offline").lower()
+    concurrency = max(1, int(extraction_cfg.get("concurrency", 1)))
+    logger.info("extracting %d entries (volume=%s, backend=%s, concurrency=%d)",
+                total, volume, backend, concurrency)
 
     result = ExtractionResult()
-    empty = failed = 0
-    for i, row in enumerate(rows, 1):
+
+    # Sequential prep: entries, citations, and the shared places dict.
+    jobs: list[tuple] = []
+    for row in rows:
         entry = build_entry(row)
         entry.citations = [c.verbatim for c in extract_citations(entry.text_clean)]
         place = normalize_place(entry.location_raw)
         if place is not None:
             result.places.setdefault(place.uid, place)
+        jobs.append((entry, place))
+
+    def _extract_one(job):
+        entry, place = job
         try:
-            entry.observations = extract(entry, place)
+            return extract(entry, place)
         except Exception as exc:  # noqa: BLE001 - one bad entry must not abort the run
-            logger.error("[%d/%d] %s extraction failed: %s -- skipping", i, total,
-                         entry.entry_id, exc)
-            entry.observations = []
-            failed += 1
-        if entry.citations:  # attach the entry's source attribution to its occurrences
-            remark = "Quellenangabe: " + "; ".join(entry.citations)
-            for obs in entry.observations:
-                if obs.occurrence_remarks is None:
-                    obs.occurrence_remarks = remark
-        if not entry.observations:
-            empty += 1
-        result.entries.append(entry)
-        logger.info("[%d/%d] %s -> %d observations", i, total, entry.entry_id,
-                    len(entry.observations))
+            logger.error("%s extraction failed: %s -- skipping", entry.entry_id, exc)
+            return None
+
+    # Parallel extraction; executor.map preserves input order, so results,
+    # logging, and downstream exports stay deterministic.
+    empty = failed = 0
+    with ThreadPoolExecutor(max_workers=concurrency) as pool:
+        for i, (job, observations) in enumerate(zip(jobs, pool.map(_extract_one, jobs)), 1):
+            entry, _ = job
+            if observations is None:
+                failed += 1
+                observations = []
+            entry.observations = observations
+            if entry.citations:  # attach the entry's source attribution to its occurrences
+                remark = "Quellenangabe: " + "; ".join(entry.citations)
+                for obs in entry.observations:
+                    if obs.occurrence_remarks is None:
+                        obs.occurrence_remarks = remark
+            if not entry.observations:
+                empty += 1
+            result.entries.append(entry)
+            logger.info("[%d/%d] %s -> %d observations", i, total, entry.entry_id,
+                        len(entry.observations))
 
     qa_cfg = config.get("qa", {})
     if qa_cfg.get("enabled", True):

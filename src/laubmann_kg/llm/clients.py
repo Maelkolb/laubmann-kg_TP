@@ -10,6 +10,7 @@ and require credentials.
 from __future__ import annotations
 
 import logging
+import threading
 from typing import Optional, Protocol
 
 from laubmann_kg.llm.cache import LLMCache, cache_key
@@ -68,7 +69,9 @@ def build_client(config: Optional[dict] = None, cache: Optional[LLMCache] = None
     if backend == "offline":
         return OfflineClient(model=config.get("model", "offline"))
     inner = _build_provider(backend, config)
-    return CachedClient(inner, cache=cache)
+    return CachedClient(inner, cache=cache,
+                        attempts=int(config.get("retry_attempts", 3)),
+                        backoff=float(config.get("retry_backoff", 2.0)))
 
 
 def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cover - needs creds/network
@@ -79,6 +82,7 @@ def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cove
             temperature=float(config.get("temperature", 0.0)),
             max_output_tokens=int(config.get("max_output_tokens", 4096)),
             timeout_s=float(config.get("timeout", 120)),
+            thinking_level=config.get("thinking_level"),
         )
     raise NotImplementedError(
         f"LLM backend '{backend}' is not configured. Supported: offline, google/gemini. "
@@ -99,17 +103,26 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
 
     def __init__(self, model: str, api_key_env: str = "GOOGLE_API_KEY",
                  temperature: float = 0.0, max_output_tokens: int = 4096,
-                 timeout_s: float = 120) -> None:
+                 timeout_s: float = 120,
+                 thinking_level: Optional[str] = None) -> None:
         self.model = model
         self._api_key_env = api_key_env
         self._temperature = temperature
         self._max_output_tokens = max_output_tokens
         self._timeout_ms = int(timeout_s * 1000)
+        self._thinking_level = thinking_level
         self._impl: Optional[tuple[str, object]] = None
+        self._lock = threading.Lock()
 
     def _ensure(self) -> None:
         if self._impl is not None:
             return
+        with self._lock:
+            if self._impl is not None:
+                return
+            self._ensure_locked()
+
+    def _ensure_locked(self) -> None:
         import os
 
         key = os.environ.get(self._api_key_env) or os.environ.get("GEMINI_API_KEY")
@@ -130,9 +143,14 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
 
             gga.configure(api_key=key)
             self._impl = ("legacy", gga.GenerativeModel(self.model))
+            if self._thinking_level:
+                logger.warning("thinking_level is ignored on the legacy "
+                               "google-generativeai SDK")
         logger.info(
-            "Gemini backend ready: model=%s temperature=%s max_output_tokens=%s timeout=%.0fs",
-            self.model, self._temperature, self._max_output_tokens, self._timeout_ms / 1000)
+            "Gemini backend ready: model=%s temperature=%s max_output_tokens=%s "
+            "timeout=%.0fs thinking_level=%s",
+            self.model, self._temperature, self._max_output_tokens,
+            self._timeout_ms / 1000, self._thinking_level or "default")
 
     def complete(self, prompt: str) -> str:
         self._ensure()
@@ -141,14 +159,18 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
         if kind == "genai":
             from google.genai import types
 
+            cfg_kwargs: dict = dict(
+                temperature=self._temperature,
+                response_mime_type="application/json",
+                max_output_tokens=self._max_output_tokens,
+            )
+            if self._thinking_level:
+                cfg_kwargs["thinking_config"] = types.ThinkingConfig(
+                    thinking_level=self._thinking_level)
             resp = obj.models.generate_content(  # type: ignore[attr-defined]
                 model=self.model,
                 contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=self._temperature,
-                    response_mime_type="application/json",
-                    max_output_tokens=self._max_output_tokens,
-                ),
+                config=types.GenerateContentConfig(**cfg_kwargs),
             )
             return resp.text
         resp = obj.generate_content(  # type: ignore[attr-defined]

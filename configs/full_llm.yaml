@@ -20,6 +20,9 @@ extraction:
   temperature: 0.0
   max_output_tokens: 8192   # entry-level output (observations + travel + persons)
   timeout: 120
+  thinking_level: low       # minimal | low | medium (API default) | high
+  concurrency: 8            # parallel Gemini calls; lower to 4 if 429s appear
+  retry_backoff: 2.0        # seconds, exponential — rides out transient 429s
   # cache_dir: /content/drive/MyDrive/HistOrniGraph_output/llm_cache  # put the
   #   cache on Drive in Colab so interrupted runs resume across sessions
 

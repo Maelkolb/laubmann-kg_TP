@@ -18,3 +18,11 @@ def test_pipeline_is_deterministic(sample_config) -> None:
     first = [o.uid for o in run_pipeline(sample_config).observations]
     second = [o.uid for o in run_pipeline(sample_config).observations]
     assert first == second
+
+
+def test_concurrent_extraction_matches_sequential(sample_config) -> None:
+    sequential = run_pipeline(sample_config)
+    sample_config["extraction"]["concurrency"] = 4
+    concurrent = run_pipeline(sample_config)
+    assert [e.entry_id for e in concurrent.entries] == [e.entry_id for e in sequential.entries]
+    assert [o.uid for o in concurrent.observations] == [o.uid for o in sequential.observations]
