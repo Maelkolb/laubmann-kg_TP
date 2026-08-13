@@ -48,3 +48,41 @@ lkg:evidence_visual   a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; sk
 lkg:evidence_auditory a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "auditory"@en, "Lautäußerung"@de .
 lkg:evidence_nest     a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "nest"@en, "Nestfund"@de .
 lkg:evidence_specimen a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "specimen"@en, "Beleg"@de .
+
+# --- Record types (ObservationEvent.recordType) --------------
+lkg:recordTypeScheme a skos:ConceptScheme ;
+    skos:prefLabel "Observation record types"@en .
+
+lkg:record_field_observation  a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "field-observation"@en, "eigene Feldbeobachtung"@de .
+lkg:record_third_party_report a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "third-party-report"@en, "Fremdbericht"@de .
+lkg:record_literature_record  a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "literature-record"@en, "Literaturnachweis"@de .
+
+# --- Precipitation (WeatherReport.precipitation) -------------
+lkg:precipitationScheme a skos:ConceptScheme ;
+    skos:prefLabel "Precipitation types"@en .
+
+lkg:precip_rain         a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "rain"@en, "Regen"@de .
+lkg:precip_snow         a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "snow"@en, "Schnee"@de .
+lkg:precip_sleet        a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "sleet"@en, "Schneeregen/Graupel"@de .
+lkg:precip_hail         a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "hail"@en, "Hagel"@de .
+lkg:precip_drizzle      a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "drizzle"@en, "Nieselregen"@de .
+lkg:precip_fog          a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "fog"@en, "Nebel"@de .
+lkg:precip_thunderstorm a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "thunderstorm"@en, "Gewitter"@de .
+lkg:precip_none         a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "none"@en, "niederschlagsfrei"@de .
+
+# --- Sky conditions (WeatherReport.skyCondition) -------------
+lkg:skyConditionScheme a skos:ConceptScheme ;
+    skos:prefLabel "Sky conditions"@en .
+
+lkg:sky_clear         a skos:Concept ; skos:inScheme lkg:skyConditionScheme ; skos:prefLabel "clear"@en, "heiter"@de .
+lkg:sky_partly_cloudy a skos:Concept ; skos:inScheme lkg:skyConditionScheme ; skos:prefLabel "partly-cloudy"@en, "wolkig"@de .
+lkg:sky_overcast      a skos:Concept ; skos:inScheme lkg:skyConditionScheme ; skos:prefLabel "overcast"@en, "bedeckt/trüb"@de .
+lkg:sky_variable      a skos:Concept ; skos:inScheme lkg:skyConditionScheme ; skos:prefLabel "variable"@en, "wechselnd"@de .
+
+# --- Temperature units (WeatherReport.temperatureUnit) -------
+lkg:temperatureUnitScheme a skos:ConceptScheme ;
+    skos:prefLabel "Temperature units"@en .
+
+lkg:unit_C a skos:Concept ; skos:inScheme lkg:temperatureUnitScheme ; skos:prefLabel "C"@en, "Grad Celsius"@de .
+lkg:unit_R a skos:Concept ; skos:inScheme lkg:temperatureUnitScheme ; skos:prefLabel "R"@en, "Grad Réaumur"@de .
+lkg:unit_F a skos:Concept ; skos:inScheme lkg:temperatureUnitScheme ; skos:prefLabel "F"@en, "Grad Fahrenheit"@de .

@@ -2,6 +2,9 @@
 """Attach an observer to every ObservationEvent (lkg:observedBy, subproperty of
 Darwin Core recordedBy).
 
+SUPERSEDED (2026-08): observer/provenance is now LLM-extracted in the core
+pipeline (Observation.record_type/observer); keep for reference only.
+
 Rules, most to least certain:
   A. verbatimNotes ends in an attribution tag "(Name)" -> that person
      (auto if the name matches a person mentioned in the same entry, or a

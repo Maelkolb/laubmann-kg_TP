@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Fill per-occurrence recordedBy in the DwC-A from the observer attribution.
 
+SUPERSEDED (2026-08): observer/provenance is now LLM-extracted in the core
+pipeline (Observation.record_type/observer); keep for reference only.
+
 Reads out/observers.ttl + person labels from the endpoint, rewrites recordedBy
 in occurrence.txt (default stays "Alfred Laubmann"), and refreshes the zip.
 

@@ -26,7 +26,7 @@
     a owl:Ontology ;
     rdfs:label "Laubmann Knowledge Graph Ontology"@en ;
     rdfs:comment "Project ontology for the HistOrniGraph KG, modelling diary entries, ornithological observations, travel events, and source references from the field journals of Alfred Laubmann."@en ;
-    owl:versionInfo "0.1.0" .
+    owl:versionInfo "0.2.0" .
 
 # =============================================================
 # CLASSES
@@ -390,3 +390,58 @@ lkg:observedBy a owl:ObjectProperty ;
     rdfs:range lkg:Person ;
     rdfs:label "observed by"@en ;
     rdfs:comment "The person who made the observation. Defaults to Alfred Laubmann (first-person diary); third parties are attributed from attribution tags and reporting verbs in the verbatim notes."@en .
+
+lkg:recordType
+    a owl:DatatypeProperty ;
+    rdfs:label "record type"@en , "Nachweistyp"@de ;
+    rdfs:domain lkg:ObservationEvent ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Provenance category of the record: field-observation (the diarist's own sighting), third-party-report (reported to the diarist in person or by letter), literature-record (digested from a publication or card index). Deliberately NOT rdfs:subPropertyOf dwc:basisOfRecord (different value spaces); the derived Darwin Core basisOfRecord (HumanObservation / PreservedSpecimen / MaterialCitation) is co-emitted as dwc:basisOfRecord by the exporter."@en .
+
+# --- Weather (entry-level) ----------------------------------
+
+lkg:WeatherReport
+    a owl:Class ;
+    rdfs:label "weather report"@en , "Wetterbericht"@de ;
+    rdfs:comment "Entry-level weather as recorded in the diary. The verbatim wording (lkg:weatherVerbatim) is primary; structured values are optional normalizations and never unit-converted (historical entries may use Réaumur)."@en .
+
+lkg:hasWeather
+    a owl:ObjectProperty ;
+    rdfs:label "has weather"@en , "hat Wetter"@de ;
+    rdfs:domain lkg:DiaryEntry ;
+    rdfs:range lkg:WeatherReport .
+
+lkg:weatherVerbatim
+    a owl:DatatypeProperty ;
+    rdfs:label "weather verbatim"@en ;
+    rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
+
+lkg:temperatureValue
+    a owl:DatatypeProperty ;
+    rdfs:label "temperature value"@en ;
+    rdfs:comment "Stated number exactly as written; interpret with lkg:temperatureUnit. Never converted between scales."@en ;
+    rdfs:domain lkg:WeatherReport ; rdfs:range xsd:decimal .
+
+lkg:temperatureUnit
+    a owl:DatatypeProperty ;
+    rdfs:label "temperature unit"@en ;
+    rdfs:comment "C (Celsius), R (Réaumur), or F (Fahrenheit)."@en ;
+    rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
+
+lkg:precipitation
+    a owl:DatatypeProperty ;
+    rdfs:label "precipitation"@en ;
+    rdfs:comment "Controlled term: rain, snow, sleet, hail, drizzle, fog, thunderstorm, none."@en ;
+    rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
+
+lkg:wind
+    a owl:DatatypeProperty ;
+    rdfs:label "wind"@en ;
+    rdfs:comment "Wind description as written; direction and strength are too varied for a vocabulary."@en ;
+    rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
+
+lkg:skyCondition
+    a owl:DatatypeProperty ;
+    rdfs:label "sky condition"@en ;
+    rdfs:comment "Controlled term: clear, partly-cloudy, overcast, variable."@en ;
+    rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .

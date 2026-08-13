@@ -175,6 +175,13 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
         logger.info("QA: %d flags, %d/%d entries excluded", len(result.qa_flags),
                     before - len(kept), before)
 
+    # Links only QA-surviving entries (no API/LLM spend on excluded garbage);
+    # one hook covers all export stages since each calls run_pipeline.
+    linking_cfg = config.get("linking", {})
+    if linking_cfg.get("enabled", False):
+        from laubmann_kg.linking import run_linking   # lazy import
+        logger.info("linking: %s", run_linking(result, linking_cfg))
+
     if multimodal_path is not None:
         entry_uids = {e.entry_uid for e in result.entries}
         result.multimodal = [r for r in read_multimodal(multimodal_path)

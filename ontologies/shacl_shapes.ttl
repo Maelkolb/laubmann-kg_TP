@@ -28,6 +28,7 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
 
 # =============================================================
 # WIEDERVERWENDBARE HILFS-KONSTRUKTE
@@ -96,11 +97,20 @@ lkg:DiaryEntryShape
         sh:severity sh:Warning ;
     ] ;
 
+    sh:property [
+        sh:path lkg:hasWeather ;
+        sh:maxCount 1 ;
+        sh:class lkg:WeatherReport ;
+        sh:message "DiaryEntry darf höchstens einen WeatherReport haben." ;
+        sh:severity sh:Warning ;
+    ] ;
+
     sh:or (
         [ sh:path lkg:containsObservation ; sh:minCount 1 ]
         [ sh:path lkg:containsTravelEvent ; sh:minCount 1 ]
+        [ sh:path lkg:hasWeather ; sh:minCount 1 ]
     ) ;
-    sh:message "DiaryEntry sollte mindestens eine Observation oder ein TravelEvent enthalten – sonst vermutlich Segmentierungsfehler." ;
+    sh:message "DiaryEntry sollte mindestens eine Observation, ein TravelEvent oder einen WeatherReport enthalten – sonst vermutlich Segmentierungsfehler." ;
     sh:severity sh:Warning .
 
 # =============================================================
@@ -173,6 +183,28 @@ lkg:ObservationEventShape
         sh:minInclusive 1 ;
         sh:message "lkg:individualCount muss eine positive Ganzzahl sein." ;
         sh:severity sh:Violation ;
+    ] ;
+
+    sh:property [
+        sh:path lkg:recordType ;
+        sh:maxCount 1 ;
+        sh:in ( "field-observation" "third-party-report" "literature-record" ) ;
+        sh:message "recordType muss field-observation, third-party-report oder literature-record sein." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:observedBy ;
+        sh:maxCount 1 ;
+        sh:class lkg:Person ;
+        sh:message "observedBy muss auf höchstens eine lkg:Person zeigen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path dwc:basisOfRecord ;
+        sh:maxCount 1 ;
+        sh:in ( "HumanObservation" "PreservedSpecimen" "MaterialCitation" ) ;
+        sh:message "basisOfRecord muss HumanObservation, PreservedSpecimen oder MaterialCitation sein." ;
+        sh:severity sh:Warning ;
     ] .
 
 # =============================================================
@@ -310,6 +342,31 @@ lkg:TaxonShape
         sh:severity sh:Violation ;
     ] ;
 
+    sh:property [
+        sh:path skos:exactMatch ;
+        sh:nodeKind sh:IRI ;
+        sh:message "skos:exactMatch muss eine IRI sein (GBIF-Backbone-Link)." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path skos:closeMatch ;
+        sh:nodeKind sh:IRI ;
+        sh:message "skos:closeMatch muss eine IRI sein (GBIF-Backbone-Link)." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path skos:broadMatch ;
+        sh:nodeKind sh:IRI ;
+        sh:message "skos:broadMatch muss eine IRI sein (GBIF-Backbone-Link)." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path dwc:taxonID ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:taxonID pro Taxon." ;
+        sh:severity sh:Warning ;
+    ] ;
+
     sh:or (
         [ sh:path lkg:scientificName ; sh:minCount 1 ]
         [ sh:path skos:note ; sh:minCount 1 ]
@@ -358,6 +415,72 @@ lkg:BehaviourNoteShape
         sh:minCount 1 ;
         sh:message "BehaviourNote sollte ein beschreibendes rdfs:label haben." ;
         sh:severity sh:Warning ;
+    ] .
+
+# =============================================================
+# 8b. WEATHER REPORT
+# =============================================================
+
+lkg:WeatherReportShape
+    a sh:NodeShape ;
+    sh:targetClass lkg:WeatherReport ;
+    sh:property [
+        sh:path lkg:weatherVerbatim ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:message "WeatherReport MUSS genau ein weatherVerbatim tragen (Verbatim ist primär)." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:temperatureValue ;
+        sh:maxCount 1 ; sh:datatype xsd:decimal ;
+        sh:minInclusive -76 ; sh:maxInclusive 140 ;
+        sh:message "temperatureValue muss xsd:decimal in [-76, 140] sein (plausibler Bereich hängt von der Einheit ab: F erlaubt bis 140, C/R bis 60)." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:temperatureUnit ;
+        sh:maxCount 1 ;
+        sh:in ( "C" "R" "F" ) ;
+        sh:message "temperatureUnit muss C, R oder F sein." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:precipitation ;
+        sh:maxCount 1 ;
+        sh:in ( "rain" "snow" "sleet" "hail" "drizzle" "fog" "thunderstorm" "none" ) ;
+        sh:message "precipitation muss aus dem kontrollierten Vokabular stammen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:skyCondition ;
+        sh:maxCount 1 ;
+        sh:in ( "clear" "partly-cloudy" "overcast" "variable" ) ;
+        sh:message "skyCondition muss aus dem kontrollierten Vokabular stammen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:wind ;
+        sh:maxCount 1 ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:message "wind sollte höchstens ein Literal sein." ;
+        sh:severity sh:Warning ;
+    ] .
+
+lkg:NoOrphanWeatherShape
+    a sh:NodeShape ;
+    sh:targetClass lkg:WeatherReport ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "WeatherReport hängt an keinem DiaryEntry (kein lkg:hasWeather verweist auf ihn)." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            PREFIX lkg: <https://lkg.example.org/ontology#>
+            SELECT $this WHERE {
+                $this a lkg:WeatherReport .
+                FILTER NOT EXISTS { ?entry lkg:hasWeather $this }
+            }
+        """ ;
     ] .
 
 # =============================================================
@@ -417,6 +540,13 @@ lkg:PersonShape
         sh:minCount 1 ;
         sh:message "Person benötigt ein rdfs:label (Name)." ;
         sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path owl:sameAs ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "owl:sameAs (Wikidata) muss eine IRI sein, höchstens eine." ;
+        sh:severity sh:Warning ;
     ] .
 
 # =============================================================

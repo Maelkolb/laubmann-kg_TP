@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TaxonNormalization",
+  "description": "LLM fallback resolution of a historical German bird name. Deliberately tolerant; acceptance thresholds and GBIF verification are enforced by the linking stage, not here.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "scientific_name": {"type": ["string", "null"]},
+    "match_method": {"type": ["string", "null"]},
+    "confidence": {"type": ["number", "string", "null"]}
+  }
+}

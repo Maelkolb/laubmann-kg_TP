@@ -28,6 +28,12 @@
     },
     "behaviour": {"type": ["array", "string", "null"], "items": {"type": "string"}},
     "habitat": {"type": ["string", "null"]},
-    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "record_type": {
+      "type": ["string", "null"],
+      "enum": ["field-observation", "third-party-report", "literature-record", null]
+    },
+    "observer": {"type": ["string", "null"]},
+    "literature_citation": {"type": ["string", "null"]}
   }
 }

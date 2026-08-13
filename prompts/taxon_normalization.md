@@ -27,3 +27,9 @@ Rules:
   names, but do not resolve ambiguous group names ("Möwe", "Laubvogel") to a
   species.
 - Output only the JSON object.
+- `confidence` is your 0–1 confidence that the binomial denotes the species the
+  diarist meant (1.0 = unambiguous modern name; ~0.5 = plausible folk-name
+  reading).
+- Historical folk names and 19th-century orthography are expected inputs
+  ("Goldamsel" = Oriolus oriolus, "Rothkehlchen" = Erithacus rubecula); prefer
+  the species-level reading a Bavarian ornithologist around 1900 would intend.

@@ -12,6 +12,7 @@ from rdflib.namespace import RDF, RDFS, SKOS, XSD, OWL
 
 from laubmann_kg.kg.model import (
     DATA_NS,
+    DIARIST,
     Behaviour,
     DiaryEntry,
     DiaryPage,
@@ -23,7 +24,9 @@ from laubmann_kg.kg.model import (
     Place,
     Taxon,
     TravelEvent,
+    WeatherReport,
 )
+from laubmann_kg.normalization.vocabularies import basis_of_record
 
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
@@ -47,6 +50,7 @@ def _bind(graph: Graph) -> None:
     graph.bind("geo", GEO)
     graph.bind("data", DATA)
     graph.bind("skos", SKOS)
+    graph.bind("owl", OWL)
 
 
 def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
@@ -63,6 +67,17 @@ def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
         graph.add((node, SKOS.note, Literal(note, lang=DE)))
     if taxon.taxon_iri:
         graph.add((node, OWL.sameAs, URIRef(taxon.taxon_iri)))
+    if taxon.gbif_key:
+        gbif = URIRef(f"https://www.gbif.org/species/{taxon.gbif_key}")
+        if taxon.gbif_match_type == "HIGHERRANK":
+            pred = SKOS.broadMatch          # genus anchor is broader, not equal
+        elif taxon.match_method == "llm+gbif" or taxon.gbif_match_type == "FUZZY":
+            pred = SKOS.closeMatch          # LLM-mediated or fuzzy: weaker claim
+        else:
+            pred = SKOS.exactMatch
+        graph.add((node, pred, gbif))
+        if taxon.gbif_match_type != "HIGHERRANK":
+            graph.add((node, DWC.taxonID, Literal(str(gbif))))
     return node
 
 
@@ -113,6 +128,10 @@ def _add_person(graph: Graph, person: Person) -> URIRef:
         graph.add((node, RDFS.label, Literal(person.name)))
         if person.role:
             graph.add((node, SKOS.note, Literal(person.role)))
+    # Outside the type guard: an enriched Person instance may arrive after a
+    # bare one; rdflib set semantics dedupes the repeated add.
+    if person.wikidata_iri:
+        graph.add((node, OWL.sameAs, URIRef(person.wikidata_iri)))
     return node
 
 
@@ -152,6 +171,26 @@ def _add_behaviour(graph: Graph, obs_uid: str, behaviour: Behaviour) -> URIRef:
     return node
 
 
+def _add_weather(graph: Graph, entry_node: URIRef, entry: DiaryEntry) -> None:
+    w = entry.weather
+    node = _uri(w.uid(entry.entry_uid))
+    graph.add((node, RDF.type, LKG.WeatherReport))  # no superclass, nothing to materialize
+    graph.add((node, RDFS.label, Literal(f"Wetter {entry.entry_date}", lang=DE)))
+    graph.add((node, LKG.weatherVerbatim, Literal(w.verbatim, lang=DE)))
+    if w.temperature_value is not None:
+        graph.add((node, LKG.temperatureValue,
+                   Literal(Decimal(str(w.temperature_value)), datatype=XSD.decimal)))
+        if w.temperature_unit:
+            graph.add((node, LKG.temperatureUnit, Literal(w.temperature_unit)))
+    if w.precipitation:
+        graph.add((node, LKG.precipitation, Literal(w.precipitation)))
+    if w.wind:
+        graph.add((node, LKG.wind, Literal(w.wind, lang=DE)))
+    if w.sky:
+        graph.add((node, LKG.skyCondition, Literal(w.sky)))
+    graph.add((entry_node, LKG.hasWeather, node))
+
+
 def _add_observation(graph: Graph, obs: Observation) -> Optional[URIRef]:
     if obs.taxon.vernacular_de is None:
         return None
@@ -171,6 +210,16 @@ def _add_observation(graph: Graph, obs: Observation) -> Optional[URIRef]:
         graph.add((node, LKG.countQualifier, Literal(obs.count_qualifier)))
     if obs.occurrence_remarks:
         graph.add((node, DWC.occurrenceRemarks, Literal(obs.occurrence_remarks, lang=DE)))
+    graph.add((node, LKG.recordType, Literal(obs.record_type)))
+    graph.add((node, DWC.basisOfRecord,
+               Literal(basis_of_record(obs.record_type, (e.kind for e in obs.evidence)))))
+    # Unattributed third-party/literature records get NO observedBy — never
+    # fabricate attribution.
+    observer = obs.observer or (DIARIST if obs.record_type == "field-observation" else None)
+    if observer is not None:
+        graph.add((node, LKG.observedBy, _add_person(graph, observer)))
+    if obs.literature_citation:
+        graph.add((node, DWC.associatedReferences, Literal(obs.literature_citation, lang=DE)))
     for i, evidence in enumerate(obs.evidence):
         graph.add((node, LKG.hasEvidence, _add_evidence(graph, obs.uid, evidence, i)))
     for behaviour in obs.behaviour:
@@ -208,6 +257,8 @@ def _add_entry(graph: Graph, entry: DiaryEntry) -> None:
         _add_travel_event(graph, node, event)
     for person in entry.persons:
         graph.add((node, LKG.mentionsPerson, _add_person(graph, person)))
+    if entry.weather is not None:
+        _add_weather(graph, node, entry)
 
 
 def build_graph(result: "ExtractionResult") -> Graph:

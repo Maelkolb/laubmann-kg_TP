@@ -1,5 +1,13 @@
 from laubmann_kg.qa import QAFlag, plausible_bird, run_qa, write_review_table
-from laubmann_kg.kg.model import DiaryEntry, Observation, Taxon
+from laubmann_kg.kg.model import (
+    DiaryEntry,
+    Observation,
+    Place,
+    Taxon,
+    TravelEvent,
+    TravelLeg,
+    WeatherReport,
+)
 
 
 def _entry(eid, date, loc="München", obs=None, volume=2):
@@ -64,6 +72,29 @@ def test_flag_only_mode_keeps_everything():
     kept, flags = run_qa([e], {"exclude": False, "year_min": 1918, "year_max": 1919})
     assert len(kept) == 1 and len(kept[0].observations) == 1
     assert flags and all(f.action == "flagged" for f in flags)
+
+
+def test_empty_entry_with_weather_or_travel_reason_no_observations():
+    e_weather = _entry("w", "1919-05-01")
+    e_weather.weather = WeatherReport(verbatim="Regen")
+    place = Place(verbatim="München")
+    e_travel = _entry("t", "1919-05-01")
+    e_travel.travel_events = [TravelEvent(entry_uid="u_t", legs=[
+        TravelLeg(departure_place=place, arrival_place=place)])]
+    kept, flags = run_qa([e_weather, e_travel],
+                         {"exclude": True, "year_min": 1918, "year_max": 1919})
+    assert len(kept) == 2                       # flagged, never excluded
+    by_id = {f.entry_id: f for f in flags}
+    assert by_id["w"].reason == "no_observations"
+    assert by_id["t"].reason == "no_observations"
+    assert all(f.action == "flagged" for f in flags)
+
+
+def test_empty_entry_without_weather_or_travel_stays_empty():
+    e = _entry("e", "1919-05-01")
+    kept, flags = run_qa([e], {"exclude": True, "year_min": 1918, "year_max": 1919})
+    assert len(kept) == 1
+    assert any(f.reason == "empty" and f.action == "flagged" for f in flags)
 
 
 def test_review_table_written(tmp_path):

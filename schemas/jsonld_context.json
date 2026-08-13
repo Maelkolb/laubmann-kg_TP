@@ -40,6 +40,22 @@
     "viaPlace": {"@id": "lkg:viaPlace", "@type": "@id"},
     "transportMode": "lkg:transportMode",
     "departureTime": {"@id": "lkg:departureTime", "@type": "xsd:dateTime"},
-    "arrivalTime": {"@id": "lkg:arrivalTime", "@type": "xsd:dateTime"}
+    "arrivalTime": {"@id": "lkg:arrivalTime", "@type": "xsd:dateTime"},
+    "recordType": "lkg:recordType",
+    "basisOfRecord": "dwc:basisOfRecord",
+    "observedBy": {"@id": "lkg:observedBy", "@type": "@id"},
+    "associatedReferences": "dwc:associatedReferences",
+    "hasWeather": {"@id": "lkg:hasWeather", "@type": "@id"},
+    "weatherVerbatim": "lkg:weatherVerbatim",
+    "temperatureValue": {"@id": "lkg:temperatureValue", "@type": "xsd:decimal"},
+    "temperatureUnit": "lkg:temperatureUnit",
+    "precipitation": "lkg:precipitation",
+    "wind": "lkg:wind",
+    "skyCondition": "lkg:skyCondition",
+    "taxonID": "dwc:taxonID",
+    "exactMatch": {"@id": "skos:exactMatch", "@type": "@id"},
+    "closeMatch": {"@id": "skos:closeMatch", "@type": "@id"},
+    "broadMatch": {"@id": "skos:broadMatch", "@type": "@id"},
+    "sameAs": {"@id": "owl:sameAs", "@type": "@id"}
   }
 }

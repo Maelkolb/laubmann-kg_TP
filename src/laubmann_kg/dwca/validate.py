@@ -15,7 +15,9 @@ REQUIRED = ["meta.xml", "event.txt", "occurrence.txt", "multimedia.txt",
 
 def _read_tsv(path: Path) -> tuple[list[str], list[dict]]:
     with path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle, delimiter="\t")
+        # meta.xml declares fieldsEnclosedBy="": parse verbatim (QUOTE_NONE),
+        # exactly as a spec-conformant DwC-A reader sees the bytes.
+        reader = csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE)
         return list(reader.fieldnames or []), list(reader)
 
 

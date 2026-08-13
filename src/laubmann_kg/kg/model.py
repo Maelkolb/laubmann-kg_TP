@@ -52,6 +52,9 @@ class Taxon:
     match_method: str = "unresolved"
     confidence: Optional[float] = None
     note: Optional[str] = None
+    gbif_key: Optional[int] = None            # GBIF backbone usage key (accepted taxon)
+    gbif_match_type: Optional[str] = None     # EXACT | FUZZY | HIGHERRANK
+    gbif_canonical_name: Optional[str] = None
 
     @property
     def uid(self) -> str:
@@ -87,6 +90,7 @@ class Habitat:
 class Person:
     name: str
     role: Optional[str] = None  # companion | source | collector | cited-author | other
+    wikidata_iri: Optional[str] = None  # http://www.wikidata.org/entity/Q... (verified)
 
     @property
     def uid(self) -> str:
@@ -143,6 +147,19 @@ class Behaviour:
         return f"behaviour_{obs_uid}_{_slug(self.label.lower(), 8)}"
 
 
+@dataclass(frozen=True)
+class WeatherReport:
+    verbatim: str                            # primary; mapper guarantees non-empty
+    temperature_value: Optional[float] = None
+    temperature_unit: Optional[str] = None   # C | R | F — never unit-converted
+    precipitation: Optional[str] = None      # vocab.PRECIPITATION_TYPES
+    wind: Optional[str] = None               # free German text
+    sky: Optional[str] = None                # vocab.SKY_CONDITIONS
+
+    def uid(self, entry_uid: str) -> str:
+        return f"weather_{entry_uid}"
+
+
 @dataclass
 class Observation:
     entry_uid: str
@@ -156,6 +173,9 @@ class Observation:
     habitat: Optional[Habitat] = None
     occurrence_remarks: Optional[str] = None
     index: int = 0
+    record_type: str = "field-observation"    # vocab.RECORD_TYPES
+    observer: Optional[Person] = None         # None = the diarist
+    literature_citation: Optional[str] = None
 
     @property
     def uid(self) -> str:
@@ -180,6 +200,7 @@ class DiaryEntry:
     travel_events: list[TravelEvent] = field(default_factory=list)
     persons: list[Person] = field(default_factory=list)
     citations: list[str] = field(default_factory=list)
+    weather: Optional[WeatherReport] = None
 
     @property
     def uid(self) -> str:
@@ -190,3 +211,8 @@ class DiaryEntry:
         loc = f" · {self.location_raw}" if self.location_raw else ""
         date = self.verbatim_event_date or self.entry_date or "o. D."
         return f"Tagebucheintrag {date}{loc}"
+
+
+DIARIST = Person(name="Alfred Laubmann")
+# DIARIST.uid == "person_c6b2ff6250e5" — byte-identical to the URI hardcoded in
+# HistOrniGraph_addons/kg_enrich/attribute_observers.py, which this supersedes.

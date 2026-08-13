@@ -31,16 +31,27 @@ def read_entries(path: Path, volume: Optional[int] = None) -> list[dict[str, str
     return rows
 
 
+def _sanitize(value):
+    if isinstance(value, str):
+        return value.replace("\t", " ").replace("\n", " ").replace("\r", " ")
+    return value
+
+
 def write_rows(path: Path, rows: Iterable[dict], fieldnames: list[str]) -> int:
+    # meta.xml declares fieldsEnclosedBy="" and linesTerminatedBy="\n": field
+    # bytes must be verbatim (QUOTE_NONE, no quoting/doubling) and rows must end
+    # in bare \n. _sanitize is the safety net that keeps QUOTE_NONE from raising
+    # on reserved bytes; per-column sanitizers upstream remain in place.
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     count = 0
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore",
-                                delimiter="\t")
+                                delimiter="\t", quoting=csv.QUOTE_NONE,
+                                quotechar=None, lineterminator="\n")
         writer.writeheader()
         for row in rows:
-            writer.writerow(row)
+            writer.writerow({key: _sanitize(value) for key, value in row.items()})
             count += 1
     logger.info("wrote %d rows to %s", count, path)
     return count

@@ -29,6 +29,10 @@ def _observation_record(entry, obs) -> dict:
         "evidence": [e.kind for e in obs.evidence],
         "behaviour": [b.label for b in obs.behaviour],
         "verbatim_notes": obs.verbatim_notes,
+        "record_type": obs.record_type,
+        "observer": obs.observer.name if obs.observer else None,
+        "literature_citation": obs.literature_citation,
+        "gbif_key": taxon.gbif_key,
     }
 
 

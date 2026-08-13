@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from laubmann_kg.normalization.vocabularies import basis_of_record
+
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
 
@@ -11,15 +13,22 @@ FIELDS = [
     "eventID", "occurrenceID", "basisOfRecord", "scientificName", "vernacularName",
     "individualCount", "occurrenceStatus", "occurrenceRemarks",
     "identificationRemarks", "recordedBy", "associatedMedia",
+    "associatedReferences", "taxonID",
 ]
 
 DEFAULT_RECORDED_BY = "Alfred Laubmann"
 
 
 def _basis_of_record(obs) -> str:
-    if any(e.kind == "specimen" for e in obs.evidence):
-        return "PreservedSpecimen"
-    return "HumanObservation"
+    return basis_of_record(obs.record_type, (e.kind for e in obs.evidence))
+
+
+def _recorded_by(obs) -> str:
+    if obs.observer is not None:
+        return obs.observer.name
+    if obs.record_type == "field-observation":
+        return DEFAULT_RECORDED_BY          # == model.DIARIST.name
+    return ""   # unattributed third-party/literature record: claim nothing
 
 
 def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = None) -> list[dict]:
@@ -42,7 +51,10 @@ def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = 
                 "occurrenceStatus": "present",
                 "occurrenceRemarks": obs.verbatim_notes,
                 "identificationRemarks": ident,
-                "recordedBy": DEFAULT_RECORDED_BY,
+                "recordedBy": _recorded_by(obs),
                 "associatedMedia": media,
+                "associatedReferences": (obs.literature_citation or "").replace("\t", " ").replace("\n", " "),
+                "taxonID": (f"https://www.gbif.org/species/{taxon.gbif_key}"
+                            if taxon.gbif_key and taxon.gbif_match_type != "HIGHERRANK" else ""),
             })
     return rows

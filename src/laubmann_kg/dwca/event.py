@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 FIELDS = [
     "eventID", "eventDate", "verbatimEventDate", "locality",
     "decimalLatitude", "decimalLongitude", "samplingProtocol", "fieldNumber",
-    "fieldNotes",
+    "fieldNotes", "eventRemarks", "dynamicProperties",
 ]
 
 
@@ -30,8 +31,22 @@ def build_events(result: "ExtractionResult") -> list[dict]:
             "samplingProtocol": "diary observation",
             "fieldNumber": entry.entry_id,
             "fieldNotes": (entry.text_clean or "").replace("\n", " ").replace("\t", " "),
+            "eventRemarks": " ".join(entry.weather.verbatim.split()) if entry.weather else "",
+            "dynamicProperties": _dynamic_properties(entry),
         })
     return rows
+
+
+def _dynamic_properties(entry) -> str:
+    w = entry.weather
+    if w is None:
+        return ""
+    props = {"temperatureValue": w.temperature_value, "temperatureUnit": w.temperature_unit,
+             "precipitation": w.precipitation, "wind": w.wind, "skyCondition": w.sky}
+    props = {k: v for k, v in props.items() if v not in (None, "")}
+    if not props:
+        return ""
+    return json.dumps(props, ensure_ascii=False).replace("\t", " ").replace("\n", " ")
 
 
 def _place_uid(entry) -> str:

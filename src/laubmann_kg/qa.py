@@ -5,7 +5,8 @@ Policy (defaults):
 - ``misdate``  – entry year outside the volume's plausible span  -> exclude entry
 - ``garbage_taxon`` – unresolved taxon that is not a plausible bird name -> exclude observation
 - ``nonplace`` – ``location_raw`` rejected by the place normalizer -> flag only
-- ``empty``    – entry left with no observation -> flag only
+- ``no_observations`` – no observation, but weather/travel explain it -> flag only
+- ``empty``    – entry left with nothing at all -> flag only
 
 Exclusions are reversible: every flag (excluded or merely flagged) is written to
 ``qa_flags.csv`` with its reason, so a human can review and override.
@@ -65,7 +66,7 @@ def plausible_bird(vernacular: str) -> bool:
 class QAFlag:
     entry_id: str
     entry_uid: str
-    reason: str          # misdate | garbage_taxon | nonplace | empty
+    reason: str          # misdate | garbage_taxon | nonplace | empty | no_observations
     detail: str
     action: str          # excluded | flagged
     value: str = ""
@@ -136,8 +137,12 @@ def run_qa(entries, config: Optional[dict] = None):
         e.observations = kept_obs
 
         if not e.observations:
-            flags.append(QAFlag(e.entry_id, e.entry_uid, "empty",
-                "keine Beobachtung (mögl. Segmentierungsfehler)", "flagged", ""))
+            if e.weather is not None or e.travel_events:
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "no_observations",
+                    "kein Vogelnachweis, aber Wetter/Reise vorhanden", "flagged", ""))
+            else:
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "empty",
+                    "keine Beobachtung (mögl. Segmentierungsfehler)", "flagged", ""))
 
         if not drop_entry:
             kept.append(e)

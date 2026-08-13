@@ -33,6 +33,33 @@ qa:
   enabled: true
   exclude: true               # drop misdated entries + garbage taxa; recorded to review/qa_flags.csv
 
+linking:
+  enabled: true              # absent/false = stage skipped entirely (offline runs, tests)
+  offline: false             # true = answer only from the on-disk caches, never touch the network
+  cache_dir: data/cache/linking   # gbif_cache.json + wikidata_cache.json (resumable, safe to interrupt)
+  review_dir: data/review    # taxon_link_review.csv + person_link_review.csv (trailing decision column)
+  limit: 0                   # cap uncached lookups per section per run (0 = all); partial runs resume via cache
+  taxa:
+    enabled: true
+    reviewed_csv: null       # adjudicated taxon_link_review.csv from a prior run (decision y/yes/merge/1)
+    sleep: 0.2               # seconds between uncached GBIF requests
+    gbif:
+      min_confidence: 90         # accept EXACT at/above -> skos:exactMatch
+      fuzzy_min_confidence: 95   # accept FUZZY at/above -> skos:closeMatch
+    llm:
+      enabled: true
+      provider: google
+      model: gemini-3.5-flash    # keep in sync with extraction.model
+      api_key_env: GOOGLE_API_KEY
+      cache_dir: data/cache/linking_llm
+      prompt_dir: prompts        # uses prompts/taxon_normalization.md (revived)
+      min_confidence: 0.7        # LLM proposals below this go straight to review
+  persons:
+    enabled: true
+    reviewed_csv: null
+    sleep: 0.5
+    language: de
+
 paths:
   ontology: ontologies/laubmann.ttl
   shapes: ontologies/shacl_shapes.ttl

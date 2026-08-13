@@ -30,6 +30,7 @@ from laubmann_kg.kg.model import (
     TravelLeg,
     Taxon,
 )
+from laubmann_kg.extraction.weather import map_weather
 from laubmann_kg.llm.structured_output import extract_json, parse_structured
 from laubmann_kg.normalization import vocabularies as vocab
 from laubmann_kg.normalization.places import normalize_place
@@ -113,6 +114,55 @@ def _sanitize_qualifier(value) -> Optional[str]:
     return value if value in vocab.COUNT_QUALIFIERS else None
 
 
+_DIARIST_ALIASES = {"ich", "wir", "lbm", "l", "laubmann", "a. laubmann",
+                    "alfred laubmann", "verfasser", "der verfasser"}
+
+_OBSERVER_PLACEHOLDERS = {"n/a", "na", "unbekannt", "unknown"}
+
+_LETTER_RE = re.compile(r"[^\W\d_]")   # any Unicode letter (covers äöüß, é, …)
+
+
+def _sanitize_observer(value) -> Optional[str]:
+    """Observer name, or None when absent/non-string/garbage/the diarist himself.
+
+    The model sometimes wraps the name ({"name": "Kiel"}, ["Kiel"]); unwrap one
+    level rather than dropping it, which would silently re-attribute the record
+    to the diarist."""
+    if isinstance(value, dict):
+        value = value.get("name")
+    elif isinstance(value, list):
+        value = next((v for v in value if v is not None), None)
+        if isinstance(value, dict):
+            value = value.get("name")
+    if not isinstance(value, str):
+        return None
+    name = value.strip().strip("()").strip()
+    if not name or not _LETTER_RE.search(name):
+        return None
+    low = name.lower()
+    if low.rstrip(".") in _OBSERVER_PLACEHOLDERS:
+        return None
+    if low.rstrip(".") in _DIARIST_ALIASES or "laubmann" in low:
+        return None
+    return name
+
+
+def _resolve_observer(name: str, persons: list[Person]) -> Person:
+    """Link an observer name to the entry's persons: exact case-insensitive name
+    first, then a unique surname match ("Kiel" -> "Förster Kiel"); otherwise a
+    fresh Person with role 'source'."""
+    low = name.casefold()
+    for p in persons:
+        if p.name.casefold() == low:
+            return p
+    surname = low.split()[-1].rstrip(".")
+    matches = [p for p in persons
+               if p.name.casefold().split()[-1].rstrip(".") == surname]
+    if len(matches) == 1:
+        return matches[0]
+    return Person(name=name, role="source")
+
+
 def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
               place: Optional[Place]) -> list[Observation]:
     observations: list[Observation] = []
@@ -138,6 +188,22 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             note=None if scientific else "vom LLM nicht sicher bestimmt",
         )
         habitat = (item.get("habitat") or "").strip()
+        raw_citation = item.get("literature_citation")
+        citation = (raw_citation.strip() or None) if isinstance(raw_citation, str) else None
+        observer_name = _sanitize_observer(item.get("observer"))
+        observer = None
+        if observer_name:
+            observer = _resolve_observer(observer_name, entry.persons)
+            if observer not in entry.persons:
+                entry.persons.append(observer)   # the entry mentions its observers
+        record_type = vocab.normalize_record_type(item.get("record_type"))
+        if record_type is None:
+            record_type = ("literature-record" if citation
+                           else "third-party-report" if observer is not None
+                           else "field-observation")
+        elif record_type == "field-observation" and (observer is not None or citation):
+            # model contradiction: an attributed/cited record is not first-person
+            record_type = "literature-record" if citation else "third-party-report"
         observations.append(Observation(
             entry_uid=entry.entry_uid,
             taxon=taxon,
@@ -149,6 +215,9 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             behaviour=behaviour,
             habitat=Habitat(habitat) if habitat else None,
             index=index,
+            record_type=record_type,
+            observer=observer,
+            literature_citation=citation,
         ))
     return observations
 
@@ -241,9 +310,12 @@ def map_persons(items: list) -> list[Person]:
 
 def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
                              place: Optional[Place], prompts, schema: dict) -> list[Observation]:
-    """One LLM call per entry. Returns the observations; travel_events and
-    persons are attached to ``entry`` directly. Legacy array-only responses
-    (old caches, old schema configs) are accepted as bare observations."""
+    """One LLM call per entry. Returns the observations; travel_events, persons,
+    and weather are attached to ``entry`` directly. Legacy array-only responses
+    (old caches, old schema configs) are accepted as bare observations.
+
+    Ordering is load-bearing: ``entry.persons`` is assigned before ``map_items``
+    runs so ``_resolve_observer`` sees the entry's persons; do not reorder."""
     text = entry.text_clean or ""
     if not text.strip():
         return []
@@ -271,6 +343,7 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
         data = {}
     entry.travel_events = map_travel(entry, data.get("travel_events"), place)
     entry.persons = map_persons(data.get("persons"))
+    entry.weather = map_weather(data.get("weather"))
     items = data.get("observations") or []
     if not isinstance(items, list):
         items = [items]

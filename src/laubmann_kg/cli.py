@@ -97,6 +97,17 @@ def export_dwca_cmd(
     _run_stage(dwca.run, config, input_dir, output_dir)
 
 
+@app.command("link-entities")
+def link_entities_cmd(
+    config: Path = typer.Option(..., "--config", help="Path to the pipeline config file."),
+    input_dir: Path = typer.Option(..., "--input-dir", help="Directory containing input files."),
+    output_dir: Path = typer.Option(..., "--output-dir", help="Directory for output files."),
+) -> None:
+    """Link taxa to the GBIF backbone and persons to Wikidata; write review CSVs."""
+    from laubmann_kg import linking
+    _run_stage(linking.run, config, input_dir, output_dir)
+
+
 @app.command("evaluate")
 def evaluate_cmd(
     config: Path = typer.Option(..., "--config", help="Path to the pipeline config file."),
