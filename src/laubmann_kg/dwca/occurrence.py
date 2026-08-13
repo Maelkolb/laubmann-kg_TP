@@ -13,7 +13,7 @@ FIELDS = [
     "identificationRemarks", "recordedBy", "associatedMedia",
 ]
 
-DEFAULT_RECORDED_BY = "Adolf Laubmann"
+DEFAULT_RECORDED_BY = "Alfred Laubmann"
 
 
 def _basis_of_record(obs) -> str:

@@ -23,7 +23,7 @@ _EML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     <title>{title}</title>
     <creator><individualName><surName>Laubmann</surName></individualName></creator>
     <abstract><para>Ornithological observations extracted from the field diaries
-      of Adolf Laubmann. Sample export.</para></abstract>
+      of Alfred Laubmann. Sample export.</para></abstract>
     <intellectualRights><para>{license}</para></intellectualRights>
   </dataset>
 </eml:eml>

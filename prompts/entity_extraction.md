@@ -1,6 +1,6 @@
 # Entity Extraction
 
-Extract named entities from a single German diary entry by Adolf Laubmann. Only
+Extract named entities from a single German diary entry by Alfred Laubmann. Only
 report entities that appear in the text.
 
 ```

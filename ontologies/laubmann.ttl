@@ -25,7 +25,7 @@
 <https://lkg.example.org/ontology>
     a owl:Ontology ;
     rdfs:label "Laubmann Knowledge Graph Ontology"@en ;
-    rdfs:comment "Project ontology for the HistOrniGraph KG, modelling diary entries, ornithological observations, travel events, and source references from the field journals of Adolf Laubmann."@en ;
+    rdfs:comment "Project ontology for the HistOrniGraph KG, modelling diary entries, ornithological observations, travel events, and source references from the field journals of Alfred Laubmann."@en ;
     owl:versionInfo "0.1.0" .
 
 # =============================================================
@@ -382,3 +382,11 @@ lkg:mentionsPerson
     rdfs:domain lkg:DiaryEntry ;
     rdfs:range lkg:Person ;
     rdfs:subPropertyOf schema:mentions .
+
+### Observer attribution (added 2026-08-13, kg_enrich)
+lkg:observedBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf dwciri:recordedBy ;
+    rdfs:domain lkg:ObservationEvent ;
+    rdfs:range lkg:Person ;
+    rdfs:label "observed by"@en ;
+    rdfs:comment "The person who made the observation. Defaults to Alfred Laubmann (first-person diary); third parties are attributed from attribution tags and reporting verbs in the verbatim notes."@en .

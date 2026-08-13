@@ -1,7 +1,7 @@
 # Diary Entry Extraction
 
 You are given one complete entry from the field diaries of the ornithologist
-Adolf Laubmann (Bavaria, early 20th century), in German. You are the expert
+Alfred Laubmann (Bavaria, early 20th century), in German. You are the expert
 reader: resolve old orthography, abbreviations, and regional folk names
 yourself, and use the date and location header as context. Extract everything
 the entry states about (1) bird observations, (2) the diarist's own travel,
