@@ -1,160 +1,137 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F7F8F4", "primaryBorderColor": "#7E8C82", "primaryTextColor": "#1D2A21", "lineColor": "#5F6E64", "clusterBkg": "#EEF1EA", "clusterBorder": "#C9D2C7", "fontFamily": "Segoe UI, system-ui, sans-serif", "fontSize": "14px"}}}%%
 classDiagram
-    direction LR
+    direction TB
 
     class DiaryVolume {
         <<rico:Record>>
-        rdfs:label "Laubmann · Band NN"@de
     }
     class DiaryPage {
         <<rico:Record>>
-        rdfs:label "Vol. NN · scan (page_id)"
-        dcterms:identifier page_id
-    }
-    class SourceRegion {
-        <<oa:Annotation>>
-        rdfs:label "Region uid"
+        dcterms:identifier
     }
     class DiaryEntry {
         <<rico:Record · dwc:Event>>
-        dcterms:identifier entry_id
-        lkg:entryDate xsd:date
-        lkg:entryDateEnd xsd:date
-        dwc:eventDate xsd:date | "start/end"
-        dwc:verbatimEventDate string
-        lkg:entryKind field-day|species-digest|retrospective|correspondence|other
-        lkg:dateNote @de  ·  lkg:datePlausible boolean
-        lkg:rawText string
+        entryDate · entryDateEnd
+        entryKind
+        dwc:eventDate · dwc:verbatimEventDate
+        dateNote · datePlausible
+        rawText
     }
+
     class ObservationEvent {
         <<dwc:Occurrence>>
-        lkg:verbatimNotes @de
-        lkg:recordType field-observation|third-party-report|literature-record
-        dwc:basisOfRecord HumanObservation|PreservedSpecimen|MaterialCitation
-        dwc:occurrenceStatus present|absent
-        lkg:individualCount / dwc:individualCount xsd:integer ≥0
-        lkg:individualCountMin · lkg:individualCountMax xsd:integer
-        lkg:countQualifier exact|minimum|approximate|plural-unspecified
-        dwc:sex male|female|mixed
-        dwc:lifeStage adult|juvenile|pullus|immature|egg|mixed
-        lkg:breedingEvidence confirmed|probable|possible  → dwc:reproductiveCondition
-        dwc:vitality dead
-        lkg:movementKind migrating|passing-over|arriving|departing|resting|roosting
-        lkg:flightDirection @de
-        dwc:identificationQualifier string
-        dwc:eventDate xsd:date  ·  dwc:eventTime HH:MM
-        dwc:verbatimLocality string (own locality only)
-        dwc:habitat @de  ·  dwc:behavior @de
-        dwc:associatedReferences @de  ·  dwc:occurrenceRemarks @de
+        verbatimNotes
+        recordType field | third-party | literature
+        dwc:occurrenceStatus present | absent
+        individualCount ≥0 · Min · Max
+        countQualifier
+        dwc:sex · dwc:lifeStage · dwc:vitality
+        breedingEvidence · movementKind · flightDirection
+        dwc:identificationQualifier
+        dwc:eventDate · dwc:eventTime
+        dwc:basisOfRecord
     }
+    class ObservationEvidence {
+        visual | auditory | nest | specimen
+    }
+    class BirdCall {
+        callType
+        callTranscription
+    }
+    class BehaviourNote {
+        rdfs:label
+    }
+
     class Taxon {
         <<dwc:Taxon>>
-        rdfs:label / lkg:vernacularNameDE / dwc:vernacularName @de
-        lkg:scientificName / dwc:scientificName string
-        dwc:taxonRank species|subspecies|genus|family|group|unknown
-        lkg:isBird xsd:boolean
-        lkg:matchMethod · lkg:matchConfidence · lkg:gbifMatchType
-        dwc:taxonID gbif URI
-        skos:note "nicht aufgelöst"@de
+        vernacularNameDE · scientificName
+        dwc:taxonRank · isBird
+        matchMethod · matchConfidence
+        dwc:taxonID
     }
     class Place {
         <<geo:SpatialThing · dcterms:Location>>
-        rdfs:label @de (modern spelling)
-        lkg:verbatimLocality string
-        lkg:placeKind settlement|locality|region|route
-        geo:lat · geo:long xsd:decimal
-        dwc:decimalLatitude · dwc:decimalLongitude · dwc:geodeticDatum WGS84
-    }
-    class Habitat {
-        <<skos:Concept in lkg:habitatScheme>>
-        skos:prefLabel / rdfs:label @de
-        dwc:habitat @de
-    }
-    class ObservationEvidence {
-        rdfs:label visual|nest|specimen @de
-    }
-    class BirdCall {
-        <<ObservationEvidence>>
-        lkg:callType song|call|alarm|drumming|unknown
-        lkg:callTranscription string (only if written)
-    }
-    class BehaviourNote {
-        rdfs:label @de
+        rdfs:label · verbatimLocality
+        placeKind
+        geo:lat · geo:long
     }
     class Person {
         <<schema:Person>>
-        rdfs:label · schema:name
-        skos:note role
+        schema:name · role
     }
+    class Habitat {
+        <<skos:Concept>>
+        skos:prefLabel · dwc:habitat
+    }
+
     class TravelEvent {
         <<dwc:Event>>
-        rdfs:label "Reise · n Etappe(n)"@de
     }
     class TravelLeg {
-        lkg:transportMode train|foot|boat|car|carriage|bicycle|unknown
-        lkg:departureTime · lkg:arrivalTime xsd:dateTime
-        skos:note verbatim @de
+        transportMode
+        departureTime · arrivalTime
     }
     class WeatherReport {
-        lkg:weatherVerbatim @de
-        lkg:temperatureValue xsd:decimal · lkg:temperatureUnit C|R|F
-        lkg:precipitation rain|snow|sleet|hail|drizzle|fog|thunderstorm|none
-        lkg:skyCondition clear|partly-cloudy|overcast|variable
-        lkg:wind @de
+        weatherVerbatim
+        temperatureValue · temperatureUnit
+        precipitation · skyCondition · wind
     }
+
     class ExtractionRun {
         <<prov:Activity>>
-        prov:startedAtTime xsd:dateTime
-        rdfs:comment method
+        prov:startedAtTime
     }
     class SoftwareAgent {
         <<prov:SoftwareAgent>>
-        rdfs:label model (gemini-3.5-flash)
-        lkg:backend
+        model
     }
     class Prompt {
         <<prov:Entity>>
-        dcterms:identifier sha256
-    }
-    class EvidenceKind {
-        <<skos:Concept>>
-        lkg:evidence_visual|auditory|nest|specimen
-    }
-    class GBIF_Species {
-        <<external>>
-        https://www.gbif.org/species/KEY
-    }
-    class Wikidata_Item {
-        <<external>>
-        http://www.wikidata.org/entity/Q…
+        sha256
     }
 
-    DiaryEntry "1" --> "1" DiaryVolume : lkg∶hasVolume
-    DiaryEntry "1" --> "0..1" DiaryPage : lkg∶hasPage
-    DiaryPage "*" --> "1" DiaryVolume : dcterms∶isPartOf
-    DiaryEntry "1" --> "0..1" SourceRegion : lkg∶hasSourceRegion
-    DiaryEntry "1" --> "0..1" Place : lkg∶entryPlace
-    DiaryEntry "1" --> "*" ObservationEvent : lkg∶containsObservation (inverseOf derivedFromEntry)
-    DiaryEntry "1" --> "*" TravelEvent : lkg∶containsTravelEvent
-    DiaryEntry "1" --> "*" Person : lkg∶mentionsPerson ⊑ schema∶mentions
-    DiaryEntry "1" --> "0..1" WeatherReport : lkg∶hasWeather
-    ObservationEvent "*" --> "1" DiaryEntry : lkg∶derivedFromEntry ⊑ prov∶wasDerivedFrom
-    ObservationEvent "*" --> "1" Taxon : lkg∶observedTaxon ⊑ dwciri∶toTaxon
-    ObservationEvent "*" --> "0..1" Place : lkg∶observedAt (effective place)
-    ObservationEvent "*" --> "0..1" Place : lkg∶hasLocality (own locality)
-    ObservationEvent "1" --> "0..4" ObservationEvidence : lkg∶hasEvidence
-    ObservationEvent "1" --> "*" BehaviourNote : lkg∶hasBehaviour
-    ObservationEvent "*" --> "0..1" Habitat : lkg∶hasHabitat · dwciri∶habitat
-    ObservationEvent "*" --> "0..1" Person : lkg∶observedBy ⊑ dwciri∶recordedBy
-    ObservationEvent "*" --> "1" ExtractionRun : prov∶wasGeneratedBy
-    ObservationEvidence "*" --> "1" EvidenceKind : lkg∶evidenceKind
-    TravelEvent "1" --> "1..*" TravelLeg : lkg∶hasLeg
-    TravelEvent "*" --> "1" ExtractionRun : prov∶wasGeneratedBy
-    TravelLeg "*" --> "1" Place : lkg∶departurePlace
-    TravelLeg "*" --> "1" Place : lkg∶arrivalPlace
-    TravelLeg "*" --> "*" Place : lkg∶viaPlace
-    WeatherReport "*" --> "1" ExtractionRun : prov∶wasGeneratedBy
-    ExtractionRun "*" --> "1" SoftwareAgent : prov∶wasAssociatedWith
-    ExtractionRun "*" --> "1" Prompt : prov∶used
-    Taxon "*" --> "0..1" GBIF_Species : skos∶exactMatch / closeMatch / broadMatch
-    Person "*" --> "0..1" Wikidata_Item : owl∶sameAs
+    class GBIF_Species {
+        gbif.org/species/KEY
+    }
+    class Wikidata_Item {
+        wikidata.org/entity/Q…
+    }
+
+    DiaryEntry --> "1" DiaryVolume : hasVolume
+    DiaryEntry --> "0..1" DiaryPage : hasPage
+    DiaryEntry --> "0..1" Place : entryPlace
+    DiaryEntry --> "*" ObservationEvent : containsObservation
+    DiaryEntry --> "*" TravelEvent : containsTravelEvent
+    DiaryEntry --> "*" Person : mentionsPerson ⊑ schema∶mentions
+    DiaryEntry --> "0..1" WeatherReport : hasWeather
+
+    ObservationEvent --> "1" Taxon : observedTaxon ⊑ dwciri∶toTaxon
+    ObservationEvent --> "0..1" Place : observedAt
+    ObservationEvent --> "0..1" Place : hasLocality (own place)
+    ObservationEvent --> "0..1" Person : observedBy ⊑ dwciri∶recordedBy
+    ObservationEvent --> "0..4" ObservationEvidence : hasEvidence
+    ObservationEvent --> "*" BehaviourNote : hasBehaviour
+    ObservationEvent --> "0..1" Habitat : hasHabitat ⊑ dwciri∶habitat
+    ObservationEvent --> "1" ExtractionRun : prov∶wasGeneratedBy
     BirdCall --|> ObservationEvidence
+
+    TravelEvent --> "1..*" TravelLeg : hasLeg
+    TravelLeg --> "1..*" Place : departurePlace · arrivalPlace · viaPlace
+    ExtractionRun --> "1" SoftwareAgent : prov∶wasAssociatedWith
+    ExtractionRun --> "1" Prompt : prov∶used
+
+    Taxon --> "0..1" GBIF_Species : skos∶exactMatch · closeMatch · broadMatch
+    Person --> "0..1" Wikidata_Item : owl∶sameAs
+
+    cssClass "DiaryVolume,DiaryPage" source
+    cssClass "DiaryEntry,ObservationEvent" hub
+    cssClass "ObservationEvidence,BirdCall,BehaviourNote,Habitat,TravelEvent,TravelLeg,WeatherReport" detail
+    cssClass "Taxon,Place,Person" entity
+    cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
+    cssClass "GBIF_Species,Wikidata_Item" ext
+    classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
+    classDef entity fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A
+    classDef detail fill:#F7F8F4,stroke:#7E8C82,stroke-width:1px,color:#1D2A21
+    classDef source fill:#F1ECE0,stroke:#8A7A5A,stroke-width:1px,color:#3A3020
+    classDef prov fill:#EEEFEC,stroke:#8A8F8B,stroke-width:1px,stroke-dasharray:5 4,color:#3B413D
+    classDef ext fill:#FFFFFF,stroke:#35608A,stroke-width:1px,stroke-dasharray:6 4,color:#14263A

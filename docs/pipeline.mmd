@@ -1,11 +1,61 @@
-flowchart LR
-    A["Stage A · Corpus<br/>HistOrniGraph region JSONs → entries.csv + multimodal.md<br/>(HistOrniGraph_addons/build_corpus.py)"] --> B["Stage B · Dedup<br/>detect → review.html (human) → apply_dedup.py<br/>corpus_*_dedup/ (6,750 pages · 9,527 entries)"]
-    B --> C["LLM reading · one call per entry<br/>prompts/observation_extraction.md · gemini-3.5-flash<br/>entry_date · entry_place · entry_kind · observations · travel · persons · weather<br/>(cached on Drive, temperature 0, thinking low)"]
-    C --> D["Mapper · form only<br/>extraction/llm_observations.py · weather.py<br/>vocab membership · dates/times parse · SHACL-safe legs<br/>gazetteer adds coordinates only"]
-    D --> E["QA · thresholds on model signals<br/>qa.py → review/qa_flags.csv<br/>non_bird · low_confidence_taxon · implausible_date · misdate (flag)"]
-    E --> F["Linking<br/>linking/taxa.py → GBIF species/match (rank-aware)<br/>linking/persons.py → Wikidata (P31=Q5)<br/>→ review/taxon_link_review.csv · person_link_review.csv"]
-    F --> G["RDF emit · kg/rdf.py<br/>lkg + DwC/dwciri co-emitted · SKOS concepts · PROV run<br/>→ Turtle + JSON-LD (context 1.1)"]
-    G --> H["SHACL gate<br/>ontologies/shacl_shapes.ttl · pyshacl, inference=none"]
-    F --> I["DwC-A · dwca/<br/>event core + occurrence + OBIS eMoF + multimedia<br/>meta.xml · EML (coverage, licence, methods)"]
-    H -.->|exported TTL| J["Post-hoc kg_enrich (Fuseki)<br/>dedup_entities.py (owl:sameAs) · georef_places.py (Nominatim)<br/>apply_enrichment.py · update_dwca.py"]
-    I -.-> J
+%%{init: {"theme": "base", "flowchart": {"curve": "basis", "nodeSpacing": 40, "rankSpacing": 60, "padding": 12, "wrappingWidth": 260}, "themeVariables": {"primaryColor": "#F7F8F4", "primaryBorderColor": "#7E8C82", "primaryTextColor": "#1D2A21", "lineColor": "#5F6E64", "clusterBkg": "#EEF1EA", "clusterBorder": "#C9D2C7", "edgeLabelBackground": "#F5F7F3", "fontFamily": "Segoe UI, system-ui, sans-serif", "fontSize": "14px"}}}%%
+flowchart TB
+    subgraph S1["Stage A · B — corpus on Drive"]
+        direction LR
+        A["build_corpus.py<br/>region JSONs → entries.csv"]
+        B["detect_duplicates.py<br/>970 clusters"]
+        R1{{"review.html<br/>human adjudication"}}
+        B2["apply_dedup.py<br/>6,750 pages · 9,527 entries"]
+        A --> B --> R1 --> B2
+    end
+
+    subgraph S2["Stage C — laubmann-kg · one CLI run"]
+        direction LR
+        C(["LLM reading<br/>gemini-3.5-flash · one call per entry<br/>date · place · kind · observations<br/>travel · persons · weather"])
+        D["Mapper<br/>vocabulary membership · dates<br/>SHACL-safe legs"]
+        E["QA<br/>thresholds on model signals"]
+        F["Linking<br/>GBIF species/match · Wikidata"]
+        G["RDF emit<br/>lkg + DwC · SKOS · PROV"]
+        H["SHACL gate<br/>0 violations"]
+        I["DwC-A<br/>event · occurrence · eMoF · media"]
+        K1[("llm_cache_v2")]
+        K2[("linking_cache")]
+        R2{{"review CSVs<br/>taxon · person · qa_flags"}}
+        C --> D --> E --> F --> G --> H
+        F --> I
+        C <-.-> K1
+        F <-.-> K2
+        E -.-> R2
+        F -.-> R2
+        R2 -. reviewed_csv .-> F
+    end
+
+    subgraph S3["Outputs"]
+        direction LR
+        O1[/"laubmann.ttl · .jsonld"/]
+        O2[/"dwca.zip"/]
+    end
+
+    subgraph S4["Post-hoc · kg_enrich (Fuseki)"]
+        direction LR
+        J["dedup_entities · georef_places<br/>apply_enrichment · update_dwca"]
+    end
+
+    B2 --> C
+    H --> O1
+    I --> O2
+    O1 -.-> J
+    O2 -.-> J
+
+    classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
+    classDef step fill:#F7F8F4,stroke:#7E8C82,stroke-width:1px,color:#1D2A21
+    classDef human fill:#F5EBDD,stroke:#8A5A1E,stroke-width:2px,color:#3A2A12
+    classDef cache fill:#EEEFEC,stroke:#8A8F8B,stroke-width:1px,color:#3B413D
+    classDef out fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A
+    classDef post fill:#FFFFFF,stroke:#8A8F8B,stroke-width:1px,stroke-dasharray:6 4,color:#3B413D
+    class C hub
+    class A,B,B2,D,E,F,G,H,I step
+    class R1,R2 human
+    class K1,K2 cache
+    class O1,O2 out
+    class J post
