@@ -123,7 +123,7 @@ def test_scalar_behaviour_and_null_evidence_coerced() -> None:
     assert [b.label for b in obs[0].behaviour] == [
         "schreien laut durcheinander, fast wie auf den Brutplätzen"]
     assert obs[1].behaviour == []
-    assert obs[0].evidence[0].kind == "visual"  # default when evidence is null
+    assert obs[0].evidence == []                # null evidence -> nothing stated, nothing fabricated
 
 
 def test_scalar_via_places_coerced() -> None:
@@ -163,8 +163,8 @@ def test_live_warning_payloads_now_validate_strictly() -> None:
     parse_structured(payload, SCHEMA)
     entry, obs = _run(payload)
     assert obs[0].verbatim_notes                 # falls back to entry text
-    assert obs[1].individual_count is None       # sanitizer drops 0
-    assert obs[1].evidence[0].kind == "visual"   # default evidence
+    assert obs[1].individual_count is None       # 0 without an explicit absence is dropped
+    assert obs[1].evidence == []                 # "" -> no evidence node
 
 
 def test_legacy_array_payload_still_maps() -> None:

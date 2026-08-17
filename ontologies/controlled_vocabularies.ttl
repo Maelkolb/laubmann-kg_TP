@@ -1,8 +1,10 @@
 # =============================================================
 # HistOrniGraph / Laubmann Knowledge Graph
 # Controlled Vocabularies (SKOS)
-# Mirrors the sh:in enumerations in shacl_shapes.ttl so extraction
-# and validation share one source of truth.
+# Mirrors the sh:in enumerations in shacl_shapes.ttl and the enum tuples in
+# src/laubmann_kg/normalization/vocabularies.py so extraction, emission and
+# validation share one source of truth. The English prefLabel IS the literal
+# value emitted in the data graph (e.g. lkg:movementKind "passing-over").
 # =============================================================
 
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
@@ -11,7 +13,7 @@
 
 # --- Transport modes (TravelLeg.transportMode) ---------------
 lkg:transportModeScheme a skos:ConceptScheme ;
-    skos:prefLabel "Transport modes"@en .
+    skos:prefLabel "Transport modes"@en , "Verkehrsmittel"@de .
 
 lkg:transport_train   a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "train"@en, "Zug"@de .
 lkg:transport_foot    a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "foot"@en, "zu Fuß"@de .
@@ -23,7 +25,7 @@ lkg:transport_unknown a skos:Concept ; skos:inScheme lkg:transportModeScheme ; s
 
 # --- Call types (BirdCall.callType) --------------------------
 lkg:callTypeScheme a skos:ConceptScheme ;
-    skos:prefLabel "Bird call types"@en .
+    skos:prefLabel "Bird call types"@en , "Lautäußerungstypen"@de .
 
 lkg:call_song     a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "song"@en, "Gesang"@de .
 lkg:call_call     a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "call"@en, "Ruf"@de .
@@ -33,16 +35,16 @@ lkg:call_unknown  a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefL
 
 # --- Count qualifiers (ObservationEvent.countQualifier) ------
 lkg:countQualifierScheme a skos:ConceptScheme ;
-    skos:prefLabel "Count qualifiers"@en .
+    skos:prefLabel "Count qualifiers"@en , "Zahlenqualifikatoren"@de .
 
-lkg:count_exact              a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "exact"@en .
-lkg:count_minimum            a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "minimum"@en .
-lkg:count_approximate        a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "approximate"@en .
-lkg:count_plural_unspecified a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "plural-unspecified"@en .
+lkg:count_exact              a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "exact"@en, "genau"@de .
+lkg:count_minimum            a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "minimum"@en, "mindestens"@de .
+lkg:count_approximate        a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "approximate"@en, "ungefähr"@de .
+lkg:count_plural_unspecified a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "plural-unspecified"@en, "Mehrzahl, unbeziffert"@de .
 
-# --- Evidence kinds (ObservationEvidence) --------------------
+# --- Evidence kinds (ObservationEvidence.evidenceKind) --------
 lkg:evidenceKindScheme a skos:ConceptScheme ;
-    skos:prefLabel "Observation evidence kinds"@en .
+    skos:prefLabel "Observation evidence kinds"@en , "Belegarten"@de .
 
 lkg:evidence_visual   a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "visual"@en, "Sichtbeobachtung"@de .
 lkg:evidence_auditory a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "auditory"@en, "Lautäußerung"@de .
@@ -51,15 +53,104 @@ lkg:evidence_specimen a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; sk
 
 # --- Record types (ObservationEvent.recordType) --------------
 lkg:recordTypeScheme a skos:ConceptScheme ;
-    skos:prefLabel "Observation record types"@en .
+    skos:prefLabel "Observation record types"@en , "Nachweistypen"@de .
 
 lkg:record_field_observation  a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "field-observation"@en, "eigene Feldbeobachtung"@de .
 lkg:record_third_party_report a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "third-party-report"@en, "Fremdbericht"@de .
 lkg:record_literature_record  a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "literature-record"@en, "Literaturnachweis"@de .
 
+# --- Occurrence status (ObservationEvent dwc:occurrenceStatus) -
+lkg:occurrenceStatusScheme a skos:ConceptScheme ;
+    skos:prefLabel "Occurrence status"@en , "Vorkommensstatus"@de .
+
+lkg:status_present a skos:Concept ; skos:inScheme lkg:occurrenceStatusScheme ; skos:prefLabel "present"@en, "anwesend"@de .
+lkg:status_absent  a skos:Concept ; skos:inScheme lkg:occurrenceStatusScheme ; skos:prefLabel "absent"@en, "abwesend (explizites Fehlen)"@de .
+
+# --- Sex (ObservationEvent dwc:sex) --------------------------
+lkg:sexScheme a skos:ConceptScheme ;
+    skos:prefLabel "Sex"@en , "Geschlecht"@de .
+
+lkg:sex_male   a skos:Concept ; skos:inScheme lkg:sexScheme ; skos:prefLabel "male"@en, "männlich"@de .
+lkg:sex_female a skos:Concept ; skos:inScheme lkg:sexScheme ; skos:prefLabel "female"@en, "weiblich"@de .
+lkg:sex_mixed  a skos:Concept ; skos:inScheme lkg:sexScheme ; skos:prefLabel "mixed"@en, "gemischt"@de .
+
+# --- Life stage (ObservationEvent dwc:lifeStage) -------------
+lkg:lifeStageScheme a skos:ConceptScheme ;
+    skos:prefLabel "Life stages"@en , "Altersstadien"@de .
+
+lkg:lifestage_adult    a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "adult"@en, "adult"@de .
+lkg:lifestage_juvenile a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "juvenile"@en, "juvenil / Jungvogel"@de .
+lkg:lifestage_pullus   a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "pullus"@en, "Pullus / Nestling"@de .
+lkg:lifestage_immature a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "immature"@en, "immatur"@de .
+lkg:lifestage_egg      a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "egg"@en, "Ei"@de .
+lkg:lifestage_mixed    a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "mixed"@en, "gemischt"@de .
+
+# --- Breeding evidence (ObservationEvent.breedingEvidence) ---
+lkg:breedingEvidenceScheme a skos:ConceptScheme ;
+    skos:prefLabel "Breeding evidence (atlas categories)"@en , "Brutnachweis (Atlaskategorien)"@de .
+
+lkg:breeding_confirmed a skos:Concept ; skos:inScheme lkg:breedingEvidenceScheme ; skos:prefLabel "confirmed"@en, "sicheres Brüten"@de .
+lkg:breeding_probable  a skos:Concept ; skos:inScheme lkg:breedingEvidenceScheme ; skos:prefLabel "probable"@en, "wahrscheinliches Brüten"@de .
+lkg:breeding_possible  a skos:Concept ; skos:inScheme lkg:breedingEvidenceScheme ; skos:prefLabel "possible"@en, "mögliches Brüten"@de .
+
+# --- Vitality (ObservationEvent dwc:vitality) ----------------
+lkg:vitalityScheme a skos:ConceptScheme ;
+    skos:prefLabel "Vitality"@en , "Vitalität"@de .
+
+lkg:vitality_alive a skos:Concept ; skos:inScheme lkg:vitalityScheme ; skos:prefLabel "alive"@en, "lebend"@de .
+lkg:vitality_dead  a skos:Concept ; skos:inScheme lkg:vitalityScheme ; skos:prefLabel "dead"@en, "tot"@de .
+
+# --- Movement kinds (ObservationEvent.movementKind) ----------
+lkg:movementKindScheme a skos:ConceptScheme ;
+    skos:prefLabel "Movement kinds"@en , "Bewegungsarten"@de .
+
+lkg:movement_migrating    a skos:Concept ; skos:inScheme lkg:movementKindScheme ; skos:prefLabel "migrating"@en, "ziehend"@de .
+lkg:movement_passing_over a skos:Concept ; skos:inScheme lkg:movementKindScheme ; skos:prefLabel "passing-over"@en, "überfliegend"@de .
+lkg:movement_arriving     a skos:Concept ; skos:inScheme lkg:movementKindScheme ; skos:prefLabel "arriving"@en, "ankommend (Erstbeobachtung)"@de .
+lkg:movement_departing    a skos:Concept ; skos:inScheme lkg:movementKindScheme ; skos:prefLabel "departing"@en, "abziehend (Letztbeobachtung)"@de .
+lkg:movement_resting      a skos:Concept ; skos:inScheme lkg:movementKindScheme ; skos:prefLabel "resting"@en, "rastend"@de .
+lkg:movement_roosting     a skos:Concept ; skos:inScheme lkg:movementKindScheme ; skos:prefLabel "roosting"@en, "schlafend / am Schlafplatz"@de .
+
+# --- Taxon ranks (Taxon dwc:taxonRank) -----------------------
+lkg:taxonRankScheme a skos:ConceptScheme ;
+    skos:prefLabel "Taxon ranks (as named by the diarist)"@en , "Taxonomische Ränge (wie vom Tagebuchschreiber benannt)"@de .
+
+lkg:rank_species    a skos:Concept ; skos:inScheme lkg:taxonRankScheme ; skos:prefLabel "species"@en, "Art"@de .
+lkg:rank_subspecies a skos:Concept ; skos:inScheme lkg:taxonRankScheme ; skos:prefLabel "subspecies"@en, "Unterart"@de .
+lkg:rank_genus      a skos:Concept ; skos:inScheme lkg:taxonRankScheme ; skos:prefLabel "genus"@en, "Gattung"@de .
+lkg:rank_family     a skos:Concept ; skos:inScheme lkg:taxonRankScheme ; skos:prefLabel "family"@en, "Familie"@de .
+lkg:rank_group      a skos:Concept ; skos:inScheme lkg:taxonRankScheme ; skos:prefLabel "group"@en, "informelle Gruppe"@de .
+lkg:rank_unknown    a skos:Concept ; skos:inScheme lkg:taxonRankScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
+
+# --- Place kinds (Place.placeKind) ---------------------------
+lkg:placeKindScheme a skos:ConceptScheme ;
+    skos:prefLabel "Place kinds"@en , "Ortsarten"@de .
+
+lkg:placekind_settlement a skos:Concept ; skos:inScheme lkg:placeKindScheme ; skos:prefLabel "settlement"@en, "Siedlung"@de .
+lkg:placekind_locality   a skos:Concept ; skos:inScheme lkg:placeKindScheme ; skos:prefLabel "locality"@en, "Örtlichkeit / Flurname"@de .
+lkg:placekind_region     a skos:Concept ; skos:inScheme lkg:placeKindScheme ; skos:prefLabel "region"@en, "Region"@de .
+lkg:placekind_route      a skos:Concept ; skos:inScheme lkg:placeKindScheme ; skos:prefLabel "route"@en, "Strecke"@de .
+lkg:placekind_unknown    a skos:Concept ; skos:inScheme lkg:placeKindScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
+
+# --- Entry kinds (DiaryEntry.entryKind) ----------------------
+lkg:entryKindScheme a skos:ConceptScheme ;
+    skos:prefLabel "Diary entry kinds"@en , "Eintragsarten"@de .
+
+lkg:entrykind_field_day      a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "field-day"@en, "Exkursionstag"@de .
+lkg:entrykind_species_digest a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "species-digest"@en, "Artenzusammenstellung"@de .
+lkg:entrykind_retrospective  a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "retrospective"@en, "Rückblick"@de .
+lkg:entrykind_correspondence a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "correspondence"@en, "Korrespondenz"@de .
+lkg:entrykind_other          a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "other"@en, "sonstiges"@de .
+
+# --- Habitats (Habitat nodes are skos:Concept in this scheme) --
+# Open list: the concepts are emitted as DATA (data:habitat_<sha1>) with
+# skos:prefLabel@de, not enumerated here.
+lkg:habitatScheme a skos:ConceptScheme ;
+    skos:prefLabel "Habitats"@en , "Lebensräume"@de .
+
 # --- Precipitation (WeatherReport.precipitation) -------------
 lkg:precipitationScheme a skos:ConceptScheme ;
-    skos:prefLabel "Precipitation types"@en .
+    skos:prefLabel "Precipitation types"@en , "Niederschlagsarten"@de .
 
 lkg:precip_rain         a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "rain"@en, "Regen"@de .
 lkg:precip_snow         a skos:Concept ; skos:inScheme lkg:precipitationScheme ; skos:prefLabel "snow"@en, "Schnee"@de .
@@ -72,7 +163,7 @@ lkg:precip_none         a skos:Concept ; skos:inScheme lkg:precipitationScheme ;
 
 # --- Sky conditions (WeatherReport.skyCondition) -------------
 lkg:skyConditionScheme a skos:ConceptScheme ;
-    skos:prefLabel "Sky conditions"@en .
+    skos:prefLabel "Sky conditions"@en , "Himmelszustände"@de .
 
 lkg:sky_clear         a skos:Concept ; skos:inScheme lkg:skyConditionScheme ; skos:prefLabel "clear"@en, "heiter"@de .
 lkg:sky_partly_cloudy a skos:Concept ; skos:inScheme lkg:skyConditionScheme ; skos:prefLabel "partly-cloudy"@en, "wolkig"@de .
@@ -81,7 +172,7 @@ lkg:sky_variable      a skos:Concept ; skos:inScheme lkg:skyConditionScheme ; sk
 
 # --- Temperature units (WeatherReport.temperatureUnit) -------
 lkg:temperatureUnitScheme a skos:ConceptScheme ;
-    skos:prefLabel "Temperature units"@en .
+    skos:prefLabel "Temperature units"@en , "Temperatureinheiten"@de .
 
 lkg:unit_C a skos:Concept ; skos:inScheme lkg:temperatureUnitScheme ; skos:prefLabel "C"@en, "Grad Celsius"@de .
 lkg:unit_R a skos:Concept ; skos:inScheme lkg:temperatureUnitScheme ; skos:prefLabel "R"@en, "Grad Réaumur"@de .

@@ -38,20 +38,24 @@ def _entry(entry_uid: str = "e_link0001", entry_id: str = "L02-e0100") -> DiaryE
     )
 
 
-def _obs(entry_uid: str, vernacular: str, scientific=None, index: int = 0) -> Observation:
+def _obs(entry_uid: str, vernacular: str, scientific=None, rank=None, is_bird=None,
+         *, index: int = 0) -> Observation:
     taxon = Taxon(vernacular_de=vernacular, scientific_name=scientific,
-                  match_method="gazetteer" if scientific else "unresolved")
+                  match_method="gazetteer" if scientific else "unresolved",
+                  rank=rank, is_bird=is_bird)
     return Observation(entry_uid=entry_uid, taxon=taxon,
                        verbatim_notes=f"{vernacular} beobachtet", index=index)
 
 
 def _result(*vernaculars_with_names, n_entries: int = 1) -> ExtractionResult:
+    """Each item is (vernacular, scientific) or (vernacular, scientific, rank,
+    is_bird)."""
     entries = []
     for i in range(n_entries):
         entry = _entry(entry_uid=f"e_link{i:04d}", entry_id=f"L02-e01{i:02d}")
         entry.observations = [
-            _obs(entry.entry_uid, vern, sci, index=j)
-            for j, (vern, sci) in enumerate(vernaculars_with_names)]
+            _obs(entry.entry_uid, *item, index=j)
+            for j, item in enumerate(vernaculars_with_names)]
         entries.append(entry)
     return ExtractionResult(entries=entries)
 
@@ -195,6 +199,118 @@ def test_higherrank(tmp_path, monkeypatch) -> None:
     taxon2 = result2.entries[0].observations[0].taxon
     assert linked2 == 0 and rows2[0]["status"] == "review"
     assert taxon2.gbif_key is None and taxon2.scientific_name is None
+
+
+def test_genus_and_family_rank_items_accept_matches_at_their_rank(tmp_path, monkeypatch) -> None:
+    # The model said the diarist named a genus ("Limosa", rank genus) / a
+    # family ("Laridae", rank family): the GBIF match AT that rank is the taxon
+    # itself -> linked (exactMatch + taxonID), not a broad anchor.
+    _patch_gbif(monkeypatch, {
+        "limosa": _gbif_response(key=2481711, rank="GENUS", canonical="Limosa", confidence=97),
+        "laridae": _gbif_response(key=9316, rank="FAMILY", canonical="Laridae",
+                                  match_type="FUZZY", confidence=98),
+        "buteo": _gbif_response(key=2481047, rank="GENUS", canonical="Buteo", confidence=97),
+    })
+    result = _result(("Uferschnepfe?", "Limosa", "genus", True),
+                     ("Möwen", "Laridae", "family", True),
+                     ("Bussard", "Buteo"))               # rank None: species gate
+    linked, rows = link_taxa(result, {"sleep": 0, "llm": {"enabled": False}},
+                             JsonCache(tmp_path / "gbif.json"), offline=False)
+    assert linked == 2
+    by_vern = {o.taxon.vernacular_de: o.taxon for o in result.entries[0].observations}
+    assert by_vern["Uferschnepfe?"].gbif_key == 2481711
+    assert by_vern["Uferschnepfe?"].gbif_match_type == "EXACT"
+    assert by_vern["Uferschnepfe?"].scientific_name == "Limosa"   # untouched
+    assert by_vern["Möwen"].gbif_key == 9316
+    assert by_vern["Möwen"].gbif_match_type == "FUZZY"
+    assert by_vern["Bussard"].gbif_key is None                    # GENUS vs species gate
+    status = {r["vernacular_de"]: r["status"] for r in rows}
+    assert status == {"Uferschnepfe?": "linked", "Möwen": "linked", "Bussard": "review"}
+    occ = {r["vernacularName"]: r for r in build_occurrences(result)}
+    assert occ["Uferschnepfe?"]["taxonID"] == "https://www.gbif.org/species/2481711"
+    assert occ["Uferschnepfe?"]["taxonRank"] == "genus"
+    graph = build_graph(result)
+    assert (None, SKOS.exactMatch, URIRef("https://www.gbif.org/species/2481711")) in graph
+
+    # a genus-level item that GBIF only matches at SPECIES rank is not linked
+    _patch_gbif(monkeypatch, {"limosa": _gbif_response(
+        key=1, rank="SPECIES", canonical="Limosa limosa", confidence=99)})
+    result2 = _result(("Uferschnepfe?", "Limosa", "genus", True))
+    linked2, rows2 = link_taxa(result2, {"sleep": 0, "llm": {"enabled": False}},
+                               JsonCache(tmp_path / "g2.json"), offline=False)
+    assert linked2 == 0 and rows2[0]["status"] == "review"
+
+
+def test_non_bird_taxa_match_without_class_and_separate_cache_key(tmp_path, monkeypatch) -> None:
+    calls: list[dict] = []
+
+    def fake(url, params, timeout=30.0):
+        calls.append(dict(params))
+        assert params["kingdom"] == "Animalia"
+        name = params["name"].lower()
+        if name == "capreolus capreolus":
+            assert "class" not in params                     # is_bird False: no Aves filter
+            return _gbif_response(key=5220126, canonical="Capreolus capreolus", confidence=99)
+        assert params["class"] == "Aves"
+        return _gbif_response()
+    monkeypatch.setattr("laubmann_kg.linking.http.get_json", fake)
+
+    cache = JsonCache(tmp_path / "gbif.json")
+    result = _result(("Reh", "Capreolus capreolus", "species", False),
+                     ("Buchfink", "Fringilla coelebs", "species", True),
+                     ("Amsel", "Turdus merula"))          # is_bird None -> Aves (default)
+    linked, rows = link_taxa(result, {"sleep": 0, "llm": {"enabled": False}},
+                             cache, offline=False)
+    assert linked == 3
+    by_vern = {o.taxon.vernacular_de: o.taxon for o in result.entries[0].observations}
+    assert by_vern["Reh"].gbif_key == 5220126
+    # items are processed by (-n_observations, name): Amsel, Buchfink, Reh
+    assert [(c["name"], c.get("class")) for c in calls] == [
+        ("Turdus merula", "Aves"), ("Fringilla coelebs", "Aves"),
+        ("Capreolus capreolus", None)]
+    # bird lookups keep the legacy key (existing caches stay valid); non-bird
+    # lookups get a class-qualified key so the two never collide
+    assert "match:fringilla coelebs" in cache
+    assert "match:turdus merula" in cache
+    assert "match:any:capreolus capreolus" in cache
+    assert "match:capreolus capreolus" not in cache
+    assert linking_taxa.gbif_cache_key("Limosa") == "match:limosa"
+    assert linking_taxa.gbif_cache_key("Limosa", "Aves") == "match:limosa"
+    assert linking_taxa.gbif_cache_key("Capreolus", None) == "match:any:capreolus"
+    assert linking_taxa.gbif_cache_key("Capreolus", "Mammalia") == "match:mammalia:capreolus"
+
+    # GbifClient.match honours the class parameter directly
+    client = linking_taxa.GbifClient(cache, offline=False, sleep_s=0)
+    n_calls = len(calls)
+    assert client.match("Capreolus capreolus", taxon_class=None)["usageKey"] == 5220126
+    assert len(calls) == n_calls                            # served from the qualified key
+
+
+def test_llm_proposer_forwards_thinking_level_and_token_cap(tmp_path, monkeypatch) -> None:
+    seen: dict = {}
+
+    class _Inner:
+        model = "fake"
+
+        def complete(self, prompt: str) -> str:
+            return json.dumps({"scientific_name": "Prunella modularis", "confidence": 0.9})
+
+    def fake_build_client(cache=None, config=None):
+        seen.update(config or {})
+        return _Inner()
+    monkeypatch.setattr("laubmann_kg.llm.clients.build_client", fake_build_client)
+
+    cache_dir = str(tmp_path / "llm")
+    propose = linking_taxa.build_llm_proposer({"thinking_level": "low",
+                                              "cache_dir": cache_dir})
+    assert seen["thinking_level"] == "low"
+    assert seen["max_output_tokens"] == 1024                # new default (was 256)
+    assert propose is not None
+    assert propose("Heckenbraunelle", "ctx") == {"scientific_name": "Prunella modularis",
+                                                 "confidence": 0.9}
+    seen.clear()
+    linking_taxa.build_llm_proposer({"max_output_tokens": 512, "cache_dir": cache_dir})
+    assert seen["max_output_tokens"] == 512 and seen["thinking_level"] is None
 
 
 def test_synonym_accepted_key(tmp_path, monkeypatch) -> None:

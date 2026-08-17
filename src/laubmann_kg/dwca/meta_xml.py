@@ -7,23 +7,27 @@ from xml.sax.saxutils import quoteattr
 
 DWC = "http://rs.tdwg.org/dwc/terms/"
 DC = "http://purl.org/dc/terms/"
-AC = "http://rs.tdwg.org/ac/terms/"
+OBIS = "http://rs.iobis.org/obis/terms/"
 
 ROW_TYPES = {
     "event": DWC + "Event",
     "occurrence": DWC + "Occurrence",
-    "measurement_or_fact": DWC + "MeasurementOrFact",
+    "measurement_or_fact": OBIS + "ExtendedMeasurementOrFact",
     "multimedia": "http://rs.gbif.org/terms/1.0/Multimedia",
 }
 
-# Term URI per field name. Multimedia uses Dublin Core / Audubon terms.
+# Term URI per field name; anything not listed is a Darwin Core term.
+# Multimedia uses Dublin Core terms; the eMoF *ID terms are OBIS terms (the
+# extension predates any DwC equivalent).
 TERM_URI = {
     "identifier": DC + "identifier",
     "type": DC + "type",
     "format": DC + "format",
     "title": DC + "title",
     "description": DC + "description",
-    "subjectPart": AC + "subjectPart",
+    "measurementTypeID": OBIS + "measurementTypeID",
+    "measurementValueID": OBIS + "measurementValueID",
+    "measurementUnitID": OBIS + "measurementUnitID",
 }
 
 
@@ -38,11 +42,13 @@ class FileSpec:
     fields: list[str]    # index 0 must be the join key (eventID)
 
 
-def _field_elements(fields: list[str], start: int) -> str:
+def _field_elements(fields: list[str], is_core: bool) -> str:
     lines = []
     for index, field in enumerate(fields):
-        if index == 0:
-            continue  # the id / coreid column
+        if index == 0 and not is_core:
+            continue  # extensions: the coreid column carries no term
+        # core: GBIF/IPT convention -- the id column is ALSO declared as a
+        # term (dwc:eventID) so it is interpreted, not just used for joining
         lines.append(f'    <field index="{index}" term={quoteattr(_term(field))}/>')
     return "\n".join(lines)
 
@@ -56,7 +62,7 @@ def _table(spec: FileSpec, is_core: bool) -> str:
         f'  <{tag} {attrs} rowType={quoteattr(ROW_TYPES[spec.kind])}>\n'
         f'    <files><location>{spec.filename}</location></files>\n'
         f'    <{id_tag} index="0"/>\n'
-        f'{_field_elements(spec.fields, 0)}\n'
+        f'{_field_elements(spec.fields, is_core)}\n'
         f'  </{tag}>'
     )
 

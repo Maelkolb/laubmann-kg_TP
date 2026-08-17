@@ -45,13 +45,12 @@ def test_weather_object_string_and_null_validate_strictly() -> None:
 
 
 def test_bogus_record_type_fails_enum_but_mapper_still_folds() -> None:
-    # Strict validation rejects the enum violation ...
+    # The response schema is a tolerant envelope (a German label passes) ...
     payload = json.dumps({"observations": [
         {"vernacular_de": "Amsel", "verbatim_notes": "n",
          "record_type": "Feldbeobachtung"}]})
-    with pytest.raises(ValidationError):
-        parse_structured(payload, ENTRY_SCHEMA)
-    # ... but the lenient path must not lose the entry: the mapper folds it.
+    parse_structured(payload, ENTRY_SCHEMA)
+    # ... and the mapper folds the model's own label onto the vocabulary.
     from laubmann_kg.extraction.llm_observations import extract_observations_llm
     from laubmann_kg.kg.model import DiaryEntry
     from laubmann_kg.llm.prompts import PromptLibrary

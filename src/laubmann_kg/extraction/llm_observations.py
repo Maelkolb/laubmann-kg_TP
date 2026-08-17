@@ -1,13 +1,15 @@
-"""LLM-backed entry extraction (observations, travel, persons).
+"""LLM-backed entry extraction (entry date/place, observations, travel, persons, weather).
 
 Renders the entry-extraction prompt, calls a (cached) LLM client, parses the
-structured JSON, and maps it to SHACL-safe domain objects. The model is given
-wide latitude in reading the entry; correctness is enforced here: scientific
-names are backstopped/verified against the taxon resolver (a taxon IRI is only
-taken from the resolver, never invented by the LLM), transport modes and
-qualifiers are folded onto the controlled vocabularies, travel legs must end up
-with both a departure and an arrival place or they are dropped, and times only
-become xsd:dateTime when they parse and are consistent.
+structured JSON, and maps it to SHACL-safe domain objects. The model is the
+reader and decides the CONTENT (which bird, where, how many, sex, breeding
+evidence, whether a record is an absence, who observed it, what the entry's
+place and date are). This module only enforces FORM: enum values must be in the
+controlled vocabularies (anything else -> None, never guessed from prose),
+counts must be integers, dates/times must parse, travel legs need both
+endpoints, taxon IRIs come from the resolver/authority (never invented). What
+the text does not state stays absent — no default evidence, no default
+transcription, no injected behaviours.
 """
 
 from __future__ import annotations
@@ -33,7 +35,7 @@ from laubmann_kg.kg.model import (
 from laubmann_kg.extraction.weather import map_weather
 from laubmann_kg.llm.structured_output import extract_json, parse_structured
 from laubmann_kg.normalization import vocabularies as vocab
-from laubmann_kg.normalization.places import normalize_place
+from laubmann_kg.normalization.places import lookup_coordinates, normalize_place
 from laubmann_kg.normalization.taxa import TaxonResolver
 
 logger = logging.getLogger(__name__)
@@ -42,6 +44,7 @@ _SCHEMA_PATH = Path("schemas/observation.schema.json")
 _ENTRY_SCHEMA_PATH = Path("schemas/entry_extraction.schema.json")
 
 _TIME_RE = re.compile(r"^\s*(\d{1,2})[:.h](\d{2})\s*$")
+_ISO_DATE_RE = re.compile(r"^\s*(\d{4})-(\d{2})-(\d{2})\s*$")
 
 _PERSON_ROLES = ("companion", "source", "collector", "cited-author", "other")
 
@@ -56,7 +59,8 @@ def load_array_schema(schema_path: Optional[Path] = None) -> dict:
 
 
 def load_entry_schema(schema_path: Optional[Path] = None) -> dict:
-    """Entry-level response schema ({observations, travel_events, persons}).
+    """Entry-level response schema ({entry_date, entry_place, entry_kind,
+    observations, travel_events, persons, weather}).
 
     The observation item schema is injected from ``schema_path`` (default
     schemas/observation.schema.json) so it stays single-source."""
@@ -69,6 +73,10 @@ def load_entry_schema(schema_path: Optional[Path] = None) -> dict:
     return entry
 
 
+# --------------------------------------------------------------------------
+# small sanitizers (form only)
+# --------------------------------------------------------------------------
+
 def _as_list(value) -> list:
     """Coerce model output to a list: None → [], list → list (minus Nones),
     scalar/dict → [value]. Guards against a bare string being iterated
@@ -80,44 +88,108 @@ def _as_list(value) -> list:
     return [value]
 
 
+def _text(value) -> Optional[str]:
+    """Stripped non-empty string, else None (numbers/dicts/lists are not text —
+    a citation given as 1949 or {"title": ...} must not become a Python repr)."""
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    return value or None
+
+
+def _sanitize_int(value, minimum: int = 0) -> Optional[int]:
+    if isinstance(value, bool):
+        return None
+    try:
+        number = int(str(value).strip())
+    except (TypeError, ValueError):
+        return None
+    return number if number >= minimum else None
+
+
+def _sanitize_bool(value) -> Optional[bool]:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        low = value.strip().lower()
+        if low in ("true", "yes", "ja", "1"):
+            return True
+        if low in ("false", "no", "nein", "0"):
+            return False
+    return None
+
+
+def _sanitize_confidence(value) -> Optional[float]:
+    if isinstance(value, bool) or value is None:
+        return None
+    try:
+        conf = float(value)
+    except (TypeError, ValueError):
+        return None
+    return min(max(conf, 0.0), 1.0)
+
+
+def _iso_date(value) -> Optional[str]:
+    """'YYYY-MM-DD' if it is a real calendar date, else None."""
+    text = _text(value)
+    if not text:
+        return None
+    m = _ISO_DATE_RE.match(text)
+    if not m:
+        return None
+    year, month, day = (int(g) for g in m.groups())
+    if not (1 <= month <= 12 and 1 <= day <= 31 and 1000 <= year <= 2100):
+        return None
+    import datetime as _dt
+    try:
+        _dt.date(year, month, day)
+    except ValueError:
+        return None
+    return f"{year:04d}-{month:02d}-{day:02d}"
+
+
+def _clock_time(value) -> Optional[str]:
+    text = _text(value)
+    if not text:
+        return None
+    m = _TIME_RE.match(text)
+    if not m:
+        return None
+    hour, minute = int(m.group(1)), int(m.group(2))
+    if hour > 23 or minute > 59:
+        return None
+    return f"{hour:02d}:{minute:02d}"
+
+
 def _evidence_from(items) -> list[Evidence]:
+    """Only evidence the model stated. ``kind`` outside the vocabulary (incl. an
+    explicit 'unknown') yields no node; an auditory evidence without a
+    transcription has none (no placeholder)."""
     out: list[Evidence] = []
     for item in _as_list(items):
+        if isinstance(item, str):
+            item = {"kind": item}
         if not isinstance(item, dict):
             continue
-        kind = (item.get("kind") or "").lower()
-        if kind not in vocab.EVIDENCE_KINDS:
+        kind = vocab.normalize_enum(item.get("kind"), vocab.EVIDENCE_KINDS)
+        if kind is None:
             continue
         if kind == "auditory":
-            call_type = (item.get("call_type") or "call").lower()
-            if call_type not in vocab.CALL_TYPES:
-                call_type = "unknown"
+            call_type = vocab.normalize_enum(item.get("call_type"), vocab.CALL_TYPES) or "unknown"
             out.append(Evidence("auditory", "Lautäußerung", is_call=True,
                                 call_type=call_type,
-                                call_transcription=item.get("call_transcription") or "Ruf"))
+                                call_transcription=_text(item.get("call_transcription"))))
         else:
             label = {"visual": "Sichtbeobachtung", "nest": "Nestfund / Brutnachweis",
                      "specimen": "Beleg / erlegtes Stück"}[kind]
             out.append(Evidence(kind, label))
-    return out or [Evidence("visual", "Sichtbeobachtung")]
-
-
-def _sanitize_count(value) -> Optional[int]:
-    try:
-        count = int(value)
-        return count if count >= 1 else None
-    except (TypeError, ValueError):
-        return None
-
-
-def _sanitize_qualifier(value) -> Optional[str]:
-    return value if value in vocab.COUNT_QUALIFIERS else None
+    return out
 
 
 _DIARIST_ALIASES = {"ich", "wir", "lbm", "l", "laubmann", "a. laubmann",
                     "alfred laubmann", "verfasser", "der verfasser"}
 
-_OBSERVER_PLACEHOLDERS = {"n/a", "na", "unbekannt", "unknown"}
+_OBSERVER_PLACEHOLDERS = {"n/a", "na", "unbekannt", "unknown", "null", "none"}
 
 _LETTER_RE = re.compile(r"[^\W\d_]")   # any Unicode letter (covers äöüß, é, …)
 
@@ -127,7 +199,8 @@ def _sanitize_observer(value) -> Optional[str]:
 
     The model sometimes wraps the name ({"name": "Kiel"}, ["Kiel"]); unwrap one
     level rather than dropping it, which would silently re-attribute the record
-    to the diarist."""
+    to the diarist. Only exact diarist aliases are dropped (a "Frau Laubmann"
+    stays a distinct person)."""
     if isinstance(value, dict):
         value = value.get("name")
     elif isinstance(value, list):
@@ -139,18 +212,17 @@ def _sanitize_observer(value) -> Optional[str]:
     name = value.strip().strip("()").strip()
     if not name or not _LETTER_RE.search(name):
         return None
-    low = name.lower()
-    if low.rstrip(".") in _OBSERVER_PLACEHOLDERS:
-        return None
-    if low.rstrip(".") in _DIARIST_ALIASES or "laubmann" in low:
+    low = name.lower().rstrip(".")
+    if low in _OBSERVER_PLACEHOLDERS or low in _DIARIST_ALIASES:
         return None
     return name
 
 
 def _resolve_observer(name: str, persons: list[Person]) -> Person:
     """Link an observer name to the entry's persons: exact case-insensitive name
-    first, then a unique surname match ("Kiel" -> "Förster Kiel"); otherwise a
-    fresh Person with role 'source'."""
+    first (the prompt asks the model to spell it as in ``persons``), then a
+    unique surname match ("Kiel" -> "Förster Kiel"); otherwise a fresh Person
+    with role 'source'."""
     low = name.casefold()
     for p in persons:
         if p.name.casefold() == low:
@@ -163,54 +235,133 @@ def _resolve_observer(name: str, persons: list[Person]) -> Person:
     return Person(name=name, role="source")
 
 
+# --------------------------------------------------------------------------
+# places (model-named; gazetteer only adds coordinates)
+# --------------------------------------------------------------------------
+
+def _model_place(raw, default_kind: str = "locality",
+                 verbatim_fallback: Optional[str] = None) -> Optional[Place]:
+    """Build a Place from a model-provided ``{name, verbatim, kind}`` (or bare
+    string). The model's ``name`` (modern standard spelling) is the canonical
+    label; coordinates come only from the confident gazetteer seeds."""
+    if isinstance(raw, str):
+        raw = {"name": raw}
+    if not isinstance(raw, dict):
+        return None
+    name = _text(raw.get("name"))
+    if not name:
+        return None
+    kind = vocab.normalize_enum(raw.get("kind"), vocab.PLACE_KINDS) or default_kind
+    verbatim = _text(raw.get("verbatim")) or verbatim_fallback or name
+    lat, lon = lookup_coordinates(name)
+    return Place(verbatim=verbatim, canonical=name, lat=lat, long=lon, kind=kind)
+
+
+def map_entry_place(raw, location_raw: Optional[str]) -> Optional[Place]:
+    """The entry's main place as read by the model. ``None`` when the model says
+    there is no usable place (explicit null / kind unknown without name)."""
+    place = _model_place(raw, default_kind="settlement",
+                         verbatim_fallback=(location_raw or "").strip() or None)
+    if place is not None and place.kind == "unknown":
+        return None           # the model saw no usable place (QA flags 'nonplace')
+    return place
+
+
+def map_entry_date(raw, header_iso: Optional[str]) -> dict:
+    """Return {iso, end_iso, plausible, note}. The model's ISO reading wins when
+    it parses; otherwise the upstream header date stands. A silent correction is
+    made auditable with an automatic note."""
+    out = {"iso": header_iso, "end_iso": None, "plausible": None, "note": None}
+    if isinstance(raw, str):
+        raw = {"iso": raw}
+    if not isinstance(raw, dict):
+        return out
+    iso = _iso_date(raw.get("iso"))
+    if iso:
+        out["iso"] = iso
+    end_iso = _iso_date(raw.get("end_iso"))
+    if end_iso and out["iso"] and end_iso >= out["iso"]:
+        out["end_iso"] = end_iso
+    out["plausible"] = _sanitize_bool(raw.get("plausible"))
+    out["note"] = _text(raw.get("note"))
+    if iso and header_iso and iso != header_iso and not out["note"]:
+        out["note"] = f"Datum vom Modell korrigiert (Kopfzeile: {header_iso})"
+    return out
+
+
+# --------------------------------------------------------------------------
+# observations
+# --------------------------------------------------------------------------
+
 def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
               place: Optional[Place]) -> list[Observation]:
     observations: list[Observation] = []
     for index, item in enumerate(items):
         if not isinstance(item, dict):
             continue
-        vernacular = (item.get("vernacular_de") or "").strip()
+        vernacular = _text(item.get("vernacular_de"))
         if not vernacular:
             continue
         resolution = resolver.resolve(vernacular)
-        llm_sci = (item.get("scientific_name") or "").strip() or None
+        llm_sci = _text(item.get("scientific_name"))
         scientific = llm_sci or resolution.scientific_name
-        behaviour = [Behaviour(str(b).strip()) for b in _as_list(item.get("behaviour"))
-                     if str(b).strip()]
-        if any(e.kind == "nest" for e in _evidence_from(item.get("evidence"))):
-            behaviour.append(Behaviour("Brüten / besetztes Nest", reproductive_condition="breeding"))
+        rank = vocab.normalize_enum(item.get("taxon_rank"), vocab.TAXON_RANKS)
+        if rank is None and "taxon_rank" in item and item.get("taxon_rank") is not None:
+            rank = "unknown"      # the model said something outside the vocabulary
+        # A resolver IRI is only meaningful for the resolver's own binomial.
+        taxon_iri = resolution.taxon_iri if (
+            resolution.taxon_iri and (not llm_sci or llm_sci == resolution.scientific_name)) else None
         taxon = Taxon(
             vernacular_de=vernacular,
             scientific_name=scientific,
-            taxon_iri=resolution.taxon_iri,
+            taxon_iri=taxon_iri,
             match_method="llm" if llm_sci else resolution.match_method,
-            confidence=item.get("confidence"),
-            note=None if scientific else "vom LLM nicht sicher bestimmt",
+            confidence=_sanitize_confidence(item.get("confidence")),
+            note=None if scientific else "wissenschaftlicher Name nicht angegeben",
+            rank=rank,
+            is_bird=_sanitize_bool(item.get("is_bird")),
         )
-        habitat = (item.get("habitat") or "").strip()
-        raw_citation = item.get("literature_citation")
-        citation = (raw_citation.strip() or None) if isinstance(raw_citation, str) else None
+        behaviour = [Behaviour(str(b).strip()) for b in _as_list(item.get("behaviour"))
+                     if str(b).strip()]
+        habitat = _text(item.get("habitat"))
+        citation = _text(item.get("literature_citation"))
         observer_name = _sanitize_observer(item.get("observer"))
         observer = None
         if observer_name:
             observer = _resolve_observer(observer_name, entry.persons)
             if observer not in entry.persons:
                 entry.persons.append(observer)   # the entry mentions its observers
+        flags: list[str] = []
+        # membership first; a German label the model used for the same concept
+        # ("Literaturangabe") is folded onto the vocabulary — the model's own word,
+        # not the diary text, is what gets mapped here
         record_type = vocab.normalize_record_type(item.get("record_type"))
         if record_type is None:
             record_type = ("literature-record" if citation
                            else "third-party-report" if observer is not None
                            else "field-observation")
         elif record_type == "field-observation" and (observer is not None or citation):
-            # model contradiction: an attributed/cited record is not first-person
-            record_type = "literature-record" if citation else "third-party-report"
+            # keep the model's reading, but surface the tension for review
+            flags.append("record_type_conflict")
+        occurrence_status = vocab.normalize_enum(item.get("occurrence_status"),
+                                                 vocab.OCCURRENCE_STATUS) or "present"
+        count = _sanitize_int(item.get("individual_count"), minimum=0)
+        if count == 0 and occurrence_status != "absent":
+            count = None          # a zero is only meaningful for an explicit absence
+        count_min = _sanitize_int(item.get("count_min"), minimum=0)
+        count_max = _sanitize_int(item.get("count_max"), minimum=0)
+        if count_min is not None and count_max is not None and count_max < count_min:
+            count_min, count_max = count_max, count_min
+        if count is None and count_min is not None:
+            count = count_min     # prompt: the lower bound is the count
+        locality = _model_place(item.get("locality"), default_kind="locality")
         observations.append(Observation(
             entry_uid=entry.entry_uid,
             taxon=taxon,
-            verbatim_notes=(item.get("verbatim_notes") or entry.text_clean or vernacular).strip(),
-            place=place,
-            individual_count=_sanitize_count(item.get("individual_count")),
-            count_qualifier=_sanitize_qualifier(item.get("count_qualifier")),
+            verbatim_notes=_text(item.get("verbatim_notes")) or entry.text_clean or vernacular,
+            place=locality or place,
+            individual_count=count,
+            count_qualifier=vocab.normalize_enum(item.get("count_qualifier"), vocab.COUNT_QUALIFIERS),
             evidence=_evidence_from(item.get("evidence")),
             behaviour=behaviour,
             habitat=Habitat(habitat) if habitat else None,
@@ -218,30 +369,44 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             record_type=record_type,
             observer=observer,
             literature_citation=citation,
+            locality=locality,
+            occurrence_status=occurrence_status,
+            count_min=count_min,
+            count_max=count_max,
+            sex=vocab.normalize_enum(item.get("sex"), vocab.SEXES),
+            life_stage=vocab.normalize_enum(item.get("life_stage"), vocab.LIFE_STAGES),
+            breeding_evidence=vocab.normalize_enum(item.get("breeding_evidence"), vocab.BREEDING_EVIDENCE),
+            vitality=vocab.normalize_enum(item.get("vitality"), vocab.VITALITY),
+            movement_kind=vocab.normalize_enum(item.get("movement_kind"), vocab.MOVEMENT_KINDS),
+            flight_direction=_text(item.get("flight_direction")),
+            identification_qualifier=_text(item.get("identification_qualifier")),
+            event_date=_iso_date(item.get("event_date")),
+            event_time=_clock_time(item.get("event_time")),
+            flags=tuple(flags),
         ))
     return observations
 
 
+# --------------------------------------------------------------------------
+# travel
+# --------------------------------------------------------------------------
+
 def _travel_place(name) -> Optional[Place]:
-    """Resolve a travel place via the gazetteer, falling back to a minimal
-    Place carrying the verbatim name (PlaceShape only requires a label)."""
-    raw = (str(name) if name is not None else "").strip()
+    """A travel place named by the model (modern spelling requested); the
+    gazetteer only adds coordinates. Falls back to the verbatim string."""
+    raw = _text(name)
     if not raw:
         return None
-    return normalize_place(raw) or Place(verbatim=raw)
+    lat, lon = lookup_coordinates(raw)
+    return Place(verbatim=raw, canonical=raw, lat=lat, long=lon, kind="settlement" if lat is not None else None)
 
 
 def _iso_datetime(entry_date: Optional[str], raw) -> Optional[str]:
     """Combine the entry's ISO date with a stated clock time → xsd:dateTime."""
-    if not entry_date or raw is None:
+    if not entry_date:
         return None
-    m = _TIME_RE.match(str(raw))
-    if not m:
-        return None
-    hour, minute = int(m.group(1)), int(m.group(2))
-    if hour > 23 or minute > 59:
-        return None
-    return f"{entry_date}T{hour:02d}:{minute:02d}:00"
+    clock = _clock_time(raw)
+    return f"{entry_date}T{clock}:00" if clock else None
 
 
 def map_travel(entry: DiaryEntry, items: list,
@@ -285,7 +450,7 @@ def map_travel(entry: DiaryEntry, items: list,
                 transport_mode=vocab.normalize_transport_mode(raw_leg.get("transport_mode")),
                 departure_time=dep_t,
                 arrival_time=arr_t,
-                verbatim=(raw_leg.get("verbatim") or "").strip() or None,
+                verbatim=_text(raw_leg.get("verbatim")),
             ))
             prev_arrival = arrival
         if legs:
@@ -297,9 +462,11 @@ def map_persons(items: list) -> list[Person]:
     out: list[Person] = []
     seen: set[str] = set()
     for item in _as_list(items):
+        if isinstance(item, str):
+            item = {"name": item}
         if not isinstance(item, dict):
             continue
-        name = (item.get("name") or "").strip()
+        name = _text(item.get("name"))
         if not name or name.lower() in seen:
             continue
         seen.add(name.lower())
@@ -308,11 +475,19 @@ def map_persons(items: list) -> list[Person]:
     return out
 
 
+# --------------------------------------------------------------------------
+# entry point
+# --------------------------------------------------------------------------
+
 def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
                              place: Optional[Place], prompts, schema: dict) -> list[Observation]:
-    """One LLM call per entry. Returns the observations; travel_events, persons,
-    and weather are attached to ``entry`` directly. Legacy array-only responses
-    (old caches, old schema configs) are accepted as bare observations.
+    """One LLM call per entry. Returns the observations; entry place/date/kind,
+    travel_events, persons, and weather are attached to ``entry`` directly.
+    Legacy array-only responses (old caches, old schema configs) are accepted
+    as bare observations.
+
+    ``place`` is the caller's fallback for the entry place (used only when the
+    response carries no ``entry_place`` key at all, e.g. legacy responses).
 
     Ordering is load-bearing: ``entry.persons`` is assigned before ``map_items``
     runs so ``_resolve_observer`` sees the entry's persons; do not reorder."""
@@ -322,6 +497,7 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
     prompt = prompts.render(
         "observation_extraction",
         entry_date=entry.entry_date or "",
+        date_raw=entry.verbatim_event_date or "",
         location=entry.location_raw or "",
         text=text,
     )
@@ -341,10 +517,24 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
         data = {"observations": data}
     if not isinstance(data, dict):
         data = {}
-    entry.travel_events = map_travel(entry, data.get("travel_events"), place)
+
+    # entry-level reading first: date, place, kind
+    entry.header_date = entry.entry_date
+    date = map_entry_date(data.get("entry_date"), entry.entry_date)
+    entry.entry_date = date["iso"]
+    entry.entry_date_end = date["end_iso"]
+    entry.date_plausible = date["plausible"]
+    entry.date_note = date["note"]
+    if "entry_place" in data:
+        entry.place = map_entry_place(data.get("entry_place"), entry.location_raw)
+    else:
+        entry.place = place                    # legacy response: caller's fallback
+    entry.entry_kind = vocab.normalize_enum(data.get("entry_kind"), vocab.ENTRY_KINDS)
+
+    entry.travel_events = map_travel(entry, data.get("travel_events"), entry.place)
     entry.persons = map_persons(data.get("persons"))
     entry.weather = map_weather(data.get("weather"))
     items = data.get("observations") or []
     if not isinstance(items, list):
         items = [items]
-    return map_items(entry, items, resolver, place)
+    return map_items(entry, items, resolver, entry.place)

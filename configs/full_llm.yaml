@@ -18,7 +18,9 @@ extraction:
   model: gemini-3.5-flash
   api_key_env: GOOGLE_API_KEY
   temperature: 0.0
-  max_output_tokens: 8192   # entry-level output (observations + travel + persons)
+  max_output_tokens: 16384  # entry-level output (observations + travel + persons); the
+                            # model-facing fields grew and thinking tokens may count
+                            # against the cap -- truncated answers are not cached
   timeout: 120
   thinking_level: low       # minimal | low | medium (API default) | high
   concurrency: 8            # parallel Gemini calls; lower to 4 if 429s appear
@@ -54,6 +56,8 @@ linking:
       cache_dir: data/cache/linking_llm
       prompt_dir: prompts        # uses prompts/taxon_normalization.md (revived)
       min_confidence: 0.7        # LLM proposals below this go straight to review
+      thinking_level: low        # minimal | low | medium | high
+      max_output_tokens: 1024    # small JSON answer; headroom for thinking tokens
   persons:
     enabled: true
     reviewed_csv: null
@@ -68,5 +72,7 @@ paths:
 dwca:
   publisher: Laubmann KG Project
   license: CC-BY-4.0
+  title: "Laubmann ornithological field diaries 1917–1965 — observations"
+  package_id: laubmann-kg-full
 
 validate: true

@@ -1,0 +1,11 @@
+flowchart LR
+    A["Stage A · Corpus<br/>HistOrniGraph region JSONs → entries.csv + multimodal.md<br/>(HistOrniGraph_addons/build_corpus.py)"] --> B["Stage B · Dedup<br/>detect → review.html (human) → apply_dedup.py<br/>corpus_*_dedup/ (6,750 pages · 9,527 entries)"]
+    B --> C["LLM reading · one call per entry<br/>prompts/observation_extraction.md · gemini-3.5-flash<br/>entry_date · entry_place · entry_kind · observations · travel · persons · weather<br/>(cached on Drive, temperature 0, thinking low)"]
+    C --> D["Mapper · form only<br/>extraction/llm_observations.py · weather.py<br/>vocab membership · dates/times parse · SHACL-safe legs<br/>gazetteer adds coordinates only"]
+    D --> E["QA · thresholds on model signals<br/>qa.py → review/qa_flags.csv<br/>non_bird · low_confidence_taxon · implausible_date · misdate (flag)"]
+    E --> F["Linking<br/>linking/taxa.py → GBIF species/match (rank-aware)<br/>linking/persons.py → Wikidata (P31=Q5)<br/>→ review/taxon_link_review.csv · person_link_review.csv"]
+    F --> G["RDF emit · kg/rdf.py<br/>lkg + DwC/dwciri co-emitted · SKOS concepts · PROV run<br/>→ Turtle + JSON-LD (context 1.1)"]
+    G --> H["SHACL gate<br/>ontologies/shacl_shapes.ttl · pyshacl, inference=none"]
+    F --> I["DwC-A · dwca/<br/>event core + occurrence + OBIS eMoF + multimedia<br/>meta.xml · EML (coverage, licence, methods)"]
+    H -.->|exported TTL| J["Post-hoc kg_enrich (Fuseki)<br/>dedup_entities.py (owl:sameAs) · georef_places.py (Nominatim)<br/>apply_enrichment.py · update_dwca.py"]
+    I -.-> J

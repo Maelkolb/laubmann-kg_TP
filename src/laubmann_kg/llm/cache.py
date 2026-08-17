@@ -20,7 +20,12 @@ def cache_key(*parts: Any) -> str:
 
 class LLMCache:
     """Deterministic disk cache. Keys are content hashes so identical requests
-    reproduce byte-for-byte across runs."""
+    reproduce byte-for-byte across runs.
+
+    Record layout: ``{"request": {...}, "response": <text>}``. The KEY is
+    ``cache_key(model, prompt)`` only -- generation parameters (temperature,
+    max_output_tokens, thinking_level) are stored inside ``request["params"]``
+    for audit but deliberately do not invalidate the cache."""
 
     def __init__(self, cache_dir: Path = DEFAULT_CACHE_DIR) -> None:
         self.cache_dir = Path(cache_dir)

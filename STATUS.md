@@ -107,13 +107,34 @@ corpus: build → detect → decisions → apply → `export-jsonld` (SHACL: 0/0
 Remaining human step: adjudicate `review.html` for the full corpus and export
 `dedup_decisions.json` (see `notebooks/07_full_workflow_colab.ipynb`, stage B).
 
+## Current state (2026-08-17)
+
+- Extraction is **model-driven, heuristics removed** (see CHANGELOG 2026-08-17):
+  the LLM reads entry date/place/kind and every observation detail (locality,
+  rank, absence, counts/ranges, sex, life stage, breeding evidence, vitality,
+  movement, hedges, own date/time, provenance); code checks form only. QA is
+  threshold-based on model signals. Ontology 0.3.0, DwC co-emission, PROV run
+  node, OBIS eMoF in the DwC-A. Structure diagrams: `docs/kg_structure.mmd`,
+  `docs/pipeline.mmd`.
+- Full 34-volume rerun: run `notebooks/07_full_workflow_colab.ipynb` (v2:
+  Drive-resident caches for LLM + linking + review CSVs, smoke-test cell,
+  fresh `kg_exports_<tag>` per run). The prompt changed, so the run is fully
+  live (~2–3 h extraction + linking); the old `llm_cache/` is dead.
+- Offline replay of the 9,527 cached 2026-08-12 responses through the new
+  mapper → RDF → SHACL → DwC-A: 0 mapper errors, 68,990 observations, ~1.95 M
+  triples, SHACL conformant.
+
 ## Deferred / not done
 
-- Full 34-volume build: **unblocked** — run
-  `notebooks/07_full_workflow_colab.ipynb` (needs the dedup review decisions
-  and a Gemini key; `configs/full_llm.yaml` is the run config).
-- Travel/route/time extraction.
-- External taxon IRIs and GBIF/Avibase alignment (needs `links_long`).
+- Person/taxon variant merging inside the pipeline (today post hoc via
+  `HistOrniGraph_addons/kg_enrich/dedup_entities.py`); Nominatim georeferencing
+  as a `linking/places.py` stage (today post hoc `georef_places.py`).
+- w3id namespace migration (prefix rewrite; all uids are content-addressed).
+- Gemini structured output (`response_json_schema`) — would retire json-repair;
+  needs a live A/B on ~50 entries.
+- Travel legs in the DwC-A (`parentEventID` sub-events); `observedDuring`,
+  Route/TimeEstimate emission.
+- Avibase alignment (needs `links_long`).
 - `preprocess` / `detect-layout` / `transcribe` stages remain stubs (handled
   upstream by HistOrniGraph, per the task brief).
 - LLM extraction backend: **wired**. A Gemini provider adapter and an
@@ -126,5 +147,5 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
 - Live Gemini run on Vol. 2 (Colab, 2026-08): 233 entries → 1,573 observations,
   28,298 triples. The 6 `callTranscription` SHACL violations seen in that run
   came from an export made before da5739f (evidence URIs without the index
-  suffix); current HEAD always writes a transcription and unique evidence URIs,
-  so a re-export should validate clean.
+  suffix); since da5739f evidence URIs are unique, and since 2026-08-17
+  `callTranscription` is optional (no placeholder), so re-exports validate clean.

@@ -1,8 +1,19 @@
 # Darwin Core Archive export configuration.
 # Layout: Event-core sampling-event star schema (one core + three extensions),
-# joined by eventID. Each diary entry is an Event; each observation an Occurrence.
-publisher: Laubmann KG Project
-license: CC-BY-4.0
+# joined by eventID. Each diary entry is an Event; each observation an
+# Occurrence; categorical facts (evidence kind, call type, count qualifier,
+# breeding evidence, movement kind) are OBIS ExtendedMeasurementOrFact rows
+# whose measurementTypeID / measurementValueID point at the project SKOS
+# vocabulary (ontologies/controlled_vocabularies.ttl).
+#
+# The same keys live under `dwca:` in the pipeline configs (sample*.yaml,
+# full_llm.yaml); this file documents them.
+publisher: Laubmann KG Project           # EML metadataProvider + contact (organizationName)
+license: CC-BY-4.0                       # EML intellectualRights (CC-BY-4.0 | CC-BY-SA-4.0 | CC0-1.0 | free text)
+title: "Laubmann ornithological field diaries 1917–1965 — observations"   # EML dataset title
+package_id: laubmann-kg-full             # EML packageId (use e.g. laubmann-kg-sample for sample builds)
+# abstract: ...                          # optional override of the built-in EML abstract
+# zip_name: laubmann_sample_dwca.zip     # archive file name inside the output dir
 core: event
 extensions:
   - occurrence

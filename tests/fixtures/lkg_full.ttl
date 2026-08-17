@@ -1,7 +1,7 @@
 @prefix data:     <https://lkg.example.org/data/> .
 @prefix dwc:      <http://rs.tdwg.org/dwc/terms/> .
 @prefix gbif:     <https://www.gbif.org/species/> .
-@prefix geo1:     <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix geo:      <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix geonames: <https://sws.geonames.org/> .
 @prefix lkg:      <https://lkg.example.org/ontology#> .
 @prefix owl:      <http://www.w3.org/2002/07/owl#> .
@@ -102,30 +102,37 @@ data:taxon_Storch a lkg:Taxon ;
 data:place_Munich a lkg:Place ;
     rdfs:label "München"@de ;
     owl:sameAs geonames:2867714, wd:Q1726 ;
-    geo1:lat 48.1374 ; geo1:long 11.5755 .
+    geo:lat 48.1374 ; geo:long 11.5755 .
 
 data:place_Augsburg a lkg:Place ;
     rdfs:label "Augsburg"@de ;
     owl:sameAs geonames:2954172, wd:Q2749 ;
-    geo1:lat 48.3717 ; geo1:long 10.8983 .
+    geo:lat 48.3717 ; geo:long 10.8983 .
 
 data:place_Ulm a lkg:Place ;
     rdfs:label "Ulm"@de ;
     owl:sameAs geonames:2820860, wd:Q6810 ;
-    geo1:lat 48.3984 ; geo1:long 9.9908 .
+    geo:lat 48.3984 ; geo:long 9.9908 .
 
 data:place_Zwiefaltendorf a lkg:Place ;
     rdfs:label "Zwiefaltendorf"@de ;
     owl:sameAs geonames:2803993, wd:Q1533 ;
-    geo1:lat 48.2167 ; geo1:long 9.4333 .
+    geo:lat 48.2167 ; geo:long 9.4333 .
 
 data:place_Gossenzugen a lkg:Place ;
     rdfs:label "Gossenzugen"@de ;
-    geo1:lat 48.2500 ; geo1:long 9.4500 .
+    geo:lat 48.2500 ; geo:long 9.4500 .
 
-data:place_AachGrassland a lkg:Habitat, lkg:Place ;
+data:place_AachGrassland a lkg:Place ;
     rdfs:label "Wiesenland längs der Aach"@de ;
-    dwc:habitat "Wiesenland längs der Aach"@de .
+    lkg:placeKind "locality" .
+
+# Habitat = skos:Concept in lkg:habitatScheme (v0.3: no longer a Place)
+data:habitat_AachGrassland a lkg:Habitat, skos:Concept ;
+    rdfs:label "Wiesenland"@de ;
+    skos:prefLabel "Wiesenland"@de ;
+    skos:inScheme lkg:habitatScheme ;
+    dwc:habitat "Wiesenland"@de .
 
 data:place_ZwiefaltendorfChurchTower a lkg:Place ;
     rdfs:label "Kirchturm in Zwiefaltenkloster"@de .
@@ -145,11 +152,12 @@ data:obs_Kiebitz_Mering a lkg:ObservationEvent ;
     lkg:verbatimNotes    "einige Kiebitze auf den Feldern"@de ;
     lkg:hasEvidence      data:evidence_Kiebitz_visual ;
     lkg:hasTimeEstimate  data:timeest_obs_Kiebitz ;
+    dwc:occurrenceStatus "present" ;
     dwc:occurrenceRemarks "Felder zwischen München und Augsburg, nach Station Mering"@de .
 
 data:evidence_Kiebitz_visual a lkg:ObservationEvidence ;
     rdfs:label "Sichtbeobachtung"@de ;
-    dwc:occurrenceStatus "present" .
+    lkg:evidenceKind lkg:evidence_visual .
 
 data:timeest_obs_Kiebitz a lkg:TimeEstimate ;
     time:hasBeginning "1925-05-29T17:00:00"^^xsd:dateTime ;
@@ -185,6 +193,7 @@ data:obs_Heuschreckensaenger a lkg:ObservationEvent ;
 
 data:evidence_Heuschreckensaenger_sound a lkg:BirdCall ;
     rdfs:label "Schwirrgesang"@de ;
+    lkg:evidenceKind      lkg:evidence_auditory ;
     lkg:callType          "song" ;
     lkg:callTranscription "schwirrt" .
 
@@ -198,7 +207,8 @@ data:obs_Wachtelkoenig a lkg:ObservationEvent ;
     rdfs:label "Wachtelkönige im Wiesenland längs der Aach"@de ;
     lkg:observedTaxon    data:taxon_Wachtelkoenig ;
     lkg:observedAt       data:place_AachGrassland ;
-    lkg:hasHabitat       data:place_AachGrassland ;
+    lkg:hasHabitat       data:habitat_AachGrassland ;
+    dwc:habitat          "Wiesenland"@de ;
     lkg:observedDuring   data:leg_walk_Zwiefaltendorf_Gossenzugen ;
     lkg:derivedFromEntry data:entry_19250529 ;
     lkg:countQualifier   "plural-unspecified" ;
@@ -245,7 +255,9 @@ data:obs_Storch_Kirchturm a lkg:ObservationEvent ;
     lkg:verbatimNotes    "das besetzte Storchennest ist auf dem Kirchturm zu erkennen"@de ;
     lkg:hasBehaviour     data:behaviour_Storch_breeding ;
     lkg:hasEvidence      data:evidence_Storch_nest ;
-    lkg:hasTimeEstimate  data:timeest_obs_Storch .
+    lkg:hasTimeEstimate  data:timeest_obs_Storch ;
+    dwc:occurrenceStatus "present" ;
+    lkg:breedingEvidence "confirmed" .
 
 data:behaviour_Storch_breeding a lkg:BehaviourNote ;
     rdfs:label "Brüten / besetztes Nest"@de ;
@@ -253,7 +265,7 @@ data:behaviour_Storch_breeding a lkg:BehaviourNote ;
 
 data:evidence_Storch_nest a lkg:ObservationEvidence ;
     rdfs:label "Nestfund – visuell"@de ;
-    dwc:occurrenceStatus "present" ;
+    lkg:evidenceKind lkg:evidence_nest ;
     skos:note "besetztes Nest auf Kirchturm erkannt"@de .
 
 data:timeest_obs_Storch a lkg:TimeEstimate ;

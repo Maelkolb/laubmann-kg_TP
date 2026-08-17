@@ -29,6 +29,24 @@ TAXON_REVIEW_FIELDS = ["vernacular_de", "taxon_uid", "n_observations",
 
 _SCHEMA_PATH = Path("schemas/taxon_normalization.schema.json")
 _ACCEPT_RANKS = ("SPECIES", "SUBSPECIES")
+# taxon.rank (model-provided) -> GBIF ranks accepted for an EXACT/FUZZY link.
+# A genus- or family-level name IS the taxon the diarist meant, so the match at
+# that rank is exact, not a broad anchor. Everything else keeps the species gate.
+_ACCEPT_RANKS_BY_ITEM_RANK = {
+    "genus": ("GENUS",),
+    "family": ("FAMILY",),
+}
+DEFAULT_TAXON_CLASS = "Aves"
+
+
+def gbif_cache_key(scientific_name: str, taxon_class: Optional[str] = DEFAULT_TAXON_CLASS) -> str:
+    """Cache key for a species/match lookup. Bird lookups keep the legacy
+    ``match:<name>`` form so existing caches stay valid; any other class (or
+    none, for is_bird == False) is keyed ``match:<class>:<name>``."""
+    name = scientific_name.strip().lower()
+    if taxon_class == DEFAULT_TAXON_CLASS:
+        return "match:" + name
+    return f"match:{(taxon_class or 'any').strip().lower()}:{name}"
 
 
 class GbifClient:
@@ -37,16 +55,21 @@ class GbifClient:
         self.offline = offline
         self.sleep_s = sleep_s
 
-    def match(self, scientific_name: str) -> Optional[dict]:
-        key = "match:" + scientific_name.strip().lower()
+    def match(self, scientific_name: str,
+              taxon_class: Optional[str] = DEFAULT_TAXON_CLASS) -> Optional[dict]:
+        """``taxon_class`` narrows the backbone search (default Aves); pass
+        None for a non-bird taxon (kingdom Animalia only)."""
+        key = gbif_cache_key(scientific_name, taxon_class)
         if key in self.cache:
             return self.cache.get(key)
         if self.offline:
             return None
         # kingdom/class narrow the backbone search and disambiguate homonym
         # genera (bare "Oenanthe" -> the bird, not the plant).
-        response = http.get_json(GBIF_MATCH_URL, {
-            "name": scientific_name, "kingdom": "Animalia", "class": "Aves"})
+        params = {"name": scientific_name, "kingdom": "Animalia"}
+        if taxon_class:
+            params["class"] = taxon_class
+        response = http.get_json(GBIF_MATCH_URL, params)
         if response is None:
             return None
         time.sleep(self.sleep_s)
@@ -75,8 +98,10 @@ def build_llm_proposer(cfg: dict):
                 "model": cfg.get("model"),
                 "api_key_env": cfg.get("api_key_env", "GOOGLE_API_KEY"),
                 "temperature": cfg.get("temperature", 0.0),
-                "max_output_tokens": cfg.get("max_output_tokens", 256),
+                # small JSON answer, but thinking tokens may count against the cap
+                "max_output_tokens": cfg.get("max_output_tokens", 1024),
                 "timeout": cfg.get("timeout", 60),
+                "thinking_level": cfg.get("thinking_level"),
                 "retry_attempts": cfg.get("retry_attempts", 2),
                 "retry_backoff": cfg.get("retry_backoff", 2.0),
             })
@@ -133,7 +158,8 @@ def build_llm_proposer(cfg: dict):
 
 def _collect_taxa(result) -> list[dict]:
     """Distinct taxa by lowercased vernacular, ordered (-n_observations, name);
-    context = up to 3 distinct verbatim notes in entry order."""
+    context = up to 3 distinct verbatim notes in entry order. ``rank`` and
+    ``is_bird`` are the first non-None values seen (model-provided)."""
     by_name: dict[str, dict] = {}
     for entry in result.entries:
         for obs in entry.observations:
@@ -141,11 +167,17 @@ def _collect_taxa(result) -> list[dict]:
                 "vernacular_de": obs.taxon.vernacular_de,
                 "taxon_uid": obs.taxon.uid,
                 "scientific_name": None,
+                "rank": None,
+                "is_bird": None,
                 "n_observations": 0,
                 "notes": [],
             })
             if info["scientific_name"] is None:
                 info["scientific_name"] = obs.taxon.scientific_name
+            if info["rank"] is None:
+                info["rank"] = getattr(obs.taxon, "rank", None)
+            if info["is_bird"] is None:
+                info["is_bird"] = getattr(obs.taxon, "is_bird", None)
             info["n_observations"] += 1
             if (obs.verbatim_notes and len(info["notes"]) < 3
                     and obs.verbatim_notes not in info["notes"]):
@@ -217,11 +249,15 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                 rows.append(row)
                 continue
             candidate = item["scientific_name"]
+            # the class parameter only applies to birds; a taxon the model
+            # marked as non-bird is matched against kingdom Animalia alone
+            taxon_class = DEFAULT_TAXON_CLASS if item.get("is_bird") is not False else None
+            accept_ranks = _ACCEPT_RANKS_BY_ITEM_RANK.get(item.get("rank"), _ACCEPT_RANKS)
             # limit caps UNCACHED lookups per run: a name consumes budget only
             # when real LLM/network work would fire, so capped runs progress
             # across restarts once earlier names are fully cached.
             if candidate is not None:
-                needs_lookup = "match:" + candidate.strip().lower() not in cache
+                needs_lookup = gbif_cache_key(candidate, taxon_class) not in cache
             elif proposer is None:
                 needs_lookup = False          # no LLM available -> nothing fires
             else:
@@ -232,7 +268,7 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                 else:
                     proposed = cached.get("scientific_name")
                     needs_lookup = bool(proposed) and (
-                        "match:" + proposed.strip().lower() not in cache)
+                        gbif_cache_key(proposed, taxon_class) not in cache)
             if limit and needs_lookup and uncached >= limit:
                 continue
             if needs_lookup:
@@ -256,7 +292,7 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                 llm_accepted = proposal["confidence"] >= llm_min_confidence
                 row["llm_scientific_name"] = candidate
                 row["llm_confidence"] = proposal["confidence"]
-            response = client.match(candidate)
+            response = client.match(candidate, taxon_class=taxon_class)
             if response is None:
                 row["status"] = "error"  # uncached -> retried next run
                 rows.append(row)
@@ -268,7 +304,10 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
             if response.get("synonym") and response.get("acceptedUsageKey"):
                 accepted_key = response.get("acceptedUsageKey")
             canonical = response.get("canonicalName") or ""
-            rank_ok = (response.get("rank") or "") in _ACCEPT_RANKS
+            # rank gate: species-level items accept SPECIES/SUBSPECIES; a
+            # genus-/family-level item accepts a match AT that rank (the taxon
+            # IS the genus/family -> exactMatch/closeMatch + taxonID)
+            rank_ok = (response.get("rank") or "").upper() in accept_ranks
             row.update(gbif_match_type=match_type, gbif_confidence=confidence,
                        gbif_key="" if accepted_key is None else accepted_key,
                        gbif_canonical_name=canonical)

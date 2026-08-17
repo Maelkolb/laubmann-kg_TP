@@ -9,7 +9,6 @@ if TYPE_CHECKING:
 
 FIELDS = [
     "eventID", "identifier", "type", "format", "title", "description",
-    "subjectPart",
 ]
 
 _EXT_FORMAT = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "tif": "image/tiff"}
@@ -33,10 +32,19 @@ def build_multimedia(result: "ExtractionResult") -> list[dict]:
             "type": "StillImage",
             "format": _format(crop),
             "title": region.get("region_type") or "",
-            "description": region.get("description") or "",
-            "subjectPart": region.get("visible_text") or "",
+            "description": _description(region),
         })
     return rows
+
+
+def _description(region: dict) -> str:
+    """Region description; any transcribed visible text is folded in (Simple
+    Multimedia has no dedicated term for it)."""
+    description = " ".join((region.get("description") or "").split())
+    visible = " ".join((region.get("visible_text") or "").split())
+    if visible:
+        return f"{description} — Text: {visible}" if description else f"Text: {visible}"
+    return description
 
 
 def media_by_entry(result: "ExtractionResult") -> dict[str, list[str]]:

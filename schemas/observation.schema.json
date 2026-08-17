@@ -1,39 +1,57 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Observation",
-  "description": "One ornithological observation extracted from a diary entry.",
+  "description": "One natural-history (normally bird) record extracted from a diary entry. Tolerant envelope: enum-valued fields are validated by the mapper (normalization/vocabularies.py), which is the enforcer; optional keys may be omitted by the model.",
   "type": "object",
   "required": ["vernacular_de"],
   "additionalProperties": false,
   "properties": {
     "vernacular_de": {"type": "string", "minLength": 1},
+    "taxon_rank": {"type": ["string", "null"]},
     "scientific_name": {"type": ["string", "null"]},
+    "is_bird": {"type": ["boolean", "string", "null"]},
     "verbatim_notes": {"type": ["string", "null"]},
     "individual_count": {"type": ["integer", "string", "null"]},
+    "count_min": {"type": ["integer", "string", "null"]},
+    "count_max": {"type": ["integer", "string", "null"]},
     "count_qualifier": {
       "type": ["string", "null"],
       "enum": ["exact", "minimum", "approximate", "plural-unspecified", null]
     },
+    "occurrence_status": {"type": ["string", "null"]},
     "evidence": {
       "type": ["array", "string", "null"],
       "items": {
         "type": "object",
         "required": ["kind"],
         "properties": {
-          "kind": {"type": "string", "enum": ["visual", "auditory", "nest", "specimen"]},
-          "call_type": {"type": ["string", "null"], "enum": ["song", "call", "alarm", "drumming", "unknown", null]},
+          "kind": {"type": "string"},
+          "call_type": {"type": ["string", "null"]},
           "call_transcription": {"type": ["string", "null"]}
         }
       }
     },
     "behaviour": {"type": ["array", "string", "null"], "items": {"type": "string"}},
+    "breeding_evidence": {"type": ["string", "null"]},
     "habitat": {"type": ["string", "null"]},
-    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
-    "record_type": {
-      "type": ["string", "null"],
-      "enum": ["field-observation", "third-party-report", "literature-record", null]
+    "locality": {
+      "type": ["object", "string", "null"],
+      "properties": {
+        "name": {"type": ["string", "null"]},
+        "verbatim": {"type": ["string", "null"]}
+      }
     },
-    "observer": {"type": ["string", "null"]},
+    "sex": {"type": ["string", "null"]},
+    "life_stage": {"type": ["string", "null"]},
+    "vitality": {"type": ["string", "null"]},
+    "movement_kind": {"type": ["string", "null"]},
+    "flight_direction": {"type": ["string", "null"]},
+    "identification_qualifier": {"type": ["string", "null"]},
+    "confidence": {"type": ["number", "string", "null"]},
+    "event_date": {"type": ["string", "null"]},
+    "event_time": {"type": ["string", "null"]},
+    "record_type": {"type": ["string", "null"]},
+    "observer": {"type": ["string", "object", "array", "null"]},
     "literature_citation": {"type": ["string", "null"]}
   }
 }

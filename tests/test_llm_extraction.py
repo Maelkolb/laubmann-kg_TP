@@ -78,6 +78,7 @@ def test_lenient_fallback_and_sanitization() -> None:
                            "individual_count": 0, "count_qualifier": "lots", "evidence": []}])
     obs, _ = _run(".", payload)
     assert len(obs) == 1
-    assert obs[0].individual_count is None
+    assert obs[0].individual_count is None      # 0 without an explicit absence is meaningless
     assert obs[0].count_qualifier is None
-    assert obs[0].evidence[0].kind == "visual"  # default when none given
+    assert obs[0].evidence == []                # nothing stated -> nothing fabricated
+    assert obs[0].occurrence_status == "present"

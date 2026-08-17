@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "EntryExtraction",
-  "description": "Full structured reading of one diary entry: observations, travel events, and mentioned persons. The observation item schema is injected at load time from observation.schema.json (single source of truth). Deliberately tolerant: the model may emit a travel event either as {legs: [...]} or as a bare leg object; type-level correctness (vocabularies, time consistency, required endpoints) is enforced by the mapper, not here. Entry-level weather is one optional object (or bare verbatim string); provenance fields (record_type/observer/literature_citation) live on each observation.",
+  "description": "Full structured reading of one diary entry: the entry's own date and place, its kind, observations, travel events, mentioned persons, and weather. The observation item schema is injected at load time from observation.schema.json (single source of truth). Deliberately tolerant: the model may emit a travel event either as {legs: [...]} or as a bare leg object; type-level correctness (vocabularies, time consistency, required endpoints) is enforced by the mapper, not here. Entry-level weather is one optional object (or bare verbatim string); provenance fields (record_type/observer/literature_citation) live on each observation.",
   "type": "object",
   "required": ["observations"],
   "additionalProperties": false,
@@ -20,6 +20,24 @@
     }
   },
   "properties": {
+    "entry_date": {
+      "type": ["object", "string", "null"],
+      "properties": {
+        "iso": {"type": ["string", "null"]},
+        "end_iso": {"type": ["string", "null"]},
+        "plausible": {"type": ["boolean", "string", "null"]},
+        "note": {"type": ["string", "null"]}
+      }
+    },
+    "entry_place": {
+      "type": ["object", "string", "null"],
+      "properties": {
+        "name": {"type": ["string", "null"]},
+        "verbatim": {"type": ["string", "null"]},
+        "kind": {"type": ["string", "null"]}
+      }
+    },
+    "entry_kind": {"type": ["string", "null"]},
     "observations": {"type": "array", "items": {}},
     "travel_events": {
       "type": ["array", "null"],

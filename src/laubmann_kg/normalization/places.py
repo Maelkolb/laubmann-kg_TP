@@ -1,12 +1,13 @@
-"""Normalize diary place names and resolve coordinates where confident.
+"""Place coordinates (confident gazetteer seeds) and the legacy header normalizer.
 
-The corpus ``location_raw`` column is produced by upstream page segmentation and
-is noisy: it carries elevation suffixes ("Oberstdorf 843 m"), descriptor tails
-("Kochel. Herzogstandhaus 1555 m"), and — where a heading was mis-segmented —
-bird names or fragments that are not localities at all. This module cleans the
-plausible ones and rejects the implausible ones (returning ``None``) so they do
-not become ``Place`` nodes; the QA pass reports the rejects via
-``rejection_reason``.
+With the LLM backend the MODEL reads the noisy ``location_raw`` header and the
+entry text and returns the entry's place (and per-record localities) in modern
+standard spelling; this module then only adds coordinates for the few places it
+knows for sure (``lookup_coordinates``) — it never decides what the place is.
+
+``normalize_place`` / ``rejection_reason`` are the older regex-based header
+cleaners. They remain in use for the offline (rule-based) backend and as the
+fallback for legacy LLM responses that carry no ``entry_place`` key.
 """
 
 from __future__ import annotations
@@ -65,6 +66,20 @@ def _clean_head(verbatim: str) -> str:
 def _key(raw: str) -> str:
     key = raw.strip().lower().strip(".")
     return _ALIASES.get(key, key)
+
+
+def lookup_coordinates(name: Optional[str]) -> tuple[Optional[float], Optional[float]]:
+    """Coordinates for a place NAME (as read by the model, modern spelling) from
+    the confident gazetteer seeds; ``(None, None)`` when unknown. Pure lookup:
+    it never changes or rejects the name."""
+    if not name or not name.strip():
+        return None, None
+    seed = PLACE_GAZETTEER.get(_key(name))
+    if seed is None:
+        seed = PLACE_GAZETTEER.get(_key(_clean_head(name)))
+    if seed is None:
+        return None, None
+    return seed[1], seed[2]
 
 
 def rejection_reason(location_raw: Optional[str]) -> Optional[str]:

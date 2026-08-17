@@ -42,30 +42,49 @@ def test_occurrence_event_join_integrity(sample_config, tmp_path: Path) -> None:
     assert len({r["occurrenceID"] for r in occ}) == len(occ)
 
 
-def test_appended_columns_present_and_prefix_order_unchanged(sample_config,
-                                                             tmp_path: Path) -> None:
-    # Append-only FIELDS contract: meta.xml indices of the legacy columns must
-    # never shift; the new columns ride at the end.
+def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
+    # Column contract: eventID first everywhere (join key = meta.xml index 0);
+    # the event core keeps its legacy prefix and its two trailing weather
+    # columns (pinned by test_weather_extraction), new columns in between; the
+    # occurrence extension is the documented DwC column set; eMoF/multimedia
+    # as declared. Headers on disk == FIELDS.
     from laubmann_kg.dwca.event import FIELDS as EVENT_FIELDS
+    from laubmann_kg.dwca.measurement_or_fact import FIELDS as MOF_FIELDS
+    from laubmann_kg.dwca.multimedia import FIELDS as MM_FIELDS
     from laubmann_kg.dwca.occurrence import FIELDS as OCC_FIELDS
 
-    assert OCC_FIELDS[:11] == [
-        "eventID", "occurrenceID", "basisOfRecord", "scientificName",
-        "vernacularName", "individualCount", "occurrenceStatus",
-        "occurrenceRemarks", "identificationRemarks", "recordedBy",
-        "associatedMedia"]
-    assert OCC_FIELDS[11:] == ["associatedReferences", "taxonID"]
-    assert EVENT_FIELDS[9:] == ["eventRemarks", "dynamicProperties"]
+    assert EVENT_FIELDS[:9] == [
+        "eventID", "eventDate", "verbatimEventDate", "locality",
+        "decimalLatitude", "decimalLongitude", "samplingProtocol",
+        "fieldNumber", "fieldNotes"]
+    assert EVENT_FIELDS[9:] == ["verbatimLocality", "geodeticDatum",
+                                "eventRemarks", "dynamicProperties"]
+    assert OCC_FIELDS == [
+        "eventID", "occurrenceID", "basisOfRecord",
+        "kingdom", "class", "scientificName", "taxonRank", "vernacularName", "taxonID",
+        "individualCount", "organismQuantity", "organismQuantityType",
+        "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
+        "behavior", "identificationQualifier", "identificationRemarks",
+        "locality", "verbatimLocality", "eventDate", "eventTime", "habitat",
+        "occurrenceRemarks", "recordedBy", "associatedMedia", "associatedReferences",
+        "dynamicProperties"]
+    assert MOF_FIELDS == [
+        "eventID", "occurrenceID", "measurementID", "measurementType",
+        "measurementTypeID", "measurementValue", "measurementValueID",
+        "measurementMethod"]
+    assert MM_FIELDS == ["eventID", "identifier", "type", "format", "title", "description"]
+    for fields in (EVENT_FIELDS, OCC_FIELDS, MOF_FIELDS, MM_FIELDS):
+        assert fields[0] == "eventID"
+        assert len(set(fields)) == len(fields)
 
     summary = export(sample_config, None, tmp_path, validate=True)
     assert summary["valid"] is True
     dwca_dir = tmp_path / "dwca"
-    with (dwca_dir / "occurrence.txt").open(encoding="utf-8") as handle:
-        occ_header = handle.readline().rstrip("\n").split("\t")
-    assert occ_header == OCC_FIELDS
-    with (dwca_dir / "event.txt").open(encoding="utf-8") as handle:
-        event_header = handle.readline().rstrip("\n").split("\t")
-    assert event_header == EVENT_FIELDS
+    for name, fields in (("occurrence.txt", OCC_FIELDS), ("event.txt", EVENT_FIELDS),
+                         ("measurementorfact.txt", MOF_FIELDS),
+                         ("multimedia.txt", MM_FIELDS)):
+        with (dwca_dir / name).open(encoding="utf-8") as handle:
+            assert handle.readline().rstrip("\n").split("\t") == fields
 
 
 def _weather_result():

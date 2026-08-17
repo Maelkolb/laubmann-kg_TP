@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 PREFIXES = """
 PREFIX lkg:  <https://lkg.example.org/ontology#>
 PREFIX dwc:  <http://rs.tdwg.org/dwc/terms/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 """
@@ -40,10 +41,12 @@ QUERIES: dict[str, str] = {
         } ORDER BY ?place
     """,
     "CQ4_auditory_observations": PREFIXES + """
-        SELECT ?vernacular ?transcription WHERE {
+        SELECT ?vernacular ?callType ?transcription WHERE {
             ?obs a lkg:ObservationEvent ; lkg:observedTaxon ?t ;
                  lkg:hasEvidence ?e .
-            ?e a lkg:BirdCall ; lkg:callTranscription ?transcription .
+            ?e a lkg:BirdCall .
+            OPTIONAL { ?e lkg:callType ?callType }
+            OPTIONAL { ?e lkg:callTranscription ?transcription }
             ?t lkg:vernacularNameDE ?vernacular .
         }
     """,
@@ -54,11 +57,35 @@ QUERIES: dict[str, str] = {
         } ORDER BY ?vernacular
     """,
     "CQ6_provenance": PREFIXES + """
-        SELECT ?obs ?entryDate ?page WHERE {
+        SELECT ?obs ?entryDate ?page ?run WHERE {
             ?obs a lkg:ObservationEvent ; lkg:derivedFromEntry ?entry .
             ?entry lkg:entryDate ?entryDate .
             OPTIONAL { ?entry lkg:hasPage ?page }
+            OPTIONAL { ?obs prov:wasGeneratedBy ?run }
         } LIMIT 25
+    """,
+    # Records that state their OWN locality (lkg:hasLocality) vs. records that
+    # inherit the entry place: ?ownLocality is bound only for the former.
+    "CQ7_own_locality_vs_entry_place": PREFIXES + """
+        SELECT ?vernacular ?effectivePlace ?ownLocality ?entryPlace WHERE {
+            ?obs a lkg:ObservationEvent ; lkg:observedTaxon ?t ;
+                 lkg:derivedFromEntry ?entry .
+            ?t lkg:vernacularNameDE ?vernacular .
+            OPTIONAL { ?obs lkg:observedAt ?p . ?p rdfs:label ?effectivePlace }
+            OPTIONAL { ?obs lkg:hasLocality ?l . ?l rdfs:label ?ownLocality }
+            OPTIONAL { ?entry lkg:entryPlace ?ep . ?ep rdfs:label ?entryPlace }
+        } ORDER BY ?vernacular
+    """,
+    # Explicit absence records ("keine Störche mehr"): occurrenceStatus absent.
+    "CQ8_absence_records": PREFIXES + """
+        SELECT ?vernacular ?entryDate ?place ?notes WHERE {
+            ?obs a lkg:ObservationEvent ; dwc:occurrenceStatus "absent" ;
+                 lkg:observedTaxon ?t ; lkg:derivedFromEntry ?entry .
+            ?t lkg:vernacularNameDE ?vernacular .
+            ?entry lkg:entryDate ?entryDate .
+            OPTIONAL { ?obs lkg:observedAt ?p . ?p rdfs:label ?place }
+            OPTIONAL { ?obs lkg:verbatimNotes ?notes }
+        } ORDER BY ?entryDate ?vernacular
     """,
 }
 

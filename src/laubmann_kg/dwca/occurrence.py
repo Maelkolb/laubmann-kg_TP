@@ -4,19 +4,27 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from laubmann_kg.dwca.event import dumps_properties, event_date
 from laubmann_kg.normalization.vocabularies import basis_of_record
 
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
 
 FIELDS = [
-    "eventID", "occurrenceID", "basisOfRecord", "scientificName", "vernacularName",
-    "individualCount", "occurrenceStatus", "occurrenceRemarks",
-    "identificationRemarks", "recordedBy", "associatedMedia",
-    "associatedReferences", "taxonID",
+    "eventID", "occurrenceID", "basisOfRecord",
+    "kingdom", "class", "scientificName", "taxonRank", "vernacularName", "taxonID",
+    "individualCount", "organismQuantity", "organismQuantityType",
+    "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
+    "behavior", "identificationQualifier", "identificationRemarks",
+    "locality", "verbatimLocality", "eventDate", "eventTime", "habitat",
+    "occurrenceRemarks", "recordedBy", "associatedMedia", "associatedReferences",
+    "dynamicProperties",
 ]
 
 DEFAULT_RECORDED_BY = "Alfred Laubmann"
+
+# taxon.rank values that mean "the diarist named a group, not a species"
+_SUPRASPECIFIC_RANKS = ("genus", "family", "group")
 
 
 def _basis_of_record(obs) -> str:
@@ -31,6 +39,46 @@ def _recorded_by(obs) -> str:
     return ""   # unattributed third-party/literature record: claim nothing
 
 
+def _identification_remarks(taxon) -> str:
+    if taxon.rank in _SUPRASPECIFIC_RANKS:
+        return f"Bestimmung auf {taxon.rank}-Niveau"
+    if taxon.scientific_name:
+        return ""
+    return "Art nicht sicher bestimmt; nur Trivialname"
+
+
+def _reproductive_condition(obs) -> str:
+    if obs.breeding_evidence in ("confirmed", "probable"):
+        return "breeding"
+    for behaviour in obs.behaviour:
+        if behaviour.reproductive_condition:
+            return behaviour.reproductive_condition
+    return ""
+
+
+def _organism_quantity(obs) -> tuple[str, str]:
+    if obs.count_min is not None and obs.count_max is not None:
+        return f"{obs.count_min}-{obs.count_max}", "individuals (range)"
+    return "", ""
+
+
+def _dynamic_properties(obs) -> str:
+    return dumps_properties({
+        "movementKind": obs.movement_kind,
+        "flightDirection": obs.flight_direction,
+        "countMin": obs.count_min,
+        "countMax": obs.count_max,
+        "breedingEvidence": obs.breeding_evidence,
+        "recordType": obs.record_type,
+    })
+
+
+def _taxon_id(taxon) -> str:
+    if taxon.gbif_key and taxon.gbif_match_type != "HIGHERRANK":
+        return f"https://www.gbif.org/species/{taxon.gbif_key}"
+    return ""
+
+
 def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = None) -> list[dict]:
     media_by_entry = media_by_entry or {}
     rows = []
@@ -38,23 +86,44 @@ def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = 
         if not entry.entry_date:
             continue
         media = ";".join(media_by_entry.get(entry.entry_uid, []))
+        entry_date = event_date(entry)
         for obs in entry.observations:
             taxon = obs.taxon
-            ident = "" if taxon.scientific_name else "Art nicht sicher bestimmt; nur Trivialname"
+            quantity, quantity_type = _organism_quantity(obs)
             rows.append({
                 "eventID": entry.entry_uid,
                 "occurrenceID": obs.uid,
                 "basisOfRecord": _basis_of_record(obs),
+                "kingdom": "Animalia" if taxon.is_bird is not False else "",
+                "class": "Aves" if taxon.is_bird is True else "",
                 "scientificName": taxon.scientific_name or "",
+                "taxonRank": taxon.rank or "",
                 "vernacularName": taxon.vernacular_de,
-                "individualCount": str(obs.individual_count) if obs.individual_count else "",
-                "occurrenceStatus": "present",
+                "taxonID": _taxon_id(taxon),
+                # 0 is a real value (absence record), so test against None
+                "individualCount": ("" if obs.individual_count is None
+                                    else str(obs.individual_count)),
+                "organismQuantity": quantity,
+                "organismQuantityType": quantity_type,
+                "occurrenceStatus": obs.occurrence_status or "present",
+                "sex": obs.sex or "",
+                "lifeStage": obs.life_stage or "",
+                "reproductiveCondition": _reproductive_condition(obs),
+                "vitality": obs.vitality or "",
+                "behavior": "; ".join(b.label for b in obs.behaviour),
+                "identificationQualifier": obs.identification_qualifier or "",
+                "identificationRemarks": _identification_remarks(taxon),
+                "locality": obs.place.name if obs.place is not None else "",
+                "verbatimLocality": obs.locality.verbatim if obs.locality is not None else "",
+                # a record without its own date inherits the event's date (or
+                # multi-day interval)
+                "eventDate": obs.event_date or entry_date,
+                "eventTime": obs.event_time or "",
+                "habitat": obs.habitat.label if obs.habitat is not None else "",
                 "occurrenceRemarks": obs.verbatim_notes,
-                "identificationRemarks": ident,
                 "recordedBy": _recorded_by(obs),
                 "associatedMedia": media,
                 "associatedReferences": (obs.literature_citation or "").replace("\t", " ").replace("\n", " "),
-                "taxonID": (f"https://www.gbif.org/species/{taxon.gbif_key}"
-                            if taxon.gbif_key and taxon.gbif_match_type != "HIGHERRANK" else ""),
+                "dynamicProperties": _dynamic_properties(obs),
             })
     return rows

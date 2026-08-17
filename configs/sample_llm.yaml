@@ -16,7 +16,9 @@ extraction:
   model: gemini-3.5-flash       # keep in sync with configs/models.yaml extraction.model
   api_key_env: GOOGLE_API_KEY
   temperature: 0.0
-  max_output_tokens: 4096       # caps each response; stops runaway generation
+  max_output_tokens: 16384      # caps each response; stops runaway generation. The
+                                # model-facing fields grew and thinking tokens may count
+                                # against the cap -- truncated answers are not cached
   timeout: 120                  # seconds per request; a stalled call fails, not hangs
 
 taxa:
@@ -50,6 +52,8 @@ linking:
       cache_dir: data/cache/linking_llm
       prompt_dir: prompts        # uses prompts/taxon_normalization.md (revived)
       min_confidence: 0.7        # LLM proposals below this go straight to review
+      thinking_level: low        # minimal | low | medium | high
+      max_output_tokens: 1024    # small JSON answer; headroom for thinking tokens
   persons:
     enabled: true
     reviewed_csv: null
@@ -64,5 +68,7 @@ paths:
 dwca:
   publisher: Laubmann KG Project
   license: CC-BY-4.0
+  title: "Laubmann ornithological field diaries 1917–1965 — observations (sample, vol. 2)"
+  package_id: laubmann-kg-sample
 
 validate: true

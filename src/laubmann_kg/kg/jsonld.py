@@ -11,13 +11,19 @@ from rdflib import Graph
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_CONTEXT = Path("schemas/jsonld_context.json")
+# Resolved relative to the repository, not the current working directory, so
+# notebooks / scripts started elsewhere still find the project context.
+REPO_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_CONTEXT = REPO_ROOT / "schemas" / "jsonld_context.json"
 
 
 def _load_context(context_path: Optional[Path]) -> dict:
     path = Path(context_path) if context_path else DEFAULT_CONTEXT
+    if not path.is_absolute() and not path.exists() and (REPO_ROOT / path).exists():
+        path = REPO_ROOT / path          # relative config path, cwd elsewhere
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8")).get("@context", {})
+    logger.warning("JSON-LD context %s not found; serializing without a context", path)
     return {}
 
 

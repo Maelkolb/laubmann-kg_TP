@@ -37,8 +37,8 @@ def run_validation(data_path: str, ontology_path: str, shapes_path: str,
     """Lädt Daten + Ontologie und validiert gegen die SHACL-Shapes.
 
     ``inference`` ist standardmäßig "none": der RDF-Emitter materialisiert die
-    benötigten Superklassen (BirdCall→ObservationEvidence, Habitat→Place)
-    bereits beim Schreiben. Eine volle RDFS-Closure via owlrl skaliert nicht
+    benötigten Superklassen (BirdCall→ObservationEvidence, Habitat→skos:Concept,
+    SourceRegion→oa:Annotation) bereits beim Schreiben. Eine volle RDFS-Closure via owlrl skaliert nicht
     auf den 34-Bände-Graph (>1M Tripel, Stunden Laufzeit); für kleine Graphen
     kann weiterhin inference="rdfs" übergeben werden."""
     import time
@@ -86,7 +86,8 @@ def print_grouped_report(results: list[dict]) -> int:
         grouped[r["severity"]].append(r)
 
     order = ["Violation", "Warning", "Info", "Unknown"]
-    icons = {"Violation": "🔴", "Warning": "🟡", "Info": "🔵", "Unknown": "⚪"}
+    # ASCII markers: Windows consoles (cp1252) choke on emoji.
+    icons = {"Violation": "[!!]", "Warning": "[! ]", "Info": "[i ]", "Unknown": "[? ]"}
 
     print("=" * 70)
     print("SHACL VALIDIERUNGS-REPORT")
@@ -96,7 +97,7 @@ def print_grouped_report(results: list[dict]) -> int:
         items = grouped.get(sev, [])
         if not items:
             continue
-        print(f"\n{icons.get(sev, '⚪')} {sev} ({len(items)}):")
+        print(f"\n{icons.get(sev, '[? ]')} {sev} ({len(items)}):")
         print("-" * 70)
         for i, r in enumerate(items, 1):
             print(f"  [{i}] {r['focus_node']}")
@@ -108,7 +109,7 @@ def print_grouped_report(results: list[dict]) -> int:
 
     print("\n" + "=" * 70)
     print(f"SUMMARY: {n_violations} Violation(s), {n_warnings} Warning(s)")
-    status = "❌ FAILED (Violations gefunden)" if n_violations else "✅ PASSED"
+    status = "FAILED (Violations gefunden)" if n_violations else "PASSED"
     print(f"STATUS: {status}")
     print("=" * 70)
 
@@ -145,7 +146,7 @@ def main():
 
     for p in (args.data, args.ontology, args.shapes):
         if not Path(p).exists():
-            print(f"❌ Datei nicht gefunden: {p}", file=sys.stderr)
+            print(f"Datei nicht gefunden: {p}", file=sys.stderr)
             sys.exit(2)
 
     ok = run_shacl_validation(args.data, args.ontology, args.shapes)

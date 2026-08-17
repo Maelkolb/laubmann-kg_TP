@@ -1,12 +1,15 @@
 """Corpus → in-memory model pipeline shared by the extraction and export stages.
 
 Loads the frozen corpus interface (entries.csv + multimodal), builds domain
-objects, and runs rule-based extraction. Switching from the sample to the
-deduped corpus is a path change in the config, not a code change.
+objects, and runs extraction (LLM by default in production; the offline
+rule-based backend is the network-free test double). Switching from the sample
+to the deduped corpus is a path change in the config, not a code change.
 """
 
 from __future__ import annotations
 
+import datetime as _dt
+import hashlib
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -15,7 +18,6 @@ from typing import Optional
 
 import yaml
 
-from laubmann_kg.extraction.citations import extract_citations
 from laubmann_kg.extraction.observations import extract_observations
 from laubmann_kg.io.csv import read_entries
 from laubmann_kg.io.metadata import read_multimodal
@@ -33,6 +35,9 @@ class ExtractionResult:
     places: dict[str, Place] = field(default_factory=dict)
     multimodal: list[dict] = field(default_factory=list)
     qa_flags: list = field(default_factory=list)
+    # How the graph was produced (backend/model/prompt hash/timestamp): feeds the
+    # PROV skeleton in kg/rdf.py and measurementMethod in the DwC-A.
+    provenance: dict = field(default_factory=dict)
 
     @property
     def observations(self) -> list:
@@ -77,15 +82,25 @@ def build_entry(row: dict) -> DiaryEntry:
     )
 
 
-def _build_extractor(config: dict):
-    """Return an ``extract(entry, place) -> list[Observation]`` callable selected
+def _prompt_fingerprint(prompt_dir: Path, name: str = "observation_extraction") -> Optional[str]:
+    path = Path(prompt_dir) / f"{name}.md"
+    if not path.exists():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _build_extractor(config: dict) -> tuple:
+    """Return ``(extract(entry, place) -> list[Observation], provenance)`` selected
     by ``extraction.backend`` (offline rule-based, or an LLM provider)."""
     extraction = config.get("extraction", {})
     backend = (extraction.get("backend") or "offline").lower()
     resolver = build_resolver(config.get("taxa"))
+    started = _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0).isoformat()
 
     if backend in ("offline", "rule", "rules", "gazetteer"):
-        return lambda entry, place: extract_observations(entry, resolver, place)
+        provenance = {"backend": "offline", "model": "rule-based", "started_at": started,
+                      "method": "rule-based extraction from diary text (offline backend)"}
+        return (lambda entry, place: extract_observations(entry, resolver, place)), provenance
 
     from laubmann_kg.extraction.llm_observations import extract_observations_llm, load_entry_schema
     from laubmann_kg.llm.cache import LLMCache
@@ -104,38 +119,54 @@ def _build_extractor(config: dict):
         "retry_attempts": extraction.get("retry_attempts", 3),
         "retry_backoff": extraction.get("retry_backoff", 2.0),
     })
-    prompts = PromptLibrary(Path(extraction.get("prompt_dir", "prompts")))
+    prompt_dir = Path(extraction.get("prompt_dir", "prompts"))
+    prompts = PromptLibrary(prompt_dir)
     schema = load_entry_schema(extraction.get("schema"))
+    model = extraction.get("model")
     logger.info("extraction backend=%s provider=%s model=%s", backend,
-                extraction.get("provider", "google"), extraction.get("model"))
-    return lambda entry, place: extract_observations_llm(
-        entry, client, resolver, place, prompts, schema)
+                extraction.get("provider", "google"), model)
+    provenance = {
+        "backend": backend,
+        "provider": extraction.get("provider", "google"),
+        "model": model,
+        "prompt": "observation_extraction",
+        "prompt_sha256": _prompt_fingerprint(prompt_dir),
+        "temperature": extraction.get("temperature", 0.0),
+        "thinking_level": extraction.get("thinking_level"),
+        "started_at": started,
+        "method": f"LLM extraction from diary text ({model})",
+    }
+    return (lambda entry, place: extract_observations_llm(
+        entry, client, resolver, place, prompts, schema)), provenance
 
 
 def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionResult:
     entries_csv, multimodal_path = _resolve_corpus(config, input_dir)
-    volume = config.get("sample", {}).get("volume")
-    extract = _build_extractor(config)
+    sample = config.get("sample", {}) or {}
+    volume = sample.get("volume")
+    limit = int(sample.get("limit") or 0)
+    extract, provenance = _build_extractor(config)
 
     rows = read_entries(entries_csv, volume=int(volume) if volume is not None else None)
+    if limit:
+        rows = rows[:limit]           # smoke tests: first N entries only
     total = len(rows)
     extraction_cfg = config.get("extraction", {})
     backend = (extraction_cfg.get("backend") or "offline").lower()
     concurrency = max(1, int(extraction_cfg.get("concurrency", 1)))
-    logger.info("extracting %d entries (volume=%s, backend=%s, concurrency=%d)",
-                total, volume, backend, concurrency)
+    logger.info("extracting %d entries (volume=%s, limit=%s, backend=%s, concurrency=%d)",
+                total, volume, limit or "none", backend, concurrency)
 
-    result = ExtractionResult()
+    result = ExtractionResult(provenance=provenance)
 
-    # Sequential prep: entries, citations, and the shared places dict.
+    # Sequential prep. The gazetteer/regex reading of the header is only the
+    # FALLBACK place: the LLM extractor replaces it with the model's own reading
+    # of the entry place (entry.place); the offline backend keeps it.
     jobs: list[tuple] = []
     for row in rows:
         entry = build_entry(row)
-        entry.citations = [c.verbatim for c in extract_citations(entry.text_clean)]
-        place = normalize_place(entry.location_raw)
-        if place is not None:
-            result.places.setdefault(place.uid, place)
-        jobs.append((entry, place))
+        entry.place = normalize_place(entry.location_raw)
+        jobs.append((entry, entry.place))
 
     def _extract_one(job):
         entry, place = job
@@ -155,11 +186,6 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
                 failed += 1
                 observations = []
             entry.observations = observations
-            if entry.citations:  # attach the entry's source attribution to its occurrences
-                remark = "Quellenangabe: " + "; ".join(entry.citations)
-                for obs in entry.observations:
-                    if obs.occurrence_remarks is None:
-                        obs.occurrence_remarks = remark
             if not entry.observations:
                 empty += 1
             result.entries.append(entry)
@@ -174,6 +200,15 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
         result.entries = kept
         logger.info("QA: %d flags, %d/%d entries excluded", len(result.qa_flags),
                     before - len(kept), before)
+
+    # Places actually referenced by the surviving entries (entry places and
+    # per-record localities); travel places are added by the RDF emitter.
+    for entry in result.entries:
+        if entry.place is not None:
+            result.places.setdefault(entry.place.uid, entry.place)
+        for obs in entry.observations:
+            if obs.place is not None:
+                result.places.setdefault(obs.place.uid, obs.place)
 
     # Links only QA-surviving entries (no API/LLM spend on excluded garbage);
     # one hook covers all export stages since each calls run_pipeline.

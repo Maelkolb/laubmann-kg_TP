@@ -107,7 +107,8 @@ def test_record_type_derivation_and_repair() -> None:
     _, obs = _run(payload)
     assert obs[0].record_type == "literature-record"    # null + citation
     assert obs[1].record_type == "third-party-report"   # null + observer
-    assert obs[2].record_type == "literature-record"    # repaired contradiction
+    assert obs[2].record_type == "field-observation"    # model's reading kept ...
+    assert "record_type_conflict" in obs[2].flags      # ... but the tension is surfaced for QA
     assert obs[3].record_type == "third-party-report"   # explicit value respected
 
 

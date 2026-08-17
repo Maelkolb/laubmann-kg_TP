@@ -55,6 +55,8 @@ class Taxon:
     gbif_key: Optional[int] = None            # GBIF backbone usage key (accepted taxon)
     gbif_match_type: Optional[str] = None     # EXACT | FUZZY | HIGHERRANK
     gbif_canonical_name: Optional[str] = None
+    rank: Optional[str] = None                # vocab.TAXON_RANKS — rank at which the diarist named it
+    is_bird: Optional[bool] = None            # model's judgement; None = not stated
 
     @property
     def uid(self) -> str:
@@ -67,6 +69,7 @@ class Place:
     canonical: Optional[str] = None
     lat: Optional[float] = None
     long: Optional[float] = None
+    kind: Optional[str] = None                # vocab.PLACE_KINDS (settlement|locality|region|route|unknown)
 
     @property
     def name(self) -> str:
@@ -165,10 +168,10 @@ class Observation:
     entry_uid: str
     taxon: Taxon
     verbatim_notes: str
-    place: Optional[Place] = None
-    individual_count: Optional[int] = None
+    place: Optional[Place] = None             # EFFECTIVE place: own locality, else the entry place
+    individual_count: Optional[int] = None    # >= 0; 0 only with occurrence_status == "absent"
     count_qualifier: Optional[str] = None
-    evidence: list[Evidence] = field(default_factory=list)
+    evidence: list[Evidence] = field(default_factory=list)   # empty = the text does not say how
     behaviour: list[Behaviour] = field(default_factory=list)
     habitat: Optional[Habitat] = None
     occurrence_remarks: Optional[str] = None
@@ -176,6 +179,21 @@ class Observation:
     record_type: str = "field-observation"    # vocab.RECORD_TYPES
     observer: Optional[Person] = None         # None = the diarist
     literature_citation: Optional[str] = None
+    # --- model-provided detail (all optional; None = not stated in the text) ---
+    locality: Optional[Place] = None          # the record's OWN place when it differs from the entry place
+    occurrence_status: str = "present"        # vocab.OCCURRENCE_STATUS (present|absent)
+    count_min: Optional[int] = None           # range lower bound ("3-4" -> 3)
+    count_max: Optional[int] = None           # range upper bound ("3-4" -> 4)
+    sex: Optional[str] = None                 # vocab.SEXES
+    life_stage: Optional[str] = None          # vocab.LIFE_STAGES
+    breeding_evidence: Optional[str] = None   # vocab.BREEDING_EVIDENCE (atlas-style)
+    vitality: Optional[str] = None            # vocab.VITALITY (dead when stated; None = alive/not stated)
+    movement_kind: Optional[str] = None       # vocab.MOVEMENT_KINDS
+    flight_direction: Optional[str] = None    # as written ("NO→SW")
+    identification_qualifier: Optional[str] = None  # the diarist's own hedge as written ("?", "wohl", "cf.")
+    event_date: Optional[str] = None          # ISO date of THIS record when it differs from the entry date
+    event_time: Optional[str] = None          # "HH:MM" when the record states a clock time
+    flags: tuple[str, ...] = ()               # mapper notes for QA (e.g. "record_type_conflict")
 
     @property
     def uid(self) -> str:
@@ -192,15 +210,21 @@ class DiaryEntry:
     page_id: str
     region_uid: Optional[str]
     scan: Optional[str]
-    entry_date: Optional[str]  # ISO YYYY-MM-DD
+    entry_date: Optional[str]  # ISO YYYY-MM-DD (header date, possibly corrected by the model)
     verbatim_event_date: Optional[str]
     location_raw: Optional[str]
     text_clean: str
     observations: list[Observation] = field(default_factory=list)
     travel_events: list[TravelEvent] = field(default_factory=list)
     persons: list[Person] = field(default_factory=list)
-    citations: list[str] = field(default_factory=list)
     weather: Optional[WeatherReport] = None
+    # --- entry-level reading (model-provided for the LLM backend) ---
+    place: Optional[Place] = None             # the entry's main locality (cleaned; kind in vocab.PLACE_KINDS)
+    entry_kind: Optional[str] = None          # vocab.ENTRY_KINDS
+    entry_date_end: Optional[str] = None      # ISO date; multi-day entries only
+    date_plausible: Optional[bool] = None     # model: False = header date contradicted and not repairable
+    date_note: Optional[str] = None           # model's German note on a corrected/doubted date
+    header_date: Optional[str] = None         # upstream ISO date before any model correction
 
     @property
     def uid(self) -> str:
@@ -208,7 +232,8 @@ class DiaryEntry:
 
     @property
     def label(self) -> str:
-        loc = f" · {self.location_raw}" if self.location_raw else ""
+        loc = self.place.name if self.place is not None else self.location_raw
+        loc = f" · {loc}" if loc else ""
         date = self.verbatim_event_date or self.entry_date or "o. D."
         return f"Tagebucheintrag {date}{loc}"
 

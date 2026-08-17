@@ -2,12 +2,35 @@
 
 from __future__ import annotations
 
+import re
 from typing import Optional
 
 TRANSPORT_MODES = ("train", "foot", "boat", "car", "carriage", "bicycle", "unknown")
 CALL_TYPES = ("song", "call", "alarm", "drumming", "unknown")
 COUNT_QUALIFIERS = ("exact", "minimum", "approximate", "plural-unspecified")
 EVIDENCE_KINDS = ("visual", "auditory", "nest", "specimen")
+
+# --- Model-provided observation detail (prompts/observation_extraction.md) ---
+# The model emits these enum values directly; the mapper only checks membership
+# (normalize_enum) and never infers them from prose.
+OCCURRENCE_STATUS = ("present", "absent")
+SEXES = ("male", "female", "mixed")
+LIFE_STAGES = ("adult", "juvenile", "pullus", "immature", "egg", "mixed")
+BREEDING_EVIDENCE = ("confirmed", "probable", "possible")      # atlas-style categories
+VITALITY = ("alive", "dead")
+MOVEMENT_KINDS = ("migrating", "passing-over", "arriving", "departing", "resting", "roosting")
+TAXON_RANKS = ("species", "subspecies", "genus", "family", "group", "unknown")
+PLACE_KINDS = ("settlement", "locality", "region", "route", "unknown")
+ENTRY_KINDS = ("field-day", "species-digest", "retrospective", "correspondence", "other")
+
+
+def normalize_enum(raw: object, vocabulary: tuple[str, ...]) -> Optional[str]:
+    """Strict membership check for model-emitted enum values (case-insensitive,
+    '_'/' ' folded to '-'); anything else -> None. No cue guessing."""
+    if raw is None or isinstance(raw, bool):
+        return None
+    value = str(raw).strip().lower().replace("_", "-").replace(" ", "-")
+    return value if value in vocabulary else None
 
 # Diary phrasing → evidence kind. Order matters: nest/specimen beat generic sound.
 AUDITORY_CUES = (
@@ -91,7 +114,9 @@ PRECIPITATION_CUES = (
     ("none", ("trocken", "niederschlagsfrei")),
 )
 
-# "kein Regen" names the precipitation only to negate it.
+# "kein Regen" names the precipitation only to negate it. The negation must sit
+# directly before the precipitation word ("kein Regen", "ohne Schnee"); a
+# negation elsewhere in the phrase ("Regen, kein Wind") does not negate it.
 PRECIPITATION_NEGATION_CUES = ("kein", "keine", "keinerlei", "ohne", "nicht")
 
 SKY_CUES = (
@@ -123,8 +148,15 @@ def normalize_precipitation(raw: object) -> Optional[str]:
     result = _fold(raw, PRECIPITATION_TYPES, PRECIPITATION_CUES)
     if result is not None and result != "none":
         value = str(raw).strip().lower()
-        if any(cue in value for cue in PRECIPITATION_NEGATION_CUES):
-            return "none"
+        if value in PRECIPITATION_TYPES:
+            return result                       # enum value: nothing to negate
+        precip_cues = tuple(cue for term, cues in PRECIPITATION_CUES
+                            if term != "none" for cue in cues)
+        for neg in PRECIPITATION_NEGATION_CUES:
+            for cue in precip_cues:
+                # negation immediately (up to one filler word) before the cue
+                if re.search(rf"\b{neg}\b(?:\s+\w+)?\s+\w*{re.escape(cue)}", value):
+                    return "none"
     return result
 
 

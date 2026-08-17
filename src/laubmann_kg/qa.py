@@ -1,12 +1,21 @@
 """Quality-assurance pass: flag outlier entries/observations and optionally
 exclude them from the graph, always recording the decision to a review table.
 
-Policy (defaults):
-- ``misdate``  – entry year outside the volume's plausible span  -> exclude entry
-- ``garbage_taxon`` – unresolved taxon that is not a plausible bird name -> exclude observation
-- ``nonplace`` – ``location_raw`` rejected by the place normalizer -> flag only
-- ``no_observations`` – no observation, but weather/travel explain it -> flag only
-- ``empty``    – entry left with nothing at all -> flag only
+QA is threshold-based on signals the MODEL provides (is_bird, taxon_rank,
+confidence, date plausibility, place kind) — it contains no keyword rules that
+decide content. Policy (defaults, all configurable under ``qa:``):
+
+- ``non_bird``          – model says the organism is not a bird           -> exclude observation
+- ``low_confidence_taxon`` – no scientific name, rank unknown/unstated, and a
+  STATED model confidence < ``min_taxon_confidence`` (0.3)                 -> exclude observation
+- ``implausible_date``  – model marks the header date contradicted/unrepairable -> exclude entry
+- ``misdate``           – entry year outside the volume's median ± tolerance -> flag (exclude only
+  with ``exclude_misdate: true``; retrospective/digest entries are never excluded by it)
+- ``date_corrected``    – model corrected the header date                   -> flag
+- ``record_type_conflict`` – model called an attributed/cited record field-observation -> flag
+- ``nonplace``          – no usable entry place although a header exists     -> flag
+- ``no_observations``   – no observation, but weather/travel explain it      -> flag
+- ``empty``             – entry left with nothing at all                     -> flag
 
 Exclusions are reversible: every flag (excluded or merely flagged) is written to
 ``qa_flags.csv`` with its reason, so a human can review and override.
@@ -16,57 +25,18 @@ from __future__ import annotations
 
 import csv
 import logging
-import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from laubmann_kg.normalization.places import rejection_reason
-from laubmann_kg.normalization.taxa import _norm
-
 logger = logging.getLogger(__name__)
-
-# German bird head-morphemes, written in taxa._norm's normalized form
-# (ä->a, ö->o, ü->u, ß->ss, AND v->w — so "Vogel" normalizes to "wogel"). A
-# vernacular containing any of these — or a bare bird word — is treated as a
-# plausible (if unmapped) species rather than OCR garbage.
-_BIRD_MORPHEMES = (
-    "wogel", "meise", "fink", "drossel", "schwalbe", "ammer", "specht", "taube",
-    "ente", "mowe", "laufer", "schnapper", "sanger", "pieper", "reiher", "falke",
-    "adler", "eule", "kauz", "huhn", "schwanz", "kehlchen", "konig", "zeisig",
-    "hanfling", "girlitz", "lerche", "grasmucke", "wurger", "sperling", "taucher",
-    "segler", "ralle", "schnepfe", "kiebitz", "storch", "gans", "schwan", "krahe",
-    "rabe", "elster", "haher", "kuckuck", "nachtigall", "braunelle", "kleiber",
-    "bussard", "weihe", "milan", "sperber", "habicht", "dohle", "amsel", "wachtel",
-    "erpel", "schwirl", "goldhahnchen", "baumlaufer", "mowen", "spatz", "star",
-)
-_BIRD_WORDS = {
-    "amsel", "drossel", "meise", "mowe", "ente", "falke", "krahe", "specht",
-    "star", "spatz", "lerche", "schwalbe", "taube", "reiher", "gans", "schwan",
-    "rabe", "elster", "dohle", "kuckuck", "storch", "kiebitz", "kranich",
-    "wachtel", "wogel", "finkenwogel", "meischen",
-}
-_DIMINUTIVE = re.compile(r"(chen|lein)$")
-
-
-def plausible_bird(vernacular: str) -> bool:
-    """True if the (unresolved) vernacular still looks like a German bird name.
-
-    Lenient by design: exclusions are reversible via the review table, so we keep
-    anything with a recognisable bird morpheme and only reject clear noise
-    ("Tolarla", "Beidbeiss", "Wied"-style fragments)."""
-    raw = _norm(vernacular or "")
-    for form in (raw, _DIMINUTIVE.sub("", raw)):
-        if form in _BIRD_WORDS or any(m in form for m in _BIRD_MORPHEMES):
-            return True
-    return False
 
 
 @dataclass
 class QAFlag:
     entry_id: str
     entry_uid: str
-    reason: str          # misdate | garbage_taxon | nonplace | empty | no_observations
+    reason: str          # see module docstring
     detail: str
     action: str          # excluded | flagged
     value: str = ""
@@ -97,42 +67,82 @@ def _year_ranges(entries, config: dict) -> dict[int, tuple[int, int]]:
     return ranges
 
 
+_RETROSPECTIVE_KINDS = ("species-digest", "retrospective", "correspondence")
+
+
 def run_qa(entries, config: Optional[dict] = None):
     """Return ``(kept_entries, flags)``. Mutates each entry's observation list to
     drop excluded observations when ``exclude`` is on."""
     config = config or {}
     exclude = config.get("exclude", True)
+    exclude_non_bird = exclude and config.get("exclude_non_bird", True)
+    exclude_low_conf = exclude and config.get("exclude_low_confidence_taxon", True)
+    exclude_implausible = exclude and config.get("exclude_implausible_date", True)
+    exclude_misdate = exclude and config.get("exclude_misdate", False)
+    min_conf = float(config.get("min_taxon_confidence", 0.3))
     ranges = _year_ranges(entries, config)
     flags: list[QAFlag] = []
     kept = []
 
+    def _act(excluded: bool) -> str:
+        return "excluded" if excluded else "flagged"
+
     for e in entries:
         drop_entry = False
+
+        # --- date -----------------------------------------------------------
+        if e.date_plausible is False:
+            flags.append(QAFlag(e.entry_id, e.entry_uid, "implausible_date",
+                e.date_note or "Datum laut Modell widersprüchlich und nicht korrigierbar",
+                _act(exclude_implausible), e.entry_date or ""))
+            drop_entry = drop_entry or exclude_implausible
+        elif e.header_date and e.entry_date and e.header_date != e.entry_date:
+            flags.append(QAFlag(e.entry_id, e.entry_uid, "date_corrected",
+                e.date_note or f"Kopfzeile {e.header_date} -> {e.entry_date}",
+                "flagged", e.entry_date))
 
         yr = ranges.get(e.volume)
         if yr and e.entry_date:
             year = int(e.entry_date[:4])
             if not yr[0] <= year <= yr[1]:
+                retrospective = (e.entry_kind in _RETROSPECTIVE_KINDS)
+                excluded = exclude_misdate and not retrospective
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "misdate",
-                    f"Jahr {year} ausserhalb {yr[0]}-{yr[1]} (Band {e.volume})",
-                    "excluded" if exclude else "flagged", e.entry_date))
-                drop_entry = exclude
+                    f"Jahr {year} ausserhalb {yr[0]}-{yr[1]} (Band {e.volume})"
+                    + (f"; Eintragstyp {e.entry_kind}" if e.entry_kind else ""),
+                    _act(excluded), e.entry_date))
+                drop_entry = drop_entry or excluded
 
-        if e.location_raw and e.location_raw.strip():
-            reason = rejection_reason(e.location_raw)
-            if reason in ("bird", "garbage"):
-                flags.append(QAFlag(e.entry_id, e.entry_uid, "nonplace",
-                    f"Ort verworfen ({reason})", "flagged", e.location_raw.strip()))
+        # --- place ----------------------------------------------------------
+        if e.place is None and e.location_raw and e.location_raw.strip():
+            flags.append(QAFlag(e.entry_id, e.entry_uid, "nonplace",
+                "kein verwertbarer Ort (Kopfzeile laut Modell unbrauchbar)",
+                "flagged", e.location_raw.strip()))
 
+        # --- observations ---------------------------------------------------
         kept_obs = []
         for obs in e.observations:
-            garbage = obs.taxon.scientific_name is None and not plausible_bird(obs.taxon.vernacular_de)
-            if garbage:
-                flags.append(QAFlag(e.entry_id, e.entry_uid, "garbage_taxon",
-                    "unauflösbar und nicht vogelartig",
-                    "excluded" if exclude else "flagged", obs.taxon.vernacular_de))
-                if exclude:
+            taxon = obs.taxon
+            if taxon.is_bird is False:
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "non_bird",
+                    "laut Modell kein Vogel" + (f" ({taxon.scientific_name})" if taxon.scientific_name else ""),
+                    _act(exclude_non_bird), taxon.vernacular_de))
+                if exclude_non_bird:
                     continue
+            elif (taxon.scientific_name is None
+                  and (taxon.rank in (None, "unknown"))
+                  and taxon.confidence is not None and taxon.confidence < min_conf):
+                # only a STATED low model confidence excludes; the offline backend
+                # and legacy responses carry no confidence and are kept
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "low_confidence_taxon",
+                    f"kein wissenschaftlicher Name, Rang unbekannt, Konfidenz {taxon.confidence}",
+                    _act(exclude_low_conf), taxon.vernacular_de))
+                if exclude_low_conf:
+                    continue
+            if "record_type_conflict" in obs.flags:
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "record_type_conflict",
+                    "field-observation trotz Beobachter/Zitat — Modellangabe beibehalten",
+                    "flagged", taxon.vernacular_de))
             kept_obs.append(obs)
         e.observations = kept_obs
 
