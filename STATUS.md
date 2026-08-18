@@ -100,7 +100,23 @@ corpus: build → detect → decisions → apply → `export-jsonld` (SHACL: 0/0
 Remaining human step: adjudicate `review.html` for the full corpus and export
 `dedup_decisions.json` (see `notebooks/07_full_workflow_colab.ipynb`, stage B).
 
-## Current state (2026-08-18)
+## Current state (2026-08-19)
+
+- **Volume coverage + date repair** (`configs/volume_coverage.yaml` from the
+  34 title pages, `normalization/coverage.py`, config `qa.coverage`): misfiled
+  scans re-homed (14 Vol-1 pages in the Vol-15 set), isolated OCR years repaired
+  from the page neighbours (%%COV_FIXED%% entries, e.g. 1901 → 1951), off-span
+  digests/retrospectives kept and flagged (%%COV_FLAGGED%%), non-entries outside
+  1900–1966 excluded (%%COV_DROPPED%%). `tools/build_volume_coverage.py` re-derives
+  the table from `corpus.json` and checks it against the entry dates.
+- **Entity resolution** (`resolution/`, config `resolution`, after linking):
+  %%RES_SUMMARY%%. Decisions for the ambiguous candidates (adjudicated 2026-08-19)
+  live in `data/review/*_merges.csv` and are applied via `reviewed_csv`.
+- Ontology **0.4.1**: `skos:altLabel` for merged spellings,
+  `dwc:verbatimIdentification` on merged observations; no new `lkg:` terms.
+- **Current export: Drive `kg_exports_2026-08-19/`** — %%EXPORT_SUMMARY%%
+
+## Previous state (2026-08-18)
 
 - **Ontology 0.4.0** (see CHANGELOG 2026-08-18): Darwin-Core-first (no lkg
   twins of standard terms), three grouping superclasses + explicit

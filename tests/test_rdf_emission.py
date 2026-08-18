@@ -402,7 +402,7 @@ def test_hand_written_fixture_conforms() -> None:
 def test_ontology_axioms_and_vocabularies_parse() -> None:
     onto = Graph().parse(str(ONTOLOGY), format="turtle")
     onto_iri = URIRef("https://w3id.org/laubmann-kg/ontology")
-    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.4.0")
+    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.4.1")
     # grouping hierarchy
     RICO = URIRef("https://www.ica.org/standards/RiC/ontology#Record")
     assert (LKG.ArchivalUnit, RDFS.subClassOf, RICO) in onto
@@ -467,7 +467,7 @@ def test_shapes_encode_relaxed_constraints() -> None:
     # the load-bearing shape changes on the shapes graph itself.
     from rdflib.namespace import SH
     shapes = Graph().parse(str(SHAPES), format="turtle")
-    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.4.0")
+    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.4.1")
     call = next(shapes.subjects(SH.path, LKG.callTranscription))
     assert shapes.value(call, SH.minCount) is None                # optional transcription
     assert shapes.value(call, SH.maxCount).toPython() == 1

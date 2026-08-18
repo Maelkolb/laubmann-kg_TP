@@ -71,6 +71,10 @@ class Taxon:
     # GBIF backbone classification of the linked taxon: ((rank, name), ...) in
     # HIGHER_RANKS order, only ranks GBIF returned. Empty when unlinked.
     higher_taxonomy: tuple[tuple[str, str], ...] = ()
+    # vernacular spellings merged into this taxon by entity resolution (same
+    # GBIF accepted key); emitted as skos:altLabel. The canonical name stays
+    # vernacular_de, so the uid does not move.
+    alt_names: tuple[str, ...] = ()
 
     @property
     def uid(self) -> str:
@@ -91,6 +95,7 @@ class Place:
     lat: Optional[float] = None
     long: Optional[float] = None
     kind: Optional[str] = None                # vocab.PLACE_KINDS (settlement|locality|region|route|unknown)
+    alt_names: tuple[str, ...] = ()           # merged spellings (entity resolution) -> skos:altLabel
 
     @property
     def name(self) -> str:
@@ -106,6 +111,7 @@ class Habitat:
     """A habitat label; emitted as a shared skos:Concept in lkg:habitatScheme
     (one node per label, reached from observations via dwciri:habitat)."""
     label: str
+    alt_labels: tuple[str, ...] = ()          # merged spellings (entity resolution) -> skos:altLabel
 
     @property
     def uid(self) -> str:
@@ -117,6 +123,7 @@ class Person:
     name: str
     role: Optional[str] = None  # companion | source | collector | cited-author | other
     wikidata_iri: Optional[str] = None  # http://www.wikidata.org/entity/Q... (verified)
+    alt_names: tuple[str, ...] = ()     # merged name variants (entity resolution) -> skos:altLabel
 
     @property
     def uid(self) -> str:
@@ -214,10 +221,12 @@ class Observation:
     event_date: Optional[str] = None          # ISO date of THIS record when it differs from the entry date
     event_time: Optional[str] = None          # "HH:MM" when the record states a clock time
     flags: tuple[str, ...] = ()               # mapper notes for QA (e.g. "record_type_conflict")
+    taxon_verbatim: Optional[str] = None      # the taxon name as written, when resolution merged it
+                                              # into a canonical taxon (-> dwc:verbatimIdentification)
 
     @property
     def uid(self) -> str:
-        base = f"{self.entry_uid}|{self.taxon.vernacular_de}|{self.index}"
+        base = f"{self.entry_uid}|{self.taxon_verbatim or self.taxon.vernacular_de}|{self.index}"
         return f"obs_{_slug(base)}"
 
 

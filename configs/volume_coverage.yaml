@@ -1,0 +1,56 @@
+# Time span covered by each of Alfred Laubmann's 34 diary volumes.
+#
+# Source: the title page of every volume ("N. Ornithologische Tagebuchnotizen
+# von … <Monat Jahr> - <Monat Jahr>", scan 3 in the HistOrniGraph region JSONs;
+# `tools/build_volume_coverage.py` re-derives this table from corpus.json and
+# checks it against the empirical entry-date distribution). Two exceptions:
+#   - Vol 15's scanned title page is Vol 1's (the known Vol 1 ↔ Vol 15 scan
+#     contamination); its span is taken from the neighbours (Vol 14 ends May 1937,
+#     Vol 16 starts Oct 1938) and the empirical distribution (P2 1937-07 … P98 1938-09).
+#   - Vol 34's title page has an open end ("Mai 1964 - "); the diaries end in
+#     1965 (last entries 1965-09), so December 1965 closes it.
+#
+# Used by `normalization/coverage.py` (config `qa.coverage`): entries dated
+# outside their volume's span ± tolerance are OCR-corrected when the sequence
+# neighbours agree on the year, or flagged for review. Month precision.
+volumes:
+  1:  {start: 1917-04, end: 1918-04, source: "title page: April 1917 - April 1918"}
+  2:  {start: 1918-05, end: 1919-08, source: "title page: Mai 1918 - August 1919"}
+  3:  {start: 1919-09, end: 1923-06, source: "title page: September 1919 - Juni 1923"}
+  4:  {start: 1923-07, end: 1925-08, source: "title page: Juli 1923 - August 1925"}
+  5:  {start: 1925-09, end: 1927-05, source: "title page: September 1925 - Mai 1927"}
+  6:  {start: 1927-06, end: 1928-09, source: "title page: Juni 1927 - September 1928"}
+  7:  {start: 1928-10, end: 1929-11, source: "title page: Oktober 1928 - November 1929"}
+  8:  {start: 1929-11, end: 1930-09, source: "title page: November 1929 - September 1930"}
+  9:  {start: 1930-09, end: 1931-08, source: "title page: September 1930 - August 1931"}
+  10: {start: 1931-08, end: 1932-10, source: "title page: August 1931 - Oktober 1932"}
+  11: {start: 1932-11, end: 1933-10, source: "title page: November 1932 - Oktober 1933"}
+  12: {start: 1933-10, end: 1934-09, source: "title page: Oktober 1933 - September 1934"}
+  13: {start: 1934-10, end: 1936-03, source: "title page: Oktober 1934 - März 1936"}
+  14: {start: 1936-04, end: 1937-05, source: "title page: April 1936 - Mai 1937"}
+  15: {start: 1937-05, end: 1938-10, source: "inferred from Vol 14/16 title pages and the entry-date distribution (title page scan is Vol 1's)"}
+  16: {start: 1938-10, end: 1940-09, source: "title page: Oktober 1938 - September 1940"}
+  17: {start: 1940-10, end: 1942-11, source: "title page: Oktober 1940 - November 1942"}
+  18: {start: 1942-11, end: 1944-09, source: "title page: November 1942 - September 1944"}
+  19: {start: 1944-10, end: 1947-03, source: "title page: Oktober 1944 - März 1947"}
+  20: {start: 1947-03, end: 1948-06, source: "title page: März 1947 - Juni 1948"}
+  21: {start: 1948-06, end: 1949-06, source: "title page: Juni 1948 - Juni 1949"}
+  22: {start: 1949-06, end: 1950-07, source: "title page: Juni 1949 - Juli 1950"}
+  23: {start: 1950-07, end: 1951-08, source: "title page: Juli 1950 - August 1951"}
+  24: {start: 1951-08, end: 1952-07, source: "title page: August 1951 - Juli 1952"}
+  25: {start: 1952-07, end: 1953-05, source: "title page: Juli 1952 – Mai 1953"}
+  26: {start: 1953-05, end: 1954-02, source: "title page: Mai 1953 - Februar 1954"}
+  27: {start: 1954-02, end: 1954-10, source: "title page: Februar 1954 - Oktober 1954"}
+  28: {start: 1954-10, end: 1955-06, source: "title page: Oktober 1954 - Juni 1955"}
+  29: {start: 1955-06, end: 1956-04, source: "title page: Juni 1955 - April 1956"}
+  30: {start: 1956-04, end: 1957-09, source: "title page: April 1956 - September 1957"}
+  31: {start: 1957-10, end: 1959-09, source: "title page: Oktober 1957 - September 1959"}
+  32: {start: 1959-09, end: 1961-12, source: "title page: September 1959 - December 1961"}
+  33: {start: 1962-01, end: 1964-05, source: "title page: Januar 1962 - Mai 1964"}
+  34: {start: 1964-05, end: 1965-12, source: "title page: Mai 1964 - (open); diaries end 1965"}
+# Documents (scan folders) that belong to another volume than the one they were
+# digitised under: the corpus builder keeps the folder's volume, the pipeline
+# reassigns the entry to the document's true volume (page_id prefix → volume is
+# derived per run; this list only records the known case for reference).
+known_contamination:
+  - {document: 900847d2-aabe-4b16-b0e6-203b103bd1e1, digitised_as: 15, volume: 1, note: "14 Vol 1 pages in the Vol 15 scan set (May–Oct 1917)"}

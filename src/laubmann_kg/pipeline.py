@@ -197,14 +197,35 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
             logger.info("[%d/%d] %s -> %d observations", i, total, entry.entry_id,
                         len(entry.observations))
 
-    qa_cfg = config.get("qa", {})
+    qa_cfg = dict(config.get("qa", {}) or {})
+    # Volume coverage: misfiled scans -> home volume, OCR years repaired against
+    # the sequence neighbours, off-span entries flagged/excluded (needs the
+    # model's entry kind, so it runs after extraction and before QA).
+    cov_cfg = dict(qa_cfg.get("coverage") or {})
+    coverage_flags: list = []
+    if cov_cfg.get("enabled", True):
+        from laubmann_kg.normalization.coverage import DEFAULT_PATH, VolumeCoverage, apply_coverage
+        cov_path = Path(cov_cfg.get("path", DEFAULT_PATH))
+        if cov_path.exists():
+            before = len(result.entries)
+            result.entries, coverage_flags = apply_coverage(
+                result.entries, VolumeCoverage.load(cov_path), cov_cfg)
+            logger.info("coverage: %d flags, %d/%d entries excluded",
+                        len(coverage_flags), before - len(result.entries), before)
+            qa_cfg.setdefault("misdate", False)   # superseded by the coverage check
+        else:
+            logger.warning("volume coverage table not found at %s — skipped", cov_path)
+
     if qa_cfg.get("enabled", True):
         from laubmann_kg.qa import run_qa
         before = len(result.entries)
-        kept, result.qa_flags = run_qa(result.entries, qa_cfg)
+        kept, qa_flags = run_qa(result.entries, qa_cfg)
         result.entries = kept
-        logger.info("QA: %d flags, %d/%d entries excluded", len(result.qa_flags),
+        result.qa_flags = coverage_flags + qa_flags
+        logger.info("QA: %d flags, %d/%d entries excluded", len(qa_flags),
                     before - len(kept), before)
+    else:
+        result.qa_flags = coverage_flags
 
     # Places actually referenced by the surviving entries (entry places and
     # per-record localities); travel places are added by the RDF emitter.
@@ -221,6 +242,23 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     if linking_cfg.get("enabled", False):
         from laubmann_kg.linking import run_linking   # lazy import
         logger.info("linking: %s", run_linking(result, linking_cfg))
+
+    # Entity resolution: same-GBIF-key taxa, person name variants, place and
+    # habitat spellings become one node (uses the linking evidence; writes
+    # *_merges.csv review files; decisions feed back through reviewed_csv).
+    resolution_cfg = config.get("resolution", {}) or {}
+    if resolution_cfg.get("enabled", False):
+        from laubmann_kg.resolution import run_resolution   # lazy import
+        resolution_cfg.setdefault("review_dir", (linking_cfg or {}).get("review_dir", "data/review"))
+        logger.info("resolution: %s", run_resolution(result, resolution_cfg))
+        # observation places may have been re-pointed
+        result.places = {}
+        for entry in result.entries:
+            if entry.place is not None:
+                result.places.setdefault(entry.place.uid, entry.place)
+            for obs in entry.observations:
+                if obs.place is not None:
+                    result.places.setdefault(obs.place.uid, obs.place)
 
     if multimodal_path is not None:
         entry_uids = {e.entry_uid for e in result.entries}

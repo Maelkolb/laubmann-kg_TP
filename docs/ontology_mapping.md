@@ -1,7 +1,7 @@
 # Ontology Mapping
 
 Alignment of the project terms (`lkg:`, `ontologies/laubmann.ttl` v0.4.0) with
-external vocabularies. Since 0.4.0 the graph is **Darwin-Core-first**: where a
+external vocabularies (v0.4.1 adds `skos:altLabel` / `dwc:verbatimIdentification` for entity resolution). Since 0.4.0 the graph is **Darwin-Core-first**: where a
 standard term exists it is emitted *alone* ("direct" below); `lkg:` terms are
 declared as sub-classes/sub-properties of external terms only where that adds
 meaning ("axiom"). No `lkg:` twin of a standard term remains.
@@ -41,7 +41,7 @@ meaning ("axiom"). No `lkg:` twin of a standard term remains.
 | entry text | `dwc:fieldNotes` | direct (was `lkg:rawText`) |
 | date note | `skos:note` | direct (was `lkg:dateNote`) |
 | individual count / range | `dwc:individualCount`; `lkg:individualCountMin`/`Max` | direct; project terms |
-| vernacular / scientific name | `dwc:vernacularName`@de (+ `rdfs:label`), `dwc:scientificName` | direct (was `lkg:vernacularNameDE`/`scientificName`) |
+| vernacular / scientific name | `dwc:vernacularName`@de (+ `rdfs:label`), `dwc:scientificName`; merged spellings `skos:altLabel`; name as written on a merged observation `dwc:verbatimIdentification` | direct (was `lkg:vernacularNameDE`/`scientificName`) |
 | GBIF classification | `dwc:kingdom`, `dwc:phylum`, `dwc:class`, `dwc:order`, `dwc:family`, `dwc:genus` | direct (new) |
 | place name as written | `dwc:verbatimLocality` (on Place) | direct (was `lkg:verbatimLocality`) |
 | coordinates | `geo:lat`/`geo:long`, `dwc:decimalLatitude`/`Longitude` + `dwc:geodeticDatum`, `gsp:asWKT` | direct |

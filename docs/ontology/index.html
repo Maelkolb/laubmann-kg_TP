@@ -392,7 +392,7 @@
     ],
     "https://schema.org/creator": [
       {
-        "@id": "_:nb00d66edd1a34638aeadf12fbd69d608b1"
+        "@id": "_:n45bf78472e2b4bd6815a24b5ee7742bdb1"
       }
     ],
     "https://schema.org/dateIssued": [
@@ -404,7 +404,7 @@
     "https://schema.org/dateModified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
-        "@value": "2026-08-18"
+        "@value": "2026-08-19"
       }
     ],
     "https://schema.org/description": [
@@ -435,7 +435,7 @@
     ]
   },
   {
-    "@id": "_:nb00d66edd1a34638aeadf12fbd69d608b1",
+    "@id": "_:n45bf78472e2b4bd6815a24b5ee7742bdb1",
     "https://schema.org/name": [
       {
         "@value": "Laubmann KG Project"
@@ -485,7 +485,7 @@
             <dt>
               <a class="hover_property" href="http://purl.org/dc/terms/modified" title="Date on which the resource was changed. Defined in DCMI Metadata Terms">Date Modified</a>
             </dt>
-            <dd><p>2026-08-18</p></dd>
+            <dd><p>2026-08-19</p></dd>
           </div>
           <div>
             <dt>
@@ -512,21 +512,21 @@
               <a class="hover_property" href="http://www.w3.org/2002/07/owl#versionIRI" title="The property that identifies the version IRI of an ontology. Defined in The OWL 2 Schema vocabulary (OWL 2)">Version Iri</a>
             </dt>
             <dd>
-              <a href="https://w3id.org/laubmann-kg/ontology/0.4.0">https://w3id.org/laubmann-kg/ontology/0.4.0</a>
+              <a href="https://w3id.org/laubmann-kg/ontology/0.4.1">https://w3id.org/laubmann-kg/ontology/0.4.1</a>
             </dd>
           </div>
           <div>
             <dt>
               <a class="hover_property" href="http://www.w3.org/2002/07/owl#versionInfo" title="The annotation property that provides version information for an ontology or another OWL construct. Defined in The OWL 2 Schema vocabulary (OWL 2)">Version Info</a>
             </dt>
-            <dd><p>0.4.0</p></dd>
+            <dd><p>0.4.1</p></dd>
           </div>
           <div>
             <dt>
               <a class="hover_property" href="http://www.w3.org/2002/07/owl#priorVersion" title="The annotation property that indicates the predecessor ontology of a given ontology. Defined in The OWL 2 Schema vocabulary (OWL 2)">Prior Version</a>
             </dt>
             <dd>
-              <a href="https://w3id.org/laubmann-kg/ontology/0.3.0">https://w3id.org/laubmann-kg/ontology/0.3.0</a>
+              <a href="https://w3id.org/laubmann-kg/ontology/0.4.0">https://w3id.org/laubmann-kg/ontology/0.4.0</a>
             </dd>
           </div>
           <div>
@@ -582,7 +582,7 @@
           </div>
           <div>
             <dt>
-              <a class="hover_property" href="http://purl.org/dc/terms/language" title="A language of the resource. Defined in None">Language</a>
+              <a class="hover_property" href="http://purl.org/dc/terms/language" title="Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [[IETF-BCP47](https://tools.ietf.org/html/bcp47)] language tag. Defined in None">Language</a>
             </dt>
             <dd>
               <ul class="pylodelitlist">
@@ -1086,7 +1086,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node.</p></td>
+              <td><p>A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node. Name variants merged by entity resolution ("W. Wüst", "Wüst" → "Walter Wüst") are skos:altLabels.</p></td>
             </tr>
             <tr>
               <th>
@@ -1124,7 +1124,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme.</p></td>
+              <td><p>A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned, merged spellings as skos:altLabel). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme.</p></td>
             </tr>
             <tr>
               <th>
@@ -1298,7 +1298,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch, dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus).</p></td>
+              <td><p>A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName; further spellings merged by entity resolution as skos:altLabel). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch, dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus).</p></td>
             </tr>
             <tr>
               <th>

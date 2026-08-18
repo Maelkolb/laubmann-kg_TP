@@ -3,6 +3,10 @@
 # Project Ontology  /  ontologies/laubmann.ttl
 # Namespace: https://w3id.org/laubmann-kg/ontology#   (w3id folder prepared in w3id/laubmann-kg/, PR pending)
 #
+# v0.4.1 (2026-08-19) — entity resolution: merged spellings of taxa, persons,
+#     places and habitat concepts carry skos:altLabel; an observation whose
+#     written taxon name was merged into a canonical taxon keeps it as
+#     dwc:verbatimIdentification. Standard terms only, no new lkg: terms.
 # v0.4.0 (2026-08-18) — DwC-first, explicit hierarchy + partonomy, flattened details
 #   - Three grouping superclasses carry the class hierarchy: lkg:ArchivalUnit
 #     (volume/page/entry/region), lkg:EntryRecord (what the model extracts from
@@ -56,9 +60,9 @@
     rdfs:label "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
     dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."@en ;
     rdfs:comment "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy."@en ;
-    owl:versionInfo "0.4.0" ;
-    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.4.0> ;
-    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.3.0> ;
+    owl:versionInfo "0.4.1" ;
+    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.4.1> ;
+    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.4.0> ;
     vann:preferredNamespacePrefix "lkg" ;
     vann:preferredNamespaceUri "https://w3id.org/laubmann-kg/ontology#" ;
     dcterms:creator [ a foaf:Agent ; foaf:name "Laubmann KG Project" ; foaf:homepage <https://github.com/Maelkolb/laubmann-kg_TP> ] ;   # TODO: replace with the author's name/ORCID before publication
@@ -66,7 +70,7 @@
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:rights "Creative Commons Attribution 4.0 International (CC BY 4.0)"@en ;
     dcterms:issued "2026-07-22"^^xsd:date ;
-    dcterms:modified "2026-08-18"^^xsd:date ;
+    dcterms:modified "2026-08-19"^^xsd:date ;
     dcterms:source <https://github.com/Maelkolb/laubmann-kg_TP> ;
     rdfs:seeAlso <https://github.com/Maelkolb/laubmann-kg_TP> , <https://w3id.org/laubmann-kg/vocabularies> , <https://w3id.org/laubmann-kg/shapes> ;
     dcterms:subject "ornithology"@en , "field diaries"@en , "biodiversity data"@en , "Darwin Core"@en ;
@@ -160,19 +164,19 @@ lkg:TravelLeg
 lkg:Taxon
     a owl:Class ;
     rdfs:label "Taxon"@en , "Taxon"@de ;
-    rdfs:comment "A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch, dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus)."@en ;
+    rdfs:comment "A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName; further spellings merged by entity resolution as skos:altLabel). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch, dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus)."@en ;
     rdfs:subClassOf dwc:Taxon .
 
 lkg:Place
     a owl:Class ;
     rdfs:label "Place"@en , "Ort"@de ;
-    rdfs:comment "A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme."@en ;
+    rdfs:comment "A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned, merged spellings as skos:altLabel). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme."@en ;
     rdfs:subClassOf geo:SpatialThing , dcterms:Location .
 
 lkg:Person
     a owl:Class ;
     rdfs:label "Person"@en , "Person"@de ;
-    rdfs:comment "A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node."@en ;
+    rdfs:comment "A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node. Name variants merged by entity resolution (\"W. Wüst\", \"Wüst\" → \"Walter Wüst\") are skos:altLabels."@en ;
     rdfs:subClassOf schema:Person .
 
 # lkg:habitatScheme and all other skos:ConceptSchemes are declared in
@@ -300,6 +304,7 @@ lkg:mentionsOther
 
 # --- Observation ------------------------------------------------------------
 # Standard terms used on the observation (not redeclared here):
+# dwc:verbatimIdentification (taxon name as written when resolution merged it),
 # dwc:occurrenceStatus, dwc:individualCount, dwc:sex, dwc:lifeStage,
 # dwc:vitality, dwc:reproductiveCondition, dwc:behavior, dwc:habitat,
 # dwciri:habitat, dwc:identificationQualifier, dwc:eventDate, dwc:eventTime,

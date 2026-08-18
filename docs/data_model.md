@@ -1,6 +1,6 @@
 # Data Model
 
-The knowledge graph conforms to `ontologies/laubmann.ttl` (v0.4.0, namespace
+The knowledge graph conforms to `ontologies/laubmann.ttl` (v0.4.1, namespace
 `https://w3id.org/laubmann-kg/ontology#`, prefix `lkg:`). Instances live under
 `https://w3id.org/laubmann-kg/data/` (prefix `data:`). The Python contract is
 `src/laubmann_kg/kg/model.py`; `kg/rdf.py` maps it onto triples and
@@ -41,6 +41,25 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
 - **Flat where a node adds nothing.** Behaviour = `dwc:behavior` literals;
   evidence kinds = `lkg:evidenceKind` concept links on the observation;
   only vocalisations, weather reports and travel legs stay nodes.
+- **One node per real-world entity.** The entity-resolution stage
+  (`resolution/`, after linking) merges spellings that denote the same taxon
+  (same accepted GBIF key at species level, or same scientific name), person
+  (title-stripped/folded key, Wikidata item, unique initial/surname, dominant
+  usage) or place/habitat (orthographic variants; similar strings only after
+  review). The canonical spelling is the most-used one; merged spellings are
+  `skos:altLabel`, and an observation whose written taxon name was merged keeps
+  it as `dwc:verbatimIdentification`. Observation IRIs never change (they hash
+  the name as written). Every merge is a row in `review/*_merges.csv`
+  (`decision` column: `auto` rows apply unless rejected, `candidate` rows only
+  when accepted).
+- **Dates checked against the volume span.** `configs/volume_coverage.yaml`
+  (title pages) drives `normalization/coverage.py`: misfiled scans go back to
+  their document's volume, isolated OCR years are repaired from the sequence
+  neighbours (`1901` → `1951`; recorded as `skos:note`, the raw date stays
+  `dwc:verbatimEventDate`), digests/retrospectives keep their historic dates,
+  non-entries outside 1900–1966 are excluded (QA reasons `volume_reassigned`,
+  `date_year_corrected`, `date_out_of_coverage`, `date_out_of_span`,
+  `duplicate_entry`).
 
 ## Node types and keys
 
@@ -103,11 +122,12 @@ and no `wasGeneratedBy` are emitted.
 | `event_date`, `event_time` | `dwc:eventDate` (xsd:date; falls back to the entry date), `dwc:eventTime` "HH:MM" | |
 | `record_type`, `observer`, `literature_citation` | `lkg:recordType`, derived `dwc:basisOfRecord`, `dwciri:recordedBy`, `dwc:associatedReferences` | see ontology comment on recordType |
 | `evidence[]` | `lkg:evidenceKind` concept per kind; calls additionally a `lkg:Vocalisation` node (`lkg:callType` always, `lkg:callTranscription` only when written) | no placeholder |
+| `taxon_verbatim` | `dwc:verbatimIdentification` | the name as written, when resolution merged it into a canonical taxon |
 | `behaviour[]` | `dwc:behavior`@de literals | |
 | `habitat` | `dwciri:habitat` → shared concept + `dwc:habitat` literal | |
 | `flags` | not emitted (QA only) | |
 
-Taxon: `rdfs:label` + `dwc:vernacularName`@de, `dwc:scientificName` or
+Taxon: `rdfs:label` + `dwc:vernacularName`@de (+ `skos:altLabel` for merged spellings), `dwc:scientificName` or
 `skos:note` (unresolved), `dwc:taxonRank`, `lkg:isBird`, GBIF classification
 `dwc:kingdom/phylum/class/order/family/genus` (from the cached `species/match`
 response, `Taxon.higher_taxonomy`), match provenance (`lkg:matchMethod`,
@@ -115,12 +135,13 @@ response, `Taxon.higher_taxonomy`), match provenance (`lkg:matchMethod`,
 `skos:exactMatch` / `closeMatch` (fuzzy or LLM-mediated) / `broadMatch`
 (HIGHERRANK) plus `dwc:taxonID` (not for broad matches).
 
-Place: `rdfs:label`@de (canonical), `dwc:verbatimLocality`, `lkg:placeKind`,
+Place: `rdfs:label`@de (canonical; merged spellings as `skos:altLabel`), `dwc:verbatimLocality`, `lkg:placeKind`,
 `geo:lat`/`geo:long` co-emitted as `dwc:decimalLatitude`/`Longitude` +
 `dwc:geodeticDatum "WGS84"` + `gsp:asWKT "POINT(lon lat)"^^gsp:wktLiteral`.
 
-Person: `rdfs:label`, `schema:name`, `owl:sameAs` (Wikidata). The role is on the
-mention edge of each entry, not on the shared node.
+Person: `rdfs:label`, `schema:name`, `skos:altLabel` (merged name variants),
+`owl:sameAs` (Wikidata). The role is on the mention edge of each entry, not on
+the shared node.
 
 ## Corpus → ontology mapping
 

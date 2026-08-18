@@ -15,7 +15,7 @@ FIELDS = [
     "kingdom", "class", "order", "family", "scientificName", "taxonRank", "vernacularName", "taxonID",
     "individualCount", "organismQuantity", "organismQuantityType",
     "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
-    "behavior", "identificationQualifier", "identificationRemarks",
+    "behavior", "identificationQualifier", "identificationRemarks", "verbatimIdentification",
     "locality", "verbatimLocality", "eventDate", "eventTime", "habitat",
     "occurrenceRemarks", "recordedBy", "associatedMedia", "associatedReferences",
     "dynamicProperties",
@@ -125,6 +125,7 @@ def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = 
                 "behavior": "; ".join(b.label for b in obs.behaviour),
                 "identificationQualifier": obs.identification_qualifier or "",
                 "identificationRemarks": _identification_remarks(taxon),
+                "verbatimIdentification": obs.taxon_verbatim or "",
                 "locality": obs.place.name if obs.place is not None else "",
                 "verbatimLocality": obs.locality.verbatim if obs.locality is not None else "",
                 # a record without its own date inherits the event's date (or

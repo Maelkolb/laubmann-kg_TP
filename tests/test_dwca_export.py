@@ -64,7 +64,7 @@ def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
         "kingdom", "class", "order", "family", "scientificName", "taxonRank", "vernacularName", "taxonID",
         "individualCount", "organismQuantity", "organismQuantityType",
         "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
-        "behavior", "identificationQualifier", "identificationRemarks",
+        "behavior", "identificationQualifier", "identificationRemarks", "verbatimIdentification",
         "locality", "verbatimLocality", "eventDate", "eventTime", "habitat",
         "occurrenceRemarks", "recordedBy", "associatedMedia", "associatedReferences",
         "dynamicProperties"]

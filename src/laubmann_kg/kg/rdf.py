@@ -1,4 +1,4 @@
-"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.4.0.
+"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.4.1.
 
 Design notes
 - The data contract is ``kg/model.py``; this module only maps it onto triples.
@@ -124,6 +124,8 @@ def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
     graph.add((node, RDF.type, LKG.Taxon))
     graph.add((node, RDFS.label, Literal(taxon.vernacular_de, lang=DE)))
     graph.add((node, DWC.vernacularName, Literal(taxon.vernacular_de, lang=DE)))
+    for alt in taxon.alt_names:                    # merged spellings (entity resolution)
+        graph.add((node, SKOS.altLabel, Literal(alt, lang=DE)))
     if taxon.scientific_name:
         graph.add((node, DWC.scientificName, Literal(taxon.scientific_name)))
     else:
@@ -166,6 +168,8 @@ def _add_place(graph: Graph, place: Place) -> URIRef:
         graph.add((node, RDF.type, LKG.Place))
         graph.add((node, RDFS.label, Literal(place.name, lang=DE)))
         graph.add((node, DWC.verbatimLocality, Literal(place.verbatim)))
+        for alt in place.alt_names:
+            graph.add((node, SKOS.altLabel, Literal(alt, lang=DE)))
         if place.kind:
             graph.add((node, LKG.placeKind, Literal(place.kind)))
         if place.lat is not None and place.long is not None:
@@ -184,6 +188,8 @@ def _add_person(graph: Graph, person: Person) -> URIRef:
         graph.add((node, RDF.type, LKG.Person))
         graph.add((node, RDFS.label, Literal(person.name)))
         graph.add((node, SCHEMA.name, Literal(person.name)))
+    for alt in person.alt_names:                   # merged name variants (entity resolution)
+        graph.add((node, SKOS.altLabel, Literal(alt)))
     # Outside the type guard: an enriched Person instance may arrive after a
     # bare one; rdflib set semantics dedupes the repeated add. The role is NOT
     # a property of the shared person node — it sits on the mention edge.
@@ -201,6 +207,8 @@ def _add_habitat_concept(graph: Graph, habitat: Habitat) -> URIRef:
         graph.add((node, RDFS.label, Literal(habitat.label, lang=DE)))
         graph.add((node, SKOS.prefLabel, Literal(habitat.label, lang=DE)))
         graph.add((node, SKOS.inScheme, LKG.habitatScheme))
+        for alt in habitat.alt_labels:
+            graph.add((node, SKOS.altLabel, Literal(alt, lang=DE)))
         graph.add((LKG.habitatScheme, RDF.type, SKOS.ConceptScheme))
     return node
 
@@ -293,6 +301,9 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
     label = f"Beobachtung {obs.taxon.vernacular_de}"
     graph.add((node, RDFS.label, Literal(label, lang=DE)))
     graph.add((node, LKG.observedTaxon, _add_taxon(graph, obs.taxon)))
+    if obs.taxon_verbatim and obs.taxon_verbatim != obs.taxon.vernacular_de:
+        # the name as written, when resolution merged it into a canonical taxon
+        graph.add((node, DWC.verbatimIdentification, Literal(obs.taxon_verbatim, lang=DE)))
     _add_record_links(graph, node, entry_node, run)
     graph.add((node, LKG.verbatimNotes, Literal(obs.verbatim_notes, lang=DE)))
 

@@ -10,7 +10,10 @@ decide content. Policy (defaults, all configurable under ``qa:``):
   STATED model confidence < ``min_taxon_confidence`` (0.3)                 -> exclude observation
 - ``implausible_date``  – model marks the header date contradicted/unrepairable -> exclude entry
 - ``misdate``           – entry year outside the volume's median ± tolerance -> flag (exclude only
-  with ``exclude_misdate: true``; retrospective/digest entries are never excluded by it)
+  with ``exclude_misdate: true``; retrospective/digest entries are never excluded by it;
+  off when the volume-coverage check runs — see ``normalization/coverage.py``, which adds
+  ``volume_reassigned``, ``date_year_corrected``, ``date_out_of_coverage``, ``date_out_of_span``
+  and ``duplicate_entry``)
 - ``date_corrected``    – model corrected the header date                   -> flag
 - ``record_type_conflict`` – model called an attributed/cited record field-observation -> flag
 - ``nonplace``          – no usable entry place although a header exists     -> flag
@@ -80,7 +83,10 @@ def run_qa(entries, config: Optional[dict] = None):
     exclude_implausible = exclude and config.get("exclude_implausible_date", True)
     exclude_misdate = exclude and config.get("exclude_misdate", False)
     min_conf = float(config.get("min_taxon_confidence", 0.3))
-    ranges = _year_ranges(entries, config)
+    # misdate (median-based) is superseded by the volume-coverage check when
+    # that runs (pipeline sets misdate: false); it stays available for runs
+    # without a coverage table.
+    ranges = _year_ranges(entries, config) if config.get("misdate", True) else {}
     flags: list[QAFlag] = []
     kept = []
 

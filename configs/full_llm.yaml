@@ -33,6 +33,21 @@ taxa:
 qa:
   enabled: true
   exclude: true               # drop misdated entries + garbage taxa; recorded to review/qa_flags.csv
+  coverage:                   # volume time spans (title pages): OCR-year repair, misfiled scans, off-span entries
+    enabled: true
+    path: configs/volume_coverage.yaml
+    tolerance_months: 1
+    neighbours: 2
+    max_digit_changes: 2
+    earliest_year: 1900
+    latest_year: 1966
+
+resolution:                   # entity resolution after linking (review/*_merges.csv, decision column)
+  enabled: true
+  taxa:     {enabled: true, merge_on_scientific_name: true, reviewed_csv: data/review/taxon_merges.csv}
+  persons:  {enabled: true, merge_bare_surname: true, reviewed_csv: data/review/person_merges.csv}
+  places:   {enabled: true, similarity: 0.9, reviewed_csv: data/review/place_merges.csv}
+  habitats: {enabled: true, similarity: 0.85, reviewed_csv: data/review/habitat_merges.csv}
 
 linking:
   enabled: true              # absent/false = stage skipped entirely (offline runs, tests)
