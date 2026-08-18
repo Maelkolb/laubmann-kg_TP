@@ -64,7 +64,7 @@ def main():
     import os
     os.makedirs(args.outdir, exist_ok=True)
     EP = args.endpoint
-    P = 'PREFIX lkg: <https://lkg.example.org/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'
+    P = 'PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'
 
     # ---------- taxa: merge on identical scientificName ----------
     taxa = sparql(EP, P + '''

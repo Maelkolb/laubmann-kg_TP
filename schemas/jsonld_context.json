@@ -1,7 +1,7 @@
 {
   "@context": {
     "@version": 1.1,
-    "lkg": "https://lkg.example.org/ontology#",
+    "lkg": "https://w3id.org/laubmann-kg/ontology#",
     "dwc": "http://rs.tdwg.org/dwc/terms/",
     "dwciri": "http://rs.tdwg.org/dwc/iri/",
     "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -13,7 +13,7 @@
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "owl": "http://www.w3.org/2002/07/owl#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
-    "data": "https://lkg.example.org/data/",
+    "data": "https://w3id.org/laubmann-kg/data/",
 
     "label": "rdfs:label",
     "comment": "rdfs:comment",

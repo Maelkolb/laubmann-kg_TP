@@ -1,8 +1,8 @@
 # Data Model
 
 The knowledge graph conforms to `ontologies/laubmann.ttl` (v0.3.0, namespace
-`https://lkg.example.org/ontology#`, prefix `lkg:`). Instances live under
-`https://lkg.example.org/data/` (prefix `data:`). The Python contract is
+`https://w3id.org/laubmann-kg/ontology#`, prefix `lkg:`). Instances live under
+`https://w3id.org/laubmann-kg/data/` (prefix `data:`). The Python contract is
 `src/laubmann_kg/kg/model.py`; `kg/rdf.py` maps it onto triples and
 `ontologies/shacl_shapes.ttl` validates the result **without inference** (every
 superclass a shape relies on is materialised at emit time). Enumerated values

@@ -102,7 +102,7 @@ def main():
     cache_path = f'{args.outdir}/nominatim_cache.json'
     cache = json.load(open(cache_path, encoding='utf-8')) if os.path.exists(cache_path) else {}
 
-    P = 'PREFIX lkg: <https://lkg.example.org/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'
+    P = 'PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'
     places = sparql(args.endpoint, P + '''
       PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
       SELECT ?p ?l (COUNT(?x) AS ?n) WHERE {

@@ -318,8 +318,9 @@ def test_ontology_axioms_and_vocabularies_parse() -> None:
     assert (LKG.observedAt, RDFS.subPropertyOf, DWCIRI.inDescribedPlace) not in onto
     assert (LKG.containsObservation, OWL.inverseOf, LKG.derivedFromEntry) in onto
     assert (LKG.routeOrder, RDFS.domain, LKG.Route) in onto
-    assert (LKG.habitatScheme, RDF.type, SKOS.ConceptScheme) in onto
-    onto_iri = URIRef("https://lkg.example.org/ontology")
+    # the habitat scheme is declared in controlled_vocabularies.ttl (see below), not in the ontology
+    assert (LKG.habitatScheme, RDF.type, SKOS.ConceptScheme) not in onto
+    onto_iri = URIRef("https://w3id.org/laubmann-kg/ontology")
     assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.3.0")
     for prop in ("entryPlace", "hasLocality", "entryKind", "entryDateEnd", "dateNote",
                  "datePlausible", "individualCountMin", "individualCountMax",

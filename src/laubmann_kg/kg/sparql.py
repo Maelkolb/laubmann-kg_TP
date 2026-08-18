@@ -11,7 +11,7 @@ from rdflib import Graph
 logger = logging.getLogger(__name__)
 
 PREFIXES = """
-PREFIX lkg:  <https://lkg.example.org/ontology#>
+PREFIX lkg:  <https://w3id.org/laubmann-kg/ontology#>
 PREFIX dwc:  <http://rs.tdwg.org/dwc/terms/>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

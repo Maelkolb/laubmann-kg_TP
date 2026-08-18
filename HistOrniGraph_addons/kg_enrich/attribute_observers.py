@@ -24,7 +24,7 @@ Usage: python3 attribute_observers.py [--endpoint ...] [--outdir out]
 import argparse, csv, json, re, sys, urllib.parse, urllib.request
 from collections import defaultdict
 
-LAUBMANN = 'https://lkg.example.org/data/person_c6b2ff6250e5'  # "Alfred Laubmann"
+LAUBMANN = 'https://w3id.org/laubmann-kg/data/person_c6b2ff6250e5'  # "Alfred Laubmann"
 
 def sparql(endpoint, query):
     data = urllib.parse.urlencode({'query': query}).encode()
@@ -50,7 +50,7 @@ def main():
     ap.add_argument('--outdir', default='out')
     args = ap.parse_args()
     EP = args.endpoint
-    P = ('PREFIX lkg: <https://lkg.example.org/ontology#> '
+    P = ('PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> '
          'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '
          'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>')
 
@@ -142,7 +142,7 @@ def main():
 
     with open(f'{args.outdir}/observers.ttl', 'w', encoding='utf-8') as f:
         f.write('# observer attribution: paren-tag / reporting-verb rules, default = diarist\n'
-                '@prefix lkg: <https://lkg.example.org/ontology#> .\n'
+                '@prefix lkg: <https://w3id.org/laubmann-kg/ontology#> .\n'
                 '@prefix owl: <http://www.w3.org/2002/07/owl#> .\n'
                 '@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n'
                 '@prefix dwciri: <http://rs.tdwg.org/dwc/iri/> .\n\n'

@@ -1,9 +1,9 @@
 # =============================================================
 # HistOrniGraph / Laubmann Knowledge Graph
 # Project Ontology  /  ontologies/laubmann.ttl
-# Namespace: https://lkg.example.org/ontology#
+# Namespace: https://w3id.org/laubmann-kg/ontology#   (w3id folder prepared in w3id/laubmann-kg/, PR pending)
 #
-# v0.3.0 (2026-08-17)
+# v0.3.0 (2026-08-17; namespace migrated to w3id 2026-08-18)
 #   - ObservationEvent is a dwc:Occurrence (the observation carries the
 #     occurrence-level properties; DiaryEntry is the DwC-A Event).
 #   - Habitat is a skos:Concept, no longer a Place.
@@ -17,7 +17,7 @@
 #     src/laubmann_kg/normalization/vocabularies.py (single source of truth).
 # =============================================================
 
-@prefix lkg:     <https://lkg.example.org/ontology#> .
+@prefix lkg:     <https://w3id.org/laubmann-kg/ontology#> .
 @prefix dwc:     <http://rs.tdwg.org/dwc/terms/> .
 @prefix dwciri:  <http://rs.tdwg.org/dwc/iri/> .
 @prefix oa:      <http://www.w3.org/ns/oa#> .
@@ -32,19 +32,32 @@
 @prefix time:    <http://www.w3.org/2006/time#> .
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 
 # -------------------------------------------------------------
 # Ontology Declaration
 # -------------------------------------------------------------
-<https://lkg.example.org/ontology>
+<https://w3id.org/laubmann-kg/ontology>
     a owl:Ontology ;
+    dcterms:title "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
     rdfs:label "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
+    dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). It models diary entries (the archival record and DwC event), observation events (DwC occurrences: taxon, place, counts, sex, life stage, breeding evidence, movement, evidence, behaviour, habitat, provenance of the record), the diarist's journeys, weather reports, persons and source references. Observations are LLM-extracted from the transcribed diary text; the emitted graph co-emits Darwin Core (dwc/dwciri), PROV-O, DCTERMS, SKOS and schema.org terms next to the project terms, and is validated with SHACL. Controlled values are SKOS concept schemes in the same namespace."@en ;
     rdfs:comment "Project ontology for the HistOrniGraph KG, modelling diary entries, ornithological observations, travel events, weather, persons and source references from the field journals of Alfred Laubmann. Observations are LLM-extracted from the transcribed diary text; the graph co-emits Darwin Core, PROV-O, DCTERMS and schema.org terms next to the project terms."@en ;
     owl:versionInfo "0.3.0" ;
-    owl:versionIRI <https://lkg.example.org/ontology/0.3.0> ;
-    dcterms:creator "Laubmann KG Project" ;
+    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.3.0> ;
+    vann:preferredNamespacePrefix "lkg" ;
+    vann:preferredNamespaceUri "https://w3id.org/laubmann-kg/ontology#" ;
+    dcterms:creator [ a foaf:Agent ; foaf:name "Laubmann KG Project" ; foaf:homepage <https://github.com/Maelkolb/laubmann-kg_TP> ] ;   # TODO: replace with the author's name/ORCID before publication
+    dcterms:publisher "HistOrniGraph / Laubmann KG Project" ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
-    dcterms:modified "2026-08-17"^^xsd:date .
+    dcterms:rights "Creative Commons Attribution 4.0 International (CC BY 4.0)"@en ;
+    dcterms:issued "2026-07-22"^^xsd:date ;
+    dcterms:modified "2026-08-18"^^xsd:date ;
+    dcterms:source <https://github.com/Maelkolb/laubmann-kg_TP> ;
+    rdfs:seeAlso <https://github.com/Maelkolb/laubmann-kg_TP> , <https://w3id.org/laubmann-kg/vocabularies> , <https://w3id.org/laubmann-kg/shapes> ;
+    dcterms:subject "ornithology"@en , "field diaries"@en , "biodiversity data"@en , "Darwin Core"@en ;
+    dcterms:language "en" , "de" .
 
 # =============================================================
 # CLASSES
@@ -109,11 +122,7 @@ lkg:Habitat
     rdfs:comment "An ecological habitat type associated with an observation (reed bed, meadow, gravel bank ...). A SKOS concept in lkg:habitatScheme, not a geographic place: the same habitat label recurs across many places."@en ;
     rdfs:subClassOf skos:Concept .
 
-lkg:habitatScheme
-    a skos:ConceptScheme ;
-    rdfs:label "Habitat scheme"@en , "Lebensraum-Schema"@de ;
-    skos:prefLabel "Habitats"@en , "Lebensräume"@de ;
-    rdfs:comment "Concept scheme collecting the habitat concepts emitted as data (open list, not enumerated in the ontology)."@en .
+# lkg:habitatScheme (skos:ConceptScheme) is declared in controlled_vocabularies.ttl.
 
 lkg:Route
     a owl:Class ;

@@ -1,0 +1,140 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Laubmann KG · controlled vocabularies</title>
+<style>body{font:15px/1.5 "Segoe UI",system-ui,sans-serif;max-width:960px;margin:4vh auto;padding:0 1.2rem;color:#1D2A21}
+h1{font:500 1.9rem/1.2 Georgia,serif;margin:0 0 .3rem}h2{font:500 1.15rem/1.3 Georgia,serif;margin:2rem 0 .3rem;padding-top:.8rem;border-top:1px solid #DCE2DA}
+p.meta{color:#5F6E64;font-size:.9rem}code{background:#EEF2EC;padding:1px 5px;border-radius:3px;font-size:.88em}
+table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{text-align:left;padding:4px 8px;border-bottom:1px solid #EEF1EC;vertical-align:top}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}nav{font-size:.86rem;color:#5F6E64;margin-bottom:1rem}nav a{color:#35608A;text-decoration:none;margin-right:10px}</style></head><body>
+<h1>Laubmann Knowledge Graph — controlled vocabularies</h1>
+<p class="meta">SKOS concept schemes in <code>https://w3id.org/laubmann-kg/ontology#</code>. The English <code>skos:prefLabel</code> is the literal value emitted in the data graph and checked by the SHACL shapes; the Python mirror is <code>normalization/vocabularies.py</code>. Source: <code>ontologies/controlled_vocabularies.ttl</code>. See also the <a href="index.html">ontology</a> and the <a href="shapes.html">SHACL shapes</a>.</p>
+<nav><a href="#callTypeScheme">Bird call types</a><a href="#breedingEvidenceScheme">Breeding evidence (atlas categories)</a><a href="#countQualifierScheme">Count qualifiers</a><a href="#entryKindScheme">Diary entry kinds</a><a href="#habitatScheme">Habitats</a><a href="#lifeStageScheme">Life stages</a><a href="#movementKindScheme">Movement kinds</a><a href="#evidenceKindScheme">Observation evidence kinds</a><a href="#recordTypeScheme">Observation record types</a><a href="#occurrenceStatusScheme">Occurrence status</a><a href="#placeKindScheme">Place kinds</a><a href="#precipitationScheme">Precipitation types</a><a href="#sexScheme">Sex</a><a href="#skyConditionScheme">Sky conditions</a><a href="#taxonRankScheme">Taxon ranks (as named by the diarist)</a><a href="#temperatureUnitScheme">Temperature units</a><a href="#transportModeScheme">Transport modes</a><a href="#vitalityScheme">Vitality</a></nav>
+<h2 id="callTypeScheme">Bird call types <span style="color:#5F6E64;font-size:.85rem">· Lautäußerungstypen · <code>lkg:callTypeScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:call_alarm</code></td><td>alarm</td><td>Warnruf</td><td></td></tr>
+<tr><td><code>lkg:call_call</code></td><td>call</td><td>Ruf</td><td></td></tr>
+<tr><td><code>lkg:call_drumming</code></td><td>drumming</td><td>Trommeln</td><td></td></tr>
+<tr><td><code>lkg:call_song</code></td><td>song</td><td>Gesang</td><td></td></tr>
+<tr><td><code>lkg:call_unknown</code></td><td>unknown</td><td>unbekannt</td><td></td></tr>
+</table>
+<h2 id="breedingEvidenceScheme">Breeding evidence (atlas categories) <span style="color:#5F6E64;font-size:.85rem">· Brutnachweis (Atlaskategorien) · <code>lkg:breedingEvidenceScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:breeding_confirmed</code></td><td>confirmed</td><td>sicheres Brüten</td><td></td></tr>
+<tr><td><code>lkg:breeding_possible</code></td><td>possible</td><td>mögliches Brüten</td><td></td></tr>
+<tr><td><code>lkg:breeding_probable</code></td><td>probable</td><td>wahrscheinliches Brüten</td><td></td></tr>
+</table>
+<h2 id="countQualifierScheme">Count qualifiers <span style="color:#5F6E64;font-size:.85rem">· Zahlenqualifikatoren · <code>lkg:countQualifierScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:count_approximate</code></td><td>approximate</td><td>ungefähr</td><td></td></tr>
+<tr><td><code>lkg:count_exact</code></td><td>exact</td><td>genau</td><td></td></tr>
+<tr><td><code>lkg:count_minimum</code></td><td>minimum</td><td>mindestens</td><td></td></tr>
+<tr><td><code>lkg:count_plural_unspecified</code></td><td>plural-unspecified</td><td>Mehrzahl, unbeziffert</td><td></td></tr>
+</table>
+<h2 id="entryKindScheme">Diary entry kinds <span style="color:#5F6E64;font-size:.85rem">· Eintragsarten · <code>lkg:entryKindScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:entrykind_correspondence</code></td><td>correspondence</td><td>Korrespondenz</td><td></td></tr>
+<tr><td><code>lkg:entrykind_field_day</code></td><td>field-day</td><td>Exkursionstag</td><td></td></tr>
+<tr><td><code>lkg:entrykind_other</code></td><td>other</td><td>sonstiges</td><td></td></tr>
+<tr><td><code>lkg:entrykind_retrospective</code></td><td>retrospective</td><td>Rückblick</td><td></td></tr>
+<tr><td><code>lkg:entrykind_species_digest</code></td><td>species-digest</td><td>Artenzusammenstellung</td><td></td></tr>
+</table>
+<h2 id="habitatScheme">Habitats <span style="color:#5F6E64;font-size:.85rem">· Lebensräume · <code>lkg:habitatScheme</code></span></h2>
+<p class="meta">Open concept scheme collecting the habitat concepts emitted as data (lkg:Habitat instances, e.g. Auwald, Schilf, Moor); not enumerated here.</p>
+<p class="meta">Open scheme — concepts are minted in the data (no fixed list).</p>
+<h2 id="lifeStageScheme">Life stages <span style="color:#5F6E64;font-size:.85rem">· Altersstadien · <code>lkg:lifeStageScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:lifestage_adult</code></td><td>adult</td><td>adult</td><td></td></tr>
+<tr><td><code>lkg:lifestage_egg</code></td><td>egg</td><td>Ei</td><td></td></tr>
+<tr><td><code>lkg:lifestage_immature</code></td><td>immature</td><td>immatur</td><td></td></tr>
+<tr><td><code>lkg:lifestage_juvenile</code></td><td>juvenile</td><td>juvenil / Jungvogel</td><td></td></tr>
+<tr><td><code>lkg:lifestage_mixed</code></td><td>mixed</td><td>gemischt</td><td></td></tr>
+<tr><td><code>lkg:lifestage_pullus</code></td><td>pullus</td><td>Pullus / Nestling</td><td></td></tr>
+</table>
+<h2 id="movementKindScheme">Movement kinds <span style="color:#5F6E64;font-size:.85rem">· Bewegungsarten · <code>lkg:movementKindScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:movement_arriving</code></td><td>arriving</td><td>ankommend (Erstbeobachtung)</td><td></td></tr>
+<tr><td><code>lkg:movement_departing</code></td><td>departing</td><td>abziehend (Letztbeobachtung)</td><td></td></tr>
+<tr><td><code>lkg:movement_migrating</code></td><td>migrating</td><td>ziehend</td><td></td></tr>
+<tr><td><code>lkg:movement_passing_over</code></td><td>passing-over</td><td>überfliegend</td><td></td></tr>
+<tr><td><code>lkg:movement_resting</code></td><td>resting</td><td>rastend</td><td></td></tr>
+<tr><td><code>lkg:movement_roosting</code></td><td>roosting</td><td>schlafend / am Schlafplatz</td><td></td></tr>
+</table>
+<h2 id="evidenceKindScheme">Observation evidence kinds <span style="color:#5F6E64;font-size:.85rem">· Belegarten · <code>lkg:evidenceKindScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:evidence_auditory</code></td><td>auditory</td><td>Lautäußerung</td><td></td></tr>
+<tr><td><code>lkg:evidence_nest</code></td><td>nest</td><td>Nestfund</td><td></td></tr>
+<tr><td><code>lkg:evidence_specimen</code></td><td>specimen</td><td>Beleg</td><td></td></tr>
+<tr><td><code>lkg:evidence_visual</code></td><td>visual</td><td>Sichtbeobachtung</td><td></td></tr>
+</table>
+<h2 id="recordTypeScheme">Observation record types <span style="color:#5F6E64;font-size:.85rem">· Nachweistypen · <code>lkg:recordTypeScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:record_field_observation</code></td><td>field-observation</td><td>eigene Feldbeobachtung</td><td></td></tr>
+<tr><td><code>lkg:record_literature_record</code></td><td>literature-record</td><td>Literaturnachweis</td><td></td></tr>
+<tr><td><code>lkg:record_third_party_report</code></td><td>third-party-report</td><td>Fremdbericht</td><td></td></tr>
+</table>
+<h2 id="occurrenceStatusScheme">Occurrence status <span style="color:#5F6E64;font-size:.85rem">· Vorkommensstatus · <code>lkg:occurrenceStatusScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:status_absent</code></td><td>absent</td><td>abwesend (explizites Fehlen)</td><td></td></tr>
+<tr><td><code>lkg:status_present</code></td><td>present</td><td>anwesend</td><td></td></tr>
+</table>
+<h2 id="placeKindScheme">Place kinds <span style="color:#5F6E64;font-size:.85rem">· Ortsarten · <code>lkg:placeKindScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:placekind_locality</code></td><td>locality</td><td>Örtlichkeit / Flurname</td><td></td></tr>
+<tr><td><code>lkg:placekind_region</code></td><td>region</td><td>Region</td><td></td></tr>
+<tr><td><code>lkg:placekind_route</code></td><td>route</td><td>Strecke</td><td></td></tr>
+<tr><td><code>lkg:placekind_settlement</code></td><td>settlement</td><td>Siedlung</td><td></td></tr>
+<tr><td><code>lkg:placekind_unknown</code></td><td>unknown</td><td>unbekannt</td><td></td></tr>
+</table>
+<h2 id="precipitationScheme">Precipitation types <span style="color:#5F6E64;font-size:.85rem">· Niederschlagsarten · <code>lkg:precipitationScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:precip_drizzle</code></td><td>drizzle</td><td>Nieselregen</td><td></td></tr>
+<tr><td><code>lkg:precip_fog</code></td><td>fog</td><td>Nebel</td><td></td></tr>
+<tr><td><code>lkg:precip_hail</code></td><td>hail</td><td>Hagel</td><td></td></tr>
+<tr><td><code>lkg:precip_none</code></td><td>none</td><td>niederschlagsfrei</td><td></td></tr>
+<tr><td><code>lkg:precip_rain</code></td><td>rain</td><td>Regen</td><td></td></tr>
+<tr><td><code>lkg:precip_sleet</code></td><td>sleet</td><td>Schneeregen/Graupel</td><td></td></tr>
+<tr><td><code>lkg:precip_snow</code></td><td>snow</td><td>Schnee</td><td></td></tr>
+<tr><td><code>lkg:precip_thunderstorm</code></td><td>thunderstorm</td><td>Gewitter</td><td></td></tr>
+</table>
+<h2 id="sexScheme">Sex <span style="color:#5F6E64;font-size:.85rem">· Geschlecht · <code>lkg:sexScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:sex_female</code></td><td>female</td><td>weiblich</td><td></td></tr>
+<tr><td><code>lkg:sex_male</code></td><td>male</td><td>männlich</td><td></td></tr>
+<tr><td><code>lkg:sex_mixed</code></td><td>mixed</td><td>gemischt</td><td></td></tr>
+</table>
+<h2 id="skyConditionScheme">Sky conditions <span style="color:#5F6E64;font-size:.85rem">· Himmelszustände · <code>lkg:skyConditionScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:sky_clear</code></td><td>clear</td><td>heiter</td><td></td></tr>
+<tr><td><code>lkg:sky_overcast</code></td><td>overcast</td><td>bedeckt/trüb</td><td></td></tr>
+<tr><td><code>lkg:sky_partly_cloudy</code></td><td>partly-cloudy</td><td>wolkig</td><td></td></tr>
+<tr><td><code>lkg:sky_variable</code></td><td>variable</td><td>wechselnd</td><td></td></tr>
+</table>
+<h2 id="taxonRankScheme">Taxon ranks (as named by the diarist) <span style="color:#5F6E64;font-size:.85rem">· Taxonomische Ränge (wie vom Tagebuchschreiber benannt) · <code>lkg:taxonRankScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:rank_family</code></td><td>family</td><td>Familie</td><td></td></tr>
+<tr><td><code>lkg:rank_genus</code></td><td>genus</td><td>Gattung</td><td></td></tr>
+<tr><td><code>lkg:rank_group</code></td><td>group</td><td>informelle Gruppe</td><td></td></tr>
+<tr><td><code>lkg:rank_species</code></td><td>species</td><td>Art</td><td></td></tr>
+<tr><td><code>lkg:rank_subspecies</code></td><td>subspecies</td><td>Unterart</td><td></td></tr>
+<tr><td><code>lkg:rank_unknown</code></td><td>unknown</td><td>unbekannt</td><td></td></tr>
+</table>
+<h2 id="temperatureUnitScheme">Temperature units <span style="color:#5F6E64;font-size:.85rem">· Temperatureinheiten · <code>lkg:temperatureUnitScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:unit_C</code></td><td>C</td><td>Grad Celsius</td><td></td></tr>
+<tr><td><code>lkg:unit_F</code></td><td>F</td><td>Grad Fahrenheit</td><td></td></tr>
+<tr><td><code>lkg:unit_R</code></td><td>R</td><td>Grad Réaumur</td><td></td></tr>
+</table>
+<h2 id="transportModeScheme">Transport modes <span style="color:#5F6E64;font-size:.85rem">· Verkehrsmittel · <code>lkg:transportModeScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:transport_bicycle</code></td><td>bicycle</td><td>Fahrrad</td><td></td></tr>
+<tr><td><code>lkg:transport_boat</code></td><td>boat</td><td>Boot</td><td></td></tr>
+<tr><td><code>lkg:transport_car</code></td><td>car</td><td>Auto</td><td></td></tr>
+<tr><td><code>lkg:transport_carriage</code></td><td>carriage</td><td>Kutsche</td><td></td></tr>
+<tr><td><code>lkg:transport_foot</code></td><td>foot</td><td>zu Fuß</td><td></td></tr>
+<tr><td><code>lkg:transport_train</code></td><td>train</td><td>Zug</td><td></td></tr>
+<tr><td><code>lkg:transport_unknown</code></td><td>unknown</td><td>unbekannt</td><td></td></tr>
+</table>
+<h2 id="vitalityScheme">Vitality <span style="color:#5F6E64;font-size:.85rem">· Vitalität · <code>lkg:vitalityScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:vitality_alive</code></td><td>alive</td><td>lebend</td><td></td></tr>
+<tr><td><code>lkg:vitality_dead</code></td><td>dead</td><td>tot</td><td></td></tr>
+</table>
+</body></html>

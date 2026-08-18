@@ -21,7 +21,7 @@ def test_turtle_graph_has_expected_classes(sample_config, tmp_path: Path) -> Non
     export(sample_config, None, tmp_path, validate=False)
     graph = Graph()
     graph.parse(tmp_path / "rdf" / "laubmann_sample.ttl", format="turtle")
-    lkg = Namespace("https://lkg.example.org/ontology#")
+    lkg = Namespace("https://w3id.org/laubmann-kg/ontology#")
     assert (None, RDF.type, lkg.ObservationEvent) in graph
     assert (None, RDF.type, lkg.DiaryEntry) in graph
     assert (None, RDF.type, lkg.Taxon) in graph

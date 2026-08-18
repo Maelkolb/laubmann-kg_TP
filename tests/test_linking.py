@@ -135,7 +135,7 @@ def test_gbif_exact_applied(tmp_path, monkeypatch) -> None:
     assert rows[0]["status"] == "linked"
 
     graph = build_graph(result)
-    taxon_node = URIRef("https://lkg.example.org/data/"
+    taxon_node = URIRef("https://w3id.org/laubmann-kg/data/"
                         + result.entries[0].observations[0].taxon.uid)
     gbif_iri = URIRef("https://www.gbif.org/species/2492462")
     assert (taxon_node, SKOS.exactMatch, gbif_iri) in graph

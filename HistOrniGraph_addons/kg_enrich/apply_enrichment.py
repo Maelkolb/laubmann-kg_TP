@@ -63,8 +63,8 @@ def main():
     # token-safe rewrite: the export uses prefixed names data:<uid>; uids are unique hex
     short = {}
     for v, c in canon.items():
-        sv = v.replace('https://lkg.example.org/data/', 'data:')
-        sc = c.replace('https://lkg.example.org/data/', 'data:')
+        sv = v.replace('https://w3id.org/laubmann-kg/data/', 'data:')
+        sc = c.replace('https://w3id.org/laubmann-kg/data/', 'data:')
         short[sv] = sc
     pattern = re.compile('|'.join(re.escape(k) for k in sorted(short, key=len, reverse=True)))
 

@@ -6,8 +6,8 @@ import hashlib
 from dataclasses import dataclass, field
 from typing import Optional
 
-DATA_NS = "https://lkg.example.org/data/"
-ONTO_NS = "https://lkg.example.org/ontology#"
+DATA_NS = "https://w3id.org/laubmann-kg/data/"
+ONTO_NS = "https://w3id.org/laubmann-kg/ontology#"
 
 
 def _slug(value: str, length: int = 12) -> str:

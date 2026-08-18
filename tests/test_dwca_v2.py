@@ -33,7 +33,7 @@ from laubmann_kg.kg.model import (
 from laubmann_kg.pipeline import ExtractionResult
 
 DWCA_NS = "{http://rs.tdwg.org/dwc/text/}"
-LKG = "https://lkg.example.org/ontology#"
+LKG = "https://w3id.org/laubmann-kg/ontology#"
 
 
 def _tsv(path: Path) -> list[dict]:

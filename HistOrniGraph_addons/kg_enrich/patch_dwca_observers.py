@@ -19,7 +19,7 @@ def main():
     args = ap.parse_args()
 
     data = urllib.parse.urlencode({'query':
-        'SELECT ?p ?l WHERE { ?p a <https://lkg.example.org/ontology#Person> ; '
+        'SELECT ?p ?l WHERE { ?p a <https://w3id.org/laubmann-kg/ontology#Person> ; '
         '<http://www.w3.org/2000/01/rdf-schema#label> ?l }'}).encode()
     req = urllib.request.Request(args.endpoint, data=data, headers={
         'Accept': 'application/sparql-results+json',

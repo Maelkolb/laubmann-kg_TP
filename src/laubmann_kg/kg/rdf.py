@@ -46,7 +46,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-LKG = Namespace("https://lkg.example.org/ontology#")
+LKG = Namespace("https://w3id.org/laubmann-kg/ontology#")
 DWC = Namespace("http://rs.tdwg.org/dwc/terms/")
 DWCIRI = Namespace("http://rs.tdwg.org/dwc/iri/")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")

@@ -8,7 +8,7 @@
 # =============================================================
 
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix lkg:  <https://lkg.example.org/ontology#> .
+@prefix lkg:  <https://w3id.org/laubmann-kg/ontology#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 # --- Transport modes (TravelLeg.transportMode) ---------------
@@ -146,7 +146,8 @@ lkg:entrykind_other          a skos:Concept ; skos:inScheme lkg:entryKindScheme 
 # Open list: the concepts are emitted as DATA (data:habitat_<sha1>) with
 # skos:prefLabel@de, not enumerated here.
 lkg:habitatScheme a skos:ConceptScheme ;
-    skos:prefLabel "Habitats"@en , "Lebensräume"@de .
+    skos:prefLabel "Habitats"@en , "Lebensräume"@de ;
+    skos:definition "Open concept scheme collecting the habitat concepts emitted as data (lkg:Habitat instances, e.g. Auwald, Schilf, Moor); not enumerated here."@en .
 
 # --- Precipitation (WeatherReport.precipitation) -------------
 lkg:precipitationScheme a skos:ConceptScheme ;

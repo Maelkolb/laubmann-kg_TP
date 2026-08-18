@@ -1,0 +1,55 @@
+# w3id.org/laubmann-kg — permanent identifiers for the Laubmann Knowledge Graph
+# (HistOrniGraph). Prepared 2026-08-18; submit as a PR to
+# https://github.com/perma-id/w3id.org once the ontology is finalized.
+#
+# Targets (change here, never in the data):
+#   HTML docs   → GitHub Pages of the repo (Settings ▸ Pages ▸ branch main, folder /docs)
+#   RDF files   → raw files on the main branch
+#
+# Layout
+#   /laubmann-kg/ontology            OWL ontology (hash namespace …/ontology#)
+#   /laubmann-kg/ontology/<version>  version IRIs (owl:versionIRI)
+#   /laubmann-kg/vocabularies        SKOS concept schemes (same namespace as the ontology)
+#   /laubmann-kg/shapes              SHACL shapes
+#   /laubmann-kg/context.jsonld      JSON-LD context
+#   /laubmann-kg/data/<id>           instance IRIs (entries, observations, taxa, places, persons, …)
+
+Options +FollowSymLinks
+RewriteEngine on
+
+# ---- ontology: content negotiation --------------------------------------
+# RDF serialisations → raw Turtle on GitHub (rdflib/Protégé send these Accept headers)
+RewriteCond %{HTTP_ACCEPT} text/turtle [OR]
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml [OR]
+RewriteCond %{HTTP_ACCEPT} application/ld\+json [OR]
+RewriteCond %{HTTP_ACCEPT} application/n-triples [OR]
+RewriteCond %{HTTP_ACCEPT} text/n3
+RewriteRule ^ontology/?$ https://raw.githubusercontent.com/Maelkolb/laubmann-kg_TP/main/ontologies/laubmann.ttl [R=303,L]
+
+# explicit file extensions
+RewriteRule ^ontology\.ttl$  https://raw.githubusercontent.com/Maelkolb/laubmann-kg_TP/main/ontologies/laubmann.ttl [R=303,L]
+RewriteRule ^ontology\.html$ https://maelkolb.github.io/laubmann-kg_TP/ontology/ [R=303,L]
+
+# versioned IRIs (owl:versionIRI) → the git tag of that release
+RewriteRule ^ontology/([0-9]+\.[0-9]+\.[0-9]+)/?$ https://raw.githubusercontent.com/Maelkolb/laubmann-kg_TP/v$1/ontologies/laubmann.ttl [R=303,L]
+
+# everything else for the ontology (browsers) → human-readable documentation (pyLODE)
+RewriteRule ^ontology/?$ https://maelkolb.github.io/laubmann-kg_TP/ontology/ [R=303,L]
+
+# ---- vocabularies / shapes / context -------------------------------------
+RewriteCond %{HTTP_ACCEPT} text/turtle [OR]
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml [OR]
+RewriteCond %{HTTP_ACCEPT} application/ld\+json
+RewriteRule ^vocabularies/?$ https://raw.githubusercontent.com/Maelkolb/laubmann-kg_TP/main/ontologies/controlled_vocabularies.ttl [R=303,L]
+RewriteRule ^vocabularies/?$ https://maelkolb.github.io/laubmann-kg_TP/ontology/vocabularies.html [R=303,L]
+RewriteRule ^shapes/?$       https://raw.githubusercontent.com/Maelkolb/laubmann-kg_TP/main/ontologies/shacl_shapes.ttl [R=303,L]
+RewriteRule ^context\.jsonld$ https://raw.githubusercontent.com/Maelkolb/laubmann-kg_TP/main/schemas/jsonld_context.json [R=303,L]
+
+# ---- data IRIs -------------------------------------------------------------
+# No public SPARQL endpoint yet: instance IRIs land on the data landing page.
+# When a Fuseki/LDF service exists, replace with e.g.
+#   RewriteRule ^data/(.+)$ https://<host>/laubmann/describe?iri=https://w3id.org/laubmann-kg/data/$1 [R=303,L]
+RewriteRule ^data/(.*)$ https://maelkolb.github.io/laubmann-kg_TP/ontology/data.html#$1 [R=303,NE,L]
+
+# ---- root ------------------------------------------------------------------
+RewriteRule ^/?$ https://github.com/Maelkolb/laubmann-kg_TP [R=303,L]

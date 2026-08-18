@@ -7,6 +7,13 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Changed (2026-08-18 — Namespace w3id, Ontologie-Dokumentation)
+
+- **Namespace migriert**: `https://lkg.example.org/…` → **`https://w3id.org/laubmann-kg/ontology#`** (Ontologie, SKOS-Konzepte, SHACL) und **`https://w3id.org/laubmann-kg/data/`** (Instanzen). Rein mechanischer Präfixwechsel (alle UIDs sind inhaltsadressiert): `kg/model.py`, `kg/rdf.py`, `kg/sparql.py`, alle drei TTL-Dateien, JSON-LD-Kontext, Tests/Fixtures, kg_enrich-Add-ons, Notebook 06. Bestehende Exporte lassen sich ohne Neuextraktion umschreiben: `python tools/migrate_namespace.py <export_dir>` (TTL, JSON-LD, DwC-A inkl. Zip, Review-CSVs; .bak-Kopien).
+- **w3id-Ordner vorbereitet** (`w3id/laubmann-kg/.htaccess` + README): Content-Negotiation Turtle/HTML für `/ontology`, versionierte IRIs `/ontology/<x.y.z>` (Git-Tag), `/vocabularies`, `/shapes`, `/context.jsonld`, `/data/<id>` → Landing-Page. **Noch kein PR** an perma-id/w3id.org (Ontologie nicht final); vorher GitHub Pages (main, /docs) aktivieren.
+- **Ontologie-Header** um LOV/pyLODE-Metadaten ergänzt: `dcterms:title/description/publisher/issued/modified/rights/source/subject/language`, `vann:preferredNamespacePrefix "lkg"`, `vann:preferredNamespaceUri`, `owl:versionIRI …/ontology/0.3.0`, `rdfs:seeAlso` auf Vokabulare/Shapes; `dcterms:creator` ist ein Platzhalter (Name/ORCID vor Publikation eintragen). `lkg:habitatScheme` wird nur noch in `controlled_vocabularies.ttl` deklariert (pyLODE mischte es sonst in die Ontologie-Metadaten). SHACL-Datei erhält eine eigene Deklaration `<…/shapes> a owl:Ontology, sh:ShapesGraph`.
+- **Human-readable Dokumentation** mit pyLODE 3.6 (`tools/build_ontology_docs.py` → `docs/ontology/`): `index.html` (Ontologie, ontpub, aus englischsprachiger Label-Sicht — pyLODE verkettet sonst de+en), `vocabularies.html` (18 SKOS-Schemes, eigene bilinguale Tabellen), `shapes.html` (valpub), `data.html` (Landing für Instanz-IRIs). Zielpfade der w3id-Redirects.
+
 ### Changed (2026-08-17 — Extraktion ohne Heuristiken, Modell liest den Eintrag)
 
 Leitprinzip: das Modell entscheidet den INHALT, der Code prüft nur die FORM (Vokabular-Mitgliedschaft, Datentypen, SHACL-Sicherheit, Autoritäten-Links). Was der Text nicht sagt, bleibt weg — keine Default-Evidenz, keine Platzhalter, keine injizierten Verhaltensweisen, keine Schlüsselwort-Regeln über Inhalt. Prompt-Änderung ⇒ vollständiger Live-Lauf (der Cache war seit der Adolf→Alfred-Korrektur ohnehin ungültig; alter Cache bleibt unter `llm_cache/`, neuer Lauf nutzt `llm_cache_v2/`).

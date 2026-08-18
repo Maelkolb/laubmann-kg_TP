@@ -1,0 +1,2354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Laubmann Knowledge Graph — SHACL shapes</title>
+    <style>
+        #pylode {
+            position: fixed;
+            top: 205px;
+            left: -150px;
+            font-size: small;
+            transform: rotate(-90deg);
+            color: grey;
+        }
+        #pylode a {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-decoration: none;
+            color: #005A9C;
+        }
+        #pylode a:hover {
+            color: #333;
+        }
+        #pylode #p {
+            color: #329545;
+        }
+        #pylode #y {
+            color: #f9cb33;
+        }
+        #pylode #version {
+            font-size: 1.0em;
+        }
+
+        #profile {
+            font-style: italic;
+            font-size: 1.25em;
+            color: darkred!important;
+        }
+
+        .cardinality {
+            font-style: italic;
+            color: #aa00aa;
+        }
+
+        dl {
+            /*border: 1px solid navy;*/
+            /*padding:5px;*/
+        }
+
+        dt {
+            font-weight: bold;
+            padding: 0;
+        }
+
+        dd {
+            margin-bottom: 10px;
+            padding-top: 7px;
+            line-height: 1.6em;
+        }
+
+        ul.pylodelitlist {
+            list-style-type: none;
+            margin-left: -40px;
+        }
+
+        #metadata ul li,
+        #classes ul li {
+            margin-bottom: 10px;
+        }
+
+        #metadata dd p {
+          margin: 0 0 1em 0;
+        }
+
+        ul.hlist {
+            list-style-type: none;
+            border: 1px solid navy;
+            padding:5px;
+            background-color: #F4FFFF;
+        }
+
+        div.hierarchy {
+            margin-bottom: 30px;
+            background-color: #F4FFFF;
+            padding: 10px;
+        }
+
+        ul.hierarchy {
+            padding: 5px 25px 5px 25px;
+        }
+
+        ul.hierarchy li {
+            margin-top:5px;
+        }
+
+        ul.hlist li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        .entity {
+            border: 1px solid navy;
+            margin:5px 0 5px 0;
+            padding: 5px;
+        }
+
+        .entity th {
+            width: 150px;
+            vertical-align: top;
+        }
+
+        .entity th,
+        .entity td {
+            padding-bottom: 20px;
+        }
+
+        .entity table th {
+            text-align: left;
+        }
+
+        section#overview img {
+            max-width: 1000px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            text-align: left
+        }
+        h1, h2, h3 {
+            color: #005A9C; background: white
+        }
+        h1 {
+            font: 170% sans-serif;
+            line-height: 110%;
+        }
+        h2 {
+            font: 140% sans-serif;
+            margin-top:40px;
+        }
+        h3 {
+            font: 120% sans-serif;
+            margin-top: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid navy;
+        }
+        h4 { font: bold 100% sans-serif }
+        h5 {
+            font: italic 100% sans-serif;
+            margin-bottom: 10px;
+        }
+        h6 { font: small-caps 100% sans-serif }
+
+        body {
+            padding: 2em 70px 2em 70px;
+            margin: 0;
+            font-family: sans-serif;
+            color: black;
+            background: white;
+            background-position: top left;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            text-align: left;
+        }
+
+        section {
+            max-width: 1500px;
+        }
+
+        .figure {
+            margin-bottom: 20px;
+        }
+
+        :link { color: #00C; background: transparent }
+        :visited { color: #609; background: transparent }
+        a:active { color: #C00; background: transparent }
+
+        .sup-c,
+        .sup-op,
+        .sup-fp,
+        .sup-dp,
+        .sup-ap,
+        .sup-p,
+        .sup-ni,
+        .sup-con,
+        .sup-col,
+        .sup-ns,
+        .sup-ps {
+            cursor:help;
+        }
+
+        .sup-c {
+            color:orange;
+        }
+
+        .sup-op {
+            color:navy;
+        }
+
+        .sup-fp {
+            color:lightskyblue;
+        }
+
+        .sup-dp {
+            color:green;
+        }
+
+        .sup-ap {
+            color:darkred;
+        }
+
+        .sup-p {
+            color:black;
+        }
+
+        .sup-ni {
+            color:brown;
+        }
+
+        .sup-con {
+            color:orange;
+        }
+
+        .sup-col {
+            color:darkred;
+        }
+
+        .sup-ns {
+            color:lightgreen;
+        }
+
+        .sup-ps {
+            color:lightblue;
+        }
+
+        sup {
+            margin-left: -3px;
+        }
+        code {
+            font-size: large;
+            color: darkred;
+        }
+
+        /* less prominent links for properties */
+        .proplink {
+            color: #336;
+            text-decoration: none;
+        }
+
+        #toc {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 2;
+            height: 100%;
+            overflow-y: auto;
+            padding: 10px;
+            border: solid 1px navy;
+            font-size: small;
+            width: 180px;
+        }
+        #toc h3 {
+            margin-top: 5px;
+        }
+
+        #toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #toc .first > li {
+            margin-top: 5px;
+        }
+
+        #toc .second,
+        #toc .third {
+            padding-left: 10px;
+        }
+
+        .second li {
+            margin-top: 0.5em;
+        }
+
+        #content {
+            width: calc(100% - 150px);
+        }
+
+        .hover_property {
+            cursor: help;
+            text-decoration: none;
+            border-bottom: dashed 1px;
+        }
+
+        .setclass {
+            list-style-type: none;
+        }
+
+        code{
+            word-wrap: break-word;
+          }
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        td {
+            word-wrap: break-word;
+            line-height: 1.6em ;
+        }
+        #legend table.entity {
+            width: 25%;
+        }
+        @media (max-width: 768px) {
+            /* #toc and #pylode are siblings of #content directly under
+               body; flex ordering pulls the ToC (last in the document)
+               to the top of the page */
+            body {
+                display: flex;
+                flex-direction: column;
+                padding: 1em 16px;
+            }
+
+            dd {
+                margin-left: 20px;
+            }
+
+            #pylode {
+                display: none;
+            }
+
+            #content {
+                width: 100%;
+            }
+
+            #toc {
+                order: -1;
+                position: static;
+                width: auto;
+                height: auto;
+                overflow-y: visible;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* long IRIs in link text must be able to break anywhere */
+            a {
+                overflow-wrap: anywhere;
+            }
+
+            /* stack property tables otherwise columns are squeezed */
+            table,
+            thead,
+            tbody,
+            tr,
+            th,
+            td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .entity th,
+            .entity td {
+                padding-bottom: 6px;
+            }
+
+            .entity td {
+                padding-bottom: 16px;
+            }
+
+            #legend table.entity {
+                width: 100%;
+            }
+        }
+
+	</style>
+    <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABhklEQVQ4jbWPzStEURjG3yQLirlGKUnKFO45Z+SjmXvnnmthQcpCoVhYmD/AwmJiI3OvZuZc2U3UlKU0/gAslMw9JgvhHxAr2fko7r0jHSsl+TgbTz2Lt5731/MASEiJW9ONml2QyX6rsGalmnT74v8BDf12hxJfpV8d1uwNKUBYszabdFv84L8B9X0rESVmmUup2fme0cVhJWaZHw4NWL1SewEAfDe6H3Dy6Ll456WEJsRZS630MwCAOI20ei5OBpxse5zcBZw8eS4uPpfIuDiCainIg9umBCU0GZzgLZ9Hn31OgoATL+CkLDGB5H1OKj4nFd/FBxUXJ0UZNb4edw/6nLyJXaj5FeCVyPLNIVmYK8TG1IwWb16L1gEACAFV90ftoT8bdOX0EeyY99gxBXZMgRz6qGb1KantAACI0UvE6F5XJqEjpsdURouI0Vt5gGOUkUNnPu7ObGIIMfNaGqDmjDRi9FZldF1lRgYzeqUyeoiY4ag5Iy3RgOYRM8+/M2bG8efsO4hGrpmJseyMAAAAAElFTkSuQmCC" rel="icon" sizes="16x16" type="image/png">
+    <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC40lEQVRYhe2UT0hUQRzHp6Iss1B3VZKIDbbdfW9mnoi4f3zzjkJQeOgS0SEIb1EWBGGlLLu460zQPQM1unUIIjA6rfpm6ZAhHjoIRVQUFUlEbG+euTsdXG1d3VL3bVD4g+9h+L35fT/8fvN7ADgY9aHY5fpIvK82HO9ysu66wxWOzbkjcekKx0a2ALYA/n2AGi3a6ArFezcidziecQygNhhrcUficjP6PwBqtGijKxy/thnVBePHywYoDsFhl53GV8SEcsTx4usCMLUewTVpc23BNvEzm6Neyf1+KcG2vwqwUjgrOJq2JmHftwmkVBRGTvncFodnbI7vChO/FRznCmHsNM7aHM9Yk7Df5iqsLMw9sMNOK2g+jS4IEz0UJv4iuJZb2RltWnB4UZqH6ioGAgAAGe5vtiZhtzDx7OoRadLmeM7m6IRjhnLMW2Vx1bA5GhAmnhIcz6/xNj4Ujsky8UspwfayjDPjsF2Y6L7N8Vzx/BfP+KPg6LbgSqd8DnfJW2CnbaLhfH5ephpqygJYvQU4Z3P82TLRsDDhUTnmrSq+Y3N0Mg+Xldy/zwEAnLMWZ3pHpNExmfLs/t0dOdVcbT0JeKxUwFP2VljjqiE47Jp53LTXNxhsUZjerTByXWX6VZWRs/4bIQ2ACv+UAomgDzLCISNZxAxZKMhIDjLy1JfsaK+I+eGBUBNk5E2x8RogX/PdcDZUqieWTSh5D6nOVKqfhoycUmlHFFIyu5RXqf7AcQDISCpv/tqbMBqK883RtmpISRoxQyJKPgGn3wNk5NEigDFa6hslqV/Kj+FdBQD0bshIDlKSLlVcoWQo36UhR80BAMB73lulMn0EMpJTqD6qJiOt3mho/8GbkT2BZNgDB/V+RI0fkOrT3kRIVQbaDizJm2hdNbINBxwk5xAj3yEjuV9rZ1iIkgxixkLBA83mz8uCjLwoGwAx0vOnFSy5mtR4VTaAQvVORMnwZgSpzkrV/QmdE2tKe46+MQAAAABJRU5ErkJggg==" rel="icon" sizes="32x32" type="image/png">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <script id="schema.org" type="application/ld+json">
+[
+  {
+    "@id": "https://w3id.org/laubmann-kg/shapes",
+    "@type": [
+      "https://schema.org/DefinedTermSet"
+    ],
+    "https://schema.org/dateModified": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#date",
+        "@value": "2026-08-18"
+      }
+    ],
+    "https://schema.org/description": [
+      {
+        "@language": "en",
+        "@value": "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology). Run with inference=none: every superclass a shape relies on is materialised by the emitter. Vocabulary/completeness checks are sh:Warning, datatype and cardinality checks sh:Violation."
+      }
+    ],
+    "https://schema.org/license": [
+      {
+        "@id": "https://creativecommons.org/licenses/by/4.0/"
+      }
+    ],
+    "https://schema.org/name": [
+      {
+        "@language": "en",
+        "@value": "Laubmann Knowledge Graph — SHACL shapes"
+      }
+    ]
+  }
+]
+	</script>
+  </head>
+  <body>
+    <div id="content">
+      <div class="section" id="metadata">
+        <h1>Laubmann Knowledge Graph — SHACL shapes</h1>
+        <h2>Metadata</h2>
+        <dl>
+          <div>
+            <dt>
+              <strong>IRI</strong>
+            </dt>
+            <dd>
+              <code>https://w3id.org/laubmann-kg/shapes</code>
+            </dd>
+          </div>
+          <div>
+            <dt>
+              <a class="hover_property" href="http://purl.org/dc/terms/title" title="A name given to the resource. Defined in DCMI Metadata Terms">Title</a>
+            </dt>
+            <dd><p>Laubmann Knowledge Graph — SHACL shapes</p></dd>
+          </div>
+          <div>
+            <dt>
+              <a class="hover_property" href="http://purl.org/dc/terms/modified" title="Date on which the resource was changed. Defined in DCMI Metadata Terms">Date Modified</a>
+            </dt>
+            <dd><p>2026-08-18</p></dd>
+          </div>
+          <div>
+            <dt>
+              <a class="hover_property" href="http://purl.org/dc/terms/license" title="Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided. Defined in DCMI Metadata Terms">License</a>
+            </dt>
+            <dd>
+              <a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>
+            </dd>
+          </div>
+          <div>
+            <dt>
+              <a class="hover_property" href="http://www.w3.org/2002/07/owl#versionInfo" title="The annotation property that provides version information for an ontology or another OWL construct. Defined in The OWL 2 Schema vocabulary (OWL 2)">Version Info</a>
+            </dt>
+            <dd><p>0.3.0</p></dd>
+          </div>
+          <div>
+            <dt>
+              <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+            </dt>
+            <dd><p>Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology). Run with inference=none: every superclass a shape relies on is materialised by the emitter. Vocabulary/completeness checks are sh:Warning, datatype and cardinality checks sh:Violation.</p></dd>
+          </div>
+          <div>
+            <dt>
+              <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#seeAlso" title="Further information about the subject resource. Defined in The RDF Schema vocabulary (RDFS)">See Also</a>
+            </dt>
+            <dd>
+              <a href="https://w3id.org/laubmann-kg/ontology">ns1:ontology</a>
+            </dd>
+          </div>
+        </dl>
+      </div>
+      <div class="section" id="node-shapes">
+        <h2>Node Shapes</h2>
+        <div class="property entity" id="BehaviourNoteShape">
+          <h3>Behaviour Note Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#BehaviourNoteShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#BehaviourNote">lkg:BehaviourNote</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="BirdCallShape">
+          <h3>Bird Call Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#BirdCallShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#BirdCall">lkg:BirdCall</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="DiaryEntryShape">
+          <h3>Diary Entry Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#DiaryEntryShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#message" title="A human-readable message (possibly with placeholders for variables) explaining the cause of the result. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Message</a>
+              </th>
+              <td><p>DiaryEntry sollte mindestens eine Observation, ein TravelEvent oder einen WeatherReport enthalten – sonst vermutlich Segmentierungsfehler.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#or" title="Specifies a list of shapes so that the value nodes must conform to at least one of the shapes. Defined in None">Or</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#severity" title="Defines the severity that validation results produced by a shape or constraint must have. Defaults to sh:Violation. Defined in None">Severity</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/ns/shacl#Warning">Warning</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#DiaryEntry">lkg:DiaryEntry</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="DiaryPageShape">
+          <h3>Diary Page Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#DiaryPageShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#DiaryPage">lkg:DiaryPage</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="DiaryVolumeShape">
+          <h3>Diary Volume Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#DiaryVolumeShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#DiaryVolume">lkg:DiaryVolume</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="ExtractionRunShape">
+          <h3>Extraction Run Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#ExtractionRunShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <span>
+                  <a href="http://www.w3.org/ns/prov#Activity">Activity</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="HabitatShape">
+          <h3>Habitat Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#HabitatShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#message" title="A human-readable message (possibly with placeholders for variables) explaining the cause of the result. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Message</a>
+              </th>
+              <td><p>Habitat benötigt skos:prefLabel oder rdfs:label.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#or" title="Specifies a list of shapes so that the value nodes must conform to at least one of the shapes. Defined in None">Or</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#severity" title="Defines the severity that validation results produced by a shape or constraint must have. Defaults to sh:Violation. Defined in None">Severity</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/ns/shacl#Violation">Violation</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Habitat">lkg:Habitat</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="NoOrphanObservationShape">
+          <h3>No Orphan Observation Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#NoOrphanObservationShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#sparql" title="Links a shape with SPARQL constraints. Defined in None">Constraint (In Sparql)</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#ObservationEvent">lkg:ObservationEvent</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="NoOrphanTravelLegShape">
+          <h3>No Orphan Travel Leg Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#NoOrphanTravelLegShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#sparql" title="Links a shape with SPARQL constraints. Defined in None">Constraint (In Sparql)</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#TravelLeg">lkg:TravelLeg</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="NoOrphanWeatherShape">
+          <h3>No Orphan Weather Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#NoOrphanWeatherShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#sparql" title="Links a shape with SPARQL constraints. Defined in None">Constraint (In Sparql)</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#WeatherReport">lkg:WeatherReport</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="ObservationEventShape">
+          <h3>Observation Event Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#ObservationEventShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#ObservationEvent">lkg:ObservationEvent</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="ObservationEvidenceShape">
+          <h3>Observation Evidence Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#ObservationEvidenceShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#ObservationEvidence">lkg:ObservationEvidence</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="PersonShape">
+          <h3>Person Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#PersonShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Person">lkg:Person</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="PlaceShape">
+          <h3>Place Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#PlaceShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Place">lkg:Place</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="RouteShape">
+          <h3>Route Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#RouteShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Route">lkg:Route</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="SourceRegionShape">
+          <h3>Source Region Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#SourceRegionShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#message" title="A human-readable message (possibly with placeholders for variables) explaining the cause of the result. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Message</a>
+              </th>
+              <td><p>SourceRegion muss eine gültige oa:Annotation-Struktur besitzen (Provenienz zum Scan).</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#node" title="Specifies the node shape that all value nodes must conform to. Defined in None">Node</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#SourceRegion">lkg:SourceRegion</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TaxonShape">
+          <h3>Taxon Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TaxonShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#message" title="A human-readable message (possibly with placeholders for variables) explaining the cause of the result. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Message</a>
+              </th>
+              <td><p>Taxon sollte entweder scientificName ODER eine skos:note zur Unsicherheit haben.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#or" title="Specifies a list of shapes so that the value nodes must conform to at least one of the shapes. Defined in None">Or</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#severity" title="Defines the severity that validation results produced by a shape or constraint must have. Defaults to sh:Violation. Defined in None">Severity</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/ns/shacl#Warning">Warning</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Taxon">lkg:Taxon</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TimeEstimateShape">
+          <h3>Time Estimate Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TimeEstimateShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#sparql" title="Links a shape with SPARQL constraints. Defined in None">Constraint (In Sparql)</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#TimeEstimate">lkg:TimeEstimate</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TravelEventShape">
+          <h3>Travel Event Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TravelEventShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#TravelEvent">lkg:TravelEvent</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TravelLegShape">
+          <h3>Travel Leg Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TravelLegShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#sparql" title="Links a shape with SPARQL constraints. Defined in None">Constraint (In Sparql)</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#TravelLeg">lkg:TravelLeg</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="WeatherReportShape">
+          <h3>Weather Report Shape
+            <sup class="sup-ns" title="SH NodeShape">ns</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#WeatherReportShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#WeatherReport">lkg:WeatherReport</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <div class="section" id="property-shapes">
+        <h2>Property Shapes</h2>
+        <div class="property entity" id="BehaviourNoteShape">
+          <h3>Behaviour Note Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#BehaviourNoteShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#BehaviourNote">lkg:BehaviourNote</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="BirdCallShape">
+          <h3>Bird Call Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#BirdCallShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#BirdCall">lkg:BirdCall</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="DiaryEntryShape">
+          <h3>Diary Entry Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#DiaryEntryShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#message" title="A human-readable message (possibly with placeholders for variables) explaining the cause of the result. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Message</a>
+              </th>
+              <td><p>DiaryEntry sollte mindestens eine Observation, ein TravelEvent oder einen WeatherReport enthalten – sonst vermutlich Segmentierungsfehler.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#or" title="Specifies a list of shapes so that the value nodes must conform to at least one of the shapes. Defined in None">Or</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#severity" title="Defines the severity that validation results produced by a shape or constraint must have. Defaults to sh:Violation. Defined in None">Severity</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/ns/shacl#Warning">Warning</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#DiaryEntry">lkg:DiaryEntry</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="DiaryPageShape">
+          <h3>Diary Page Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#DiaryPageShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#DiaryPage">lkg:DiaryPage</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="DiaryVolumeShape">
+          <h3>Diary Volume Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#DiaryVolumeShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#DiaryVolume">lkg:DiaryVolume</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="ExtractionRunShape">
+          <h3>Extraction Run Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#ExtractionRunShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <span>
+                  <a href="http://www.w3.org/ns/prov#Activity">Activity</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="HabitatShape">
+          <h3>Habitat Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#HabitatShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#message" title="A human-readable message (possibly with placeholders for variables) explaining the cause of the result. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Message</a>
+              </th>
+              <td><p>Habitat benötigt skos:prefLabel oder rdfs:label.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#or" title="Specifies a list of shapes so that the value nodes must conform to at least one of the shapes. Defined in None">Or</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#severity" title="Defines the severity that validation results produced by a shape or constraint must have. Defaults to sh:Violation. Defined in None">Severity</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/ns/shacl#Violation">Violation</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Habitat">lkg:Habitat</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="ObservationEventShape">
+          <h3>Observation Event Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#ObservationEventShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#ObservationEvent">lkg:ObservationEvent</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="ObservationEvidenceShape">
+          <h3>Observation Evidence Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#ObservationEvidenceShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#ObservationEvidence">lkg:ObservationEvidence</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="PersonShape">
+          <h3>Person Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#PersonShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Person">lkg:Person</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="PlaceShape">
+          <h3>Place Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#PlaceShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Place">lkg:Place</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="RouteShape">
+          <h3>Route Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#RouteShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Route">lkg:Route</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TaxonShape">
+          <h3>Taxon Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TaxonShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#message" title="A human-readable message (possibly with placeholders for variables) explaining the cause of the result. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Message</a>
+              </th>
+              <td><p>Taxon sollte entweder scientificName ODER eine skos:note zur Unsicherheit haben.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#or" title="Specifies a list of shapes so that the value nodes must conform to at least one of the shapes. Defined in None">Or</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#severity" title="Defines the severity that validation results produced by a shape or constraint must have. Defaults to sh:Violation. Defined in None">Severity</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/ns/shacl#Warning">Warning</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#Taxon">lkg:Taxon</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TimeEstimateShape">
+          <h3>Time Estimate Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TimeEstimateShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#sparql" title="Links a shape with SPARQL constraints. Defined in None">Constraint (In Sparql)</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#TimeEstimate">lkg:TimeEstimate</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TravelEventShape">
+          <h3>Travel Event Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TravelEventShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#TravelEvent">lkg:TravelEvent</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="TravelLegShape">
+          <h3>Travel Leg Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#TravelLegShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#sparql" title="Links a shape with SPARQL constraints. Defined in None">Constraint (In Sparql)</a>
+              </th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#TravelLeg">lkg:TravelLeg</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="WeatherReportShape">
+          <h3>Weather Report Shape
+            <sup class="sup-ps" title="SH PropertyShape">ps</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#WeatherReportShape</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#property" title="Links a shape to its property shapes. Defined in W3C Shapes Constraint Language (SHACL) Vocabulary">Property</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/ns/shacl#targetClass" title="Links a shape to a class, indicating that all instances of the class must conform to the shape. Defined in None">Target Class</a>
+              </th>
+              <td>
+                <a href="https://w3id.org/laubmann-kg/ontology#WeatherReport">lkg:WeatherReport</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <span class="cardinality">,</span>
+      <div id="namespaces">
+        <h2>Namespaces</h2>
+        <dl>
+          <dt id="dcterms">dcterms</dt>
+          <dd>
+            <code>http://purl.org/dc/terms/</code>
+          </dd>
+          <dt id="dwc">dwc</dt>
+          <dd>
+            <code>http://rs.tdwg.org/dwc/terms/</code>
+          </dd>
+          <dt id="geo1">geo1</dt>
+          <dd>
+            <code>http://www.w3.org/2003/01/geo/wgs84_pos#</code>
+          </dd>
+          <dt id="lkg">lkg</dt>
+          <dd>
+            <code>https://w3id.org/laubmann-kg/ontology#</code>
+          </dd>
+          <dt id="ns1">ns1</dt>
+          <dd>
+            <code>https://w3id.org/laubmann-kg/</code>
+          </dd>
+          <dt id="oa">oa</dt>
+          <dd>
+            <code>http://www.w3.org/ns/oa#</code>
+          </dd>
+          <dt id="owl">owl</dt>
+          <dd>
+            <code>http://www.w3.org/2002/07/owl#</code>
+          </dd>
+          <dt id="prov">prov</dt>
+          <dd>
+            <code>http://www.w3.org/ns/prov#</code>
+          </dd>
+          <dt id="rdf">rdf</dt>
+          <dd>
+            <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code>
+          </dd>
+          <dt id="rdfs">rdfs</dt>
+          <dd>
+            <code>http://www.w3.org/2000/01/rdf-schema#</code>
+          </dd>
+          <dt id="sh">sh</dt>
+          <dd>
+            <code>http://www.w3.org/ns/shacl#</code>
+          </dd>
+          <dt id="skos">skos</dt>
+          <dd>
+            <code>http://www.w3.org/2004/02/skos/core#</code>
+          </dd>
+          <dt id="time">time</dt>
+          <dd>
+            <code>http://www.w3.org/2006/time#</code>
+          </dd>
+          <dt id="xsd">xsd</dt>
+          <dd>
+            <code>http://www.w3.org/2001/XMLSchema#</code>
+          </dd>
+        </dl>
+      </div>
+      <div id="legend">
+        <h2>Legend</h2>
+        <table class="entity">
+          <tr>
+            <td>
+              <sup class="sup-ns" title="SHACL Node Shapes">ns</sup>
+            </td>
+            <td>Node Shapes</td>
+          </tr>
+          <tr>
+            <td>
+              <sup class="sup-ps" title="SHACL Property Shapes">ps</sup>
+            </td>
+            <td>Property Shapes</td>
+          </tr>
+          <tr>
+            <td>
+              <sup class="sup-op" title="Object Properties">op</sup>
+            </td>
+            <td>Object Properties</td>
+          </tr>
+          <tr>
+            <td>
+              <sup class="sup-ap" title="Annotation Properties">ap</sup>
+            </td>
+            <td>Annotation Properties</td>
+          </tr>
+          <tr>
+            <td>
+              <sup class="sup-dp" title="Datatype Properties">ap</sup>
+            </td>
+            <td>Datatype Properties</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div id="pylode">
+      <p>made by 
+        <a href="https://github.com/rdflib/pyLODE">
+          <span id="p">p</span>
+          <span id="y">y</span>
+          <span>LODE</span>
+        </a>
+        <a href="https://github.com/rdflib/pyLODE/release/3.6.0" id="version">3.6.0</a>
+        <span> with the </span>
+        <a href="https://linked.data.gov.au/def/valpub" id="profile">ValPub</a>
+        <span>profile</span>
+      </p>
+    </div>
+    <div id="toc">
+      <h3>Table of Contents</h3>
+      <ul class="first">
+        <li>
+          <h4>
+            <a href="#metadata">Metadata</a>
+          </h4>
+        </li>
+        <li>
+          <h4>
+            <a href="#node-shapes">Node Shapes</a>
+          </h4>
+          <ul class="second">
+            <li>
+              <a href="#BehaviourNoteShape">Behaviour Note Shape</a>
+            </li>
+            <li>
+              <a href="#BirdCallShape">Bird Call Shape</a>
+            </li>
+            <li>
+              <a href="#DiaryEntryShape">Diary Entry Shape</a>
+            </li>
+            <li>
+              <a href="#DiaryPageShape">Diary Page Shape</a>
+            </li>
+            <li>
+              <a href="#DiaryVolumeShape">Diary Volume Shape</a>
+            </li>
+            <li>
+              <a href="#ExtractionRunShape">Extraction Run Shape</a>
+            </li>
+            <li>
+              <a href="#HabitatShape">Habitat Shape</a>
+            </li>
+            <li>
+              <a href="#NoOrphanObservationShape">No Orphan Observation Shape</a>
+            </li>
+            <li>
+              <a href="#NoOrphanTravelLegShape">No Orphan Travel Leg Shape</a>
+            </li>
+            <li>
+              <a href="#NoOrphanWeatherShape">No Orphan Weather Shape</a>
+            </li>
+            <li>
+              <a href="#ObservationEventShape">Observation Event Shape</a>
+            </li>
+            <li>
+              <a href="#ObservationEvidenceShape">Observation Evidence Shape</a>
+            </li>
+            <li>
+              <a href="#PersonShape">Person Shape</a>
+            </li>
+            <li>
+              <a href="#PlaceShape">Place Shape</a>
+            </li>
+            <li>
+              <a href="#RouteShape">Route Shape</a>
+            </li>
+            <li>
+              <a href="#SourceRegionShape">Source Region Shape</a>
+            </li>
+            <li>
+              <a href="#TaxonShape">Taxon Shape</a>
+            </li>
+            <li>
+              <a href="#TimeEstimateShape">Time Estimate Shape</a>
+            </li>
+            <li>
+              <a href="#TravelEventShape">Travel Event Shape</a>
+            </li>
+            <li>
+              <a href="#TravelLegShape">Travel Leg Shape</a>
+            </li>
+            <li>
+              <a href="#WeatherReportShape">Weather Report Shape</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h4>
+            <a href="#property-shapes">Property Shapes</a>
+          </h4>
+          <ul class="second">
+            <li>
+              <a href="#BehaviourNoteShape">Behaviour Note Shape</a>
+            </li>
+            <li>
+              <a href="#BirdCallShape">Bird Call Shape</a>
+            </li>
+            <li>
+              <a href="#DiaryEntryShape">Diary Entry Shape</a>
+            </li>
+            <li>
+              <a href="#DiaryPageShape">Diary Page Shape</a>
+            </li>
+            <li>
+              <a href="#DiaryVolumeShape">Diary Volume Shape</a>
+            </li>
+            <li>
+              <a href="#ExtractionRunShape">Extraction Run Shape</a>
+            </li>
+            <li>
+              <a href="#HabitatShape">Habitat Shape</a>
+            </li>
+            <li>
+              <a href="#ObservationEventShape">Observation Event Shape</a>
+            </li>
+            <li>
+              <a href="#ObservationEvidenceShape">Observation Evidence Shape</a>
+            </li>
+            <li>
+              <a href="#PersonShape">Person Shape</a>
+            </li>
+            <li>
+              <a href="#PlaceShape">Place Shape</a>
+            </li>
+            <li>
+              <a href="#RouteShape">Route Shape</a>
+            </li>
+            <li>
+              <a href="#TaxonShape">Taxon Shape</a>
+            </li>
+            <li>
+              <a href="#TimeEstimateShape">Time Estimate Shape</a>
+            </li>
+            <li>
+              <a href="#TravelEventShape">Travel Event Shape</a>
+            </li>
+            <li>
+              <a href="#TravelLegShape">Travel Leg Shape</a>
+            </li>
+            <li>
+              <a href="#WeatherReportShape">Weather Report Shape</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h4>
+            <a href="#namespaces">Namespaces</a>
+          </h4>
+          <ul class="second">
+            <li>
+              <a href="#dcterms">dcterms</a>
+            </li>
+            <li>
+              <a href="#dwc">dwc</a>
+            </li>
+            <li>
+              <a href="#geo1">geo1</a>
+            </li>
+            <li>
+              <a href="#lkg">lkg</a>
+            </li>
+            <li>
+              <a href="#ns1">ns1</a>
+            </li>
+            <li>
+              <a href="#oa">oa</a>
+            </li>
+            <li>
+              <a href="#owl">owl</a>
+            </li>
+            <li>
+              <a href="#prov">prov</a>
+            </li>
+            <li>
+              <a href="#rdf">rdf</a>
+            </li>
+            <li>
+              <a href="#rdfs">rdfs</a>
+            </li>
+            <li>
+              <a href="#sh">sh</a>
+            </li>
+            <li>
+              <a href="#skos">skos</a>
+            </li>
+            <li>
+              <a href="#time">time</a>
+            </li>
+            <li>
+              <a href="#xsd">xsd</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h4>
+            <a href="#legend">Legend</a>
+          </h4>
+          <ul class="second"></ul>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

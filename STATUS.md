@@ -129,7 +129,7 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
 - Person/taxon variant merging inside the pipeline (today post hoc via
   `HistOrniGraph_addons/kg_enrich/dedup_entities.py`); Nominatim georeferencing
   as a `linking/places.py` stage (today post hoc `georef_places.py`).
-- w3id namespace migration (prefix rewrite; all uids are content-addressed).
+- w3id: namespace migrated in the repo (2026-08-18); the perma-id PR is pending until the ontology is final (`w3id/laubmann-kg/`). Existing exports: `tools/migrate_namespace.py`. Ontology docs: `docs/ontology/` (pyLODE).
 - Gemini structured output (`response_json_schema`) — would retire json-repair;
   needs a live A/B on ~50 entries.
 - Travel legs in the DwC-A (`parentEventID` sub-events); `observedDuring`,
