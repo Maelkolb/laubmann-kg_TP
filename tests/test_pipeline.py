@@ -26,3 +26,13 @@ def test_concurrent_extraction_matches_sequential(sample_config) -> None:
     concurrent = run_pipeline(sample_config)
     assert [e.entry_id for e in concurrent.entries] == [e.entry_id for e in sequential.entries]
     assert [o.uid for o in concurrent.observations] == [o.uid for o in sequential.observations]
+
+
+def test_input_dir_prefers_cleaned_multimodal_catalogue(tmp_path) -> None:
+    from laubmann_kg.pipeline import _resolve_corpus
+    (tmp_path / "entries.csv").write_text("x", encoding="utf-8")
+    assert _resolve_corpus({}, tmp_path) == (tmp_path / "entries.csv", None)
+    (tmp_path / "multimodal.md").write_text("raw", encoding="utf-8")
+    assert _resolve_corpus({}, tmp_path)[1] == tmp_path / "multimodal.md"
+    (tmp_path / "multimodal_clean.md").write_text("clean", encoding="utf-8")
+    assert _resolve_corpus({}, tmp_path)[1] == tmp_path / "multimodal_clean.md"

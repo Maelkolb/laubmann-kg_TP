@@ -54,8 +54,13 @@ def _resolve_corpus(config: dict, input_dir: Optional[Path]) -> tuple[Path, Opti
     multimodal = None
     if input_dir and (Path(input_dir) / "entries.csv").exists():
         entries = Path(input_dir) / "entries.csv"
-        mm = Path(input_dir) / "multimodal.md"
-        multimodal = mm if mm.exists() else None
+        # the cleaned catalogue (multimodal_clean.md: duplicate pages and
+        # degenerate crops/descriptions removed) wins over the raw one
+        for name in ("multimodal_clean.md", "multimodal.md"):
+            mm = Path(input_dir) / name
+            if mm.exists():
+                multimodal = mm
+                break
     if entries is None and corpus.get("entries"):
         entries = Path(corpus["entries"])
     if multimodal is None and corpus.get("multimodal"):
