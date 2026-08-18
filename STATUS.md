@@ -107,13 +107,17 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
   `dcterms:isPartOf` partonomy, `ObservationEvent → lkg:Observation`,
   `BirdCall → lkg:Vocalisation`, evidence/behaviour flattened, habitats as shared
   skos:Concepts, person roles on the mention edge, GBIF higher taxonomy, WKT.
-  Breaking for exports: the Drive export `kg_exports_2026-08-17` and the
-  explorer HTML are 0.3.0-shaped — re-run Notebook 07 cells C3 + C4 (cache
-  replay, no LLM cost) into a fresh `kg_exports_<tag>`; kg_enrich scripts and
-  pyLODE docs are already on 0.4.0. Two-way alignment guard:
-  `tests/test_ontology_alignment.py`. Local offline replay of the 9,527 entries
-  through the 0.4.0 chain: 73,079 observations, 1,692,272 triples (−8 %),
-  SHACL 0 violations / 422 warnings (empty entries), DwC-A valid.
+  **Current export: Drive `kg_exports_2026-08-18/`** (0.4.0; C3+C4 run
+  locally 2026-08-18 against the Drive caches — 37 live Gemini calls for the
+  previously truncated entries and new folk names): 9,526 entries (0 failed),
+  74,600 observations, 15,298 vocalisations, 1,675 habitat concepts,
+  1,722,388 triples (0.3.0 export: 1,845,457), SHACL 0 violations / 409
+  warnings (empty entries), taxa 2,247 (1,678 GBIF-linked), persons 5,115 (344
+  Wikidata), DwC-A valid (event 9,526 · occurrence 74,600 · eMoF 102,406 ·
+  multimedia 141 from the cleaned catalogue); RDF and DwC-A now consistent.
+  `html/` in the export folder holds the rebuilt explorer + workflow pages.
+  The 0.3.0 export `kg_exports_2026-08-17` can be deleted. Two-way alignment
+  guard: `tests/test_ontology_alignment.py`.
 - Extraction is **model-driven, heuristics removed** (see CHANGELOG 2026-08-17):
   the LLM reads entry date/place/kind and every observation detail (locality,
   rank, absence, counts/ranges, sex, life stage, breeding evidence, vitality,
