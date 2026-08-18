@@ -11,7 +11,7 @@ from laubmann_kg.extraction.llm_observations import (
     load_entry_schema,
 )
 from laubmann_kg.kg.model import DiaryEntry, Evidence, Observation, Person, Taxon
-from laubmann_kg.kg.rdf import DATA, DWC, LKG, build_graph, serialize_turtle
+from laubmann_kg.kg.rdf import DATA, DWC, DWCIRI, LKG, build_graph, serialize_turtle
 from laubmann_kg.kg.shacl_validate import run_shacl_validation
 from laubmann_kg.llm.prompts import PromptLibrary
 from laubmann_kg.normalization.places import normalize_place
@@ -197,13 +197,13 @@ def test_rdf_emission_and_shacl_conforms(tmp_path) -> None:
     assert graph.value(nodes[1], DWC.basisOfRecord) == Literal("MaterialCitation")
     assert graph.value(nodes[2], DWC.basisOfRecord) == Literal("PreservedSpecimen")
     # default field observation -> the diarist
-    diarist = graph.value(nodes[0], LKG.observedBy)
+    diarist = graph.value(nodes[0], DWCIRI.recordedBy)
     assert isinstance(diarist, URIRef) and str(diarist).endswith("person_c6b2ff6250e5")
     # named observer on the literature record
-    named = graph.value(nodes[1], LKG.observedBy)
+    named = graph.value(nodes[1], DWCIRI.recordedBy)
     assert named is not None and named != diarist
     # unattributed third-party record: attribution is never fabricated
-    assert graph.value(nodes[3], LKG.observedBy) is None
+    assert graph.value(nodes[3], DWCIRI.recordedBy) is None
     citation = graph.value(nodes[1], DWC.associatedReferences)
     assert citation == Literal("A.S.Z. 1949, S. 12", lang="de")
 

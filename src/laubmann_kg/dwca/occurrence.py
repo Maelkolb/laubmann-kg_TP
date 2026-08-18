@@ -5,14 +5,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from laubmann_kg.dwca.event import dumps_properties, event_date
-from laubmann_kg.normalization.vocabularies import basis_of_record
+from laubmann_kg.normalization.vocabularies import basis_of_record, reproductive_condition
 
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
 
 FIELDS = [
     "eventID", "occurrenceID", "basisOfRecord",
-    "kingdom", "class", "scientificName", "taxonRank", "vernacularName", "taxonID",
+    "kingdom", "class", "order", "family", "scientificName", "taxonRank", "vernacularName", "taxonID",
     "individualCount", "organismQuantity", "organismQuantityType",
     "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
     "behavior", "identificationQualifier", "identificationRemarks",
@@ -48,12 +48,22 @@ def _identification_remarks(taxon) -> str:
 
 
 def _reproductive_condition(obs) -> str:
-    if obs.breeding_evidence in ("confirmed", "probable"):
-        return "breeding"
-    for behaviour in obs.behaviour:
-        if behaviour.reproductive_condition:
-            return behaviour.reproductive_condition
-    return ""
+    return reproductive_condition(obs.breeding_evidence, obs.behaviour) or ""
+
+
+def _higher(taxon, rank: str) -> str:
+    """GBIF classification of the linked taxon (kingdom/class/order/family)."""
+    getter = getattr(taxon, "higher_rank", None)
+    return (getter(rank) if getter else None) or ""
+
+
+def _kingdom(taxon) -> str:
+    # GBIF value when linked; the model's is_bird judgement as fallback
+    return _higher(taxon, "kingdom") or ("Animalia" if taxon.is_bird is not False else "")
+
+
+def _class(taxon) -> str:
+    return _higher(taxon, "class") or ("Aves" if taxon.is_bird is True else "")
 
 
 def _organism_quantity(obs) -> tuple[str, str]:
@@ -94,8 +104,10 @@ def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = 
                 "eventID": entry.entry_uid,
                 "occurrenceID": obs.uid,
                 "basisOfRecord": _basis_of_record(obs),
-                "kingdom": "Animalia" if taxon.is_bird is not False else "",
-                "class": "Aves" if taxon.is_bird is True else "",
+                "kingdom": _kingdom(taxon),
+                "class": _class(taxon),
+                "order": _higher(taxon, "order"),
+                "family": _higher(taxon, "family"),
                 "scientificName": taxon.scientific_name or "",
                 "taxonRank": taxon.rank or "",
                 "vernacularName": taxon.vernacular_de,

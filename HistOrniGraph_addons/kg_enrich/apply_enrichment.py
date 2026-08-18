@@ -3,7 +3,9 @@
 
 - Rewrites every merged variant URI to its canonical URI (owl:sameAs from the
   dedup TTLs; RDF set-semantics dedupes the resulting duplicate triples on load).
-  Variant vernacular names simply become additional lkg:vernacularNameDE values.
+  Variant vernacular names simply become additional dwc:vernacularName values
+  (ontology 0.4.0; note: the TaxonShape allows one dwc:vernacularName per node,
+  so an enriched graph reports a Violation per merged variant — expected).
 - Appends the high-confidence geo:lat/long triples from georeferencing.
 - Appends the owl:sameAs triples themselves as provenance.
 - Optionally applies human-adjudicated review CSVs: rows whose `decision` column

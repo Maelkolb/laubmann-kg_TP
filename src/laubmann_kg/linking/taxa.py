@@ -15,6 +15,7 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Optional
 
+from laubmann_kg.kg.model import HIGHER_RANKS
 from laubmann_kg.linking import http, review
 from laubmann_kg.linking.cache import JsonCache
 
@@ -39,6 +40,21 @@ _ACCEPT_RANKS_BY_ITEM_RANK = {
 DEFAULT_TAXON_CLASS = "Aves"
 
 
+def higher_taxonomy(response: Optional[dict]) -> tuple[tuple[str, str], ...]:
+    """GBIF classification of a species/match response as ((rank, name), ...)
+    in HIGHER_RANKS order — only the ranks GBIF filled in (a HIGHERRANK match
+    at genus level has no species, an unmatched response nothing at all).
+    Never fabricates a rank; tolerates missing keys."""
+    if not isinstance(response, dict):
+        return ()
+    out = []
+    for rank in HIGHER_RANKS:
+        name = response.get(rank)
+        if isinstance(name, str) and name.strip():
+            out.append((rank, name.strip()))
+    return tuple(out)
+
+
 def gbif_cache_key(scientific_name: str, taxon_class: Optional[str] = DEFAULT_TAXON_CLASS) -> str:
     """Cache key for a species/match lookup. Bird lookups keep the legacy
     ``match:<name>`` form so existing caches stay valid; any other class (or
@@ -47,6 +63,20 @@ def gbif_cache_key(scientific_name: str, taxon_class: Optional[str] = DEFAULT_TA
     if taxon_class == DEFAULT_TAXON_CLASS:
         return "match:" + name
     return f"match:{(taxon_class or 'any').strip().lower()}:{name}"
+
+
+def _cached_higher_taxonomy(cache: JsonCache, canonical: Optional[str],
+                            is_bird: Optional[bool]) -> tuple[tuple[str, str], ...]:
+    """Classification for a reviewed name from the GBIF cache only (no
+    network). Tries the class-specific key first, then the class-less one."""
+    if not canonical:
+        return ()
+    classes = [None] if is_bird is False else [DEFAULT_TAXON_CLASS, None]
+    for taxon_class in classes:
+        key = gbif_cache_key(canonical, taxon_class)
+        if key in cache:
+            return higher_taxonomy(cache.get(key))
+    return ()
 
 
 class GbifClient:
@@ -238,6 +268,11 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                 kwargs = {"gbif_key": key, "gbif_match_type": match_type,
                           "gbif_canonical_name": canonical,
                           "match_method": "review"}
+                # classification only from an already-cached GBIF response
+                # (adjudication never triggers network work)
+                taxonomy = _cached_higher_taxonomy(cache, canonical, item.get("is_bird"))
+                if taxonomy:
+                    kwargs["higher_taxonomy"] = taxonomy
                 # an adjudicated species-level name may fill an unresolved
                 # slot; a HIGHERRANK genus anchor never becomes a species name
                 if (item["scientific_name"] is None and canonical
@@ -323,13 +358,15 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                     # uncertainty -> review only.
                     links[low] = {"gbif_key": accepted_key,
                                   "gbif_match_type": "HIGHERRANK",
-                                  "gbif_canonical_name": canonical or None}
+                                  "gbif_canonical_name": canonical or None,
+                                  "higher_taxonomy": higher_taxonomy(response)}
                     row["status"] = "linked-broad"
                     rows.append(row)
                     continue
             if linked:
                 kwargs = {"gbif_key": accepted_key, "gbif_match_type": match_type,
-                          "gbif_canonical_name": canonical or None}
+                          "gbif_canonical_name": canonical or None,
+                          "higher_taxonomy": higher_taxonomy(response)}
                 if from_llm:
                     # the emitted binomial is the VERIFIED form — the LLM never
                     # mints a name; resolver names are never overwritten

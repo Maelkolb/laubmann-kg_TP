@@ -1,30 +1,31 @@
 # =============================================================
 # HistOrniGraph / Laubmann Knowledge Graph
 # SHACL Validation Shapes  –  ontologies/shacl_shapes.ttl
-# Validates instance data against ontologies/laubmann.ttl (v0.3.0)
+# Validates instance data against ontologies/laubmann.ttl (v0.4.0)
 #
-# v0.3 – Neue Property-Shapes für die LLM-extrahierten Details
-#        (occurrenceStatus, sex, lifeStage, breedingEvidence, movementKind,
-#        individualCountMin/Max, eventDate/eventTime, hasLocality,
-#        entryPlace/entryKind/entryDateEnd, placeKind, taxonRank, isBird,
-#        evidenceKind). dwc:occurrenceStatus sitzt jetzt auf dem
-#        ObservationEvent (nicht mehr auf der Evidenz). callTranscription ist
-#        optional (kein Platzhalter mehr). Habitat ist ein skos:Concept und
-#        KEIN Place mehr (eigene HabitatShape). individualCount erlaubt 0
-#        (explizite Abwesenheit).
-# v0.2 – Fix: sh:datatype xsd:string schlug fehl für alle
-#        sprachmarkierten Literale ("..."@de), da diese in RDF
-#        den Datentyp rdf:langString (nicht xsd:string) haben.
-#        Fix via sh:or (xsd:string | rdf:langString).
+# v0.4 – Ontologie 0.4.0: ObservationEvent -> lkg:Observation, BirdCall ->
+#        lkg:Vocalisation; ObservationEvidence-, BehaviourNote-, Habitat-,
+#        Route- und TimeEstimate-Shapes entfallen (Evidenz = lkg:evidenceKind-
+#        Konzepte auf der Beobachtung, Verhalten = dwc:behavior-Literale,
+#        Habitat = skos:Concept via dwciri:habitat). DwC-first: Shapes prüfen
+#        dwc:eventDate, dwc:fieldNotes, dwc:individualCount, dwc:vernacularName,
+#        dwc:scientificName, dwciri:recordedBy, dwciri:habitat statt der
+#        früheren lkg-Zwillinge. Partonomie: dcterms:isPartOf ist auf jedem
+#        Kind-Knoten Pflicht (EntryRecordShape ersetzt die SPARQL-Orphan-Shapes).
+#        Neu: Rollen-Kanten mentionsCompanion/Source/Collector/CitedAuthor/Other,
+#        GBIF-Klassifikation (dwc:kingdom … dwc:genus), gsp:asWKT, mehrere
+#        WeatherReports pro Eintrag erlaubt.
+# v0.3 – LLM-Detail-Properties, callTranscription optional, Habitat = Concept.
+# v0.2 – sh:or (xsd:string | rdf:langString) für sprachmarkierte Literale.
 #
 # Usage:
 #   python -m laubmann_kg.kg.shacl_validate --data <data>.ttl
 #   (entspricht pyshacl -s ontologies/shacl_shapes.ttl -d <data>.ttl -f human)
-#   Es wird OHNE Inferenz validiert: der Emitter (kg/rdf.py) materialisiert
-#   alle Superklassen, auf die Shapes angewiesen sind (BirdCall →
-#   ObservationEvidence, Habitat → skos:Concept, SourceRegion → oa:Annotation).
-#   Alle sh:in-Werte spiegeln src/laubmann_kg/normalization/vocabularies.py
-#   und ontologies/controlled_vocabularies.ttl.
+#   Es wird OHNE Inferenz validiert: die Gruppierungs-Oberklassen
+#   (ArchivalUnit / EntryRecord / RecordDetail) werden im Datengraph NICHT
+#   materialisiert; alle Shapes zielen auf konkrete Klassen. Alle sh:in-Werte
+#   spiegeln src/laubmann_kg/normalization/vocabularies.py und
+#   ontologies/controlled_vocabularies.ttl.
 #
 # Severity-Politik: Warning für Vokabular-/Vollständigkeits-Hinweise;
 #   Violation für Datentyp-/Kardinalitätsfehler, die auf Emitter-Bugs deuten.
@@ -35,15 +36,12 @@
 @prefix dwc:     <http://rs.tdwg.org/dwc/terms/> .
 @prefix dwciri:  <http://rs.tdwg.org/dwc/iri/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix rico:    <https://www.ica.org/standards/RiC/ontology#> .
-@prefix oa:      <http://www.w3.org/ns/oa#> .
 @prefix geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#> .
-@prefix time:    <http://www.w3.org/2006/time#> .
+@prefix gsp:     <http://www.opengis.net/ont/geosparql#> .
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 
@@ -53,23 +51,21 @@
 <https://w3id.org/laubmann-kg/shapes>
     a owl:Ontology , sh:ShapesGraph ;
     dcterms:title "Laubmann Knowledge Graph — SHACL shapes"@en ;
-    dcterms:description "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology). Run with inference=none: every superclass a shape relies on is materialised by the emitter. Vocabulary/completeness checks are sh:Warning, datatype and cardinality checks sh:Violation."@en ;
+    dcterms:description "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology 0.4.0). Run with inference=none: shapes target the concrete classes only (grouping superclasses are not materialised in the data). Every child node must carry dcterms:isPartOf (partonomy). Vocabulary/completeness checks are sh:Warning, datatype and cardinality checks sh:Violation."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:modified "2026-08-18"^^xsd:date ;
-    owl:versionInfo "0.3.0" ;
+    owl:versionInfo "0.4.0" ;
     rdfs:seeAlso <https://w3id.org/laubmann-kg/ontology> .
 
 
 # =============================================================
-# WIEDERVERWENDBARE HILFS-KONSTRUKTE
+# HINWEIS: SHACL kennt keine "Makros"; das sh:or-Pattern
+# (xsd:string | rdf:langString) wird bei jeder mehrsprachigen
+# String-Property wiederholt.
 # =============================================================
-# Hinweis: SHACL kennt keine "Makros"/Funktionen; das folgende
-# sh:or-Pattern muss bei jeder mehrsprachigen String-Property
-# wiederholt werden. Alternative: alle Literale konsequent OHNE
-# Sprachtag anlegen (dann reicht sh:datatype xsd:string).
 
 # =============================================================
-# 1. DIARY VOLUME / PAGE
+# 1. ARCHIVAL UNITS: VOLUME / PAGE / SOURCE REGION
 # =============================================================
 
 lkg:DiaryVolumeShape
@@ -91,50 +87,101 @@ lkg:DiaryPageShape
         sh:minCount 1 ;
         sh:message "Jede DiaryPage benötigt ein rdfs:label (z. B. Seitennummer)." ;
         sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path dcterms:isPartOf ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class lkg:DiaryVolume ;
+        sh:message "DiaryPage MUSS genau einem DiaryVolume angehören (dcterms:isPartOf)." ;
+        sh:severity sh:Violation ;
+    ] .
+
+lkg:SourceRegionShape
+    a sh:NodeShape ;
+    sh:targetClass lkg:SourceRegion ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:message "SourceRegion sollte ein rdfs:label tragen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path dcterms:isPartOf ;
+        sh:maxCount 1 ;
+        sh:class lkg:DiaryPage ;
+        sh:message "SourceRegion gehört zu höchstens einer DiaryPage (dcterms:isPartOf)." ;
+        sh:severity sh:Warning ;
     ] .
 
 # =============================================================
-# 2. DIARY ENTRY
+# 2. DIARY ENTRY (the event)
 # =============================================================
 
 lkg:DiaryEntryShape
     a sh:NodeShape ;
     sh:targetClass lkg:DiaryEntry ;
 
+    # genau ein Datum: xsd:date oder DwC-Intervall "YYYY-MM-DD/YYYY-MM-DD"
     sh:property [
-        sh:path lkg:entryDate ;
+        sh:path dwc:eventDate ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:datatype xsd:date ;
-        sh:message "DiaryEntry muss genau ein entryDate (xsd:date) besitzen." ;
+        sh:or (
+            [ sh:datatype xsd:date ]
+            [ sh:datatype xsd:string ; sh:pattern "^[0-9]{4}-[0-9]{2}-[0-9]{2}/[0-9]{4}-[0-9]{2}-[0-9]{2}$" ]
+        ) ;
+        sh:message "DiaryEntry muss genau ein dwc:eventDate besitzen (xsd:date oder ISO-Intervall start/end)." ;
         sh:severity sh:Violation ;
     ] ;
-
     sh:property [
-        sh:path lkg:rawText ;
-        sh:minCount 1 ;
-        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
-        sh:message "DiaryEntry sollte den transkribierten Rohtext (lkg:rawText) enthalten." ;
+        sh:path dwc:verbatimEventDate ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:verbatimEventDate pro DiaryEntry." ;
         sh:severity sh:Warning ;
     ] ;
-
     sh:property [
-        sh:path lkg:hasVolume ;
+        sh:path dwc:fieldNotes ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:class lkg:DiaryVolume ;
-        sh:message "DiaryEntry sollte genau einem DiaryVolume zugeordnet sein (Ziel-Knoten muss rdf:type lkg:DiaryVolume haben!)." ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:message "DiaryEntry sollte den transkribierten Eintragstext (dwc:fieldNotes) enthalten." ;
         sh:severity sh:Warning ;
     ] ;
-
+    sh:property [
+        sh:path dcterms:isPartOf ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:or ( [ sh:class lkg:DiaryPage ] [ sh:class lkg:DiaryVolume ] ) ;
+        sh:message "DiaryEntry MUSS genau einer DiaryPage (oder ersatzweise einem DiaryVolume) angehören (dcterms:isPartOf)." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:hasSourceRegion ;
+        sh:maxCount 1 ;
+        sh:class lkg:SourceRegion ;
+        sh:message "hasSourceRegion zeigt auf höchstens eine lkg:SourceRegion." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:containsObservation ;
+        sh:class lkg:Observation ;
+        sh:message "containsObservation muss auf lkg:Observation-Knoten zeigen." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:containsTravelEvent ;
+        sh:class lkg:TravelEvent ;
+        sh:message "containsTravelEvent muss auf lkg:TravelEvent-Knoten zeigen." ;
+        sh:severity sh:Violation ;
+    ] ;
+    # mehrere Wetterberichte pro Eintrag erlaubt (Morgen/Abend)
     sh:property [
         sh:path lkg:hasWeather ;
-        sh:maxCount 1 ;
         sh:class lkg:WeatherReport ;
-        sh:message "DiaryEntry darf höchstens einen WeatherReport haben." ;
-        sh:severity sh:Warning ;
+        sh:message "hasWeather muss auf lkg:WeatherReport-Knoten zeigen." ;
+        sh:severity sh:Violation ;
     ] ;
-
     sh:property [
         sh:path lkg:entryPlace ;
         sh:maxCount 1 ;
@@ -150,19 +197,6 @@ lkg:DiaryEntryShape
         sh:severity sh:Warning ;
     ] ;
     sh:property [
-        sh:path lkg:entryDateEnd ;
-        sh:maxCount 1 ;
-        sh:datatype xsd:date ;
-        sh:message "entryDateEnd muss höchstens ein xsd:date sein (nur mehrtägige Einträge)." ;
-        sh:severity sh:Violation ;
-    ] ;
-    sh:property [
-        sh:path dwc:eventDate ;
-        sh:maxCount 1 ;
-        sh:message "Höchstens ein dwc:eventDate pro DiaryEntry (xsd:date oder ISO-Intervall start/end)." ;
-        sh:severity sh:Violation ;
-    ] ;
-    sh:property [
         sh:path lkg:datePlausible ;
         sh:maxCount 1 ;
         sh:datatype xsd:boolean ;
@@ -170,9 +204,54 @@ lkg:DiaryEntryShape
         sh:severity sh:Violation ;
     ] ;
     sh:property [
+        sh:path skos:note ;
+        sh:maxCount 1 ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:message "Höchstens eine skos:note (Datumsnotiz) pro DiaryEntry." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
         sh:path dcterms:identifier ;
         sh:maxCount 1 ;
         sh:message "Höchstens ein dcterms:identifier (entry_id) pro DiaryEntry." ;
+        sh:severity sh:Warning ;
+    ] ;
+
+    # Personen: generische Kante + Rollen-Kante (Sub-Property) je Erwähnung
+    sh:property [
+        sh:path lkg:mentionsPerson ;
+        sh:class lkg:Person ;
+        sh:message "mentionsPerson muss auf lkg:Person-Knoten zeigen." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:mentionsCompanion ;
+        sh:class lkg:Person ;
+        sh:message "mentionsCompanion muss auf lkg:Person-Knoten zeigen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:mentionsSource ;
+        sh:class lkg:Person ;
+        sh:message "mentionsSource muss auf lkg:Person-Knoten zeigen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:mentionsCollector ;
+        sh:class lkg:Person ;
+        sh:message "mentionsCollector muss auf lkg:Person-Knoten zeigen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:mentionsCitedAuthor ;
+        sh:class lkg:Person ;
+        sh:message "mentionsCitedAuthor muss auf lkg:Person-Knoten zeigen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:mentionsOther ;
+        sh:class lkg:Person ;
+        sh:message "mentionsOther muss auf lkg:Person-Knoten zeigen." ;
         sh:severity sh:Warning ;
     ] ;
 
@@ -185,61 +264,67 @@ lkg:DiaryEntryShape
     sh:severity sh:Warning .
 
 # =============================================================
-# 3. SOURCE REGION
+# 3. ENTRY RECORDS (Observation / TravelEvent / WeatherReport):
+#    Partonomie + Provenienz — ersetzt die früheren Orphan-SPARQL-Shapes
 # =============================================================
 
-lkg:SourceRegionShape
+lkg:EntryRecordShape
     a sh:NodeShape ;
-    sh:targetClass lkg:SourceRegion ;
-    sh:node [
-        a sh:NodeShape ;
-        sh:class oa:Annotation ;
+    sh:targetClass lkg:Observation , lkg:TravelEvent , lkg:WeatherReport ;
+    sh:property [
+        sh:path dcterms:isPartOf ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class lkg:DiaryEntry ;
+        sh:message "Jeder Eintragsdatensatz (Observation/TravelEvent/WeatherReport) MUSS genau einem DiaryEntry angehören (dcterms:isPartOf) – verhindert Orphan Nodes." ;
+        sh:severity sh:Violation ;
     ] ;
-    sh:message "SourceRegion muss eine gültige oa:Annotation-Struktur besitzen (Provenienz zum Scan)." .
+    sh:property [
+        sh:path prov:wasDerivedFrom ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class lkg:DiaryEntry ;
+        sh:message "Jeder Eintragsdatensatz MUSS prov:wasDerivedFrom seinen DiaryEntry tragen." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path prov:wasGeneratedBy ;
+        sh:maxCount 1 ;
+        sh:class prov:Activity ;
+        sh:message "prov:wasGeneratedBy muss auf höchstens eine prov:Activity (Extraktionslauf) zeigen." ;
+        sh:severity sh:Warning ;
+    ] .
 
 # =============================================================
-# 4. OBSERVATION EVENT
+# 4. OBSERVATION (dwc:Occurrence)
 # =============================================================
 
-lkg:ObservationEventShape
+lkg:ObservationShape
     a sh:NodeShape ;
-    sh:targetClass lkg:ObservationEvent ;
+    sh:targetClass lkg:Observation ;
 
     sh:property [
         sh:path lkg:observedTaxon ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:class lkg:Taxon ;
-        sh:message "ObservationEvent MUSS genau einen lkg:observedTaxon referenzieren." ;
+        sh:message "Observation MUSS genau einen lkg:observedTaxon referenzieren." ;
         sh:severity sh:Violation ;
     ] ;
-
-    sh:property [
-        sh:path lkg:derivedFromEntry ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:class lkg:DiaryEntry ;
-        sh:message "ObservationEvent MUSS über lkg:derivedFromEntry auf seinen DiaryEntry zurückverweisen (verhindert Orphan Nodes)." ;
-        sh:severity sh:Violation ;
-    ] ;
-
-    # FIX: sh:or statt reinem sh:datatype xsd:string
     sh:property [
         sh:path lkg:verbatimNotes ;
         sh:minCount 1 ;
         sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
-        sh:message "ObservationEvent sollte den originalen Diariumstext (lkg:verbatimNotes) enthalten." ;
+        sh:message "Observation sollte den originalen Diariumstext (lkg:verbatimNotes) enthalten." ;
         sh:severity sh:Warning ;
     ] ;
-
     sh:property [
         sh:path lkg:observedAt ;
         sh:maxCount 1 ;
         sh:class lkg:Place ;
-        sh:message "ObservationEvent sollte einen Ort (lkg:observedAt) referenzieren – Ziel-Knoten benötigt rdf:type lkg:Place." ;
+        sh:message "Observation sollte einen Ort (lkg:observedAt) referenzieren – Ziel-Knoten benötigt rdf:type lkg:Place." ;
         sh:severity sh:Warning ;
     ] ;
-
     sh:property [
         sh:path lkg:hasLocality ;
         sh:maxCount 1 ;
@@ -247,33 +332,57 @@ lkg:ObservationEventShape
         sh:message "hasLocality (eigene Örtlichkeit des Nachweises) muss auf höchstens einen lkg:Place zeigen." ;
         sh:severity sh:Warning ;
     ] ;
-
-    # Evidenz nur, wenn der Text sagt WIE beobachtet wurde: kein minCount.
-    # Max. 4 = visual + auditory + nest + specimen. Subklasse BirdCall wird
-    # vom Emitter zusätzlich als ObservationEvidence typisiert.
     sh:property [
-        sh:path lkg:hasEvidence ;
-        sh:maxCount 4 ;
-        sh:class lkg:ObservationEvidence ;
-        sh:message "hasEvidence: höchstens 4 Evidenzknoten (visual/auditory/nest/specimen), jeweils rdf:type lkg:ObservationEvidence." ;
+        sh:path dwc:verbatimLocality ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:verbatimLocality (Wortlaut der eigenen Örtlichkeit) pro Observation." ;
         sh:severity sh:Warning ;
     ] ;
 
+    # Evidenz nur, wenn der Text sagt WIE beobachtet wurde: kein minCount.
+    # Max. 4 = visual + auditory + nest + specimen. Die Konzept-IRIs leben in
+    # controlled_vocabularies.ttl (nicht im Datengraph) → sh:in statt sh:class.
     sh:property [
-        sh:path lkg:hasHabitat ;
+        sh:path lkg:evidenceKind ;
+        sh:maxCount 4 ;
+        sh:in ( lkg:evidence_visual lkg:evidence_auditory lkg:evidence_nest lkg:evidence_specimen ) ;
+        sh:message "evidenceKind: höchstens 4 Konzepte aus lkg:evidence_visual, _auditory, _nest, _specimen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:hasVocalisation ;
+        sh:class lkg:Vocalisation ;
+        sh:message "hasVocalisation muss auf lkg:Vocalisation-Knoten zeigen." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path dwciri:habitat ;
         sh:maxCount 1 ;
-        sh:class lkg:Habitat ;
-        sh:message "hasHabitat muss auf höchstens einen lkg:Habitat zeigen." ;
+        sh:class skos:Concept ;
+        sh:message "dwciri:habitat muss auf höchstens ein skos:Concept (lkg:habitatScheme) zeigen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path dwc:habitat ;
+        sh:maxCount 1 ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:message "Höchstens ein dwc:habitat-Literal pro Observation." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path dwc:behavior ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:message "dwc:behavior muss ein Literal sein (Verhaltensnotiz wie geschrieben)." ;
         sh:severity sh:Warning ;
     ] ;
 
     # 0 nur bei expliziter Abwesenheit (dwc:occurrenceStatus "absent")
     sh:property [
-        sh:path lkg:individualCount ;
+        sh:path dwc:individualCount ;
         sh:maxCount 1 ;
         sh:datatype xsd:integer ;
         sh:minInclusive 0 ;
-        sh:message "lkg:individualCount muss eine Ganzzahl >= 0 sein (0 nur bei occurrenceStatus absent)." ;
+        sh:message "dwc:individualCount muss eine Ganzzahl >= 0 sein (0 nur bei occurrenceStatus absent)." ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [
@@ -304,7 +413,7 @@ lkg:ObservationEventShape
         sh:path dwc:occurrenceStatus ;
         sh:maxCount 1 ;
         sh:in ( "present" "absent" ) ;
-        sh:message "dwc:occurrenceStatus (auf dem ObservationEvent) muss present oder absent sein." ;
+        sh:message "dwc:occurrenceStatus muss present oder absent sein." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [
@@ -336,6 +445,12 @@ lkg:ObservationEventShape
         sh:severity sh:Warning ;
     ] ;
     sh:property [
+        sh:path dwc:reproductiveCondition ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:reproductiveCondition pro Observation." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
         sh:path lkg:movementKind ;
         sh:maxCount 1 ;
         sh:in ( "migrating" "passing-over" "arriving" "departing" "resting" "roosting" ) ;
@@ -355,12 +470,18 @@ lkg:ObservationEventShape
         sh:message "Höchstens ein dwc:identificationQualifier." ;
         sh:severity sh:Warning ;
     ] ;
+    sh:property [
+        sh:path dwc:occurrenceRemarks ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:occurrenceRemarks." ;
+        sh:severity sh:Warning ;
+    ] ;
 
     sh:property [
         sh:path dwc:eventDate ;
         sh:maxCount 1 ;
         sh:datatype xsd:date ;
-        sh:message "dwc:eventDate auf dem ObservationEvent muss genau ein xsd:date sein (eigenes Datum oder Eintragsdatum)." ;
+        sh:message "dwc:eventDate auf der Observation muss genau ein xsd:date sein (eigenes Datum oder Eintragsdatum)." ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [
@@ -379,10 +500,10 @@ lkg:ObservationEventShape
         sh:severity sh:Warning ;
     ] ;
     sh:property [
-        sh:path lkg:observedBy ;
+        sh:path dwciri:recordedBy ;
         sh:maxCount 1 ;
         sh:class lkg:Person ;
-        sh:message "observedBy muss auf höchstens eine lkg:Person zeigen." ;
+        sh:message "dwciri:recordedBy muss auf höchstens eine lkg:Person zeigen (Attribution wird nie erfunden)." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [
@@ -393,15 +514,51 @@ lkg:ObservationEventShape
         sh:severity sh:Warning ;
     ] ;
     sh:property [
-        sh:path prov:wasGeneratedBy ;
+        sh:path dwc:associatedReferences ;
         sh:maxCount 1 ;
-        sh:class prov:Activity ;
-        sh:message "prov:wasGeneratedBy muss auf höchstens eine prov:Activity (Extraktionslauf) zeigen." ;
+        sh:message "Höchstens ein dwc:associatedReferences (Literaturzitat) pro Observation." ;
         sh:severity sh:Warning ;
     ] .
 
 # =============================================================
-# 5. TRAVEL EVENT / LEG
+# 5. VOCALISATION (record detail of an Observation)
+# =============================================================
+
+lkg:VocalisationShape
+    a sh:NodeShape ;
+    sh:targetClass lkg:Vocalisation ;
+    sh:property [
+        sh:path dcterms:isPartOf ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class lkg:Observation ;
+        sh:message "Vocalisation MUSS genau einer Observation angehören (dcterms:isPartOf)." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:callType ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Vocalisation MUSS genau einen callType tragen." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:callType ;
+        sh:in ( "song" "call" "alarm" "drumming" "unknown" ) ;
+        sh:message "callType sollte bekanntes Vokabular verwenden (song, call, alarm, drumming, unknown)." ;
+        sh:severity sh:Warning ;
+    ] ;
+    # Lautschrift nur, wenn das Tagebuch eine nennt (kein Platzhalter).
+    sh:property [
+        sh:path lkg:callTranscription ;
+        sh:maxCount 1 ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:message "Vocalisation darf höchstens eine callTranscription (Lautschrift) enthalten." ;
+        sh:severity sh:Violation ;
+    ] .
+
+# =============================================================
+# 6. TRAVEL EVENT / LEG
 # =============================================================
 
 lkg:TravelEventShape
@@ -418,7 +575,14 @@ lkg:TravelEventShape
 lkg:TravelLegShape
     a sh:NodeShape ;
     sh:targetClass lkg:TravelLeg ;
-
+    sh:property [
+        sh:path dcterms:isPartOf ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class lkg:TravelEvent ;
+        sh:message "TravelLeg MUSS genau einem TravelEvent angehören (dcterms:isPartOf) – verhindert Orphan Nodes." ;
+        sh:severity sh:Violation ;
+    ] ;
     sh:property [
         sh:path lkg:departurePlace ;
         sh:minCount 1 ;
@@ -427,7 +591,6 @@ lkg:TravelLegShape
         sh:message "TravelLeg MUSS genau einen Abfahrtsort (lkg:departurePlace) haben." ;
         sh:severity sh:Violation ;
     ] ;
-
     sh:property [
         sh:path lkg:arrivalPlace ;
         sh:minCount 1 ;
@@ -436,7 +599,12 @@ lkg:TravelLegShape
         sh:message "TravelLeg MUSS genau einen Ankunftsort (lkg:arrivalPlace) haben." ;
         sh:severity sh:Violation ;
     ] ;
-
+    sh:property [
+        sh:path lkg:viaPlace ;
+        sh:class lkg:Place ;
+        sh:message "viaPlace muss auf lkg:Place-Knoten zeigen." ;
+        sh:severity sh:Warning ;
+    ] ;
     sh:property [
         sh:path lkg:transportMode ;
         sh:minCount 1 ;
@@ -446,7 +614,20 @@ lkg:TravelLegShape
         sh:message "TravelLeg sollte ein bekanntes transportMode-Vokabular verwenden." ;
         sh:severity sh:Warning ;
     ] ;
-
+    sh:property [
+        sh:path lkg:departureTime ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "departureTime muss höchstens ein xsd:dateTime sein." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:arrivalTime ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "arrivalTime muss höchstens ein xsd:dateTime sein." ;
+        sh:severity sh:Violation ;
+    ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:message "arrivalTime muss zeitlich nach departureTime liegen." ;
@@ -462,7 +643,7 @@ lkg:TravelLegShape
     ] .
 
 # =============================================================
-# 6. PLACE / HABITAT / ROUTE
+# 7. PLACE / HABITAT CONCEPT
 # =============================================================
 
 lkg:PlaceShape
@@ -473,6 +654,12 @@ lkg:PlaceShape
         sh:minCount 1 ;
         sh:message "Place benötigt ein rdfs:label (Ortsname)." ;
         sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path dwc:verbatimLocality ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:verbatimLocality (Ortsname im Wortlaut) pro Place." ;
+        sh:severity sh:Warning ;
     ] ;
     sh:property [
         sh:path geo:lat ;
@@ -511,6 +698,14 @@ lkg:PlaceShape
         sh:severity sh:Violation ;
     ] ;
     sh:property [
+        sh:path gsp:asWKT ;
+        sh:maxCount 1 ;
+        sh:datatype gsp:wktLiteral ;
+        sh:pattern "^POINT\\(" ;
+        sh:message "gsp:asWKT muss höchstens ein gsp:wktLiteral der Form POINT(lon lat) sein." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
         sh:path lkg:placeKind ;
         sh:maxCount 1 ;
         sh:in ( "settlement" "locality" "region" "route" "unknown" ) ;
@@ -518,62 +713,50 @@ lkg:PlaceShape
         sh:severity sh:Warning ;
     ] .
 
-# Habitat ist ein skos:Concept (kein Place): eigene Label-Pflicht.
-lkg:HabitatShape
+# Habitat-Knoten sind skos:Concepts in lkg:habitatScheme (keine eigene Klasse):
+# adressiert über die Objekte von dwciri:habitat.
+lkg:HabitatConceptShape
     a sh:NodeShape ;
-    sh:targetClass lkg:Habitat ;
-    sh:or (
-        [ sh:path skos:prefLabel ; sh:minCount 1 ]
-        [ sh:path rdfs:label ; sh:minCount 1 ]
-    ) ;
-    sh:message "Habitat benötigt skos:prefLabel oder rdfs:label." ;
-    sh:severity sh:Violation ;
+    sh:targetObjectsOf dwciri:habitat ;
+    sh:class skos:Concept ;
     sh:property [
-        sh:path dwc:habitat ;
+        sh:path skos:prefLabel ;
         sh:minCount 1 ;
-        sh:message "Habitat sollte dwc:habitat-Beschreibung enthalten." ;
-        sh:severity sh:Warning ;
+        sh:message "Habitat-Konzept benötigt ein skos:prefLabel." ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path skos:inScheme ;
+        sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:hasValue lkg:habitatScheme ;
-        sh:message "Habitat sollte skos:inScheme lkg:habitatScheme tragen." ;
+        sh:message "Habitat-Konzept muss skos:inScheme lkg:habitatScheme tragen." ;
         sh:severity sh:Warning ;
-    ] .
-
-lkg:RouteShape
-    a sh:NodeShape ;
-    sh:targetClass lkg:Route ;
-    sh:property [
-        sh:path lkg:routePoint ;
-        sh:minCount 2 ;
-        sh:class lkg:Place ;
-        sh:message "Route sollte mind. 2 routePoints besitzen (sonst keine sinnvolle Route)." ;
-        sh:severity sh:Warning ;
-    ] .
+    ] ;
+    sh:message "dwciri:habitat muss auf ein skos:Concept zeigen (kein lkg:Place)." ;
+    sh:severity sh:Violation .
 
 # =============================================================
-# 7. TAXON
+# 8. TAXON
 # =============================================================
 
 lkg:TaxonShape
     a sh:NodeShape ;
     sh:targetClass lkg:Taxon ;
-
-    # FIX (Root Cause A): sh:or statt reinem sh:datatype xsd:string.
-    # "Kiebitz"@de hat den RDF-Datentyp rdf:langString, NICHT
-    # xsd:string – daher schlug die alte Regel für JEDEN Taxon
-    # mit Sprachtag fehl (6 von 6 Violations im Report).
     sh:property [
-        sh:path lkg:vernacularNameDE ;
+        sh:path dwc:vernacularName ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
-        sh:message "Taxon MUSS einen deutschen Vernacular-Namen (lkg:vernacularNameDE) haben – auch bei unbestimmter Art." ;
+        sh:message "Taxon MUSS genau einen deutschen Vernacular-Namen (dwc:vernacularName) haben – auch bei unbestimmter Art." ;
         sh:severity sh:Violation ;
     ] ;
-
+    sh:property [
+        sh:path dwc:scientificName ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:scientificName pro Taxon." ;
+        sh:severity sh:Violation ;
+    ] ;
     sh:property [
         sh:path skos:exactMatch ;
         sh:nodeKind sh:IRI ;
@@ -605,12 +788,27 @@ lkg:TaxonShape
         sh:message "dwc:taxonRank muss species, subspecies, genus, family, group oder unknown sein." ;
         sh:severity sh:Warning ;
     ] ;
+    # GBIF-Klassifikation des verlinkten Taxons: je Rang höchstens ein Wert
+    sh:property [ sh:path dwc:kingdom ; sh:maxCount 1 ; sh:message "Höchstens ein dwc:kingdom." ; sh:severity sh:Warning ] ;
+    sh:property [ sh:path dwc:phylum  ; sh:maxCount 1 ; sh:message "Höchstens ein dwc:phylum." ; sh:severity sh:Warning ] ;
+    sh:property [ sh:path dwc:class   ; sh:maxCount 1 ; sh:message "Höchstens ein dwc:class." ; sh:severity sh:Warning ] ;
+    sh:property [ sh:path dwc:order   ; sh:maxCount 1 ; sh:message "Höchstens ein dwc:order." ; sh:severity sh:Warning ] ;
+    sh:property [ sh:path dwc:family  ; sh:maxCount 1 ; sh:message "Höchstens ein dwc:family." ; sh:severity sh:Warning ] ;
+    sh:property [ sh:path dwc:genus   ; sh:maxCount 1 ; sh:message "Höchstens ein dwc:genus." ; sh:severity sh:Warning ] ;
     sh:property [
         sh:path lkg:isBird ;
         sh:maxCount 1 ;
         sh:datatype xsd:boolean ;
         sh:message "lkg:isBird muss höchstens ein xsd:boolean sein." ;
         sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path lkg:matchMethod ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "Taxon sollte genau eine lkg:matchMethod tragen (gazetteer, llm, llm+gbif, review, unresolved …)." ;
+        sh:severity sh:Warning ;
     ] ;
     sh:property [
         sh:path lkg:matchConfidence ;
@@ -628,75 +826,15 @@ lkg:TaxonShape
         sh:message "lkg:gbifMatchType muss EXACT, FUZZY oder HIGHERRANK sein." ;
         sh:severity sh:Warning ;
     ] ;
-
     sh:or (
-        [ sh:path lkg:scientificName ; sh:minCount 1 ]
+        [ sh:path dwc:scientificName ; sh:minCount 1 ]
         [ sh:path skos:note ; sh:minCount 1 ]
     ) ;
-    sh:message "Taxon sollte entweder scientificName ODER eine skos:note zur Unsicherheit haben." ;
+    sh:message "Taxon sollte entweder dwc:scientificName ODER eine skos:note zur Unsicherheit haben." ;
     sh:severity sh:Warning .
 
 # =============================================================
-# 8. OBSERVATION EVIDENCE / BIRDCALL / BEHAVIOUR
-# =============================================================
-
-lkg:ObservationEvidenceShape
-    a sh:NodeShape ;
-    sh:targetClass lkg:ObservationEvidence ;
-    sh:property [
-        sh:path rdfs:label ;
-        sh:minCount 1 ;
-        sh:message "ObservationEvidence sollte ein beschreibendes rdfs:label haben." ;
-        sh:severity sh:Warning ;
-    ] ;
-    # Die Konzept-IRIs leben in controlled_vocabularies.ttl (nicht im
-    # Datengraph geladen) → sh:in statt sh:class skos:Concept.
-    sh:property [
-        sh:path lkg:evidenceKind ;
-        sh:maxCount 1 ;
-        sh:in ( lkg:evidence_visual lkg:evidence_auditory lkg:evidence_nest lkg:evidence_specimen ) ;
-        sh:message "evidenceKind muss lkg:evidence_visual, _auditory, _nest oder _specimen sein." ;
-        sh:severity sh:Warning ;
-    ] ;
-    # dwc:occurrenceStatus gehört auf das ObservationEvent, nicht auf den Beleg.
-    sh:property [
-        sh:path dwc:occurrenceStatus ;
-        sh:maxCount 0 ;
-        sh:message "dwc:occurrenceStatus sitzt auf dem ObservationEvent, nicht auf der Evidenz (Altbestand)." ;
-        sh:severity sh:Warning ;
-    ] .
-
-lkg:BirdCallShape
-    a sh:NodeShape ;
-    sh:targetClass lkg:BirdCall ;
-    # Lautschrift nur, wenn das Tagebuch eine nennt (kein "Ruf"-Platzhalter).
-    sh:property [
-        sh:path lkg:callTranscription ;
-        sh:maxCount 1 ;
-        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
-        sh:message "BirdCall darf höchstens eine callTranscription (Lautschrift) enthalten." ;
-        sh:severity sh:Violation ;
-    ] ;
-    sh:property [
-        sh:path lkg:callType ;
-        sh:maxCount 1 ;
-        sh:in ( "song" "call" "alarm" "drumming" "unknown" ) ;
-        sh:message "callType sollte bekanntes Vokabular verwenden." ;
-        sh:severity sh:Warning ;
-    ] .
-
-lkg:BehaviourNoteShape
-    a sh:NodeShape ;
-    sh:targetClass lkg:BehaviourNote ;
-    sh:property [
-        sh:path rdfs:label ;
-        sh:minCount 1 ;
-        sh:message "BehaviourNote sollte ein beschreibendes rdfs:label haben." ;
-        sh:severity sh:Warning ;
-    ] .
-
-# =============================================================
-# 8b. WEATHER REPORT
+# 9. WEATHER REPORT (partonomy/provenance: see EntryRecordShape)
 # =============================================================
 
 lkg:WeatherReportShape
@@ -745,67 +883,6 @@ lkg:WeatherReportShape
         sh:severity sh:Warning ;
     ] .
 
-lkg:NoOrphanWeatherShape
-    a sh:NodeShape ;
-    sh:targetClass lkg:WeatherReport ;
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "WeatherReport hängt an keinem DiaryEntry (kein lkg:hasWeather verweist auf ihn)." ;
-        sh:severity sh:Violation ;
-        sh:select """
-            PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#>
-            SELECT $this WHERE {
-                $this a lkg:WeatherReport .
-                FILTER NOT EXISTS { ?entry lkg:hasWeather $this }
-            }
-        """ ;
-    ] .
-
-# =============================================================
-# 9. TIME ESTIMATE
-# =============================================================
-
-lkg:TimeEstimateShape
-    a sh:NodeShape ;
-    sh:targetClass lkg:TimeEstimate ;
-
-    sh:property [
-        sh:path time:hasBeginning ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:message "TimeEstimate MUSS time:hasBeginning besitzen." ;
-        sh:severity sh:Violation ;
-    ] ;
-
-    sh:property [
-        sh:path time:hasEnd ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:message "TimeEstimate MUSS time:hasEnd besitzen." ;
-        sh:severity sh:Violation ;
-    ] ;
-
-    sh:property [
-        sh:path skos:note ;
-        sh:minCount 1 ;
-        sh:message "TimeEstimate sollte eine skos:note mit der Ableitungslogik enthalten (Nachvollziehbarkeit der Schätzung)." ;
-        sh:severity sh:Warning ;
-    ] ;
-
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "time:hasEnd muss zeitlich nach time:hasBeginning liegen." ;
-        sh:severity sh:Violation ;
-        sh:select """
-            PREFIX time: <http://www.w3.org/2006/time#>
-            SELECT $this WHERE {
-                $this time:hasBeginning ?b .
-                $this time:hasEnd ?e .
-                FILTER (?e <= ?b)
-            }
-        """ ;
-    ] .
-
 # =============================================================
 # 10. PERSON
 # =============================================================
@@ -825,10 +902,17 @@ lkg:PersonShape
         sh:nodeKind sh:IRI ;
         sh:message "owl:sameAs (Wikidata) muss eine IRI sein, höchstens eine." ;
         sh:severity sh:Warning ;
+    ] ;
+    # Die Rolle sitzt auf der Erwähnungskante, nicht am geteilten Personenknoten.
+    sh:property [
+        sh:path skos:note ;
+        sh:maxCount 0 ;
+        sh:message "Personenrolle gehört auf die Erwähnungskante (lkg:mentionsCompanion …), nicht als skos:note an die Person (Altbestand < 0.4.0)." ;
+        sh:severity sh:Warning ;
     ] .
 
 # =============================================================
-# 10b. PROV: EXTRAKTIONSLAUF
+# 11. PROV: EXTRAKTIONSLAUF / AGENT
 # =============================================================
 
 lkg:ExtractionRunShape
@@ -855,38 +939,19 @@ lkg:ExtractionRunShape
         sh:severity sh:Warning ;
     ] .
 
-# =============================================================
-# 11. ORPHAN-NODE-PRÜFUNG
-# =============================================================
-
-lkg:NoOrphanObservationShape
+lkg:SoftwareAgentShape
     a sh:NodeShape ;
-    sh:targetClass lkg:ObservationEvent ;
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "ObservationEvent ist nicht über containsObservation mit einem DiaryEntry verlinkt (Orphan Node)." ;
-        sh:severity sh:Violation ;
-        sh:select """
-            PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#>
-            SELECT $this WHERE {
-                $this a lkg:ObservationEvent .
-                FILTER NOT EXISTS { ?entry lkg:containsObservation $this }
-            }
-        """ ;
-    ] .
-
-lkg:NoOrphanTravelLegShape
-    a sh:NodeShape ;
-    sh:targetClass lkg:TravelLeg ;
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "TravelLeg ist keinem TravelEvent über hasLeg zugeordnet (Orphan Node)." ;
-        sh:severity sh:Violation ;
-        sh:select """
-            PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#>
-            SELECT $this WHERE {
-                $this a lkg:TravelLeg .
-                FILTER NOT EXISTS { ?event lkg:hasLeg $this }
-            }
-        """ ;
+    sh:targetClass prov:SoftwareAgent ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:message "prov:SoftwareAgent sollte ein rdfs:label (Modellname) tragen." ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:backend ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "lkg:backend: höchstens ein xsd:string pro Agent." ;
+        sh:severity sh:Warning ;
     ] .

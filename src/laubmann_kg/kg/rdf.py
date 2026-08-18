@@ -1,13 +1,21 @@
-"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl.
+"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.4.0.
 
 Design notes
 - The data contract is ``kg/model.py``; this module only maps it onto triples.
-- SHACL runs with ``inference="none"`` (see shacl_validate.py), so every
-  superclass a shape relies on is materialised here at emit time
-  (BirdCall→ObservationEvidence, Habitat→skos:Concept, SourceRegion→oa:Annotation).
-- Project terms (``lkg:``) are primary; Darwin Core / PROV / DCTERMS / schema.org
-  terms are co-emitted so generic consumers can read the graph without the
-  ontology. Nothing is inferred from prose here: a value is emitted only when the
+- Darwin-Core-first: where a dwc/dwciri, DCTERMS, PROV, SKOS, GeoSPARQL or
+  schema.org term exists it is emitted alone; ``lkg:`` terms carry only
+  project-specific meaning. Every ``lkg:`` class/property emitted here is
+  declared in ontologies/laubmann.ttl (tests/test_ontology_alignment.py).
+- Explicit partonomy: every child node gets ``dcterms:isPartOf`` (page→volume,
+  entry→page|volume, region→page, observation/travel/weather→entry,
+  leg→travel event, vocalisation→observation); the parent-side containment
+  properties are sub-properties of ``dcterms:hasPart``.
+- SHACL runs with ``inference="none"`` (see shacl_validate.py): the grouping
+  superclasses (ArchivalUnit / EntryRecord / RecordDetail) are NOT asserted in
+  the data; shapes target the concrete classes. Super-properties that shapes or
+  consumers rely on are asserted next to the sub-property (mentionsPerson next
+  to the role edge).
+- Nothing is inferred from prose here: a value is emitted only when the
   extractor set it.
 """
 
@@ -26,7 +34,6 @@ from rdflib.namespace import DCTERMS, OWL, PROV, RDF, RDFS, SKOS, XSD
 from laubmann_kg.kg.model import (
     DATA_NS,
     DIARIST,
-    Behaviour,
     DiaryEntry,
     DiaryPage,
     DiaryVolume,
@@ -39,7 +46,7 @@ from laubmann_kg.kg.model import (
     TravelEvent,
 )
 from laubmann_kg.normalization import vocabularies as vocab
-from laubmann_kg.normalization.vocabularies import basis_of_record
+from laubmann_kg.normalization.vocabularies import basis_of_record, reproductive_condition
 
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
@@ -50,14 +57,23 @@ LKG = Namespace("https://w3id.org/laubmann-kg/ontology#")
 DWC = Namespace("http://rs.tdwg.org/dwc/terms/")
 DWCIRI = Namespace("http://rs.tdwg.org/dwc/iri/")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
+GSP = Namespace("http://www.opengis.net/ont/geosparql#")
 SCHEMA = Namespace("https://schema.org/")
-OA = Namespace("http://www.w3.org/ns/oa#")
 DATA = Namespace(DATA_NS)
 DE = "de"
 
 # Evidence kinds map 1:1 onto the SKOS concepts in controlled_vocabularies.ttl.
 _EVIDENCE_CONCEPTS = {kind: LKG[f"evidence_{kind}"] for kind in vocab.EVIDENCE_KINDS}
-_BREEDING_IMPLIES_BREEDING = ("confirmed", "probable")
+# Person.role -> role-specific mention property (all ⊑ lkg:mentionsPerson).
+_MENTION_PROPS = {
+    "companion": LKG.mentionsCompanion,
+    "source": LKG.mentionsSource,
+    "collector": LKG.mentionsCollector,
+    "cited-author": LKG.mentionsCitedAuthor,
+    "other": LKG.mentionsOther,
+}
+# GBIF rank name -> Darwin Core term (dwc:class is spelled "class").
+_RANK_TERMS = {rank: DWC[rank] for rank in ("kingdom", "phylum", "class", "order", "family", "genus")}
 
 
 def _uri(uid: str) -> URIRef:
@@ -69,15 +85,15 @@ def _bind(graph: Graph) -> None:
     graph.bind("dwc", DWC)
     graph.bind("dwciri", DWCIRI)
     # rdflib pre-binds "geo" to GeoSPARQL; force it onto WGS84 so the Turtle
-    # reads "geo:lat", not "geo1:lat".
+    # reads "geo:lat", not "geo1:lat", and bind GeoSPARQL as "gsp".
     graph.bind("geo", GEO, override=True, replace=True)
+    graph.bind("gsp", GSP, override=True, replace=True)
     graph.bind("data", DATA)
     graph.bind("skos", SKOS)
     graph.bind("owl", OWL)
     graph.bind("prov", PROV)
     graph.bind("dcterms", DCTERMS)
     graph.bind("schema", SCHEMA)
-    graph.bind("oa", OA)
     graph.bind("rdfs", RDFS)
     graph.bind("xsd", XSD)
 
@@ -92,8 +108,13 @@ def _iri_slug(value: str) -> str:
     return slug or "unknown"
 
 
+def _wkt_point(lat: float, long: float) -> Literal:
+    # GeoSPARQL/WKT axis order is longitude latitude.
+    return Literal(f"POINT({Decimal(str(long))} {Decimal(str(lat))})", datatype=GSP.wktLiteral)
+
+
 # --------------------------------------------------------------------------
-# Entities
+# Shared referents: taxon, place, person, habitat concept
 # --------------------------------------------------------------------------
 
 def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
@@ -102,10 +123,8 @@ def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
         return node
     graph.add((node, RDF.type, LKG.Taxon))
     graph.add((node, RDFS.label, Literal(taxon.vernacular_de, lang=DE)))
-    graph.add((node, LKG.vernacularNameDE, Literal(taxon.vernacular_de, lang=DE)))
     graph.add((node, DWC.vernacularName, Literal(taxon.vernacular_de, lang=DE)))
     if taxon.scientific_name:
-        graph.add((node, LKG.scientificName, Literal(taxon.scientific_name)))
         graph.add((node, DWC.scientificName, Literal(taxon.scientific_name)))
     else:
         note = taxon.note or "wissenschaftlicher Name nicht aufgelöst"
@@ -114,6 +133,11 @@ def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
         graph.add((node, DWC.taxonRank, Literal(taxon.rank)))
     if taxon.is_bird is not None:
         graph.add((node, LKG.isBird, Literal(bool(taxon.is_bird), datatype=XSD.boolean)))
+    # GBIF backbone classification of the linked taxon (only ranks GBIF returned)
+    for rank, name in taxon.higher_taxonomy:
+        term = _RANK_TERMS.get(rank)
+        if term is not None:
+            graph.add((node, term, Literal(name)))
     # match provenance (how the vernacular was resolved)
     graph.add((node, LKG.matchMethod, Literal(taxon.match_method)))
     if taxon.confidence is not None:
@@ -141,7 +165,7 @@ def _add_place(graph: Graph, place: Place) -> URIRef:
     if (node, RDF.type, LKG.Place) not in graph:
         graph.add((node, RDF.type, LKG.Place))
         graph.add((node, RDFS.label, Literal(place.name, lang=DE)))
-        graph.add((node, LKG.verbatimLocality, Literal(place.verbatim)))
+        graph.add((node, DWC.verbatimLocality, Literal(place.verbatim)))
         if place.kind:
             graph.add((node, LKG.placeKind, Literal(place.kind)))
         if place.lat is not None and place.long is not None:
@@ -150,39 +174,7 @@ def _add_place(graph: Graph, place: Place) -> URIRef:
             graph.add((node, DWC.decimalLatitude, _decimal(place.lat)))
             graph.add((node, DWC.decimalLongitude, _decimal(place.long)))
             graph.add((node, DWC.geodeticDatum, Literal("WGS84")))
-    return node
-
-
-def _add_evidence(graph: Graph, obs_uid: str, evidence: Evidence, index: int = 0) -> URIRef:
-    node = _uri(evidence.uid(obs_uid, index))
-    cls = LKG.BirdCall if evidence.is_call else LKG.ObservationEvidence
-    graph.add((node, RDF.type, cls))
-    if evidence.is_call:
-        # Materialize the superclass so SHACL sh:class checks hold without
-        # running RDFS inference over the full graph (prohibitive at 1M+ triples).
-        graph.add((node, RDF.type, LKG.ObservationEvidence))
-    graph.add((node, RDFS.label, Literal(evidence.label, lang=DE)))
-    concept = _EVIDENCE_CONCEPTS.get(evidence.kind)
-    if concept is not None:
-        graph.add((node, LKG.evidenceKind, concept))
-    if evidence.is_call:
-        # No placeholder transcription: only what the diary actually wrote.
-        if evidence.call_transcription:
-            graph.add((node, LKG.callTranscription, Literal(evidence.call_transcription)))
-        graph.add((node, LKG.callType, Literal(evidence.call_type or "unknown")))
-    return node
-
-
-def _add_habitat(graph: Graph, habitat: Habitat) -> URIRef:
-    node = _uri(habitat.uid)
-    if (node, RDF.type, LKG.Habitat) not in graph:
-        graph.add((node, RDF.type, LKG.Habitat))
-        graph.add((node, RDF.type, SKOS.Concept))  # materialized superclass, see _add_evidence
-        graph.add((node, RDFS.label, Literal(habitat.label, lang=DE)))
-        graph.add((node, SKOS.prefLabel, Literal(habitat.label, lang=DE)))
-        graph.add((node, SKOS.inScheme, LKG.habitatScheme))
-        graph.add((node, DWC.habitat, Literal(habitat.label, lang=DE)))
-        graph.add((LKG.habitatScheme, RDF.type, SKOS.ConceptScheme))
+            graph.add((node, GSP.asWKT, _wkt_point(place.lat, place.long)))
     return node
 
 
@@ -192,18 +184,40 @@ def _add_person(graph: Graph, person: Person) -> URIRef:
         graph.add((node, RDF.type, LKG.Person))
         graph.add((node, RDFS.label, Literal(person.name)))
         graph.add((node, SCHEMA.name, Literal(person.name)))
-        if person.role:
-            graph.add((node, SKOS.note, Literal(person.role)))
     # Outside the type guard: an enriched Person instance may arrive after a
-    # bare one; rdflib set semantics dedupes the repeated add.
+    # bare one; rdflib set semantics dedupes the repeated add. The role is NOT
+    # a property of the shared person node — it sits on the mention edge.
     if person.wikidata_iri:
         graph.add((node, OWL.sameAs, URIRef(person.wikidata_iri)))
     return node
 
 
+def _add_habitat_concept(graph: Graph, habitat: Habitat) -> URIRef:
+    """Shared habitat concept: one skos:Concept per label in lkg:habitatScheme,
+    reused by every observation that names it (habitats connect species)."""
+    node = _uri(habitat.uid)
+    if (node, RDF.type, SKOS.Concept) not in graph:
+        graph.add((node, RDF.type, SKOS.Concept))
+        graph.add((node, RDFS.label, Literal(habitat.label, lang=DE)))
+        graph.add((node, SKOS.prefLabel, Literal(habitat.label, lang=DE)))
+        graph.add((node, SKOS.inScheme, LKG.habitatScheme))
+        graph.add((LKG.habitatScheme, RDF.type, SKOS.ConceptScheme))
+    return node
+
+
 # --------------------------------------------------------------------------
-# Events
+# Entry records and their details
 # --------------------------------------------------------------------------
+
+def _add_record_links(graph: Graph, node: URIRef, entry_node: URIRef,
+                      run: Optional[URIRef]) -> None:
+    """Common EntryRecord triples: part of + derived from the entry, generated
+    by the run (Observation, TravelEvent, WeatherReport)."""
+    graph.add((node, DCTERMS.isPartOf, entry_node))
+    graph.add((node, PROV.wasDerivedFrom, entry_node))
+    if run is not None:
+        graph.add((node, PROV.wasGeneratedBy, run))
+
 
 def _add_travel_event(graph: Graph, entry_node: URIRef, event: TravelEvent,
                       run: Optional[URIRef] = None) -> None:
@@ -212,12 +226,12 @@ def _add_travel_event(graph: Graph, entry_node: URIRef, event: TravelEvent,
     graph.add((ev, RDFS.label,
                Literal(f"Reise · {len(event.legs)} Etappe(n)", lang=DE)))
     graph.add((entry_node, LKG.containsTravelEvent, ev))
-    if run is not None:
-        graph.add((ev, PROV.wasGeneratedBy, run))
+    _add_record_links(graph, ev, entry_node, run)
     for i, leg in enumerate(event.legs):
         node = _uri(leg.uid(event.uid, i))
         graph.add((node, RDF.type, LKG.TravelLeg))
         graph.add((ev, LKG.hasLeg, node))
+        graph.add((node, DCTERMS.isPartOf, ev))
         graph.add((node, LKG.departurePlace, _add_place(graph, leg.departure_place)))
         graph.add((node, LKG.arrivalPlace, _add_place(graph, leg.arrival_place)))
         for via in leg.via_places:
@@ -231,24 +245,15 @@ def _add_travel_event(graph: Graph, entry_node: URIRef, event: TravelEvent,
                        Literal(leg.arrival_time, datatype=XSD.dateTime)))
         if leg.verbatim:
             # skos:note, NOT lkg:verbatimNotes — that property's rdfs:domain is
-            # ObservationEvent and would re-type the leg under RDFS inference.
+            # Observation and would re-type the leg under RDFS inference.
             graph.add((node, SKOS.note, Literal(leg.verbatim, lang=DE)))
-
-
-def _add_behaviour(graph: Graph, obs_uid: str, behaviour: Behaviour) -> URIRef:
-    node = _uri(behaviour.uid(obs_uid))
-    graph.add((node, RDF.type, LKG.BehaviourNote))
-    graph.add((node, RDFS.label, Literal(behaviour.label, lang=DE)))
-    if behaviour.reproductive_condition:
-        graph.add((node, DWC.reproductiveCondition, Literal(behaviour.reproductive_condition)))
-    return node
 
 
 def _add_weather(graph: Graph, entry_node: URIRef, entry: DiaryEntry,
                  run: Optional[URIRef] = None) -> None:
     w = entry.weather
     node = _uri(w.uid(entry.entry_uid))
-    graph.add((node, RDF.type, LKG.WeatherReport))  # no superclass, nothing to materialize
+    graph.add((node, RDF.type, LKG.WeatherReport))
     graph.add((node, RDFS.label, Literal(f"Wetter {entry.entry_date}", lang=DE)))
     graph.add((node, LKG.weatherVerbatim, Literal(w.verbatim, lang=DE)))
     if w.temperature_value is not None:
@@ -262,20 +267,33 @@ def _add_weather(graph: Graph, entry_node: URIRef, entry: DiaryEntry,
     if w.sky:
         graph.add((node, LKG.skyCondition, Literal(w.sky)))
     graph.add((entry_node, LKG.hasWeather, node))
-    if run is not None:
-        graph.add((node, PROV.wasGeneratedBy, run))
+    _add_record_links(graph, node, entry_node, run)
 
 
-def _add_observation(graph: Graph, obs: Observation, entry_date: Optional[str] = None,
+def _add_vocalisation(graph: Graph, obs_node: URIRef, obs_uid: str,
+                      evidence: Evidence, index: int) -> URIRef:
+    node = _uri(evidence.vocalisation_uid(obs_uid, index))
+    graph.add((node, RDF.type, LKG.Vocalisation))
+    graph.add((node, DCTERMS.isPartOf, obs_node))
+    graph.add((node, LKG.callType, Literal(evidence.call_type or "unknown")))
+    # No placeholder transcription: only what the diary actually wrote.
+    if evidence.call_transcription:
+        graph.add((node, LKG.callTranscription, Literal(evidence.call_transcription)))
+    graph.add((obs_node, LKG.hasVocalisation, node))
+    return node
+
+
+def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
+                     entry_date: Optional[str] = None,
                      run: Optional[URIRef] = None) -> Optional[URIRef]:
     if obs.taxon.vernacular_de is None:
         return None
     node = _uri(obs.uid)
-    graph.add((node, RDF.type, LKG.ObservationEvent))
+    graph.add((node, RDF.type, LKG.Observation))
     label = f"Beobachtung {obs.taxon.vernacular_de}"
     graph.add((node, RDFS.label, Literal(label, lang=DE)))
     graph.add((node, LKG.observedTaxon, _add_taxon(graph, obs.taxon)))
-    graph.add((node, LKG.derivedFromEntry, _uri(f"entry_{obs.entry_uid}")))
+    _add_record_links(graph, node, entry_node, run)
     graph.add((node, LKG.verbatimNotes, Literal(obs.verbatim_notes, lang=DE)))
 
     # --- where: effective place (own locality, else inherited entry place) ---
@@ -297,9 +315,7 @@ def _add_observation(graph: Graph, obs: Observation, entry_date: Optional[str] =
     # --- what: status, counts, demography ---------------------------------
     graph.add((node, DWC.occurrenceStatus, Literal(obs.occurrence_status)))
     if obs.individual_count is not None:
-        count = Literal(int(obs.individual_count), datatype=XSD.integer)
-        graph.add((node, LKG.individualCount, count))
-        graph.add((node, DWC.individualCount, count))
+        graph.add((node, DWC.individualCount, Literal(int(obs.individual_count), datatype=XSD.integer)))
     if obs.count_min is not None:
         graph.add((node, LKG.individualCountMin, Literal(int(obs.count_min), datatype=XSD.integer)))
     if obs.count_max is not None:
@@ -316,8 +332,9 @@ def _add_observation(graph: Graph, obs: Observation, entry_date: Optional[str] =
         graph.add((node, DWC.identificationQualifier, Literal(obs.identification_qualifier)))
     if obs.breeding_evidence:
         graph.add((node, LKG.breedingEvidence, Literal(obs.breeding_evidence)))
-        if obs.breeding_evidence in _BREEDING_IMPLIES_BREEDING:
-            graph.add((node, DWC.reproductiveCondition, Literal("breeding")))
+    condition = reproductive_condition(obs.breeding_evidence, obs.behaviour)
+    if condition:
+        graph.add((node, DWC.reproductiveCondition, Literal(condition)))
     if obs.movement_kind:
         graph.add((node, LKG.movementKind, Literal(obs.movement_kind)))
     if obs.flight_direction:
@@ -329,31 +346,34 @@ def _add_observation(graph: Graph, obs: Observation, entry_date: Optional[str] =
     graph.add((node, LKG.recordType, Literal(obs.record_type)))
     graph.add((node, DWC.basisOfRecord,
                Literal(basis_of_record(obs.record_type, (e.kind for e in obs.evidence)))))
-    # Unattributed third-party/literature records get NO observedBy — never
+    # Unattributed third-party/literature records get NO recordedBy — never
     # fabricate attribution.
     observer = obs.observer or (DIARIST if obs.record_type == "field-observation" else None)
     if observer is not None:
-        person = _add_person(graph, observer)
-        graph.add((node, LKG.observedBy, person))
-        graph.add((node, DWCIRI.recordedBy, person))
+        graph.add((node, DWCIRI.recordedBy, _add_person(graph, observer)))
     if obs.literature_citation:
         graph.add((node, DWC.associatedReferences, Literal(obs.literature_citation, lang=DE)))
-    if run is not None:
-        graph.add((node, PROV.wasGeneratedBy, run))
 
-    # --- evidence / behaviour / habitat -----------------------------------
-    for i, evidence in enumerate(obs.evidence):
-        graph.add((node, LKG.hasEvidence, _add_evidence(graph, obs.uid, evidence, i)))
+    # --- how: evidence kinds, vocalisations, behaviour, habitat -------------
+    call_index = 0
+    for evidence in obs.evidence:
+        concept = _EVIDENCE_CONCEPTS.get(evidence.kind)
+        if concept is not None:
+            graph.add((node, LKG.evidenceKind, concept))
+        if evidence.is_call:
+            _add_vocalisation(graph, node, obs.uid, evidence, call_index)
+            call_index += 1
     for behaviour in obs.behaviour:
-        graph.add((node, LKG.hasBehaviour, _add_behaviour(graph, obs.uid, behaviour)))
         graph.add((node, DWC.behavior, Literal(behaviour.label, lang=DE)))
     if obs.habitat is not None:
-        habitat = _add_habitat(graph, obs.habitat)
-        graph.add((node, LKG.hasHabitat, habitat))
-        graph.add((node, DWCIRI.habitat, habitat))
+        graph.add((node, DWCIRI.habitat, _add_habitat_concept(graph, obs.habitat)))
         graph.add((node, DWC.habitat, Literal(obs.habitat.label, lang=DE)))
     return node
 
+
+# --------------------------------------------------------------------------
+# Archival units
+# --------------------------------------------------------------------------
 
 def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None) -> None:
     node = _uri(entry.uid)
@@ -361,9 +381,7 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None) ->
     graph.add((node, RDFS.label, Literal(entry.label, lang=DE)))
     if entry.entry_id:
         graph.add((node, DCTERMS.identifier, Literal(entry.entry_id)))
-    graph.add((node, LKG.entryDate, Literal(entry.entry_date, datatype=XSD.date)))
     if entry.entry_date_end:
-        graph.add((node, LKG.entryDateEnd, Literal(entry.entry_date_end, datatype=XSD.date)))
         # DwC interval notation for multi-day entries
         graph.add((node, DWC.eventDate, Literal(f"{entry.entry_date}/{entry.entry_date_end}")))
     else:
@@ -374,49 +392,50 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None) ->
         graph.add((node, LKG.datePlausible,
                    Literal(bool(entry.date_plausible), datatype=XSD.boolean)))
     if entry.date_note:
-        note = Literal(entry.date_note, lang=DE)
-        graph.add((node, LKG.dateNote, note))
-        graph.add((node, SKOS.note, note))       # lkg:dateNote ⊑ skos:note, materialised
+        graph.add((node, SKOS.note, Literal(entry.date_note, lang=DE)))
     if entry.entry_kind:
         graph.add((node, LKG.entryKind, Literal(entry.entry_kind)))
     if entry.place is not None:
         graph.add((node, LKG.entryPlace, _add_place(graph, entry.place)))
     if entry.text_clean:
-        graph.add((node, LKG.rawText, Literal(entry.text_clean)))
+        graph.add((node, DWC.fieldNotes, Literal(entry.text_clean)))
 
     volume = DiaryVolume(entry.volume)
     volume_node = _uri(volume.uid)
-    graph.add((node, LKG.hasVolume, volume_node))
     graph.add((volume_node, RDF.type, LKG.DiaryVolume))
     graph.add((volume_node, RDFS.label, Literal(volume.label, lang=DE)))
     page_node: Optional[URIRef] = None
     if entry.page_uid:
         page = DiaryPage(entry.page_uid, entry.volume, entry.page_id, entry.scan)
         page_node = _uri(page.uid)
-        graph.add((node, LKG.hasPage, page_node))
         graph.add((page_node, RDF.type, LKG.DiaryPage))
         graph.add((page_node, RDFS.label, Literal(page.label)))
         if page.page_id:
             graph.add((page_node, DCTERMS.identifier, Literal(page.page_id)))
         graph.add((page_node, DCTERMS.isPartOf, volume_node))
+    # entry → page (or straight to the volume when the page is unknown)
+    graph.add((node, DCTERMS.isPartOf, page_node if page_node is not None else volume_node))
     if entry.region_uid:
         # The layout region on the scanned page whose text became this entry.
         region = _uri(f"region_{entry.region_uid}")
         graph.add((node, LKG.hasSourceRegion, region))
         graph.add((region, RDF.type, LKG.SourceRegion))
-        graph.add((region, RDF.type, OA.Annotation))  # materialized superclass
         graph.add((region, RDFS.label, Literal(f"Region {entry.region_uid}")))
         if page_node is not None:
             graph.add((region, DCTERMS.isPartOf, page_node))
 
     for obs in entry.observations:
-        obs_node = _add_observation(graph, obs, entry.entry_date, run)
+        obs_node = _add_observation(graph, obs, node, entry.entry_date, run)
         if obs_node is not None:
             graph.add((node, LKG.containsObservation, obs_node))
     for event in entry.travel_events:
         _add_travel_event(graph, node, event, run)
     for person in entry.persons:
-        graph.add((node, LKG.mentionsPerson, _add_person(graph, person)))
+        person_node = _add_person(graph, person)
+        graph.add((node, LKG.mentionsPerson, person_node))
+        role_prop = _MENTION_PROPS.get(person.role or "")
+        if role_prop is not None:
+            graph.add((node, role_prop, person_node))
     if entry.weather is not None:
         _add_weather(graph, node, entry, run)
 
@@ -470,8 +489,8 @@ def _add_provenance(graph: Graph, provenance: dict) -> Optional[URIRef]:
 # --------------------------------------------------------------------------
 
 def build_graph(result: "ExtractionResult") -> Graph:
-    """Build an rdflib Graph. Only dated entries are emitted (SHACL requires a
-    single xsd:date entryDate); undated entries are skipped and logged."""
+    """Build an rdflib Graph. Only dated entries are emitted (SHACL requires
+    exactly one dwc:eventDate per entry); undated entries are skipped and logged."""
     graph = Graph()
     _bind(graph)
     run = _add_provenance(graph, getattr(result, "provenance", None) or {})
@@ -482,7 +501,7 @@ def build_graph(result: "ExtractionResult") -> Graph:
             continue
         _add_entry(graph, entry, run)
     if skipped:
-        logger.warning("skipped %d undated entries (SHACL entryDate requirement)", skipped)
+        logger.warning("skipped %d undated entries (SHACL dwc:eventDate requirement)", skipped)
     return graph
 
 

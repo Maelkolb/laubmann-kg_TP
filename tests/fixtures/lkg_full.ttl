@@ -1,26 +1,54 @@
 @prefix data:     <https://w3id.org/laubmann-kg/data/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix dwc:      <http://rs.tdwg.org/dwc/terms/> .
+@prefix dwciri:   <http://rs.tdwg.org/dwc/iri/> .
 @prefix gbif:     <https://www.gbif.org/species/> .
 @prefix geo:      <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix geonames: <https://sws.geonames.org/> .
+@prefix gsp:      <http://www.opengis.net/ont/geosparql#> .
 @prefix lkg:      <https://w3id.org/laubmann-kg/ontology#> .
 @prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
-@prefix time:     <http://www.w3.org/2006/time#> .
 @prefix wd:       <https://www.wikidata.org/entity/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 # =============================================================
-# DIARY ENTRY
+# Hand-written illustration of the 0.4.0 data shape (one entry):
+# archival units -> entry -> records (observations, travel, weather)
+# -> details (vocalisations, legs); shared taxa/places/persons/habitat.
 # =============================================================
+
+# --- ARCHIVAL UNITS ------------------------------------------
+
+data:volume_unknown a lkg:DiaryVolume ;
+    rdfs:label "Band unbekannt"@de .
+
+data:page_19250529 a lkg:DiaryPage ;
+    rdfs:label "Vol. ?? (p_19250529)" ;
+    dcterms:identifier "p_19250529" ;
+    dcterms:isPartOf data:volume_unknown .
+
+data:region_19250529 a lkg:SourceRegion ;
+    rdfs:label "Region r_19250529" ;
+    dcterms:isPartOf data:page_19250529 .
+
+# --- DIARY ENTRY (the event) ---------------------------------
 
 data:entry_19250529 a lkg:DiaryEntry ;
     rdfs:label "Tagebucheintrag 29. Mai 1925 – München/Gossenzugen"@de ;
+    dwc:eventDate "1925-05-29"^^xsd:date ;
     dwc:verbatimEventDate "29. Mai 1925" ;
-    lkg:entryDate "1925-05-29"^^xsd:date ;
-    lkg:hasVolume data:volume_unknown ;
-    lkg:rawText "29. Mai 1925. München - Gossenzugen. Wir fahren über Augsburg - Ulm - Zwiefaltendorf, wo wir um 12 h Nachts ankommen..." ;
+    dwc:fieldNotes "29. Mai 1925. München - Gossenzugen. Wir fahren über Augsburg - Ulm - Zwiefaltendorf, wo wir um 12 h Nachts ankommen..." ;
+    lkg:entryKind "field-day" ;
+    lkg:entryPlace data:place_Munich ;
+    lkg:datePlausible true ;
+    dcterms:isPartOf data:page_19250529 ;
+    lkg:hasSourceRegion data:region_19250529 ;
+    lkg:mentionsPerson data:person_Kiefer ;
+    lkg:mentionsCompanion data:person_Kiefer ;
+    lkg:hasWeather data:weather_19250529 ;
     lkg:containsTravelEvent data:journey_19250529 ;
     lkg:containsObservation
         data:obs_Kiebitz_Mering,
@@ -30,17 +58,27 @@ data:entry_19250529 a lkg:DiaryEntry ;
         data:obs_Waldohreule,
         data:obs_Storch_Kirchturm .
 
-# =============================================================
-# TRAVEL EVENTS
-# =============================================================
+# --- WEATHER (entry record) ----------------------------------
+
+data:weather_19250529 a lkg:WeatherReport ;
+    rdfs:label "Wetter 1925-05-29"@de ;
+    lkg:weatherVerbatim "abends kühl, klarer Himmel"@de ;
+    lkg:skyCondition "clear" ;
+    dcterms:isPartOf data:entry_19250529 ;
+    prov:wasDerivedFrom data:entry_19250529 .
+
+# --- TRAVEL (entry record + legs) ----------------------------
 
 data:journey_19250529 a lkg:TravelEvent ;
     rdfs:label "Reise München – Gossenzugen, 29. Mai 1925"@de ;
+    dcterms:isPartOf data:entry_19250529 ;
+    prov:wasDerivedFrom data:entry_19250529 ;
     lkg:hasLeg data:leg_train_Munich_Zwiefaltendorf,
                data:leg_walk_Zwiefaltendorf_Gossenzugen .
 
 data:leg_train_Munich_Zwiefaltendorf a lkg:TravelLeg ;
     rdfs:label "Zugfahrt München – Zwiefaltendorf"@de ;
+    dcterms:isPartOf data:journey_19250529 ;
     lkg:transportMode "train" ;
     lkg:departurePlace data:place_Munich ;
     lkg:arrivalPlace   data:place_Zwiefaltendorf ;
@@ -50,6 +88,7 @@ data:leg_train_Munich_Zwiefaltendorf a lkg:TravelLeg ;
 
 data:leg_walk_Zwiefaltendorf_Gossenzugen a lkg:TravelLeg ;
     rdfs:label "Fußmarsch Zwiefaltendorf – Gossenzugen"@de ;
+    dcterms:isPartOf data:journey_19250529 ;
     lkg:transportMode "foot" ;
     lkg:departurePlace data:place_Zwiefaltendorf ;
     lkg:arrivalPlace   data:place_Gossenzugen ;
@@ -57,238 +96,293 @@ data:leg_walk_Zwiefaltendorf_Gossenzugen a lkg:TravelLeg ;
     lkg:arrivalTime    "1925-05-30T01:15:00"^^xsd:dateTime ;
     lkg:viaPlace data:place_Baach, data:place_Zwiefaltenkloster .
 
-# =============================================================
-# TAXA
-# =============================================================
+# --- TAXA (shared referents; DwC terms only) -----------------
 
 data:taxon_Kiebitz a lkg:Taxon ;
-    lkg:vernacularNameDE "Kiebitz"@de ;
-    lkg:scientificName   "Vanellus vanellus" ;
-    dwc:scientificName   "Vanellus vanellus" ;
-    owl:sameAs gbif:9510564, wd:Q25401 .
+    rdfs:label "Kiebitz"@de ;
+    dwc:vernacularName "Kiebitz"@de ;
+    dwc:scientificName "Vanellus vanellus" ;
+    dwc:taxonRank "species" ;
+    dwc:kingdom "Animalia" ; dwc:phylum "Chordata" ; dwc:class "Aves" ;
+    dwc:order "Charadriiformes" ; dwc:family "Charadriidae" ; dwc:genus "Vanellus" ;
+    lkg:isBird true ;
+    lkg:matchMethod "gazetteer" ;
+    lkg:gbifMatchType "EXACT" ;
+    skos:exactMatch gbif:2480242 ;
+    dwc:taxonID "https://www.gbif.org/species/2480242" ;
+    owl:sameAs wd:Q25401 .
 
 data:taxon_Moewe a lkg:Taxon ;
-    lkg:vernacularNameDE "möwenartiger Vogel"@de ;
+    rdfs:label "möwenartiger Vogel"@de ;
+    dwc:vernacularName "möwenartiger Vogel"@de ;
+    dwc:taxonRank "group" ;
+    lkg:isBird true ;
+    lkg:matchMethod "unresolved" ;
     skos:note "unbestimmt, aus der Ferne nicht sicher ansprechen"@de .
 
 data:taxon_Heuschreckensaenger a lkg:Taxon ;
-    lkg:vernacularNameDE "Heuschreckensänger"@de ;
-    lkg:scientificName   "Locustella naevia" ;
-    dwc:scientificName   "Locustella naevia" ;
-    owl:sameAs gbif:9510565, wd:Q25402 .
+    rdfs:label "Heuschreckensänger"@de ;
+    dwc:vernacularName "Heuschreckensänger"@de ;
+    dwc:scientificName "Locustella naevia" ;
+    dwc:taxonRank "species" ;
+    dwc:family "Locustellidae" ; dwc:genus "Locustella" ;
+    lkg:isBird true ;
+    lkg:matchMethod "gazetteer" ;
+    skos:exactMatch gbif:2493135 ;
+    owl:sameAs wd:Q25402 .
 
 data:taxon_Wachtelkoenig a lkg:Taxon ;
-    lkg:vernacularNameDE "Wachtelkönig"@de ;
-    lkg:scientificName   "Crex crex" ;
-    dwc:scientificName   "Crex crex" ;
-    owl:sameAs gbif:2474543, wd:Q25403 .
+    rdfs:label "Wachtelkönig"@de ;
+    dwc:vernacularName "Wachtelkönig"@de ;
+    dwc:scientificName "Crex crex" ;
+    dwc:taxonRank "species" ;
+    dwc:family "Rallidae" ; dwc:genus "Crex" ;
+    lkg:isBird true ;
+    lkg:matchMethod "gazetteer" ;
+    skos:exactMatch gbif:2474543 ;
+    owl:sameAs wd:Q25403 .
 
 data:taxon_Waldohreule a lkg:Taxon ;
-    lkg:vernacularNameDE "Waldohreule"@de ;
-    lkg:scientificName   "Asio otus" ;
-    dwc:scientificName   "Asio otus" ;
-    owl:sameAs gbif:2481786, wd:Q25404 .
+    rdfs:label "Waldohreule"@de ;
+    dwc:vernacularName "Waldohreule"@de ;
+    dwc:scientificName "Asio otus" ;
+    dwc:taxonRank "species" ;
+    dwc:family "Strigidae" ; dwc:genus "Asio" ;
+    lkg:isBird true ;
+    lkg:matchMethod "gazetteer" ;
+    skos:exactMatch gbif:2497961 ;
+    owl:sameAs wd:Q25404 .
 
 data:taxon_Storch a lkg:Taxon ;
-    lkg:vernacularNameDE "Storch"@de ;
-    lkg:scientificName   "Ciconia ciconia" ;
-    dwc:scientificName   "Ciconia ciconia" ;
-    owl:sameAs gbif:2480962, wd:Q25405 .
+    rdfs:label "Storch"@de ;
+    dwc:vernacularName "Storch"@de ;
+    dwc:scientificName "Ciconia ciconia" ;
+    dwc:taxonRank "species" ;
+    dwc:family "Ciconiidae" ; dwc:genus "Ciconia" ;
+    lkg:isBird true ;
+    lkg:matchMethod "gazetteer" ;
+    skos:exactMatch gbif:2480962 ;
+    owl:sameAs wd:Q25405 .
 
-# =============================================================
-# PLACES (selection)
-# =============================================================
+# --- PLACES (shared referents) -------------------------------
 
 data:place_Munich a lkg:Place ;
     rdfs:label "München"@de ;
+    dwc:verbatimLocality "München" ;
+    lkg:placeKind "settlement" ;
     owl:sameAs geonames:2867714, wd:Q1726 ;
-    geo:lat 48.1374 ; geo:long 11.5755 .
+    geo:lat 48.1374 ; geo:long 11.5755 ;
+    dwc:decimalLatitude 48.1374 ; dwc:decimalLongitude 11.5755 ; dwc:geodeticDatum "WGS84" ;
+    gsp:asWKT "POINT(11.5755 48.1374)"^^gsp:wktLiteral .
 
 data:place_Augsburg a lkg:Place ;
     rdfs:label "Augsburg"@de ;
+    dwc:verbatimLocality "Augsburg" ;
+    lkg:placeKind "settlement" ;
     owl:sameAs geonames:2954172, wd:Q2749 ;
-    geo:lat 48.3717 ; geo:long 10.8983 .
+    geo:lat 48.3717 ; geo:long 10.8983 ;
+    gsp:asWKT "POINT(10.8983 48.3717)"^^gsp:wktLiteral .
 
 data:place_Ulm a lkg:Place ;
     rdfs:label "Ulm"@de ;
+    dwc:verbatimLocality "Ulm" ;
+    lkg:placeKind "settlement" ;
     owl:sameAs geonames:2820860, wd:Q6810 ;
-    geo:lat 48.3984 ; geo:long 9.9908 .
+    geo:lat 48.3984 ; geo:long 9.9908 ;
+    gsp:asWKT "POINT(9.9908 48.3984)"^^gsp:wktLiteral .
 
 data:place_Zwiefaltendorf a lkg:Place ;
     rdfs:label "Zwiefaltendorf"@de ;
+    dwc:verbatimLocality "Zwiefaltendorf" ;
+    lkg:placeKind "settlement" ;
     owl:sameAs geonames:2803993, wd:Q1533 ;
-    geo:lat 48.2167 ; geo:long 9.4333 .
+    geo:lat 48.2167 ; geo:long 9.4333 ;
+    gsp:asWKT "POINT(9.4333 48.2167)"^^gsp:wktLiteral .
 
 data:place_Gossenzugen a lkg:Place ;
     rdfs:label "Gossenzugen"@de ;
-    geo:lat 48.2500 ; geo:long 9.4500 .
+    dwc:verbatimLocality "Gossenzugen" ;
+    lkg:placeKind "settlement" ;
+    geo:lat 48.2500 ; geo:long 9.4500 ;
+    gsp:asWKT "POINT(9.45 48.25)"^^gsp:wktLiteral .
 
 data:place_AachGrassland a lkg:Place ;
     rdfs:label "Wiesenland längs der Aach"@de ;
+    dwc:verbatimLocality "Wiesenland längs der Aach" ;
     lkg:placeKind "locality" .
 
-# Habitat = skos:Concept in lkg:habitatScheme (v0.3: no longer a Place)
-data:habitat_AachGrassland a lkg:Habitat, skos:Concept ;
+data:place_ZwiefaltendorfChurchTower a lkg:Place ;
+    rdfs:label "Kirchturm in Zwiefaltenkloster"@de ;
+    dwc:verbatimLocality "Kirchturm in Zwiefaltenkloster" ;
+    lkg:placeKind "locality" .
+
+data:place_LechRiverCrossing a lkg:Place ;
+    rdfs:label "Lechüberquerung"@de ;
+    dwc:verbatimLocality "Lechüberquerung" ;
+    lkg:placeKind "route" .
+
+data:place_MunichToAugsburgRoute a lkg:Place ;
+    rdfs:label "Strecke München–Augsburg"@de ;
+    dwc:verbatimLocality "Strecke München–Augsburg" ;
+    lkg:placeKind "route" .
+
+data:place_ZwiefaltendorfToGossenzugen a lkg:Place ;
+    rdfs:label "Strecke Zwiefaltendorf–Gossenzugen"@de ;
+    dwc:verbatimLocality "Strecke Zwiefaltendorf–Gossenzugen" ;
+    lkg:placeKind "route" .
+
+data:place_ZwiefaltendorfToBaach a lkg:Place ;
+    rdfs:label "Strecke Zwiefaltendorf–Baach"@de ;
+    dwc:verbatimLocality "Strecke Zwiefaltendorf–Baach" ;
+    lkg:placeKind "route" .
+
+data:place_Zwiefaltenkloster a lkg:Place ;
+    rdfs:label "Zwiefaltenkloster"@de ;
+    dwc:verbatimLocality "Zwiefaltenkloster" ;
+    lkg:placeKind "settlement" .
+
+data:place_Baach a lkg:Place ;
+    rdfs:label "Baach"@de ;
+    dwc:verbatimLocality "Baach" ;
+    lkg:placeKind "settlement" .
+
+# --- HABITAT CONCEPT (shared skos:Concept, no class of its own) --
+
+data:habitat_Wiesenland a skos:Concept ;
     rdfs:label "Wiesenland"@de ;
     skos:prefLabel "Wiesenland"@de ;
-    skos:inScheme lkg:habitatScheme ;
-    dwc:habitat "Wiesenland"@de .
+    skos:inScheme lkg:habitatScheme .
 
-data:place_ZwiefaltendorfChurchTower a lkg:Place ;
-    rdfs:label "Kirchturm in Zwiefaltenkloster"@de .
+# --- PERSONS -------------------------------------------------
+
+data:person_c6b2ff6250e5 a lkg:Person ;
+    rdfs:label "Alfred Laubmann" .
+
+data:person_Kiefer a lkg:Person ;
+    rdfs:label "Kiefer" .
 
 # =============================================================
-# OBSERVATION EVENTS
+# OBSERVATIONS (entry records, dwc:Occurrence)
 # =============================================================
 
 # --- OBS 1: Kiebitz bei Mering (train, visual) ---
-data:obs_Kiebitz_Mering a lkg:ObservationEvent ;
-    rdfs:label "Kiebitz-Beobachtung bei Mering, 29.05.1925"@de ;
+data:obs_Kiebitz_Mering a lkg:Observation ;
+    rdfs:label "Beobachtung Kiebitz"@de ;
     lkg:observedTaxon    data:taxon_Kiebitz ;
+    dcterms:isPartOf     data:entry_19250529 ;
+    prov:wasDerivedFrom  data:entry_19250529 ;
     lkg:observedAt       data:place_MunichToAugsburgRoute ;
-    lkg:observedDuring   data:leg_train_Munich_Zwiefaltendorf ;
-    lkg:derivedFromEntry data:entry_19250529 ;
+    lkg:hasLocality      data:place_MunichToAugsburgRoute ;
+    dwc:verbatimLocality "Felder nach Station Mering" ;
+    dwc:eventDate        "1925-05-29"^^xsd:date ;
+    dwc:occurrenceStatus "present" ;
     lkg:countQualifier   "plural-unspecified" ;
     lkg:verbatimNotes    "einige Kiebitze auf den Feldern"@de ;
-    lkg:hasEvidence      data:evidence_Kiebitz_visual ;
-    lkg:hasTimeEstimate  data:timeest_obs_Kiebitz ;
-    dwc:occurrenceStatus "present" ;
+    lkg:evidenceKind     lkg:evidence_visual ;
+    lkg:recordType       "field-observation" ;
+    dwc:basisOfRecord    "HumanObservation" ;
+    dwciri:recordedBy    data:person_c6b2ff6250e5 ;
     dwc:occurrenceRemarks "Felder zwischen München und Augsburg, nach Station Mering"@de .
 
-data:evidence_Kiebitz_visual a lkg:ObservationEvidence ;
-    rdfs:label "Sichtbeobachtung"@de ;
-    lkg:evidenceKind lkg:evidence_visual .
-
-data:timeest_obs_Kiebitz a lkg:TimeEstimate ;
-    time:hasBeginning "1925-05-29T17:00:00"^^xsd:dateTime ;
-    time:hasEnd       "1925-05-29T18:30:00"^^xsd:dateTime ;
-    skos:note "Abfahrt München 17:00 Uhr; Mering ca. 60–90 min später"@de .
-
 # --- OBS 2: Möwenartiger Vogel über dem Lech (train, uncertain) ---
-data:obs_Moewe_Lech a lkg:ObservationEvent ;
-    rdfs:label "Möwenartiger Vogel über dem Lech"@de ;
+data:obs_Moewe_Lech a lkg:Observation ;
+    rdfs:label "Beobachtung möwenartiger Vogel"@de ;
     lkg:observedTaxon    data:taxon_Moewe ;
+    dcterms:isPartOf     data:entry_19250529 ;
+    prov:wasDerivedFrom  data:entry_19250529 ;
     lkg:observedAt       data:place_LechRiverCrossing ;
-    lkg:observedDuring   data:leg_train_Munich_Zwiefaltendorf ;
-    lkg:derivedFromEntry data:entry_19250529 ;
+    dwc:eventDate        "1925-05-29"^^xsd:date ;
+    dwc:occurrenceStatus "present" ;
+    dwc:individualCount  1 ;
+    dwc:identificationQualifier "?" ;
     lkg:verbatimNotes    "möwenartiger Vogel, aus weiter Ferne nicht sicher ansprechen"@de ;
-    lkg:hasTimeEstimate  data:timeest_obs_Moewe ;
-    dwc:identificationRemarks "Bestimmung unsicher – aus der weiten Ferne"@de .
-
-data:timeest_obs_Moewe a lkg:TimeEstimate ;
-    time:hasBeginning "1925-05-29T18:00:00"^^xsd:dateTime ;
-    time:hasEnd       "1925-05-29T20:00:00"^^xsd:dateTime ;
-    skos:note "Lech-Querung liegt auf Strecke Augsburg–Ulm"@de .
+    lkg:evidenceKind     lkg:evidence_visual ;
+    lkg:recordType       "field-observation" ;
+    dwc:basisOfRecord    "HumanObservation" ;
+    dwciri:recordedBy    data:person_c6b2ff6250e5 .
 
 # --- OBS 3: Heuschreckensänger (walk, auditory/song) ---
-data:obs_Heuschreckensaenger a lkg:ObservationEvent ;
-    rdfs:label "Heuschreckensänger zwischen Zwiefaltendorf und Baach"@de ;
+data:obs_Heuschreckensaenger a lkg:Observation ;
+    rdfs:label "Beobachtung Heuschreckensänger"@de ;
     lkg:observedTaxon    data:taxon_Heuschreckensaenger ;
+    dcterms:isPartOf     data:entry_19250529 ;
+    prov:wasDerivedFrom  data:entry_19250529 ;
     lkg:observedAt       data:place_ZwiefaltendorfToBaach ;
-    lkg:observedDuring   data:leg_walk_Zwiefaltendorf_Gossenzugen ;
-    lkg:derivedFromEntry data:entry_19250529 ;
+    dwc:eventDate        "1925-05-30"^^xsd:date ;
+    dwc:occurrenceStatus "present" ;
+    dwc:individualCount  1 ;
     lkg:verbatimNotes    "rechts der Straße schwirrt ein Heuschreckensänger"@de ;
-    lkg:hasEvidence      data:evidence_Heuschreckensaenger_sound ;
-    lkg:hasTimeEstimate  data:timeest_obs_Heuschreckensaenger .
+    lkg:evidenceKind     lkg:evidence_auditory ;
+    lkg:hasVocalisation  data:vocalisation_Heuschreckensaenger_0 ;
+    lkg:recordType       "field-observation" ;
+    dwc:basisOfRecord    "HumanObservation" ;
+    dwciri:recordedBy    data:person_c6b2ff6250e5 .
 
-data:evidence_Heuschreckensaenger_sound a lkg:BirdCall ;
-    rdfs:label "Schwirrgesang"@de ;
-    lkg:evidenceKind      lkg:evidence_auditory ;
+data:vocalisation_Heuschreckensaenger_0 a lkg:Vocalisation ;
+    dcterms:isPartOf      data:obs_Heuschreckensaenger ;
     lkg:callType          "song" ;
     lkg:callTranscription "schwirrt" .
 
-data:timeest_obs_Heuschreckensaenger a lkg:TimeEstimate ;
-    time:hasBeginning "1925-05-30T00:00:00"^^xsd:dateTime ;
-    time:hasEnd       "1925-05-30T01:15:00"^^xsd:dateTime ;
-    skos:note "Fußmarsch: Abfahrt 00:00 Uhr, Ankunft ca. 01:15 Uhr"@de .
-
 # --- OBS 4: Wachtelkönig (walk, auditory/call, habitat: grassland) ---
-data:obs_Wachtelkoenig a lkg:ObservationEvent ;
-    rdfs:label "Wachtelkönige im Wiesenland längs der Aach"@de ;
+data:obs_Wachtelkoenig a lkg:Observation ;
+    rdfs:label "Beobachtung Wachtelkönig"@de ;
     lkg:observedTaxon    data:taxon_Wachtelkoenig ;
+    dcterms:isPartOf     data:entry_19250529 ;
+    prov:wasDerivedFrom  data:entry_19250529 ;
     lkg:observedAt       data:place_AachGrassland ;
-    lkg:hasHabitat       data:habitat_AachGrassland ;
+    dwciri:habitat       data:habitat_Wiesenland ;
     dwc:habitat          "Wiesenland"@de ;
-    lkg:observedDuring   data:leg_walk_Zwiefaltendorf_Gossenzugen ;
-    lkg:derivedFromEntry data:entry_19250529 ;
+    dwc:eventDate        "1925-05-30"^^xsd:date ;
+    dwc:occurrenceStatus "present" ;
     lkg:countQualifier   "plural-unspecified" ;
     lkg:verbatimNotes    "das Schnarren mehrerer Wachtelkönige"@de ;
-    lkg:hasEvidence      data:evidence_Wachtelkoenig_sound ;
-    lkg:hasTimeEstimate  data:timeest_obs_Wachtelkoenig .
+    lkg:evidenceKind     lkg:evidence_auditory ;
+    lkg:hasVocalisation  data:vocalisation_Wachtelkoenig_0 ;
+    lkg:recordType       "field-observation" ;
+    dwc:basisOfRecord    "HumanObservation" ;
+    dwciri:recordedBy    data:person_c6b2ff6250e5 .
 
-data:evidence_Wachtelkoenig_sound a lkg:BirdCall ;
-    rdfs:label "Schnarruf"@de ;
+data:vocalisation_Wachtelkoenig_0 a lkg:Vocalisation ;
+    dcterms:isPartOf      data:obs_Wachtelkoenig ;
     lkg:callType          "call" ;
     lkg:callTranscription "Schnarren" .
 
-data:timeest_obs_Wachtelkoenig a lkg:TimeEstimate ;
-    time:hasBeginning "1925-05-30T00:00:00"^^xsd:dateTime ;
-    time:hasEnd       "1925-05-30T01:15:00"^^xsd:dateTime .
-
 # --- OBS 5: Waldohreule (walk, auditory/call 'pich pich') ---
-data:obs_Waldohreule a lkg:ObservationEvent ;
-    rdfs:label "Waldohreule – Ruf 'pich pich'"@de ;
+data:obs_Waldohreule a lkg:Observation ;
+    rdfs:label "Beobachtung Waldohreule"@de ;
     lkg:observedTaxon    data:taxon_Waldohreule ;
+    dcterms:isPartOf     data:entry_19250529 ;
+    prov:wasDerivedFrom  data:entry_19250529 ;
     lkg:observedAt       data:place_ZwiefaltendorfToGossenzugen ;
-    lkg:observedDuring   data:leg_walk_Zwiefaltendorf_Gossenzugen ;
-    lkg:derivedFromEntry data:entry_19250529 ;
+    dwc:eventDate        "1925-05-30"^^xsd:date ;
+    dwc:occurrenceStatus "present" ;
+    dwc:individualCount  1 ;
     lkg:verbatimNotes    "Eine Waldohreule ruft ihr pich pich"@de ;
-    lkg:hasEvidence      data:evidence_Waldohreule_call ;
-    lkg:hasTimeEstimate  data:timeest_obs_Waldohreule .
+    lkg:evidenceKind     lkg:evidence_auditory ;
+    lkg:hasVocalisation  data:vocalisation_Waldohreule_0 ;
+    lkg:recordType       "field-observation" ;
+    dwc:basisOfRecord    "HumanObservation" ;
+    dwciri:recordedBy    data:person_c6b2ff6250e5 .
 
-data:evidence_Waldohreule_call a lkg:BirdCall ;
-    rdfs:label "Ruf der Waldohreule"@de ;
+data:vocalisation_Waldohreule_0 a lkg:Vocalisation ;
+    dcterms:isPartOf      data:obs_Waldohreule ;
     lkg:callType          "call" ;
     lkg:callTranscription "pich pich" .
 
-data:timeest_obs_Waldohreule a lkg:TimeEstimate ;
-    time:hasBeginning "1925-05-30T00:00:00"^^xsd:dateTime ;
-    time:hasEnd       "1925-05-30T01:15:00"^^xsd:dateTime .
-
-# --- OBS 6: Storch (walk, visual nest, behaviour: breeding) ---
-data:obs_Storch_Kirchturm a lkg:ObservationEvent ;
-    rdfs:label "Storch – besetztes Nest auf Kirchturm Zwiefaltenkloster"@de ;
+# --- OBS 6: Storch (walk, nest, breeding confirmed) ---
+data:obs_Storch_Kirchturm a lkg:Observation ;
+    rdfs:label "Beobachtung Storch"@de ;
     lkg:observedTaxon    data:taxon_Storch ;
+    dcterms:isPartOf     data:entry_19250529 ;
+    prov:wasDerivedFrom  data:entry_19250529 ;
     lkg:observedAt       data:place_ZwiefaltendorfChurchTower ;
-    lkg:observedDuring   data:leg_walk_Zwiefaltendorf_Gossenzugen ;
-    lkg:derivedFromEntry data:entry_19250529 ;
-    lkg:verbatimNotes    "das besetzte Storchennest ist auf dem Kirchturm zu erkennen"@de ;
-    lkg:hasBehaviour     data:behaviour_Storch_breeding ;
-    lkg:hasEvidence      data:evidence_Storch_nest ;
-    lkg:hasTimeEstimate  data:timeest_obs_Storch ;
+    dwc:eventDate        "1925-05-30"^^xsd:date ;
     dwc:occurrenceStatus "present" ;
-    lkg:breedingEvidence "confirmed" .
-
-data:behaviour_Storch_breeding a lkg:BehaviourNote ;
-    rdfs:label "Brüten / besetztes Nest"@de ;
-    dwc:reproductiveCondition "breeding" .
-
-data:evidence_Storch_nest a lkg:ObservationEvidence ;
-    rdfs:label "Nestfund – visuell"@de ;
-    lkg:evidenceKind lkg:evidence_nest ;
-    skos:note "besetztes Nest auf Kirchturm erkannt"@de .
-
-data:timeest_obs_Storch a lkg:TimeEstimate ;
-    time:hasBeginning "1925-05-30T00:00:00"^^xsd:dateTime ;
-    time:hasEnd       "1925-05-30T01:15:00"^^xsd:dateTime .
-# - - - Ergänzungen 21.7.2026
-data:volume_unknown a lkg:DiaryVolume ;
-    rdfs:label "Band unbekannt"@de .
-
-data:place_LechRiverCrossing a lkg:Place ;
-    rdfs:label "Lechüberquerung"@de .
-
-data:place_MunichToAugsburgRoute a lkg:Place ;
-    rdfs:label "Strecke München–Augsburg"@de .
-
-data:place_ZwiefaltendorfToGossenzugen a lkg:Place ;
-    rdfs:label "Strecke Zwiefaltendorf–Gossenzugen"@de .
-
-data:place_ZwiefaltendorfToBaach a lkg:Place ;
-    rdfs:label "Strecke Zwiefaltendorf–Baach"@de .
-
-data:place_Zwiefaltenkloster a lkg:Place ;
-    rdfs:label "Zwiefaltenkloster"@de .
-
-data:place_Baach a lkg:Place ;
-    rdfs:label "Baach"@de .
+    lkg:verbatimNotes    "das besetzte Storchennest ist auf dem Kirchturm zu erkennen"@de ;
+    lkg:evidenceKind     lkg:evidence_nest , lkg:evidence_visual ;
+    dwc:behavior         "Brüten / besetztes Nest"@de ;
+    lkg:breedingEvidence "confirmed" ;
+    dwc:reproductiveCondition "breeding" ;
+    lkg:recordType       "field-observation" ;
+    dwc:basisOfRecord    "HumanObservation" ;
+    dwciri:recordedBy    data:person_c6b2ff6250e5 .

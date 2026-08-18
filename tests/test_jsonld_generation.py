@@ -22,6 +22,12 @@ def test_turtle_graph_has_expected_classes(sample_config, tmp_path: Path) -> Non
     graph = Graph()
     graph.parse(tmp_path / "rdf" / "laubmann_sample.ttl", format="turtle")
     lkg = Namespace("https://w3id.org/laubmann-kg/ontology#")
-    assert (None, RDF.type, lkg.ObservationEvent) in graph
+    assert (None, RDF.type, lkg.Observation) in graph
     assert (None, RDF.type, lkg.DiaryEntry) in graph
     assert (None, RDF.type, lkg.Taxon) in graph
+    # 0.4.0: renamed / flattened classes are gone from the data
+    for old in ("ObservationEvent", "BirdCall", "ObservationEvidence", "BehaviourNote", "Habitat"):
+        assert (None, RDF.type, lkg[old]) not in graph, old
+    # grouping superclasses are not materialised
+    for abstract in ("ArchivalUnit", "EntryRecord", "RecordDetail"):
+        assert (None, RDF.type, lkg[abstract]) not in graph, abstract

@@ -1,4 +1,11 @@
-"""Knowledge graph domain model mirroring ontologies/laubmann.ttl."""
+"""Knowledge graph domain model mirroring ontologies/laubmann.ttl (0.4.0).
+
+The dataclasses are the contract between extraction and emission. Not every
+dataclass is a node in the graph: ``Evidence``, ``Behaviour`` and ``Habitat``
+are emitter inputs — the RDF emitter turns evidence into ``lkg:evidenceKind``
+concept links (plus a ``lkg:Vocalisation`` node for calls), behaviour into
+``dwc:behavior`` literals and habitat into a shared ``skos:Concept`` node.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +15,10 @@ from typing import Optional
 
 DATA_NS = "https://w3id.org/laubmann-kg/data/"
 ONTO_NS = "https://w3id.org/laubmann-kg/ontology#"
+
+# GBIF backbone ranks carried on a linked Taxon (dwc:kingdom … dwc:genus), in
+# hierarchy order. Mirrors the field names of the GBIF species/match response.
+HIGHER_RANKS = ("kingdom", "phylum", "class", "order", "family", "genus")
 
 
 def _slug(value: str, length: int = 12) -> str:
@@ -57,10 +68,20 @@ class Taxon:
     gbif_canonical_name: Optional[str] = None
     rank: Optional[str] = None                # vocab.TAXON_RANKS — rank at which the diarist named it
     is_bird: Optional[bool] = None            # model's judgement; None = not stated
+    # GBIF backbone classification of the linked taxon: ((rank, name), ...) in
+    # HIGHER_RANKS order, only ranks GBIF returned. Empty when unlinked.
+    higher_taxonomy: tuple[tuple[str, str], ...] = ()
 
     @property
     def uid(self) -> str:
         return f"taxon_{_slug(self.vernacular_de.lower())}"
+
+    def higher_rank(self, rank: str) -> Optional[str]:
+        """Name at ``rank`` (e.g. "family") from the GBIF classification, or None."""
+        for r, name in self.higher_taxonomy:
+            if r == rank:
+                return name
+        return None
 
 
 @dataclass(frozen=True)
@@ -82,6 +103,8 @@ class Place:
 
 @dataclass(frozen=True)
 class Habitat:
+    """A habitat label; emitted as a shared skos:Concept in lkg:habitatScheme
+    (one node per label, reached from observations via dwciri:habitat)."""
     label: str
 
     @property
@@ -134,20 +157,17 @@ class Evidence:
     call_type: Optional[str] = None
     call_transcription: Optional[str] = None
 
-    def uid(self, obs_uid: str, index: int = 0) -> str:
-        # index keeps evidences of the same kind on one observation distinct, so
-        # e.g. two bird calls do not collapse onto one node (SHACL callTranscription
-        # requires exactly one value per BirdCall).
-        return f"evidence_{obs_uid}_{self.kind}_{index}"
+    def vocalisation_uid(self, obs_uid: str, index: int = 0) -> str:
+        # index keeps several calls on one observation distinct (two calls must
+        # not collapse onto one lkg:Vocalisation node)
+        return f"vocalisation_{obs_uid}_{index}"
 
 
 @dataclass(frozen=True)
 class Behaviour:
+    """A noted behaviour; emitted as a dwc:behavior literal (no node)."""
     label: str
     reproductive_condition: Optional[str] = None
-
-    def uid(self, obs_uid: str) -> str:
-        return f"behaviour_{obs_uid}_{_slug(self.label.lower(), 8)}"
 
 
 @dataclass(frozen=True)

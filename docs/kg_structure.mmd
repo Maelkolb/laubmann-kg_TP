@@ -2,68 +2,51 @@
 classDiagram
     direction TB
 
+    class ArchivalUnit {
+        <<abstract · rico:Record>>
+    }
+    class EntryRecord {
+        <<abstract · prov:Entity>>
+        dcterms:isPartOf · prov:wasDerivedFrom → entry
+    }
+    class RecordDetail {
+        <<abstract>>
+        dcterms:isPartOf → record
+    }
+
     class DiaryVolume {
-        <<rico:Record>>
     }
     class DiaryPage {
-        <<rico:Record>>
         dcterms:identifier
     }
     class DiaryEntry {
-        <<rico:Record · dwc:Event>>
-        entryDate · entryDateEnd
-        entryKind
+        <<dwc:Event>>
         dwc:eventDate · dwc:verbatimEventDate
-        dateNote · datePlausible
-        rawText
+        dwc:fieldNotes
+        entryKind · datePlausible · skos:note
+    }
+    class SourceRegion {
     }
 
-    class ObservationEvent {
+    class Observation {
         <<dwc:Occurrence>>
         verbatimNotes
         recordType field | third-party | literature
         dwc:occurrenceStatus present | absent
-        individualCount ≥0 · Min · Max
+        dwc:individualCount ≥0 · individualCountMin · Max
         countQualifier
         dwc:sex · dwc:lifeStage · dwc:vitality
-        breedingEvidence · movementKind · flightDirection
+        breedingEvidence · dwc:reproductiveCondition
+        movementKind · flightDirection
+        dwc:behavior · dwc:habitat
         dwc:identificationQualifier
         dwc:eventDate · dwc:eventTime
         dwc:basisOfRecord
     }
-    class ObservationEvidence {
-        visual | auditory | nest | specimen
-    }
-    class BirdCall {
+    class Vocalisation {
         callType
         callTranscription
     }
-    class BehaviourNote {
-        rdfs:label
-    }
-
-    class Taxon {
-        <<dwc:Taxon>>
-        vernacularNameDE · scientificName
-        dwc:taxonRank · isBird
-        matchMethod · matchConfidence
-        dwc:taxonID
-    }
-    class Place {
-        <<geo:SpatialThing · dcterms:Location>>
-        rdfs:label · verbatimLocality
-        placeKind
-        geo:lat · geo:long
-    }
-    class Person {
-        <<schema:Person>>
-        schema:name · role
-    }
-    class Habitat {
-        <<skos:Concept>>
-        skos:prefLabel · dwc:habitat
-    }
-
     class TravelEvent {
         <<dwc:Event>>
     }
@@ -77,13 +60,40 @@ classDiagram
         precipitation · skyCondition · wind
     }
 
+    class Taxon {
+        <<dwc:Taxon>>
+        dwc:vernacularName · dwc:scientificName
+        dwc:taxonRank · isBird
+        dwc:kingdom … dwc:genus
+        matchMethod · matchConfidence · gbifMatchType
+        dwc:taxonID
+    }
+    class Place {
+        <<geo:SpatialThing · dcterms:Location>>
+        rdfs:label · dwc:verbatimLocality
+        placeKind
+        geo:lat · geo:long · gsp:asWKT
+    }
+    class Person {
+        <<schema:Person>>
+        schema:name
+    }
+    class HabitatConcept {
+        <<skos:Concept · lkg:habitatScheme>>
+        skos:prefLabel
+    }
+    class EvidenceKind {
+        <<skos:Concept · lkg:evidenceKindScheme>>
+        visual | auditory | nest | specimen
+    }
+
     class ExtractionRun {
         <<prov:Activity>>
         prov:startedAtTime
     }
     class SoftwareAgent {
         <<prov:SoftwareAgent>>
-        model
+        model · backend
     }
     class Prompt {
         <<prov:Entity>>
@@ -97,25 +107,36 @@ classDiagram
         wikidata.org/entity/Q…
     }
 
-    DiaryEntry --> "1" DiaryVolume : hasVolume
-    DiaryEntry --> "0..1" DiaryPage : hasPage
+    ArchivalUnit <|-- DiaryVolume
+    ArchivalUnit <|-- DiaryPage
+    ArchivalUnit <|-- DiaryEntry
+    ArchivalUnit <|-- SourceRegion
+    EntryRecord <|-- Observation
+    EntryRecord <|-- TravelEvent
+    EntryRecord <|-- WeatherReport
+    RecordDetail <|-- Vocalisation
+    RecordDetail <|-- TravelLeg
+
+    DiaryPage --> "1" DiaryVolume : dcterms∶isPartOf
+    DiaryEntry --> "1" DiaryPage : dcterms∶isPartOf
+    SourceRegion --> "0..1" DiaryPage : dcterms∶isPartOf
+    DiaryEntry --> "0..1" SourceRegion : hasSourceRegion
     DiaryEntry --> "0..1" Place : entryPlace
-    DiaryEntry --> "*" ObservationEvent : containsObservation
-    DiaryEntry --> "*" TravelEvent : containsTravelEvent
-    DiaryEntry --> "*" Person : mentionsPerson ⊑ schema∶mentions
-    DiaryEntry --> "0..1" WeatherReport : hasWeather
+    DiaryEntry --> "*" Observation : containsObservation ⊑ dcterms∶hasPart
+    DiaryEntry --> "*" TravelEvent : containsTravelEvent ⊑ dcterms∶hasPart
+    DiaryEntry --> "*" WeatherReport : hasWeather ⊑ dcterms∶hasPart
+    DiaryEntry --> "*" Person : mentionsPerson · mentionsCompanion | Source | Collector | CitedAuthor | Other
 
-    ObservationEvent --> "1" Taxon : observedTaxon ⊑ dwciri∶toTaxon
-    ObservationEvent --> "0..1" Place : observedAt
-    ObservationEvent --> "0..1" Place : hasLocality (own place)
-    ObservationEvent --> "0..1" Person : observedBy ⊑ dwciri∶recordedBy
-    ObservationEvent --> "0..4" ObservationEvidence : hasEvidence
-    ObservationEvent --> "*" BehaviourNote : hasBehaviour
-    ObservationEvent --> "0..1" Habitat : hasHabitat ⊑ dwciri∶habitat
-    ObservationEvent --> "1" ExtractionRun : prov∶wasGeneratedBy
-    BirdCall --|> ObservationEvidence
+    Observation --> "1" Taxon : observedTaxon ⊑ dwciri∶toTaxon
+    Observation --> "0..1" Place : observedAt
+    Observation --> "0..1" Place : hasLocality (own place)
+    Observation --> "0..1" Person : dwciri∶recordedBy
+    Observation --> "0..4" EvidenceKind : evidenceKind
+    Observation --> "*" Vocalisation : hasVocalisation ⊑ dcterms∶hasPart
+    Observation --> "0..1" HabitatConcept : dwciri∶habitat
+    Observation --> "1" ExtractionRun : prov∶wasGeneratedBy
 
-    TravelEvent --> "1..*" TravelLeg : hasLeg
+    TravelEvent --> "1..*" TravelLeg : hasLeg ⊑ dcterms∶hasPart
     TravelLeg --> "1..*" Place : departurePlace · arrivalPlace · viaPlace
     ExtractionRun --> "1" SoftwareAgent : prov∶wasAssociatedWith
     ExtractionRun --> "1" Prompt : prov∶used
@@ -123,15 +144,19 @@ classDiagram
     Taxon --> "0..1" GBIF_Species : skos∶exactMatch · closeMatch · broadMatch
     Person --> "0..1" Wikidata_Item : owl∶sameAs
 
-    cssClass "DiaryVolume,DiaryPage" source
-    cssClass "DiaryEntry,ObservationEvent" hub
-    cssClass "ObservationEvidence,BirdCall,BehaviourNote,Habitat,TravelEvent,TravelLeg,WeatherReport" detail
+    cssClass "ArchivalUnit,EntryRecord,RecordDetail" abstract
+    cssClass "DiaryVolume,DiaryPage,SourceRegion" source
+    cssClass "DiaryEntry,Observation" hub
+    cssClass "Vocalisation,TravelEvent,TravelLeg,WeatherReport" detail
     cssClass "Taxon,Place,Person" entity
+    cssClass "HabitatConcept,EvidenceKind" concept
     cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
     cssClass "GBIF_Species,Wikidata_Item" ext
+    classDef abstract fill:#FBFBF9,stroke:#7E8C82,stroke-width:1px,stroke-dasharray:3 3,color:#5F6E64,font-style:italic
     classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
     classDef entity fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A
     classDef detail fill:#F7F8F4,stroke:#7E8C82,stroke-width:1px,color:#1D2A21
+    classDef concept fill:#F3EEF7,stroke:#6E5A8A,stroke-width:1px,color:#2E2340
     classDef source fill:#F1ECE0,stroke:#8A7A5A,stroke-width:1px,color:#3A3020
     classDef prov fill:#EEEFEC,stroke:#8A8F8B,stroke-width:1px,stroke-dasharray:5 4,color:#3B413D
     classDef ext fill:#FFFFFF,stroke:#35608A,stroke-width:1px,stroke-dasharray:6 4,color:#14263A

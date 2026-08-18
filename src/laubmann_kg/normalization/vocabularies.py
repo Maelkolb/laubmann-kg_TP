@@ -192,3 +192,21 @@ def basis_of_record(record_type: Optional[str], evidence_kinds) -> str:
     if any(k == "specimen" for k in evidence_kinds):
         return "PreservedSpecimen"
     return "HumanObservation"
+
+
+# breeding-evidence categories that imply dwc:reproductiveCondition "breeding"
+BREEDING_IMPLIES_BREEDING = ("confirmed", "probable")
+
+
+def reproductive_condition(breeding_evidence: Optional[str], behaviours) -> Optional[str]:
+    """Single Darwin Core reproductiveCondition for a record, shared by the RDF
+    emitter and the DwC-A writer: atlas-style confirmed/probable breeding
+    evidence -> "breeding"; otherwise the first behaviour that carries one
+    (offline backend); None when nothing is stated."""
+    if breeding_evidence in BREEDING_IMPLIES_BREEDING:
+        return "breeding"
+    for behaviour in behaviours:
+        value = getattr(behaviour, "reproductive_condition", None)
+        if value:
+            return value
+    return None

@@ -430,6 +430,72 @@ def test_reviewed_csv_match_type_respected(tmp_path, monkeypatch) -> None:
     assert occ["Heckenbraunelle"]["taxonID"] == "https://www.gbif.org/species/5231437"
 
 
+# --- GBIF higher taxonomy (0.4.0) ------------------------------------------
+
+_CLASSIFICATION = {"kingdom": "Animalia", "phylum": "Chordata", "class": "Aves",
+                   "order": "Passeriformes", "family": "Fringillidae", "genus": "Fringilla"}
+
+
+def test_higher_taxonomy_from_match_response(tmp_path, monkeypatch) -> None:
+    from laubmann_kg.linking.taxa import higher_taxonomy
+    # only ranks GBIF filled in, in hierarchy order; tolerant to garbage/None
+    assert higher_taxonomy(_gbif_response(**_CLASSIFICATION)) == (
+        ("kingdom", "Animalia"), ("phylum", "Chordata"), ("class", "Aves"),
+        ("order", "Passeriformes"), ("family", "Fringillidae"), ("genus", "Fringilla"))
+    assert higher_taxonomy(_gbif_response(kingdom="Animalia", genus=" Buteo ", family=None)) == (
+        ("kingdom", "Animalia"), ("genus", "Buteo"))
+    assert higher_taxonomy(None) == () and higher_taxonomy({"matchType": "NONE"}) == ()
+
+    _patch_gbif(monkeypatch, {
+        "fringilla coelebs": _gbif_response(**_CLASSIFICATION),
+        "buteo": _gbif_response(key=2481047, match_type="HIGHERRANK", confidence=94, rank="GENUS",
+                                canonical="Buteo", kingdom="Animalia", phylum="Chordata",
+                                **{"class": "Aves"}, order="Accipitriformes",
+                                family="Accipitridae", genus="Buteo"),
+    })
+    result = _result(("Buchfink", "Fringilla coelebs"), ("Bussard", "Buteo"), ("Unbekannt", None))
+    link_taxa(result, {"sleep": 0, "llm": {"enabled": False}},
+              JsonCache(tmp_path / "gbif.json"), offline=False)
+    by_vern = {o.taxon.vernacular_de: o.taxon for o in result.entries[0].observations}
+    assert by_vern["Buchfink"].higher_rank("family") == "Fringillidae"
+    assert by_vern["Buchfink"].higher_rank("class") == "Aves"
+    assert by_vern["Bussard"].higher_rank("family") == "Accipitridae"       # broad anchor too
+    assert by_vern["Unbekannt"].higher_taxonomy == ()                       # unlinked: nothing
+
+    # RDF: dwc:kingdom … dwc:genus on the taxon; DwC-A: order/family columns
+    graph = build_graph(result)
+    node = URIRef("https://w3id.org/laubmann-kg/data/" + by_vern["Buchfink"].uid)
+    assert graph.value(node, DWC.family) == Literal("Fringillidae")
+    assert graph.value(node, DWC["class"]) == Literal("Aves")
+    assert graph.value(node, DWC.order) == Literal("Passeriformes")
+    unknown = URIRef("https://w3id.org/laubmann-kg/data/" + by_vern["Unbekannt"].uid)
+    assert graph.value(unknown, DWC.family) is None
+    occ = {r["vernacularName"]: r for r in build_occurrences(result)}
+    assert occ["Buchfink"]["order"] == "Passeriformes" and occ["Buchfink"]["family"] == "Fringillidae"
+    assert occ["Buchfink"]["kingdom"] == "Animalia" and occ["Buchfink"]["class"] == "Aves"
+    assert occ["Unbekannt"]["family"] == ""
+
+
+def test_reviewed_names_take_classification_only_from_cache(tmp_path, monkeypatch) -> None:
+    _raise_get_json(monkeypatch)                          # adjudication never hits the network
+    monkeypatch.setattr(linking_taxa, "build_llm_proposer", lambda cfg: None)
+    reviewed = tmp_path / "taxon_link_review.csv"
+    with reviewed.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=TAXON_REVIEW_FIELDS)
+        writer.writeheader()
+        writer.writerow({"vernacular_de": "Buchfink", "gbif_key": "2492462", "gbif_match_type": "EXACT",
+                         "gbif_canonical_name": "Fringilla coelebs", "status": "review", "decision": "y"})
+        writer.writerow({"vernacular_de": "Heckenbraunelle", "gbif_key": "5231437", "gbif_match_type": "EXACT",
+                         "gbif_canonical_name": "Prunella modularis", "status": "review", "decision": "y"})
+    cache = JsonCache(tmp_path / "gbif.json")
+    cache.put("match:fringilla coelebs", _gbif_response(**_CLASSIFICATION))   # cached earlier run
+    result = _result(("Buchfink", None), ("Heckenbraunelle", None))
+    link_taxa(result, {"sleep": 0, "reviewed_csv": str(reviewed)}, cache, offline=False)
+    by_vern = {o.taxon.vernacular_de: o.taxon for o in result.entries[0].observations}
+    assert by_vern["Buchfink"].higher_rank("family") == "Fringillidae"        # from the cache
+    assert by_vern["Heckenbraunelle"].higher_taxonomy == ()                   # not cached, no lookup
+
+
 # --- Wikidata persons --------------------------------------------------------
 
 _HUMAN = {"P31": [{"mainsnak": {"datavalue": {"value": {"numeric-id": 5}}}}]}

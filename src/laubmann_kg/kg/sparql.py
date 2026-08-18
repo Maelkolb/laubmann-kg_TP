@@ -1,4 +1,10 @@
-"""Competency-question SPARQL queries over the sample graph."""
+"""Competency-question SPARQL queries over the graph (ontology 0.4.0).
+
+The queries use the Darwin-Core-first vocabulary of the emitted graph:
+``dwc:vernacularName`` / ``dwc:scientificName`` on taxa, ``dwc:eventDate`` on
+entries, ``dcterms:isPartOf`` for the partonomy, ``lkg:evidenceKind`` concepts
+and ``lkg:hasVocalisation`` nodes for how the bird was detected.
+"""
 
 from __future__ import annotations
 
@@ -11,56 +17,67 @@ from rdflib import Graph
 logger = logging.getLogger(__name__)
 
 PREFIXES = """
-PREFIX lkg:  <https://w3id.org/laubmann-kg/ontology#>
-PREFIX dwc:  <http://rs.tdwg.org/dwc/terms/>
-PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX lkg:     <https://w3id.org/laubmann-kg/ontology#>
+PREFIX dwc:     <http://rs.tdwg.org/dwc/terms/>
+PREFIX dwciri:  <http://rs.tdwg.org/dwc/iri/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 """
 
 # Keyed by the competency-question id in docs/competency_questions.md.
 QUERIES: dict[str, str] = {
     "CQ1_species_frequency": PREFIXES + """
         SELECT ?vernacular (COUNT(?obs) AS ?n) WHERE {
-            ?obs a lkg:ObservationEvent ; lkg:observedTaxon ?t .
-            ?t lkg:vernacularNameDE ?vernacular .
+            ?obs a lkg:Observation ; lkg:observedTaxon ?t .
+            ?t dwc:vernacularName ?vernacular .
         } GROUP BY ?vernacular ORDER BY DESC(?n)
     """,
+    # dwc:eventDate is xsd:date for single-day entries and a "start/end" string
+    # for multi-day entries; STR() keeps both sortable in one column.
     "CQ2_observations_by_date": PREFIXES + """
         SELECT ?date (COUNT(?obs) AS ?n) WHERE {
-            ?entry a lkg:DiaryEntry ; lkg:entryDate ?date ;
+            ?entry a lkg:DiaryEntry ; dwc:eventDate ?d ;
                    lkg:containsObservation ?obs .
+            BIND(STR(?d) AS ?date)
         } GROUP BY ?date ORDER BY ?date
     """,
     "CQ3_observations_at_place": PREFIXES + """
         SELECT ?place ?vernacular WHERE {
-            ?obs a lkg:ObservationEvent ; lkg:observedAt ?p ;
+            ?obs a lkg:Observation ; lkg:observedAt ?p ;
                  lkg:observedTaxon ?t .
             ?p rdfs:label ?place .
-            ?t lkg:vernacularNameDE ?vernacular .
+            ?t dwc:vernacularName ?vernacular .
         } ORDER BY ?place
     """,
+    # Auditory records: evidence kind on the observation; call detail (type,
+    # transcription) on the optional Vocalisation node.
     "CQ4_auditory_observations": PREFIXES + """
         SELECT ?vernacular ?callType ?transcription WHERE {
-            ?obs a lkg:ObservationEvent ; lkg:observedTaxon ?t ;
-                 lkg:hasEvidence ?e .
-            ?e a lkg:BirdCall .
-            OPTIONAL { ?e lkg:callType ?callType }
-            OPTIONAL { ?e lkg:callTranscription ?transcription }
-            ?t lkg:vernacularNameDE ?vernacular .
+            ?obs a lkg:Observation ; lkg:observedTaxon ?t ;
+                 lkg:evidenceKind lkg:evidence_auditory .
+            OPTIONAL {
+                ?obs lkg:hasVocalisation ?v .
+                OPTIONAL { ?v lkg:callType ?callType }
+                OPTIONAL { ?v lkg:callTranscription ?transcription }
+            }
+            ?t dwc:vernacularName ?vernacular .
         }
     """,
     "CQ5_unresolved_taxa": PREFIXES + """
         SELECT DISTINCT ?vernacular WHERE {
-            ?t a lkg:Taxon ; lkg:vernacularNameDE ?vernacular .
-            FILTER NOT EXISTS { ?t lkg:scientificName ?s }
+            ?t a lkg:Taxon ; dwc:vernacularName ?vernacular .
+            FILTER NOT EXISTS { ?t dwc:scientificName ?s }
         } ORDER BY ?vernacular
     """,
+    # Provenance chain: observation -> entry (part of) -> page -> volume, run.
     "CQ6_provenance": PREFIXES + """
-        SELECT ?obs ?entryDate ?page ?run WHERE {
-            ?obs a lkg:ObservationEvent ; lkg:derivedFromEntry ?entry .
-            ?entry lkg:entryDate ?entryDate .
-            OPTIONAL { ?entry lkg:hasPage ?page }
+        SELECT ?obs ?entryDate ?page ?volume ?run WHERE {
+            ?obs a lkg:Observation ; dcterms:isPartOf ?entry .
+            ?entry a lkg:DiaryEntry ; dwc:eventDate ?entryDate .
+            OPTIONAL { ?entry dcterms:isPartOf ?page . ?page a lkg:DiaryPage .
+                       OPTIONAL { ?page dcterms:isPartOf ?volume } }
             OPTIONAL { ?obs prov:wasGeneratedBy ?run }
         } LIMIT 25
     """,
@@ -68,9 +85,9 @@ QUERIES: dict[str, str] = {
     # inherit the entry place: ?ownLocality is bound only for the former.
     "CQ7_own_locality_vs_entry_place": PREFIXES + """
         SELECT ?vernacular ?effectivePlace ?ownLocality ?entryPlace WHERE {
-            ?obs a lkg:ObservationEvent ; lkg:observedTaxon ?t ;
-                 lkg:derivedFromEntry ?entry .
-            ?t lkg:vernacularNameDE ?vernacular .
+            ?obs a lkg:Observation ; lkg:observedTaxon ?t ;
+                 dcterms:isPartOf ?entry .
+            ?t dwc:vernacularName ?vernacular .
             OPTIONAL { ?obs lkg:observedAt ?p . ?p rdfs:label ?effectivePlace }
             OPTIONAL { ?obs lkg:hasLocality ?l . ?l rdfs:label ?ownLocality }
             OPTIONAL { ?entry lkg:entryPlace ?ep . ?ep rdfs:label ?entryPlace }
@@ -79,13 +96,37 @@ QUERIES: dict[str, str] = {
     # Explicit absence records ("keine Störche mehr"): occurrenceStatus absent.
     "CQ8_absence_records": PREFIXES + """
         SELECT ?vernacular ?entryDate ?place ?notes WHERE {
-            ?obs a lkg:ObservationEvent ; dwc:occurrenceStatus "absent" ;
-                 lkg:observedTaxon ?t ; lkg:derivedFromEntry ?entry .
-            ?t lkg:vernacularNameDE ?vernacular .
-            ?entry lkg:entryDate ?entryDate .
+            ?obs a lkg:Observation ; dwc:occurrenceStatus "absent" ;
+                 lkg:observedTaxon ?t ; dcterms:isPartOf ?entry .
+            ?t dwc:vernacularName ?vernacular .
+            ?entry dwc:eventDate ?entryDate .
             OPTIONAL { ?obs lkg:observedAt ?p . ?p rdfs:label ?place }
             OPTIONAL { ?obs lkg:verbatimNotes ?notes }
         } ORDER BY ?entryDate ?vernacular
+    """,
+    # Higher taxonomy from the GBIF link: records per family.
+    "CQ9_observations_by_family": PREFIXES + """
+        SELECT ?family (COUNT(?obs) AS ?n) WHERE {
+            ?obs a lkg:Observation ; lkg:observedTaxon ?t .
+            ?t dwc:family ?family .
+        } GROUP BY ?family ORDER BY DESC(?n)
+    """,
+    # Habitats as shared concepts: which taxa were noted in which habitat.
+    "CQ10_taxa_by_habitat": PREFIXES + """
+        SELECT ?habitat (GROUP_CONCAT(DISTINCT ?vernacular; separator=", ") AS ?taxa) (COUNT(?obs) AS ?n) WHERE {
+            ?obs a lkg:Observation ; dwciri:habitat ?h ; lkg:observedTaxon ?t .
+            ?h skos:prefLabel ?habitat .
+            ?t dwc:vernacularName ?vernacular .
+        } GROUP BY ?habitat ORDER BY DESC(?n)
+    """,
+    # Persons by role on the mention edge (companion, source, collector, ...).
+    "CQ11_persons_by_role": PREFIXES + """
+        SELECT ?person ?role (COUNT(DISTINCT ?entry) AS ?entries) WHERE {
+            ?entry a lkg:DiaryEntry ; ?role ?p .
+            ?p a lkg:Person ; rdfs:label ?person .
+            FILTER(?role IN (lkg:mentionsCompanion, lkg:mentionsSource, lkg:mentionsCollector,
+                             lkg:mentionsCitedAuthor, lkg:mentionsOther))
+        } GROUP BY ?person ?role ORDER BY DESC(?entries)
     """,
 }
 

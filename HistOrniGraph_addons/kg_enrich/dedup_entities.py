@@ -64,13 +64,15 @@ def main():
     import os
     os.makedirs(args.outdir, exist_ok=True)
     EP = args.endpoint
-    P = 'PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'
+    # ontology 0.4.0 vocabulary: DwC terms on taxa/places (dwc:vernacularName, dwc:scientificName, dwc:verbatimLocality)
+    P = ('PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '
+         'PREFIX dwc: <http://rs.tdwg.org/dwc/terms/>')
 
     # ---------- taxa: merge on identical scientificName ----------
     taxa = sparql(EP, P + '''
       SELECT ?t ?v ?sci (COUNT(?obs) AS ?n) WHERE {
-        ?t a lkg:Taxon ; lkg:vernacularNameDE ?v .
-        OPTIONAL { ?t lkg:scientificName ?sci }
+        ?t a lkg:Taxon ; dwc:vernacularName ?v .
+        OPTIONAL { ?t dwc:scientificName ?sci }
         OPTIONAL { ?obs lkg:observedTaxon ?t }
       } GROUP BY ?t ?v ?sci''')
     by_sci = defaultdict(list)
@@ -87,7 +89,7 @@ def main():
             members.sort(key=lambda m: -m['n'])
             tax_clusters.append((members[0]['t'], [m['t'] for m in members[1:]]))
     n_tax = write_sameas(f'{args.outdir}/dedup_taxa_sameas.ttl', tax_clusters,
-                         'taxa with identical lkg:scientificName; canonical = most observations')
+                         'taxa with identical dwc:scientificName; canonical = most observations')
     print(f'taxa: {len(tax_clusters)} clusters, {n_tax} sameAs links '
           f'({sum(len(v) for _, v in tax_clusters) + len(tax_clusters)} nodes merged)')
 
@@ -180,7 +182,7 @@ def main():
     # ---------- places: conservative normalized-label merge ----------
     places = sparql(EP, P + '''
       SELECT ?p ?l (COUNT(?x) AS ?n) WHERE {
-        ?p a lkg:Place ; lkg:verbatimLocality ?vl ; rdfs:label ?l .
+        ?p a lkg:Place ; dwc:verbatimLocality ?vl ; rdfs:label ?l .
         OPTIONAL { ?x ?rel ?p . FILTER(?rel IN (lkg:observedAt, lkg:departurePlace,
                                                 lkg:arrivalPlace, lkg:viaPlace)) }
       } GROUP BY ?p ?l''')

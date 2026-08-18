@@ -178,11 +178,19 @@ def test_graph_emits_full_ontology_and_conforms(tmp_path) -> None:
     entry, _ = _run(FULL_PAYLOAD)
     result = ExtractionResult(entries=[entry])
     graph = build_graph(result)
+    from rdflib import Namespace
+    from rdflib.namespace import DCTERMS, SKOS
+    DWCIRI = Namespace("http://rs.tdwg.org/dwc/iri/")
     assert set(graph.subjects(RDF.type, LKG.TravelEvent))
     assert set(graph.subjects(RDF.type, LKG.TravelLeg))
-    assert set(graph.subjects(RDF.type, LKG.Habitat))
+    # habitat = shared skos:Concept reached via dwciri:habitat (no lkg:Habitat class)
+    habitats = set(graph.objects(None, DWCIRI.habitat))
+    assert habitats and all((h, RDF.type, SKOS.Concept) in graph for h in habitats)
     assert set(graph.subjects(RDF.type, LKG.Person))
     assert set(graph.objects(None, LKG.mentionsPerson))
+    # partonomy: every leg is part of its travel event
+    for leg in graph.subjects(RDF.type, LKG.TravelLeg):
+        assert (graph.value(leg, DCTERMS.isPartOf), RDF.type, LKG.TravelEvent) in graph
     ttl = tmp_path / "travel.ttl"
     serialize_turtle(graph, ttl)
     assert run_shacl_validation(

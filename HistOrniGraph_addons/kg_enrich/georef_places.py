@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Georeference Laubmann-KG places via Nominatim (additive enrichment).
 
-Reads Place nodes (with lkg:verbatimLocality, i.e. not habitat-only) that lack
+Reads Place nodes (dwc:verbatimLocality; ontology 0.4.0 — habitats are skos:Concepts, not places) that lack
 geo:lat, filters out labels that are obviously micro-localities, geocodes the rest
 Bavaria-biased at <= 1 req/1.1 s (Nominatim usage policy), and emits:
 
@@ -102,11 +102,12 @@ def main():
     cache_path = f'{args.outdir}/nominatim_cache.json'
     cache = json.load(open(cache_path, encoding='utf-8')) if os.path.exists(cache_path) else {}
 
-    P = 'PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'
+    P = ('PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '
+         'PREFIX dwc: <http://rs.tdwg.org/dwc/terms/>')
     places = sparql(args.endpoint, P + '''
       PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
       SELECT ?p ?l (COUNT(?x) AS ?n) WHERE {
-        ?p a lkg:Place ; lkg:verbatimLocality ?vl ; rdfs:label ?l .
+        ?p a lkg:Place ; dwc:verbatimLocality ?vl ; rdfs:label ?l .
         FILTER NOT EXISTS { ?p geo:lat ?lat }
         OPTIONAL { ?x ?rel ?p . FILTER(?rel IN (lkg:observedAt, lkg:departurePlace,
                                                 lkg:arrivalPlace, lkg:viaPlace)) }

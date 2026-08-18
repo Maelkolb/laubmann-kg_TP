@@ -49,50 +49,43 @@ graph conforms.
 | Travel / route questions | blocked | travel extraction is future work |
 | Cross-dataset taxon IRIs | blocked | needs `links_long` (see INTERFACES.md) |
 
-## Ontology coverage
+## Ontology coverage (0.4.0)
 
-`populated` = emitted by the sample build; `partial` = supported/validated but
-sparsely or conditionally populated; `not yet` = modelled + SHACL-validated but
-not produced by current extraction.
+Since 0.4.0 the ontology declares **only what the emitter produces**:
+`tests/test_ontology_alignment.py` fails if a declared `lkg:` class/property is
+never emitted, if the emitter uses an undeclared term, if a term has no SHACL
+shape, or if the JSON-LD context misses an emitted predicate. Hence there is no
+"not yet" row any more — every term below is populated by the full run;
+`partial` marks conditional population.
 
-### Classes
+### Classes (15 concrete + 3 grouping)
 
-| Class | Status |
-|---|---|
-| `lkg:DiaryVolume` | populated |
-| `lkg:DiaryPage` | populated |
-| `lkg:DiaryEntry` | populated |
-| `lkg:SourceRegion` | not yet (region provenance kept in DwC-A multimedia) |
-| `lkg:ObservationEvent` | populated |
-| `lkg:Taxon` | populated |
-| `lkg:Place` | populated (coords partial) |
-| `lkg:Habitat` | not yet |
-| `lkg:ObservationEvidence` | populated |
-| `lkg:BirdCall` | populated |
-| `lkg:BehaviourNote` | populated |
-| `lkg:TravelEvent` / `lkg:TravelLeg` / `lkg:Route` | not yet |
-| `lkg:TimeEstimate` | not yet |
-| `lkg:Person` | partial (extracted in `entities`, not yet emitted to RDF) |
+| Class | Group | Status |
+|---|---|---|
+| `lkg:DiaryVolume`, `lkg:DiaryPage`, `lkg:DiaryEntry`, `lkg:SourceRegion` | `lkg:ArchivalUnit` (⊑ rico:Record; not asserted in data) | populated; `dcterms:isPartOf` chain region → page → volume, entry → page |
+| `lkg:Observation` (⊑ dwc:Occurrence), `lkg:TravelEvent`, `lkg:WeatherReport` | `lkg:EntryRecord` (⊑ prov:Entity; not asserted) | populated; `dcterms:isPartOf` + `prov:wasDerivedFrom` entry, `prov:wasGeneratedBy` run |
+| `lkg:Vocalisation`, `lkg:TravelLeg` | `lkg:RecordDetail` (not asserted) | populated (vocalisation for auditory evidence with call detail) |
+| `lkg:Taxon`, `lkg:Place`, `lkg:Person` | shared referents | populated (coords partial; persons via mention edges + `dwciri:recordedBy`) |
+| habitat nodes | `skos:Concept` in `lkg:habitatScheme` (no class) | populated, shared across observations |
 
-### Properties
+Removed in 0.4.0: `ObservationEvent` (→ Observation), `BirdCall` (→ Vocalisation),
+`ObservationEvidence` (→ `lkg:evidenceKind` concepts), `BehaviourNote` (→
+`dwc:behavior` literals), `Habitat` (→ skos:Concept), `Route`, `TimeEstimate`.
 
-| Property | Status |
-|---|---|
-| `lkg:hasVolume`, `lkg:hasPage` | populated |
-| `lkg:entryDate`, `lkg:rawText` | populated |
-| `lkg:containsObservation` | populated |
-| `lkg:observedTaxon`, `lkg:derivedFromEntry` | populated |
-| `lkg:observedAt` | populated |
-| `lkg:verbatimNotes` | populated |
-| `lkg:individualCount`, `lkg:countQualifier` | populated |
-| `lkg:hasEvidence`, `lkg:hasBehaviour` | populated |
-| `lkg:callType`, `lkg:callTranscription` | populated |
-| `lkg:vernacularNameDE` | populated |
-| `lkg:scientificName` | populated (gazetteer; no external IRIs yet) |
-| `lkg:verbatimLocality`, `geo:lat`, `geo:long` | partial |
-| `lkg:containsTravelEvent`, `lkg:hasLeg`, travel/route/time props | not yet |
-| `lkg:hasHabitat` | not yet |
-| `lkg:observedDuring`, `lkg:hasTimeEstimate` | not yet |
+### Properties (47 `lkg:` + standard terms)
+
+| Group | Terms | Status |
+|---|---|---|
+| Partonomy | `containsObservation`, `containsTravelEvent`, `hasWeather`, `hasLeg`, `hasVocalisation` (all ⊑ `dcterms:hasPart`), `hasSourceRegion`; `dcterms:isPartOf` on every child | populated |
+| Entry | `entryPlace`, `entryKind`, `datePlausible`; `dwc:eventDate`, `dwc:verbatimEventDate`, `dwc:fieldNotes`, `skos:note`, `dcterms:identifier` | populated |
+| Mentions | `mentionsPerson` ⊑ schema:mentions + `mentionsCompanion/Source/Collector/CitedAuthor/Other` | populated (role edge only when the model gave a role) |
+| Observation | `observedTaxon`, `observedAt`, `hasLocality`, `recordType`, `evidenceKind`, `countQualifier`, `individualCountMin/Max`, `breedingEvidence`, `movementKind`, `flightDirection`, `verbatimNotes`; `dwc:occurrenceStatus/individualCount/sex/lifeStage/vitality/reproductiveCondition/behavior/habitat/identificationQualifier/eventDate/eventTime/verbatimLocality/occurrenceRemarks/basisOfRecord/associatedReferences`, `dwciri:habitat`, `dwciri:recordedBy` | populated (each only when stated) |
+| Vocalisation | `callType`, `callTranscription` | populated (transcription only when written) |
+| Travel | `departurePlace`, `arrivalPlace`, `viaPlace`, `departureTime`, `arrivalTime`, `transportMode` | populated |
+| Weather | `weatherVerbatim`, `temperatureValue`, `temperatureUnit`, `precipitation`, `wind`, `skyCondition` | populated (one report per entry today; several allowed) |
+| Place | `placeKind`; `dwc:verbatimLocality`, `geo:lat/long`, `dwc:decimalLatitude/Longitude`, `dwc:geodeticDatum`, `gsp:asWKT` | partial (coordinates only for gazetteer/georeferenced places) |
+| Taxon | `isBird`, `matchMethod`, `matchConfidence`, `gbifMatchType`; `dwc:vernacularName`, `dwc:scientificName`, `dwc:taxonRank`, `dwc:taxonID`, `dwc:kingdom…genus`, `skos:exactMatch/closeMatch/broadMatch`, `owl:sameAs` | populated (classification only for GBIF-linked taxa) |
+| PROV | `backend`; `prov:startedAtTime`, `prov:wasAssociatedWith`, `prov:used` | populated |
 
 ## Dedup toolchain (integrated 2026-08-10)
 
@@ -107,15 +100,26 @@ corpus: build → detect → decisions → apply → `export-jsonld` (SHACL: 0/0
 Remaining human step: adjudicate `review.html` for the full corpus and export
 `dedup_decisions.json` (see `notebooks/07_full_workflow_colab.ipynb`, stage B).
 
-## Current state (2026-08-17)
+## Current state (2026-08-18)
 
+- **Ontology 0.4.0** (see CHANGELOG 2026-08-18): Darwin-Core-first (no lkg
+  twins of standard terms), three grouping superclasses + explicit
+  `dcterms:isPartOf` partonomy, `ObservationEvent → lkg:Observation`,
+  `BirdCall → lkg:Vocalisation`, evidence/behaviour flattened, habitats as shared
+  skos:Concepts, person roles on the mention edge, GBIF higher taxonomy, WKT.
+  Breaking for exports: the Drive export `kg_exports_2026-08-17` and the
+  explorer HTML are 0.3.0-shaped — re-run Notebook 07 cells C3 + C4 (cache
+  replay, no LLM cost) into a fresh `kg_exports_<tag>`; kg_enrich scripts and
+  pyLODE docs are already on 0.4.0. Two-way alignment guard:
+  `tests/test_ontology_alignment.py`. Local offline replay of the 9,527 entries
+  through the 0.4.0 chain: 73,079 observations, 1,692,272 triples (−8 %),
+  SHACL 0 violations / 422 warnings (empty entries), DwC-A valid.
 - Extraction is **model-driven, heuristics removed** (see CHANGELOG 2026-08-17):
   the LLM reads entry date/place/kind and every observation detail (locality,
   rank, absence, counts/ranges, sex, life stage, breeding evidence, vitality,
   movement, hedges, own date/time, provenance); code checks form only. QA is
-  threshold-based on model signals. Ontology 0.3.0, DwC co-emission, PROV run
-  node, OBIS eMoF in the DwC-A. Structure diagrams: `docs/kg_structure.mmd`,
-  `docs/pipeline.mmd`.
+  threshold-based on model signals. PROV run node, OBIS eMoF in the DwC-A.
+  Structure diagrams: `docs/kg_structure.mmd`, `docs/pipeline.mmd`.
 - Full 34-volume rerun: run `notebooks/07_full_workflow_colab.ipynb` (v2:
   Drive-resident caches for LLM + linking + review CSVs, smoke-test cell,
   fresh `kg_exports_<tag>` per run). The prompt changed, so the run is fully
@@ -132,8 +136,10 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
 - w3id: namespace migrated in the repo (2026-08-18); the perma-id PR is pending until the ontology is final (`w3id/laubmann-kg/`). Existing exports: `tools/migrate_namespace.py`. Ontology docs: `docs/ontology/` (pyLODE).
 - Gemini structured output (`response_json_schema`) — would retire json-repair;
   needs a live A/B on ~50 entries.
-- Travel legs in the DwC-A (`parentEventID` sub-events); `observedDuring`,
-  Route/TimeEstimate emission.
+- Travel legs in the DwC-A (`parentEventID` sub-events); linking observations
+  to the travel leg they occurred during (dropped from the ontology in 0.4.0
+  until the extraction can supply it); several weather reports per entry
+  (allowed by ontology/SHACL, needs the next prompt change).
 - Avibase alignment (needs `links_long`).
 - `preprocess` / `detect-layout` / `transcribe` stages remain stubs (handled
   upstream by HistOrniGraph, per the task brief).

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Attach an observer to every ObservationEvent (lkg:observedBy, subproperty of
-Darwin Core recordedBy).
+"""Attach an observer to every Observation (dwciri:recordedBy).
 
 SUPERSEDED (2026-08): observer/provenance is now LLM-extracted in the core
 pipeline (Observation.record_type/observer); keep for reference only.
+Query strings follow ontology 0.4.0 (lkg:Observation, dcterms:isPartOf,
+dwc:fieldNotes, role edges lkg:mentionsSource/mentionsCollector, output
+dwciri:recordedBy) so the script still runs against current exports.
 
 Rules, most to least certain:
   A. verbatimNotes ends in an attribution tag "(Name)" -> that person
@@ -52,7 +54,9 @@ def main():
     EP = args.endpoint
     P = ('PREFIX lkg: <https://w3id.org/laubmann-kg/ontology#> '
          'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '
-         'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>')
+         'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> '
+         'PREFIX dwc: <http://rs.tdwg.org/dwc/terms/> '
+         'PREFIX dcterms: <http://purl.org/dc/terms/>')
 
     persons = sparql(EP, P + 'SELECT ?p ?l WHERE { ?p a lkg:Person ; rdfs:label ?l }')
     plabels = defaultdict(set)          # uri -> labels
@@ -72,14 +76,14 @@ def main():
         ementions[r['e']].add(r['p'])
     esources = defaultdict(set)
     for r in sparql(EP, P + '''SELECT ?e ?p WHERE {
-        ?e lkg:mentionsPerson ?p . ?p skos:note ?n . FILTER(?n IN ("source", "collector")) }'''):
+        ?e ?role ?p . FILTER(?role IN (lkg:mentionsSource, lkg:mentionsCollector)) }'''):
         esources[r['e']].add(r['p'])
     ereport = set(r['e'] for r in sparql(EP, P + '''SELECT DISTINCT ?e WHERE {
-        ?e a lkg:DiaryEntry ; lkg:rawText ?t .
+        ?e a lkg:DiaryEntry ; dwc:fieldNotes ?t .
         FILTER(REGEX(?t, "meldet|berichtet|teilt mit|mitgeteilt|nach Mitteilung")) }'''))
 
     obs = sparql(EP, P + '''SELECT ?o ?e ?v WHERE {
-        ?o a lkg:ObservationEvent ; lkg:derivedFromEntry ?e ; lkg:verbatimNotes ?v }''')
+        ?o a lkg:Observation ; dcterms:isPartOf ?e ; lkg:verbatimNotes ?v }''')
     print(f'{len(obs)} observations, {len(plabels)} persons, '
           f'{len(ereport)} entries with reporting verbs', file=sys.stderr)
 
@@ -142,16 +146,10 @@ def main():
 
     with open(f'{args.outdir}/observers.ttl', 'w', encoding='utf-8') as f:
         f.write('# observer attribution: paren-tag / reporting-verb rules, default = diarist\n'
-                '@prefix lkg: <https://w3id.org/laubmann-kg/ontology#> .\n'
-                '@prefix owl: <http://www.w3.org/2002/07/owl#> .\n'
-                '@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n'
-                '@prefix dwciri: <http://rs.tdwg.org/dwc/iri/> .\n\n'
-                'lkg:observedBy a owl:ObjectProperty ;\n'
-                '    rdfs:subPropertyOf dwciri:recordedBy ;\n'
-                '    rdfs:domain lkg:ObservationEvent ; rdfs:range lkg:Person ;\n'
-                '    rdfs:label "observed by"@en .\n\n')
+                '# ontology 0.4.0: dwciri:recordedBy directly (lkg:observedBy is gone)\n'
+                '@prefix dwciri: <http://rs.tdwg.org/dwc/iri/> .\n\n')
         for o, uri in auto:
-            f.write(f'<{o}> lkg:observedBy <{uri}> .\n')
+            f.write(f'<{o}> dwciri:recordedBy <{uri}> .\n')
     for e, olist in entry_report.items():
         cands = ';'.join(sorted(l for p in esources[e] for l in plabels[p]))
         review.append([e, f'{len(olist)} observations', '', '', '', cands,
@@ -162,7 +160,7 @@ def main():
                     'matched_uri', 'candidate_persons', 'rule', 'decision'])
         w.writerows(review)
     others = len(auto) - n_default
-    print(f'observedBy: {others} attributed to third parties '
+    print(f'recordedBy: {others} attributed to third parties '
           f'({n_tag} paren-tag, {n_verb} verb), {n_default} default Laubmann; '
           f'{len(review)} rows -> observer_review.csv', file=sys.stderr)
 

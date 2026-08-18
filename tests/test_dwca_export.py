@@ -61,7 +61,7 @@ def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
                                 "eventRemarks", "dynamicProperties"]
     assert OCC_FIELDS == [
         "eventID", "occurrenceID", "basisOfRecord",
-        "kingdom", "class", "scientificName", "taxonRank", "vernacularName", "taxonID",
+        "kingdom", "class", "order", "family", "scientificName", "taxonRank", "vernacularName", "taxonID",
         "individualCount", "organismQuantity", "organismQuantityType",
         "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
         "behavior", "identificationQualifier", "identificationRemarks",

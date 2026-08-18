@@ -29,7 +29,8 @@ def main():
         labels.setdefault(b['p']['value'], b['l']['value'])
 
     observer = {}
-    pat = re.compile(r'<https://lkg\.example\.org/data/(obs_\w+)> lkg:observedBy <([^>]+)>')
+    # observers.ttl lines (0.4.0): <…/data/obs_x> dwciri:recordedBy <person> .
+    pat = re.compile(r'<https://w3id\.org/laubmann-kg/data/(obs_\w+)> dwciri:recordedBy <([^>]+)>')
     for line in open(f'{args.outdir}/observers.ttl', encoding='utf-8'):
         m = pat.match(line)
         if m and 'person_c6b2ff6250e5' not in m.group(2):

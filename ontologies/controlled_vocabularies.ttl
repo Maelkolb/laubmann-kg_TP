@@ -23,7 +23,7 @@ lkg:transport_carriage a skos:Concept ; skos:inScheme lkg:transportModeScheme ; 
 lkg:transport_bicycle a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "bicycle"@en, "Fahrrad"@de .
 lkg:transport_unknown a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
 
-# --- Call types (BirdCall.callType) --------------------------
+# --- Call types (Vocalisation.callType) --------------------------
 lkg:callTypeScheme a skos:ConceptScheme ;
     skos:prefLabel "Bird call types"@en , "Lautäußerungstypen"@de .
 
@@ -33,7 +33,7 @@ lkg:call_alarm    a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefL
 lkg:call_drumming a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "drumming"@en, "Trommeln"@de .
 lkg:call_unknown  a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
 
-# --- Count qualifiers (ObservationEvent.countQualifier) ------
+# --- Count qualifiers (Observation.countQualifier) ------
 lkg:countQualifierScheme a skos:ConceptScheme ;
     skos:prefLabel "Count qualifiers"@en , "Zahlenqualifikatoren"@de .
 
@@ -42,7 +42,7 @@ lkg:count_minimum            a skos:Concept ; skos:inScheme lkg:countQualifierSc
 lkg:count_approximate        a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "approximate"@en, "ungefähr"@de .
 lkg:count_plural_unspecified a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "plural-unspecified"@en, "Mehrzahl, unbeziffert"@de .
 
-# --- Evidence kinds (ObservationEvidence.evidenceKind) --------
+# --- Evidence kinds (Observation.evidenceKind) --------
 lkg:evidenceKindScheme a skos:ConceptScheme ;
     skos:prefLabel "Observation evidence kinds"@en , "Belegarten"@de .
 
@@ -51,7 +51,7 @@ lkg:evidence_auditory a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; sk
 lkg:evidence_nest     a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "nest"@en, "Nestfund"@de .
 lkg:evidence_specimen a skos:Concept ; skos:inScheme lkg:evidenceKindScheme ; skos:prefLabel "specimen"@en, "Beleg"@de .
 
-# --- Record types (ObservationEvent.recordType) --------------
+# --- Record types (Observation.recordType) --------------
 lkg:recordTypeScheme a skos:ConceptScheme ;
     skos:prefLabel "Observation record types"@en , "Nachweistypen"@de .
 
@@ -59,14 +59,14 @@ lkg:record_field_observation  a skos:Concept ; skos:inScheme lkg:recordTypeSchem
 lkg:record_third_party_report a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "third-party-report"@en, "Fremdbericht"@de .
 lkg:record_literature_record  a skos:Concept ; skos:inScheme lkg:recordTypeScheme ; skos:prefLabel "literature-record"@en, "Literaturnachweis"@de .
 
-# --- Occurrence status (ObservationEvent dwc:occurrenceStatus) -
+# --- Occurrence status (Observation dwc:occurrenceStatus) -
 lkg:occurrenceStatusScheme a skos:ConceptScheme ;
     skos:prefLabel "Occurrence status"@en , "Vorkommensstatus"@de .
 
 lkg:status_present a skos:Concept ; skos:inScheme lkg:occurrenceStatusScheme ; skos:prefLabel "present"@en, "anwesend"@de .
 lkg:status_absent  a skos:Concept ; skos:inScheme lkg:occurrenceStatusScheme ; skos:prefLabel "absent"@en, "abwesend (explizites Fehlen)"@de .
 
-# --- Sex (ObservationEvent dwc:sex) --------------------------
+# --- Sex (Observation dwc:sex) --------------------------
 lkg:sexScheme a skos:ConceptScheme ;
     skos:prefLabel "Sex"@en , "Geschlecht"@de .
 
@@ -74,7 +74,7 @@ lkg:sex_male   a skos:Concept ; skos:inScheme lkg:sexScheme ; skos:prefLabel "ma
 lkg:sex_female a skos:Concept ; skos:inScheme lkg:sexScheme ; skos:prefLabel "female"@en, "weiblich"@de .
 lkg:sex_mixed  a skos:Concept ; skos:inScheme lkg:sexScheme ; skos:prefLabel "mixed"@en, "gemischt"@de .
 
-# --- Life stage (ObservationEvent dwc:lifeStage) -------------
+# --- Life stage (Observation dwc:lifeStage) -------------
 lkg:lifeStageScheme a skos:ConceptScheme ;
     skos:prefLabel "Life stages"@en , "Altersstadien"@de .
 
@@ -85,7 +85,7 @@ lkg:lifestage_immature a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos
 lkg:lifestage_egg      a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "egg"@en, "Ei"@de .
 lkg:lifestage_mixed    a skos:Concept ; skos:inScheme lkg:lifeStageScheme ; skos:prefLabel "mixed"@en, "gemischt"@de .
 
-# --- Breeding evidence (ObservationEvent.breedingEvidence) ---
+# --- Breeding evidence (Observation.breedingEvidence) ---
 lkg:breedingEvidenceScheme a skos:ConceptScheme ;
     skos:prefLabel "Breeding evidence (atlas categories)"@en , "Brutnachweis (Atlaskategorien)"@de .
 
@@ -93,14 +93,14 @@ lkg:breeding_confirmed a skos:Concept ; skos:inScheme lkg:breedingEvidenceScheme
 lkg:breeding_probable  a skos:Concept ; skos:inScheme lkg:breedingEvidenceScheme ; skos:prefLabel "probable"@en, "wahrscheinliches Brüten"@de .
 lkg:breeding_possible  a skos:Concept ; skos:inScheme lkg:breedingEvidenceScheme ; skos:prefLabel "possible"@en, "mögliches Brüten"@de .
 
-# --- Vitality (ObservationEvent dwc:vitality) ----------------
+# --- Vitality (Observation dwc:vitality) ----------------
 lkg:vitalityScheme a skos:ConceptScheme ;
     skos:prefLabel "Vitality"@en , "Vitalität"@de .
 
 lkg:vitality_alive a skos:Concept ; skos:inScheme lkg:vitalityScheme ; skos:prefLabel "alive"@en, "lebend"@de .
 lkg:vitality_dead  a skos:Concept ; skos:inScheme lkg:vitalityScheme ; skos:prefLabel "dead"@en, "tot"@de .
 
-# --- Movement kinds (ObservationEvent.movementKind) ----------
+# --- Movement kinds (Observation.movementKind) ----------
 lkg:movementKindScheme a skos:ConceptScheme ;
     skos:prefLabel "Movement kinds"@en , "Bewegungsarten"@de .
 
@@ -142,12 +142,12 @@ lkg:entrykind_retrospective  a skos:Concept ; skos:inScheme lkg:entryKindScheme 
 lkg:entrykind_correspondence a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "correspondence"@en, "Korrespondenz"@de .
 lkg:entrykind_other          a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "other"@en, "sonstiges"@de .
 
-# --- Habitats (Habitat nodes are skos:Concept in this scheme) --
+# --- Habitats (habitat nodes in the data are skos:Concepts of this scheme, reached via dwciri:habitat) --
 # Open list: the concepts are emitted as DATA (data:habitat_<sha1>) with
 # skos:prefLabel@de, not enumerated here.
 lkg:habitatScheme a skos:ConceptScheme ;
     skos:prefLabel "Habitats"@en , "Lebensräume"@de ;
-    skos:definition "Open concept scheme collecting the habitat concepts emitted as data (lkg:Habitat instances, e.g. Auwald, Schilf, Moor); not enumerated here."@en .
+    skos:definition "Open concept scheme collecting the habitat concepts emitted as data (skos:Concept nodes such as Auwald, Schilf, Moor, linked from observations via dwciri:habitat); not enumerated here."@en .
 
 # --- Precipitation (WeatherReport.precipitation) -------------
 lkg:precipitationScheme a skos:ConceptScheme ;

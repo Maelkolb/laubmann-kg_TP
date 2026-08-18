@@ -36,9 +36,10 @@ def run_validation(data_path: str, ontology_path: str, shapes_path: str,
                    inference: str = "none") -> Graph:
     """Lädt Daten + Ontologie und validiert gegen die SHACL-Shapes.
 
-    ``inference`` ist standardmäßig "none": der RDF-Emitter materialisiert die
-    benötigten Superklassen (BirdCall→ObservationEvidence, Habitat→skos:Concept,
-    SourceRegion→oa:Annotation) bereits beim Schreiben. Eine volle RDFS-Closure via owlrl skaliert nicht
+    ``inference`` ist standardmäßig "none": die Shapes (0.4.0) zielen nur auf
+    konkrete Klassen — die Gruppierungs-Oberklassen ArchivalUnit/EntryRecord/
+    RecordDetail werden im Datengraph nicht materialisiert, Habitat-Knoten sind
+    skos:Concepts (via dwciri:habitat). Eine volle RDFS-Closure via owlrl skaliert nicht
     auf den 34-Bände-Graph (>1M Tripel, Stunden Laufzeit); für kleine Graphen
     kann weiterhin inference="rdfs" übergeben werden."""
     import time

@@ -3,33 +3,45 @@
 # Project Ontology  /  ontologies/laubmann.ttl
 # Namespace: https://w3id.org/laubmann-kg/ontology#   (w3id folder prepared in w3id/laubmann-kg/, PR pending)
 #
-# v0.3.0 (2026-08-17; namespace migrated to w3id 2026-08-18)
-#   - ObservationEvent is a dwc:Occurrence (the observation carries the
-#     occurrence-level properties; DiaryEntry is the DwC-A Event).
-#   - Habitat is a skos:Concept, no longer a Place.
-#   - Place is a geo:SpatialThing AND a dcterms:Location.
-#   - Fixed alignments: observedTaxon ⊑ dwciri:toTaxon (dwciri:taxon does
-#     not exist); observedAt no longer ⊑ dwciri:inDescribedPlace (that
-#     term's subject is a Location, not an Occurrence).
-#   - New entry/observation/taxon/place detail properties (see below) and
-#     the PROV run skeleton (lkg:backend on the prov:SoftwareAgent).
-#   - Controlled values live in ontologies/controlled_vocabularies.ttl and
-#     src/laubmann_kg/normalization/vocabularies.py (single source of truth).
+# v0.4.0 (2026-08-18) — DwC-first, explicit hierarchy + partonomy, flattened details
+#   - Three grouping superclasses carry the class hierarchy: lkg:ArchivalUnit
+#     (volume/page/entry/region), lkg:EntryRecord (what the model extracts from
+#     an entry: Observation, TravelEvent, WeatherReport) and lkg:RecordDetail
+#     (Vocalisation, TravelLeg). Grouping classes are NOT materialised as
+#     rdf:type in the data; the partonomy is explicit via dcterms:isPartOf /
+#     dcterms:hasPart (all containment properties are sub-properties of hasPart).
+#   - Renamed: ObservationEvent -> lkg:Observation (one taxon record, a
+#     dwc:Occurrence; the DiaryEntry is the event), BirdCall -> lkg:Vocalisation.
+#   - DwC-first: where a Darwin Core / DCTERMS / PROV term exists it is emitted
+#     alone; the lkg twins are gone (individualCount, scientificName,
+#     vernacularNameDE, verbatimLocality, observedBy, hasHabitat, entryDate,
+#     entryDateEnd, rawText, dateNote, derivedFromEntry, hasVolume, hasPage).
+#   - Flattened: behaviour notes are dwc:behavior literals, plain evidence is
+#     lkg:evidenceKind concept links on the observation (ObservationEvidence,
+#     BehaviourNote and the lkg:Habitat class are gone; habitat nodes stay
+#     shared skos:Concepts in lkg:habitatScheme). Reserved-but-never-emitted
+#     terms removed (Route, TimeEstimate, hasRoute, routePoint, routeOrder,
+#     hasTimeEstimate, observedDuring, hasAnnotation, placeName).
+#   - New: person roles on the mention edge (mentionsCompanion/Source/
+#     Collector/CitedAuthor/Other ⊑ mentionsPerson); GBIF higher taxonomy
+#     (dwc:kingdom … dwc:genus) on Taxon; gsp:asWKT on Place; several
+#     WeatherReports per entry allowed.
+# v0.3.0 (2026-08-17): ObservationEvent as dwc:Occurrence, Habitat as
+#     skos:Concept, LLM detail properties, PROV run skeleton, w3id namespace.
 # =============================================================
 
 @prefix lkg:     <https://w3id.org/laubmann-kg/ontology#> .
 @prefix dwc:     <http://rs.tdwg.org/dwc/terms/> .
 @prefix dwciri:  <http://rs.tdwg.org/dwc/iri/> .
-@prefix oa:      <http://www.w3.org/ns/oa#> .
 @prefix rico:    <https://www.ica.org/standards/RiC/ontology#> .
 @prefix geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix gsp:     <http://www.opengis.net/ont/geosparql#> .
 @prefix schema:  <https://schema.org/> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix time:    <http://www.w3.org/2006/time#> .
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix vann:    <http://purl.org/vocab/vann/> .
@@ -42,10 +54,11 @@
     a owl:Ontology ;
     dcterms:title "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
     rdfs:label "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
-    dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). It models diary entries (the archival record and DwC event), observation events (DwC occurrences: taxon, place, counts, sex, life stage, breeding evidence, movement, evidence, behaviour, habitat, provenance of the record), the diarist's journeys, weather reports, persons and source references. Observations are LLM-extracted from the transcribed diary text; the emitted graph co-emits Darwin Core (dwc/dwciri), PROV-O, DCTERMS, SKOS and schema.org terms next to the project terms, and is validated with SHACL. Controlled values are SKOS concept schemes in the same namespace."@en ;
-    rdfs:comment "Project ontology for the HistOrniGraph KG, modelling diary entries, ornithological observations, travel events, weather, persons and source references from the field journals of Alfred Laubmann. Observations are LLM-extracted from the transcribed diary text; the graph co-emits Darwin Core, PROV-O, DCTERMS and schema.org terms next to the project terms."@en ;
-    owl:versionInfo "0.3.0" ;
-    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.3.0> ;
+    dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."@en ;
+    rdfs:comment "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy."@en ;
+    owl:versionInfo "0.4.0" ;
+    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.4.0> ;
+    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.3.0> ;
     vann:preferredNamespacePrefix "lkg" ;
     vann:preferredNamespaceUri "https://w3id.org/laubmann-kg/ontology#" ;
     dcterms:creator [ a foaf:Agent ; foaf:name "Laubmann KG Project" ; foaf:homepage <https://github.com/Maelkolb/laubmann-kg_TP> ] ;   # TODO: replace with the author's name/ORCID before publication
@@ -63,174 +76,166 @@
 # CLASSES
 # =============================================================
 
-# --- Archival / Source Structure ----------------------------
+# --- Grouping classes (hierarchy; not materialised in the data) --------------
+
+lkg:ArchivalUnit
+    a owl:Class ;
+    rdfs:label "Archival Unit"@en , "Archivalische Einheit"@de ;
+    rdfs:comment "A unit of the digitised source: a diary volume, a scanned page, a dated entry or a layout region on a page. Grouping class only (not asserted as rdf:type in the data); the units are connected by dcterms:isPartOf (region → page → volume, entry → page)."@en ;
+    rdfs:subClassOf rico:Record .
+
+lkg:EntryRecord
+    a owl:Class ;
+    rdfs:label "Entry Record"@en , "Eintragsdatensatz"@de ;
+    rdfs:comment "Anything the extraction model reads out of one diary entry: an Observation, a TravelEvent or a WeatherReport. Every entry record is dcterms:isPartOf and prov:wasDerivedFrom exactly one DiaryEntry and prov:wasGeneratedBy the extraction run. Grouping class only (not asserted as rdf:type in the data)."@en ;
+    rdfs:subClassOf prov:Entity .
+
+lkg:RecordDetail
+    a owl:Class ;
+    rdfs:label "Record Detail"@en , "Datensatzdetail"@de ;
+    rdfs:comment "A structured detail of an entry record that cannot be a single literal: a Vocalisation of an Observation, a TravelLeg of a TravelEvent. dcterms:isPartOf its record. Grouping class only (not asserted as rdf:type in the data)."@en .
+
+# --- Archival units ---------------------------------------------------------
 
 lkg:DiaryVolume
     a owl:Class ;
     rdfs:label "Diary Volume"@en , "Tagebuchband"@de ;
-    rdfs:comment "A single bound volume of the field journal."@en ;
-    rdfs:subClassOf rico:Record .
+    rdfs:comment "A single bound volume of the field journal (34 volumes, 1917–1965)."@en ;
+    rdfs:subClassOf lkg:ArchivalUnit .
 
 lkg:DiaryPage
     a owl:Class ;
     rdfs:label "Diary Page"@en , "Tagebuchseite"@de ;
     rdfs:comment "A scanned page of a volume; dcterms:isPartOf links it to its DiaryVolume."@en ;
-    rdfs:subClassOf rico:Record .
+    rdfs:subClassOf lkg:ArchivalUnit .
 
 lkg:DiaryEntry
     a owl:Class ;
     rdfs:label "Diary Entry"@en , "Tagebucheintrag"@de ;
-    rdfs:comment "The primary semantic unit: a dated, located entry written by the observer. In the Darwin Core Archive one DiaryEntry is one Event (eventID = entry_uid)."@en ;
-    rdfs:subClassOf rico:Record , dwc:Event .
+    rdfs:comment "The primary semantic unit: a dated, located entry written by the observer — the diarist's day. It is the Darwin Core Event (dwc:eventDate, dwc:verbatimEventDate, dwc:fieldNotes; eventID = entry_uid in the DwC-A) and dcterms:hasPart its observations, travel events and weather reports. dcterms:isPartOf its DiaryPage (or the volume when the page is unknown)."@en ;
+    rdfs:subClassOf lkg:ArchivalUnit , dwc:Event .
 
 lkg:SourceRegion
     a owl:Class ;
     rdfs:label "Source Region"@en , "Quellregion"@de ;
-    rdfs:comment "A detected layout region on a scanned page (from the HistOrniGraph pipeline) whose text became a diary entry."@en ;
-    rdfs:subClassOf oa:Annotation .
+    rdfs:comment "A detected layout region on a scanned page (HistOrniGraph layout stage) whose text became a diary entry; dcterms:isPartOf its DiaryPage. Hook for linking the multimodal (image) corpus."@en ;
+    rdfs:subClassOf lkg:ArchivalUnit .
 
-# --- Events -------------------------------------------------
+# --- Entry records ----------------------------------------------------------
 
-lkg:ObservationEvent
+lkg:Observation
     a owl:Class ;
-    rdfs:label "Observation Event"@en , "Beobachtungsereignis"@de ;
-    rdfs:comment "A single ornithological or natural-history record reported in a diary entry. Modelled as a Darwin Core Occurrence: it carries occurrenceStatus, individualCount, sex, lifeStage, eventDate etc.; the DiaryEntry it derives from is the Event."@en ;
-    rdfs:subClassOf dwc:Occurrence .
+    rdfs:label "Observation"@en , "Beobachtung"@de ;
+    rdfs:comment "One taxon record read from a diary entry: a Darwin Core Occurrence (dwc:occurrenceStatus, dwc:individualCount, dwc:sex, dwc:lifeStage, dwc:eventDate, dwciri:recordedBy, dwciri:habitat …) plus the project detail (record type, count qualifier and range, breeding evidence, movement, evidence kinds, vocalisations). An entry with several taxa has several Observations; the DiaryEntry is the event they belong to."@en ;
+    rdfs:subClassOf lkg:EntryRecord , dwc:Occurrence .
 
 lkg:TravelEvent
     a owl:Class ;
     rdfs:label "Travel Event"@en , "Reiseereignis"@de ;
-    rdfs:comment "A journey or movement described in a diary entry (train, foot, boat, etc.)."@en ;
-    rdfs:subClassOf dwc:Event .
-
-lkg:TravelLeg
-    a owl:Class ;
-    rdfs:label "Travel Leg"@en , "Reiseabschnitt"@de ;
-    rdfs:comment "A single segment of a journey (e.g. one train leg or one walking leg)."@en .
-
-# --- Locations ----------------------------------------------
-
-lkg:Place
-    a owl:Class ;
-    rdfs:label "Place"@en , "Ort"@de ;
-    rdfs:comment "A named location: settlement, locality, region, station, river, or route point. Habitats are NOT places (see lkg:Habitat)."@en ;
-    rdfs:subClassOf geo:SpatialThing , dcterms:Location .
-
-lkg:Habitat
-    a owl:Class ;
-    rdfs:label "Habitat"@en , "Lebensraum"@de ;
-    rdfs:comment "An ecological habitat type associated with an observation (reed bed, meadow, gravel bank ...). A SKOS concept in lkg:habitatScheme, not a geographic place: the same habitat label recurs across many places."@en ;
-    rdfs:subClassOf skos:Concept .
-
-# lkg:habitatScheme (skos:ConceptScheme) is declared in controlled_vocabularies.ttl.
-
-lkg:Route
-    a owl:Class ;
-    rdfs:label "Route"@en , "Reiseroute"@de ;
-    rdfs:comment "An ordered sequence of places forming a travel route. Reserved, not emitted yet."@en .
-
-# --- Organisms ----------------------------------------------
-
-lkg:Taxon
-    a owl:Class ;
-    rdfs:label "Taxon"@en , "Taxon"@de ;
-    rdfs:comment "A biological taxon (species, genus, family, or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it."@en ;
-    rdfs:subClassOf dwc:Taxon .
-
-# --- Agents -------------------------------------------------
-
-lkg:Person
-    a owl:Class ;
-    rdfs:label "Person"@en , "Person"@de ;
-    rdfs:comment "A person mentioned in the diary: observer, collector, correspondent, cited author."@en ;
-    rdfs:subClassOf schema:Person .
-
-# --- Observation Traits ------------------------------------
-
-lkg:ObservationEvidence
-    a owl:Class ;
-    rdfs:label "Observation Evidence"@en , "Beobachtungsbeleg"@de ;
-    rdfs:comment "How the organism was detected: visual, auditory, nest, specimen (lkg:evidenceKind). Only emitted when the text says how; an observation may have no evidence node."@en .
-
-lkg:BirdCall
-    a owl:Class ;
-    rdfs:label "Bird Call"@en , "Vogelruf"@de ;
-    rdfs:comment "A specific vocalisation noted in the diary (auditory evidence)."@en ;
-    rdfs:subClassOf lkg:ObservationEvidence .
-
-lkg:BehaviourNote
-    a owl:Class ;
-    rdfs:label "Behaviour Note"@en , "Verhaltensnotiz"@de ;
-    rdfs:comment "A noted behaviour of the observed organism."@en .
-
-# --- Time ---------------------------------------------------
-
-lkg:TimeEstimate
-    a owl:Class ;
-    rdfs:label "Time Estimate"@en , "Zeitschätzung"@de ;
-    rdfs:comment "A derived or estimated time interval, e.g. inferred from travel duration. Reserved, not emitted yet."@en ;
-    rdfs:subClassOf time:Interval .
-
-# --- Weather (entry-level) ----------------------------------
+    rdfs:comment "A journey described in a diary entry, made of one or more TravelLegs (train, foot, boat …)."@en ;
+    rdfs:subClassOf lkg:EntryRecord , dwc:Event .
 
 lkg:WeatherReport
     a owl:Class ;
     rdfs:label "Weather Report"@en , "Wetterbericht"@de ;
-    rdfs:comment "Entry-level weather as recorded in the diary. The verbatim wording (lkg:weatherVerbatim) is primary; structured values are optional normalizations and never unit-converted (historical entries may use Réaumur)."@en .
+    rdfs:comment "Weather as recorded in the diary entry. The verbatim wording (lkg:weatherVerbatim) is primary; structured values are optional normalisations and never unit-converted (historical entries may use Réaumur). An entry may carry several reports (e.g. morning and evening, distinguished by dwc:eventTime)."@en ;
+    rdfs:subClassOf lkg:EntryRecord .
+
+# --- Record details ---------------------------------------------------------
+
+lkg:Vocalisation
+    a owl:Class ;
+    rdfs:label "Vocalisation"@en , "Lautäußerung"@de ;
+    rdfs:comment "A vocalisation noted for an Observation: call type and, when the diarist wrote one, the phonetic transcription. dcterms:isPartOf its Observation, which also carries lkg:evidenceKind lkg:evidence_auditory."@en ;
+    rdfs:subClassOf lkg:RecordDetail .
+
+lkg:TravelLeg
+    a owl:Class ;
+    rdfs:label "Travel Leg"@en , "Reiseabschnitt"@de ;
+    rdfs:comment "A single segment of a journey (one train leg, one walking leg …); dcterms:isPartOf its TravelEvent."@en ;
+    rdfs:subClassOf lkg:RecordDetail .
+
+# --- Shared referents -------------------------------------------------------
+
+lkg:Taxon
+    a owl:Class ;
+    rdfs:label "Taxon"@en , "Taxon"@de ;
+    rdfs:comment "A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch, dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus)."@en ;
+    rdfs:subClassOf dwc:Taxon .
+
+lkg:Place
+    a owl:Class ;
+    rdfs:label "Place"@en , "Ort"@de ;
+    rdfs:comment "A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme."@en ;
+    rdfs:subClassOf geo:SpatialThing , dcterms:Location .
+
+lkg:Person
+    a owl:Class ;
+    rdfs:label "Person"@en , "Person"@de ;
+    rdfs:comment "A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node."@en ;
+    rdfs:subClassOf schema:Person .
+
+# lkg:habitatScheme and all other skos:ConceptSchemes are declared in
+# controlled_vocabularies.ttl. Habitat nodes in the data are skos:Concepts of
+# lkg:habitatScheme, reached from Observations via dwciri:habitat.
 
 # =============================================================
 # PROPERTIES
 # =============================================================
 
-# --- Entry structure ----------------------------------------
+# --- Partonomy: entry → records → details (all ⊑ dcterms:hasPart) ---------
+# The inverse dcterms:isPartOf is asserted on every child in the data.
 
-lkg:hasVolume
+lkg:containsObservation
     a owl:ObjectProperty ;
-    rdfs:label "has volume"@en , "gehört zu Band"@de ;
+    rdfs:label "contains observation"@en , "enthält Beobachtung"@de ;
+    rdfs:comment "Entry → one of its taxon records."@en ;
     rdfs:domain lkg:DiaryEntry ;
-    rdfs:range lkg:DiaryVolume .
+    rdfs:range lkg:Observation ;
+    rdfs:subPropertyOf dcterms:hasPart .
 
-lkg:hasPage
+lkg:containsTravelEvent
     a owl:ObjectProperty ;
-    rdfs:label "has page"@en , "steht auf Seite"@de ;
+    rdfs:label "contains travel event"@en , "enthält Reiseereignis"@de ;
     rdfs:domain lkg:DiaryEntry ;
-    rdfs:range lkg:DiaryPage .
+    rdfs:range lkg:TravelEvent ;
+    rdfs:subPropertyOf dcterms:hasPart .
+
+lkg:hasWeather
+    a owl:ObjectProperty ;
+    rdfs:label "has weather"@en , "hat Wetter"@de ;
+    rdfs:comment "Entry → weather report(s); several per entry are possible."@en ;
+    rdfs:domain lkg:DiaryEntry ;
+    rdfs:range lkg:WeatherReport ;
+    rdfs:subPropertyOf dcterms:hasPart .
+
+lkg:hasLeg
+    a owl:ObjectProperty ;
+    rdfs:label "has leg"@en , "hat Etappe"@de ;
+    rdfs:domain lkg:TravelEvent ;
+    rdfs:range lkg:TravelLeg ;
+    rdfs:subPropertyOf dcterms:hasPart .
+
+lkg:hasVocalisation
+    a owl:ObjectProperty ;
+    rdfs:label "has vocalisation"@en , "hat Lautäußerung"@de ;
+    rdfs:comment "Observation → a vocalisation noted for it (auditory evidence with call type / transcription)."@en ;
+    rdfs:domain lkg:Observation ;
+    rdfs:range lkg:Vocalisation ;
+    rdfs:subPropertyOf dcterms:hasPart .
 
 lkg:hasSourceRegion
     a owl:ObjectProperty ;
     rdfs:label "has source region"@en , "hat Quellregion"@de ;
-    rdfs:comment "Links a diary entry to the layout region on the scanned page its text was read from."@en ;
+    rdfs:comment "Entry → the layout region on the scanned page its text was read from (the region is dcterms:isPartOf the page)."@en ;
+    rdfs:domain lkg:DiaryEntry ;
     rdfs:range lkg:SourceRegion .
 
-lkg:entryDate
-    a owl:DatatypeProperty ;
-    rdfs:label "entry date"@en , "Eintragsdatum"@de ;
-    rdfs:comment "Header date of the entry as ISO date (possibly corrected by the extraction model; the raw wording is in dwc:verbatimEventDate). For multi-day entries this is the start; see lkg:entryDateEnd."@en ;
-    rdfs:domain lkg:DiaryEntry ;
-    rdfs:range xsd:date ;
-    rdfs:subPropertyOf dwc:eventDate .
-
-lkg:entryDateEnd
-    a owl:DatatypeProperty ;
-    rdfs:label "entry date (end)"@en , "Eintragsdatum (Ende)"@de ;
-    rdfs:comment "Last day covered by a multi-day entry. Absent for single-day entries."@en ;
-    rdfs:domain lkg:DiaryEntry ;
-    rdfs:range xsd:date .
-
-lkg:datePlausible
-    a owl:DatatypeProperty ;
-    rdfs:label "date plausible"@en , "Datum plausibel"@de ;
-    rdfs:comment "Extraction model's judgement whether the header date is consistent with the entry text. false = contradicted and not repairable (such entries are normally excluded by QA)."@en ;
-    rdfs:domain lkg:DiaryEntry ;
-    rdfs:range xsd:boolean .
-
-lkg:dateNote
-    a owl:DatatypeProperty ;
-    rdfs:label "date note"@en , "Datumsnotiz"@de ;
-    rdfs:comment "German note explaining a corrected or doubted entry date."@en ;
-    rdfs:domain lkg:DiaryEntry ;
-    rdfs:range rdf:langString ;
-    rdfs:subPropertyOf skos:note .
+# --- Entry-level reading ----------------------------------------------------
+# Standard terms used on the entry (not redeclared here): dwc:eventDate
+# (xsd:date, or "start/end" for multi-day entries), dwc:verbatimEventDate,
+# dwc:fieldNotes (the transcribed entry text), skos:note (date note),
+# dcterms:identifier, dcterms:isPartOf.
 
 lkg:entryPlace
     a owl:ObjectProperty ;
@@ -246,38 +251,66 @@ lkg:entryKind
     rdfs:domain lkg:DiaryEntry ;
     rdfs:range xsd:string .
 
-lkg:rawText
+lkg:datePlausible
     a owl:DatatypeProperty ;
-    rdfs:label "raw transcription text"@en , "Rohtext der Transkription"@de ;
-    rdfs:range xsd:string .
-
-# --- Entry → Events -----------------------------------------
-
-lkg:containsObservation
-    a owl:ObjectProperty ;
-    rdfs:label "contains observation"@en , "enthält Beobachtung"@de ;
+    rdfs:label "date plausible"@en , "Datum plausibel"@de ;
+    rdfs:comment "Extraction model's judgement whether the header date is consistent with the entry text. false = contradicted and not repairable (such entries are normally excluded by QA). The explanation is a skos:note on the entry."@en ;
     rdfs:domain lkg:DiaryEntry ;
-    rdfs:range lkg:ObservationEvent ;
-    owl:inverseOf lkg:derivedFromEntry .
+    rdfs:range xsd:boolean .
 
-lkg:containsTravelEvent
+# --- Persons: role on the mention edge --------------------------------------
+
+lkg:mentionsPerson
     a owl:ObjectProperty ;
-    rdfs:label "contains travel event"@en , "enthält Reiseereignis"@de ;
+    rdfs:label "mentions person"@en , "erwähnt Person"@de ;
+    rdfs:comment "Entry → a person it mentions. The role in this entry is expressed by the sub-property (companion, source, collector, cited author, other); the generic property is asserted alongside so consumers without inference see every mention."@en ;
     rdfs:domain lkg:DiaryEntry ;
-    rdfs:range lkg:TravelEvent .
+    rdfs:range lkg:Person ;
+    rdfs:subPropertyOf schema:mentions .
 
-lkg:hasLeg
+lkg:mentionsCompanion
     a owl:ObjectProperty ;
-    rdfs:label "has leg"@en , "hat Etappe"@de ;
-    rdfs:domain lkg:TravelEvent ;
-    rdfs:range lkg:TravelLeg .
+    rdfs:label "mentions companion"@en , "erwähnt Begleiter"@de ;
+    rdfs:comment "The person accompanied the diarist in the field."@en ;
+    rdfs:subPropertyOf lkg:mentionsPerson .
 
-# --- Observation properties ---------------------------------
+lkg:mentionsSource
+    a owl:ObjectProperty ;
+    rdfs:label "mentions source"@en , "erwähnt Gewährsperson"@de ;
+    rdfs:comment "The person reported the information to the diarist (in person or by letter)."@en ;
+    rdfs:subPropertyOf lkg:mentionsPerson .
+
+lkg:mentionsCollector
+    a owl:ObjectProperty ;
+    rdfs:label "mentions collector"@en , "erwähnt Sammler"@de ;
+    rdfs:comment "The person collected or shot the specimen."@en ;
+    rdfs:subPropertyOf lkg:mentionsPerson .
+
+lkg:mentionsCitedAuthor
+    a owl:ObjectProperty ;
+    rdfs:label "mentions cited author"@en , "erwähnt zitierten Autor"@de ;
+    rdfs:comment "The person is the author of a publication the entry cites."@en ;
+    rdfs:subPropertyOf lkg:mentionsPerson .
+
+lkg:mentionsOther
+    a owl:ObjectProperty ;
+    rdfs:label "mentions other person"@en , "erwähnt sonstige Person"@de ;
+    rdfs:comment "Mention with a role outside the four above."@en ;
+    rdfs:subPropertyOf lkg:mentionsPerson .
+
+# --- Observation ------------------------------------------------------------
+# Standard terms used on the observation (not redeclared here):
+# dwc:occurrenceStatus, dwc:individualCount, dwc:sex, dwc:lifeStage,
+# dwc:vitality, dwc:reproductiveCondition, dwc:behavior, dwc:habitat,
+# dwciri:habitat, dwc:identificationQualifier, dwc:eventDate, dwc:eventTime,
+# dwc:verbatimLocality, dwc:occurrenceRemarks, dwc:basisOfRecord,
+# dwciri:recordedBy, dwc:associatedReferences, dcterms:isPartOf,
+# prov:wasDerivedFrom, prov:wasGeneratedBy.
 
 lkg:observedTaxon
     a owl:ObjectProperty ;
     rdfs:label "observed taxon"@en , "beobachtetes Taxon"@de ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:domain lkg:Observation ;
     rdfs:range lkg:Taxon ;
     rdfs:subPropertyOf dwciri:toTaxon .
 
@@ -285,129 +318,96 @@ lkg:observedAt
     a owl:ObjectProperty ;
     rdfs:label "observed at"@en , "beobachtet bei"@de ;
     rdfs:comment "The EFFECTIVE place of the record: its own locality when the text states one, otherwise the entry place. Use lkg:hasLocality to see whether the place was stated on the record itself."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:domain lkg:Observation ;
     rdfs:range lkg:Place .
 
 lkg:hasLocality
     a owl:ObjectProperty ;
     rdfs:label "has locality"@en , "hat eigene Örtlichkeit"@de ;
-    rdfs:comment "The record's OWN locality when it differs from the entry place (co-emitted as dwc:verbatimLocality on the observation). Independent of lkg:observedAt: observedAt is the effective place, hasLocality the own-locality subset."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:comment "The record's OWN locality when it differs from the entry place (its wording is co-emitted as dwc:verbatimLocality on the observation). Independent of lkg:observedAt: observedAt is the effective place, hasLocality the own-locality subset."@en ;
+    rdfs:domain lkg:Observation ;
     rdfs:range lkg:Place .
 
-lkg:observedDuring
-    a owl:ObjectProperty ;
-    rdfs:label "observed during"@en , "beobachtet während"@de ;
-    rdfs:comment "Links an observation to the travel leg or event during which it occurred. Reserved, not emitted yet."@en ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range lkg:TravelLeg .
-
-lkg:hasTimeEstimate
-    a owl:ObjectProperty ;
-    rdfs:label "has time estimate"@en , "hat Zeitschätzung"@de ;
-    rdfs:comment "Reserved, not emitted yet."@en ;
-    rdfs:range lkg:TimeEstimate .
-
-lkg:hasEvidence
-    a owl:ObjectProperty ;
-    rdfs:label "has evidence"@en , "hat Beleg"@de ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range lkg:ObservationEvidence .
+lkg:recordType
+    a owl:DatatypeProperty ;
+    rdfs:label "record type"@en , "Nachweistyp"@de ;
+    rdfs:comment "Provenance category of the record: field-observation (the diarist's own sighting), third-party-report (reported to the diarist in person or by letter), literature-record (digested from a publication or card index) — lkg:recordTypeScheme. Deliberately NOT a sub-property of dwc:basisOfRecord (different value spaces); the derived basisOfRecord (HumanObservation / PreservedSpecimen / MaterialCitation) is emitted as dwc:basisOfRecord."@en ;
+    rdfs:domain lkg:Observation ;
+    rdfs:range xsd:string .
 
 lkg:evidenceKind
     a owl:ObjectProperty ;
     rdfs:label "evidence kind"@en , "Belegart"@de ;
-    rdfs:comment "The kind of evidence as a concept of lkg:evidenceKindScheme: lkg:evidence_visual, lkg:evidence_auditory, lkg:evidence_nest, lkg:evidence_specimen."@en ;
-    rdfs:domain lkg:ObservationEvidence ;
+    rdfs:comment "How the organism was detected, as concept(s) of lkg:evidenceKindScheme: lkg:evidence_visual, lkg:evidence_auditory, lkg:evidence_nest, lkg:evidence_specimen. Only emitted when the text says how; an observation may have none or several. Auditory evidence with call detail additionally gets a lkg:Vocalisation node."@en ;
+    rdfs:domain lkg:Observation ;
     rdfs:range skos:Concept .
-
-lkg:hasBehaviour
-    a owl:ObjectProperty ;
-    rdfs:label "has behaviour"@en , "hat Verhalten"@de ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range lkg:BehaviourNote .
-
-lkg:hasHabitat
-    a owl:ObjectProperty ;
-    rdfs:label "has habitat"@en , "hat Lebensraum"@de ;
-    rdfs:comment "Habitat concept of the observation; the label is co-emitted as dwc:habitat and the node as dwciri:habitat."@en ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range lkg:Habitat .
-
-lkg:individualCount
-    a owl:DatatypeProperty ;
-    rdfs:label "individual count"@en , "Individuenzahl"@de ;
-    rdfs:comment "Number of individuals as stated (>= 0). 0 is only emitted together with dwc:occurrenceStatus \"absent\" (explicit absence record). Absent when the text gives no number; a range is carried by lkg:individualCountMin/Max."@en ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range xsd:integer ;
-    rdfs:subPropertyOf dwc:individualCount .
 
 lkg:individualCountMin
     a owl:DatatypeProperty ;
     rdfs:label "individual count (minimum)"@en , "Individuenzahl (Minimum)"@de ;
-    rdfs:comment "Lower bound of a stated range (\"3-4\" -> 3)."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:comment "Lower bound of a stated range (\"3-4\" -> 3). A single stated number is dwc:individualCount."@en ;
+    rdfs:domain lkg:Observation ;
     rdfs:range xsd:integer .
 
 lkg:individualCountMax
     a owl:DatatypeProperty ;
     rdfs:label "individual count (maximum)"@en , "Individuenzahl (Maximum)"@de ;
     rdfs:comment "Upper bound of a stated range (\"3-4\" -> 4)."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:domain lkg:Observation ;
     rdfs:range xsd:integer .
 
 lkg:countQualifier
     a owl:DatatypeProperty ;
     rdfs:label "count qualifier"@en , "Zahlenqualifikator"@de ;
-    rdfs:comment "Qualifier for count: exact, minimum, approximate, plural-unspecified (lkg:countQualifierScheme)."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:comment "Qualifier for the count: exact, minimum, approximate, plural-unspecified (lkg:countQualifierScheme)."@en ;
+    rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
 lkg:breedingEvidence
     a owl:DatatypeProperty ;
     rdfs:label "breeding evidence"@en , "Brutnachweis"@de ;
     rdfs:comment "Atlas-style breeding evidence category: confirmed, probable, possible (lkg:breedingEvidenceScheme). confirmed/probable are co-emitted as dwc:reproductiveCondition \"breeding\"."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
 lkg:movementKind
     a owl:DatatypeProperty ;
     rdfs:label "movement kind"@en , "Bewegungsart"@de ;
     rdfs:comment "Kind of movement stated: migrating, passing-over, arriving, departing, resting, roosting (lkg:movementKindScheme)."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
 lkg:flightDirection
     a owl:DatatypeProperty ;
     rdfs:label "flight direction"@en , "Flugrichtung"@de ;
     rdfs:comment "Flight direction as written by the diarist (\"NO→SW\"); free German text, not normalised."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:domain lkg:Observation ;
     rdfs:range rdf:langString .
 
 lkg:verbatimNotes
     a owl:DatatypeProperty ;
     rdfs:label "verbatim notes"@en , "Originalwortlaut"@de ;
-    rdfs:comment "The diary passage the record was read from, German, unchanged."@en ;
-    rdfs:domain lkg:ObservationEvent ;
+    rdfs:comment "The diary passage the record was read from, German, unchanged. (dwc:occurrenceRemarks carries the model's remark on the record, dwc:fieldNotes on the entry the whole entry text.)"@en ;
+    rdfs:domain lkg:Observation ;
     rdfs:range rdf:langString .
 
-# --- Bird call / vocalisation -------------------------------
-
-lkg:callTranscription
-    a owl:DatatypeProperty ;
-    rdfs:label "call transcription"@en , "Lautschrift"@de ;
-    rdfs:comment "Phonetic transcription of the bird call as written in the diary. Only present when the diarist wrote one (no placeholder)."@en ;
-    rdfs:domain lkg:BirdCall ;
-    rdfs:range xsd:string .
+# --- Vocalisation -----------------------------------------------------------
 
 lkg:callType
     a owl:DatatypeProperty ;
     rdfs:label "call type"@en , "Lautäußerungstyp"@de ;
     rdfs:comment "Type of vocalisation: song, call, alarm, drumming, unknown (lkg:callTypeScheme)."@en ;
-    rdfs:domain lkg:BirdCall ;
+    rdfs:domain lkg:Vocalisation ;
     rdfs:range xsd:string .
 
-# --- Travel properties --------------------------------------
+lkg:callTranscription
+    a owl:DatatypeProperty ;
+    rdfs:label "call transcription"@en , "Lautschrift"@de ;
+    rdfs:comment "Phonetic transcription of the call as written in the diary. Only present when the diarist wrote one (no placeholder)."@en ;
+    rdfs:domain lkg:Vocalisation ;
+    rdfs:range xsd:string .
+
+# --- Travel -----------------------------------------------------------------
 
 lkg:departurePlace
     a owl:ObjectProperty ;
@@ -421,9 +421,17 @@ lkg:arrivalPlace
     rdfs:domain lkg:TravelLeg ;
     rdfs:range lkg:Place .
 
+lkg:viaPlace
+    a owl:ObjectProperty ;
+    rdfs:label "via place"@en , "über Ort"@de ;
+    rdfs:comment "Intermediate place named on the leg (station passed, place walked through)."@en ;
+    rdfs:domain lkg:TravelLeg ;
+    rdfs:range lkg:Place .
+
 lkg:departureTime
     a owl:DatatypeProperty ;
     rdfs:label "departure time"@en , "Abfahrtszeit"@de ;
+    rdfs:comment "Entry date combined with the stated clock time."@en ;
     rdfs:domain lkg:TravelLeg ;
     rdfs:range xsd:dateTime .
 
@@ -440,49 +448,11 @@ lkg:transportMode
     rdfs:domain lkg:TravelLeg ;
     rdfs:range xsd:string .
 
-lkg:viaPlace
-    a owl:ObjectProperty ;
-    rdfs:label "via place"@en , "über Ort"@de ;
-    rdfs:domain lkg:TravelLeg ;
-    rdfs:range lkg:Place .
-
-lkg:hasRoute
-    a owl:ObjectProperty ;
-    rdfs:label "has route"@en , "hat Route"@de ;
-    rdfs:comment "Reserved, not emitted yet."@en ;
-    rdfs:domain lkg:TravelLeg ;
-    rdfs:range lkg:Route .
-
-lkg:routePoint
-    a owl:ObjectProperty ;
-    rdfs:label "route point"@en , "Routenpunkt"@de ;
-    rdfs:comment "Reserved, not emitted yet."@en ;
-    rdfs:domain lkg:Route ;
-    rdfs:range lkg:Place .
-
-lkg:routeOrder
-    a owl:DatatypeProperty ;
-    rdfs:label "route order"@en , "Routenreihenfolge"@de ;
-    rdfs:comment "Ordinal position of a route point within a Route. Reserved, not emitted yet."@en ;
-    rdfs:domain lkg:Route ;
-    rdfs:range xsd:integer .
-
-# --- Place properties ---------------------------------------
-
-lkg:placeName
-    a owl:DatatypeProperty ;
-    rdfs:label "place name"@en , "Ortsname"@de ;
-    rdfs:comment "Reserved; the emitter uses rdfs:label for the canonical name."@en ;
-    rdfs:domain lkg:Place ;
-    rdfs:range xsd:string .
-
-lkg:verbatimLocality
-    a owl:DatatypeProperty ;
-    rdfs:label "verbatim locality"@en , "Ortsangabe im Wortlaut"@de ;
-    rdfs:comment "The place name as written in the diary (rdfs:label carries the canonical/cleaned form)."@en ;
-    rdfs:domain lkg:Place ;
-    rdfs:range xsd:string ;
-    rdfs:subPropertyOf dwc:verbatimLocality .
+# --- Place ------------------------------------------------------------------
+# Standard terms used on the place: rdfs:label (cleaned name), dwc:verbatimLocality
+# (as written), geo:lat / geo:long, dwc:decimalLatitude / dwc:decimalLongitude,
+# dwc:geodeticDatum, gsp:asWKT ("POINT(lon lat)"^^gsp:wktLiteral, asserted
+# directly on the Place — the flat GeoSPARQL idiom, no separate Geometry node).
 
 lkg:placeKind
     a owl:DatatypeProperty ;
@@ -491,22 +461,12 @@ lkg:placeKind
     rdfs:domain lkg:Place ;
     rdfs:range xsd:string .
 
-# --- Taxon properties ---------------------------------------
-
-lkg:vernacularNameDE
-    a owl:DatatypeProperty ;
-    rdfs:label "vernacular name (German)"@en , "deutscher Name"@de ;
-    rdfs:comment "German vernacular name exactly as the diarist wrote it (\"...\"@de). Also emitted as rdfs:label and dwc:vernacularName."@en ;
-    rdfs:domain lkg:Taxon ;
-    rdfs:range rdf:langString ;
-    rdfs:subPropertyOf dwc:vernacularName .
-
-lkg:scientificName
-    a owl:DatatypeProperty ;
-    rdfs:label "scientific name"@en , "wissenschaftlicher Name"@de ;
-    rdfs:domain lkg:Taxon ;
-    rdfs:range xsd:string ;
-    rdfs:subPropertyOf dwc:scientificName .
+# --- Taxon ------------------------------------------------------------------
+# Standard terms used on the taxon: rdfs:label + dwc:vernacularName (German, as
+# written), dwc:scientificName, dwc:taxonRank, dwc:taxonID, dwc:kingdom,
+# dwc:phylum, dwc:class, dwc:order, dwc:family, dwc:genus (GBIF backbone
+# classification of the linked taxon), skos:exactMatch / closeMatch /
+# broadMatch (GBIF), owl:sameAs, skos:note (unresolved names).
 
 lkg:isBird
     a owl:DatatypeProperty ;
@@ -518,7 +478,7 @@ lkg:isBird
 lkg:matchMethod
     a owl:DatatypeProperty ;
     rdfs:label "match method"@en , "Zuordnungsmethode"@de ;
-    rdfs:comment "How the vernacular name was resolved to a scientific name / GBIF key: gazetteer, llm, llm+gbif, review, unresolved ..."@en ;
+    rdfs:comment "How the vernacular name was resolved to a scientific name / GBIF key: gazetteer, llm, llm+gbif, review, unresolved …"@en ;
     rdfs:domain lkg:Taxon ;
     rdfs:range xsd:string .
 
@@ -536,62 +496,12 @@ lkg:gbifMatchType
     rdfs:domain lkg:Taxon ;
     rdfs:range xsd:string .
 
-# --- Provenance / source linking ----------------------------
-
-lkg:derivedFromEntry
-    a owl:ObjectProperty ;
-    rdfs:label "derived from entry"@en , "abgeleitet aus Eintrag"@de ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range lkg:DiaryEntry ;
-    rdfs:subPropertyOf prov:wasDerivedFrom ;
-    owl:inverseOf lkg:containsObservation .
-
-lkg:hasAnnotation
-    a owl:ObjectProperty ;
-    rdfs:label "has annotation"@en , "hat Annotation"@de ;
-    rdfs:range oa:Annotation .
-
-lkg:mentionsPerson
-    a owl:ObjectProperty ;
-    rdfs:label "mentions person"@en , "erwähnt Person"@de ;
-    rdfs:comment "Links a diary entry to a person it mentions (companion, source, collector, cited author)."@en ;
-    rdfs:domain lkg:DiaryEntry ;
-    rdfs:range lkg:Person ;
-    rdfs:subPropertyOf schema:mentions .
-
-lkg:observedBy
-    a owl:ObjectProperty ;
-    rdfs:subPropertyOf dwciri:recordedBy ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range lkg:Person ;
-    rdfs:label "observed by"@en , "beobachtet von"@de ;
-    rdfs:comment "The person who made the observation. Defaults to Alfred Laubmann for the diarist's own field observations; third-party and literature records carry the observer the extraction model read from the text, and stay unattributed when none is named (attribution is never fabricated). Co-emitted as dwciri:recordedBy."@en .
-
-lkg:recordType
-    a owl:DatatypeProperty ;
-    rdfs:label "record type"@en , "Nachweistyp"@de ;
-    rdfs:domain lkg:ObservationEvent ;
-    rdfs:range xsd:string ;
-    rdfs:comment "Provenance category of the record: field-observation (the diarist's own sighting), third-party-report (reported to the diarist in person or by letter), literature-record (digested from a publication or card index). Deliberately NOT rdfs:subPropertyOf dwc:basisOfRecord (different value spaces); the derived Darwin Core basisOfRecord (HumanObservation / PreservedSpecimen / MaterialCitation) is co-emitted as dwc:basisOfRecord by the exporter."@en .
-
-lkg:backend
-    a owl:DatatypeProperty ;
-    rdfs:label "extraction backend"@en , "Extraktions-Backend"@de ;
-    rdfs:comment "Backend that ran the extraction (offline test double, or an LLM provider such as google/openai). Property of the prov:SoftwareAgent of the run activity."@en ;
-    rdfs:domain prov:SoftwareAgent ;
-    rdfs:range xsd:string .
-
-# --- Weather properties -------------------------------------
-
-lkg:hasWeather
-    a owl:ObjectProperty ;
-    rdfs:label "has weather"@en , "hat Wetter"@de ;
-    rdfs:domain lkg:DiaryEntry ;
-    rdfs:range lkg:WeatherReport .
+# --- Weather ----------------------------------------------------------------
 
 lkg:weatherVerbatim
     a owl:DatatypeProperty ;
     rdfs:label "weather verbatim"@en , "Wetter im Wortlaut"@de ;
+    rdfs:comment "The weather passage as written; primary value of a WeatherReport."@en ;
     rdfs:domain lkg:WeatherReport ; rdfs:range rdf:langString .
 
 lkg:temperatureValue
@@ -603,13 +513,13 @@ lkg:temperatureValue
 lkg:temperatureUnit
     a owl:DatatypeProperty ;
     rdfs:label "temperature unit"@en , "Temperatureinheit"@de ;
-    rdfs:comment "C (Celsius), R (Réaumur), or F (Fahrenheit)."@en ;
+    rdfs:comment "C (Celsius), R (Réaumur), or F (Fahrenheit) — lkg:temperatureUnitScheme."@en ;
     rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
 
 lkg:precipitation
     a owl:DatatypeProperty ;
     rdfs:label "precipitation"@en , "Niederschlag"@de ;
-    rdfs:comment "Controlled term: rain, snow, sleet, hail, drizzle, fog, thunderstorm, none."@en ;
+    rdfs:comment "Controlled term: rain, snow, sleet, hail, drizzle, fog, thunderstorm, none (lkg:precipitationScheme)."@en ;
     rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
 
 lkg:wind
@@ -621,5 +531,17 @@ lkg:wind
 lkg:skyCondition
     a owl:DatatypeProperty ;
     rdfs:label "sky condition"@en , "Himmelszustand"@de ;
-    rdfs:comment "Controlled term: clear, partly-cloudy, overcast, variable."@en ;
+    rdfs:comment "Controlled term: clear, partly-cloudy, overcast, variable (lkg:skyConditionScheme)."@en ;
     rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
+
+# --- Provenance -------------------------------------------------------------
+# The extraction run is a prov:Activity (prov:startedAtTime, prov:used the
+# prompt entity, prov:wasAssociatedWith the model agent); every entry record
+# prov:wasGeneratedBy it and prov:wasDerivedFrom its entry.
+
+lkg:backend
+    a owl:DatatypeProperty ;
+    rdfs:label "extraction backend"@en , "Extraktions-Backend"@de ;
+    rdfs:comment "Backend that ran the extraction (offline test double, or an LLM provider such as google/openai). Property of the prov:SoftwareAgent of the run activity."@en ;
+    rdfs:domain prov:SoftwareAgent ;
+    rdfs:range xsd:string .
