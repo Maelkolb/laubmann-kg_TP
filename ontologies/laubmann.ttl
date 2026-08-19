@@ -3,6 +3,9 @@
 # Project Ontology  /  ontologies/laubmann.ttl
 # Namespace: https://w3id.org/laubmann-kg/ontology#   (w3id folder prepared in w3id/laubmann-kg/, PR pending)
 #
+# v0.4.2 (2026-08-19) — a DiaryVolume states the span its title page covers as
+#     dcterms:temporal "YYYY-MM/YYYY-MM" (the table normalization/coverage.py
+#     checks entry dates against). Standard term only, no new lkg: terms.
 # v0.4.1 (2026-08-19) — entity resolution: merged spellings of taxa, persons,
 #     places and habitat concepts carry skos:altLabel; an observation whose
 #     written taxon name was merged into a canonical taxon keeps it as
@@ -60,9 +63,9 @@
     rdfs:label "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
     dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."@en ;
     rdfs:comment "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy."@en ;
-    owl:versionInfo "0.4.1" ;
-    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.4.1> ;
-    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.4.0> ;
+    owl:versionInfo "0.4.2" ;
+    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.4.2> ;
+    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.4.1> ;
     vann:preferredNamespacePrefix "lkg" ;
     vann:preferredNamespaceUri "https://w3id.org/laubmann-kg/ontology#" ;
     dcterms:creator [ a foaf:Agent ; foaf:name "Laubmann KG Project" ; foaf:homepage <https://github.com/Maelkolb/laubmann-kg_TP> ] ;   # TODO: replace with the author's name/ORCID before publication

@@ -22,6 +22,7 @@
     "altLabel": "skos:altLabel",
     "inScheme": {"@id": "skos:inScheme", "@type": "@id"},
     "identifier": "dcterms:identifier",
+    "temporal": "dcterms:temporal",
     "isPartOf": {"@id": "dcterms:isPartOf", "@type": "@id"},
     "hasPart": {"@id": "dcterms:hasPart", "@type": "@id"},
     "name": "schema:name",

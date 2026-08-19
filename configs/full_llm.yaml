@@ -39,8 +39,9 @@ qa:
     tolerance_months: 1
     neighbours: 2
     max_digit_changes: 2
-    earliest_year: 1900
-    latest_year: 1966
+    # diary period = first title-page start … last title-page end (1917-04 … 1965-12) unless
+    # earliest_year / latest_year are set here; entries outside it are dated by position
+    # (digests, field notes) or excluded (kind other: obituaries)
 
 resolution:                   # entity resolution after linking (review/*_merges.csv, decision column)
   enabled: true

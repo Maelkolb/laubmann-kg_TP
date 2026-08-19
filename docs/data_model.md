@@ -53,19 +53,28 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
   (`decision` column: `auto` rows apply unless rejected, `candidate` rows only
   when accepted).
 - **Dates checked against the volume span.** `configs/volume_coverage.yaml`
-  (title pages) drives `normalization/coverage.py`: misfiled scans go back to
-  their document's volume, isolated OCR years are repaired from the sequence
-  neighbours (`1901` → `1951`; recorded as `skos:note`, the raw date stays
-  `dwc:verbatimEventDate`), digests/retrospectives keep their historic dates,
-  non-entries outside 1900–1966 are excluded (QA reasons `volume_reassigned`,
-  `date_year_corrected`, `date_out_of_coverage`, `date_out_of_span`,
-  `duplicate_entry`).
+  (title pages; each `lkg:DiaryVolume` states its span as `dcterms:temporal
+  "YYYY-MM/YYYY-MM"`) drives `normalization/coverage.py`: misfiled scans go
+  back to their document's volume (a `skos:note` names the scan set they were
+  digitised in; the corpus id in `dcterms:identifier` is kept), isolated OCR
+  years are repaired from the sequence neighbours for every entry kind (`1901`
+  → `1951`; recorded as `skos:note`, the raw date stays
+  `dwc:verbatimEventDate`), an entry dated outside the diary period
+  (April 1917 – December 1965) that cannot be repaired is dated by its position
+  in the volume (an interval between the neighbouring in-span entries; a
+  pre-diary written date whose records the model read as historic — own
+  event dates, literature records, specimens — is a record date and passes to
+  the entry's observations as their own `dwc:eventDate`), non-entries (`other`) outside the
+  period are excluded, off-span entries inside the period are kept and flagged
+  (QA reasons `volume_reassigned`, `date_year_corrected`, `date_from_position`,
+  `date_out_of_coverage`, `date_out_of_span`, `duplicate_entry`). No entry is
+  dated before the first or after the last title page.
 
 ## Node types and keys
 
 | Class | IRI | Key |
 |---|---|---|
-| `lkg:DiaryVolume` (⊑ ArchivalUnit) | `data:volume_NN` | corpus |
+| `lkg:DiaryVolume` (⊑ ArchivalUnit; `dcterms:temporal` title-page span) | `data:volume_NN` | corpus |
 | `lkg:DiaryPage` (⊑ ArchivalUnit; `dcterms:isPartOf` volume) | `data:page_<page_uid>` | corpus |
 | `lkg:DiaryEntry` (⊑ ArchivalUnit, dwc:Event; `dcterms:isPartOf` page or volume) | `data:entry_<entry_uid>` | corpus `entry_uid` |
 | `lkg:SourceRegion` (⊑ ArchivalUnit; `dcterms:isPartOf` page) | `data:region_<region_uid>` | corpus |

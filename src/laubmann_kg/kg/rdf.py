@@ -386,7 +386,7 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
 # Archival units
 # --------------------------------------------------------------------------
 
-def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None) -> None:
+def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, volume_spans: Optional[dict] = None) -> None:
     node = _uri(entry.uid)
     graph.add((node, RDF.type, LKG.DiaryEntry))
     graph.add((node, RDFS.label, Literal(entry.label, lang=DE)))
@@ -415,6 +415,10 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None) ->
     volume_node = _uri(volume.uid)
     graph.add((volume_node, RDF.type, LKG.DiaryVolume))
     graph.add((volume_node, RDFS.label, Literal(volume.label, lang=DE)))
+    span = (volume_spans or {}).get(int(entry.volume))
+    if span:
+        # the time span the volume covers according to its title page (YYYY-MM/YYYY-MM)
+        graph.add((volume_node, DCTERMS.temporal, Literal(f"{span[0]}/{span[1]}")))
     page_node: Optional[URIRef] = None
     if entry.page_uid:
         page = DiaryPage(entry.page_uid, entry.volume, entry.page_id, entry.scan)
@@ -510,7 +514,7 @@ def build_graph(result: "ExtractionResult") -> Graph:
         if not entry.entry_date:
             skipped += 1
             continue
-        _add_entry(graph, entry, run)
+        _add_entry(graph, entry, run, getattr(result, 'volume_spans', None))
     if skipped:
         logger.warning("skipped %d undated entries (SHACL dwc:eventDate requirement)", skipped)
     return graph

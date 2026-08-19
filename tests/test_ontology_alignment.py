@@ -64,7 +64,8 @@ def _emitted(graph: Graph) -> tuple[set[URIRef], set[URIRef], set[URIRef]]:
 
 def _coverage_graph() -> Graph:
     """The maximal single-entry graph from test_rdf_emission (every model field set)."""
-    return build_graph(ExtractionResult(entries=[_full_entry()], provenance=PROVENANCE))
+    return build_graph(ExtractionResult(entries=[_full_entry()], provenance=PROVENANCE,
+                                        volume_spans={3: ("1919-09", "1923-06")}))
 
 
 def test_emitted_terms_are_declared() -> None:
@@ -126,7 +127,7 @@ def test_versions_agree() -> None:
     onto = Graph().parse(str(ONTOLOGY), format="turtle")
     shapes = Graph().parse(str(SHAPES), format="turtle")
     version = str(onto.value(ONTO_IRI, OWL.versionInfo))
-    assert version == "0.4.1"
+    assert version == "0.4.2"
     assert str(shapes.value(SHAPES_IRI, OWL.versionInfo)) == version
     assert onto.value(ONTO_IRI, OWL.versionIRI) == URIRef(f"https://w3id.org/laubmann-kg/ontology/{version}")
     changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")

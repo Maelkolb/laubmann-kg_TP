@@ -7,17 +7,28 @@ holds that table. An entry dated outside its volume's span is either
 * an OCR slip in the year (``1901`` for ``1951``, ``1934`` for ``1943``,
   ``194.`` truncated to ``19``) — repaired when the sequence neighbours of the
   entry (previous/next entries in page order that ARE inside the span) agree
-  on a year and the entry is a dated day (field-day / correspondence / other),
-  never a species digest or retrospective note, which legitimately carry old
-  dates (an 1859 museum specimen listed in 1919, Kaufbeuren youth notes …);
+  on a year, the repaired date lies within three months of them and the OCR
+  year is at most two digits away (any entry kind: the entry date is the date
+  the entry was written for, also for a species digest);
 * a scan of another volume filed under this one (page-document → volume
   reassignment; the known Vol 1 pages in the Vol 15 scan set);
-* content that is not an entry at all (an obituary with a 19th-century birth
-  date) — outside Laubmann's diary span altogether → excluded;
-* or a genuinely off-span record — kept and flagged for review.
+* a date outside the diary period altogether (before the first title page,
+  April 1917, or after the last, December 1965), not repairable from the
+  neighbours: a digest/retrospective/field entry is dated *by its position in
+  the volume* — an interval between the neighbouring in-span entries — the
+  written date is kept as dwc:verbatimEventDate and, when it is a plausible
+  historic record date (before the diaries: an 1859 museum specimen listed in
+  1919, Kaufbeuren youth notes of 1908), passed on to the entry's records as
+  their own dwc:eventDate; an entry of kind ``other`` (an obituary with a
+  19th-century birth date) is not an entry → excluded;
+* or a genuinely off-span record inside the diary period (an opening block of
+  spring-1959 field days in a volume whose title page starts in September;
+  copied older notes) — kept and flagged for review.
 
-Nothing here reads prose: the decisions use the entry date, the entry kind the
-model assigned, the page document id and the neighbours' dates.
+The diary period (hard bounds) is the union of the volume spans unless the
+config overrides ``earliest_year`` / ``latest_year``. Nothing here reads prose:
+the decisions use the entry date, the entry kind the model assigned, the page
+document id and the neighbours' dates.
 """
 
 from __future__ import annotations
@@ -38,10 +49,12 @@ from laubmann_kg.qa import QAFlag
 logger = logging.getLogger(__name__)
 
 DEFAULT_PATH = Path("configs/volume_coverage.yaml")
-# entry kinds whose dates are corrected against the neighbours; digests and
-# retrospective notes keep their (old) dates untouched
-CORRECT_KINDS = ("field-day", "correspondence", "other")
+# entry kinds whose dates are corrected against the neighbours (all of them —
+# the entry date is the date the entry was written for; digest lines carry
+# their own record dates in Observation.event_date)
+CORRECT_KINDS = ("field-day", "correspondence", "other", "species-digest", "retrospective")
 RETROSPECTIVE_KINDS = ("species-digest", "retrospective")
+NON_ENTRY_KINDS = ("other",)      # outside the diary period these are not entries (obituaries, lists)
 
 
 @dataclass(frozen=True)
@@ -84,6 +97,15 @@ class VolumeCoverage:
         if span is None or not iso_date or len(iso_date) < 7:
             return None
         return span.contains(iso_date[:7], tolerance_months)
+
+    def period(self) -> Optional[Span]:
+        """The whole diary period: first span start … last span end."""
+        if not self.spans:
+            return None
+        return Span(min(s.start for s in self.spans.values()), max(s.end for s in self.spans.values()))
+
+    def as_dict(self) -> dict[int, tuple[str, str]]:
+        return {v: (s.start, s.end) for v, s in sorted(self.spans.items())}
 
 
 # --------------------------------------------------------------------------
@@ -133,6 +155,37 @@ def _months_between(a: str, b: str) -> int:
     return abs((int(a[:4]) - int(b[:4])) * 12 + int(a[5:7]) - int(b[5:7]))
 
 
+def _historic_records(entry, earliest_ym: str) -> bool:
+    """Do the entry's records themselves point to a time before the diaries
+    (own event dates before the first title page, literature records, specimens)?"""
+    for obs in getattr(entry, "observations", []) or []:
+        if obs.event_date and obs.event_date[:7] < earliest_ym:
+            return True
+        if getattr(obs, "record_type", None) == "literature-record":
+            return True
+        if any(getattr(ev, "kind", None) == "specimen" for ev in getattr(obs, "evidence", []) or []):
+            return True
+    return False
+
+
+def _month_bounds(ym: str) -> tuple[str, str]:
+    y, m = int(ym[:4]), int(ym[5:7])
+    return f"{y:04d}-{m:02d}-01", f"{y:04d}-{m:02d}-{calendar.monthrange(y, m)[1]:02d}"
+
+
+def _positional_interval(seq, k: int, inside: list, span: Span) -> tuple[str, str]:
+    """Date interval for seq[k] from its position: the nearest in-span entry
+    before and after it (page order); a missing side falls back to the span
+    edge month."""
+    prev = next((seq[j].entry_date for j in range(k - 1, -1, -1) if inside[j]), None)
+    nxt = next((seq[j].entry_date for j in range(k + 1, len(seq)) if inside[j]), None)
+    start = prev or _month_bounds(span.start)[0]
+    end = nxt or _month_bounds(span.end)[1]
+    if end < start:
+        start, end = end, start
+    return start, end
+
+
 def _similar(a: str, b: str, limit: int = 300) -> float:
     return difflib.SequenceMatcher(None, (a or "")[:limit], (b or "")[:limit]).ratio()
 
@@ -152,8 +205,10 @@ def apply_coverage(entries: list, coverage: VolumeCoverage, config: Optional[dic
     tol = int(cfg.get("tolerance_months", 1))
     neighbours = int(cfg.get("neighbours", 2))
     max_digits = int(cfg.get("max_digit_changes", 2))
-    earliest = int(cfg.get("earliest_year", 1900))
-    latest = int(cfg.get("latest_year", 1966))
+    period = coverage.period()
+    # hard bounds of the diary period (month precision): the coverage table, unless overridden
+    earliest_ym = f"{int(cfg['earliest_year']):04d}-01" if cfg.get("earliest_year") else (period.start if period else "1900-01")
+    latest_ym = f"{int(cfg['latest_year']):04d}-12" if cfg.get("latest_year") else (period.end if period else "1966-12")
     correct_kinds = tuple(cfg.get("correct_kinds", CORRECT_KINDS))
     exclude = bool(cfg.get("exclude", True))
     dup_threshold = float(cfg.get("duplicate_similarity", 0.85))
@@ -165,10 +220,10 @@ def apply_coverage(entries: list, coverage: VolumeCoverage, config: Optional[dic
     for e in entries:
         home = homes.get(_doc_prefix(e.page_id))
         if home is not None and home != int(e.volume):
-            flags.append(QAFlag(e.entry_id, e.entry_uid, "volume_reassigned",
-                                f"Seitendokument gehört zu Band {home} (digitalisiert unter Band {e.volume})",
-                                "flagged", str(home)))
+            note = f"Seitendokument unter Band {e.volume} digitalisiert, gehört zu Band {home} (Datierung/Titelseite)"
+            flags.append(QAFlag(e.entry_id, e.entry_uid, "volume_reassigned", note, "flagged", str(home)))
             e.volume = home
+            e.date_note = f"{e.date_note}; {note}" if e.date_note else note
             reassigned.append(e)
 
     # 2. per volume, in sequence
@@ -190,8 +245,18 @@ def apply_coverage(entries: list, coverage: VolumeCoverage, config: Optional[dic
             ctx = [seq[j].entry_date for j in range(k - 1, -1, -1) if inside[j]][:neighbours] + \
                   [seq[j].entry_date for j in range(k + 1, len(seq)) if inside[j]][:neighbours]
             years = Counter(int(d[:4]) for d in ctx)
+            ym = e.entry_date[:7]
+            before_diaries = ym < earliest_ym
+            outside_period = before_diaries or ym > _ym_add(latest_ym, tol)
+            # a digest/retrospective dated before the diaries whose records the
+            # model read as historic (own record dates before the diaries, a
+            # literature record, a specimen) lists record dates, not an OCR slip
+            # -> no repair, positional dating below; a pre-diary digest without
+            # such signals ("11. Mai 1907 … Ad. Kl. Müller meldet …" next to a
+            # 1937 entry) is tried against the neighbours like any other entry
+            record_date = before_diaries and e.entry_kind in RETROSPECTIVE_KINDS and _historic_records(e, earliest_ym)
             fixed = None
-            if ctx and e.entry_kind in correct_kinds:
+            if ctx and e.entry_kind in correct_kinds and not record_date:
                 cand_year, votes = years.most_common(1)[0]
                 agree = votes >= min(2, len(ctx))
                 raw = _raw_year_digits(e.verbatim_event_date)
@@ -213,18 +278,36 @@ def apply_coverage(entries: list, coverage: VolumeCoverage, config: Optional[dic
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "date_year_corrected",
                                     note, "flagged", f"{old} -> {fixed}"))
                 continue
-            retrospective = e.entry_kind in RETROSPECTIVE_KINDS
-            # digests/retrospectives may look back before the diaries (1859 specimen,
-            # youth notes) but nothing can be dated after the last diary
-            if year > latest or (year < earliest and not retrospective):
+            if outside_period and e.entry_kind in NON_ENTRY_KINDS:
+                # an obituary, an address list … dated outside the diaries: not an entry
                 excluded = exclude
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "date_out_of_span",
-                                    f"Jahr {year} ausserhalb der Tagebuchzeit {earliest}-{latest} "
-                                    f"(Band {vol} {span.start}…{span.end}); "
-                                    + ("OCR-Jahr nicht rekonstruierbar" if retrospective else "kein Eintrag"),
+                                    f"Jahr {year} ausserhalb der Tagebuchzeit {earliest_ym}…{latest_ym} "
+                                    f"(Band {vol} {span.start}…{span.end}); Eintragstyp {e.entry_kind}: kein Eintrag",
                                     "excluded" if excluded else "flagged", e.entry_date))
                 if excluded:
                     drop.add(e.entry_uid)
+                continue
+            if outside_period:
+                # nothing in the diaries is written before the first or after the
+                # last title page: date the entry by its position in the volume
+                old = e.entry_date
+                start, end = _positional_interval(seq, k, inside, span)
+                if before_diaries:
+                    # the written date is a plausible historic record date (a
+                    # specimen, a youth note): keep it on the records themselves
+                    for obs in e.observations:
+                        if not obs.event_date:
+                            obs.event_date = old
+                e.entry_date, e.entry_date_end = start, (end if end != start else None)
+                shown = f"{start}…{end}" if end != start else start
+                note = (f"Eintragsdatum aus der Position in Band {vol} erschlossen ({shown}); "
+                        f"geschriebenes Datum {e.verbatim_event_date or old} liegt "
+                        + ("vor den Tagebüchern (Datum des Belegs, an die Nachweise weitergegeben)" if before_diaries
+                           else "nach den Tagebüchern (OCR-Jahr, nicht rekonstruierbar)"))
+                e.date_note = f"{e.date_note}; {note}" if e.date_note else note
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "date_from_position", note, "flagged",
+                                    f"{old} -> {shown}"))
                 continue
             flags.append(QAFlag(e.entry_id, e.entry_uid, "date_out_of_coverage",
                                 f"Datum ausserhalb Band {vol} ({span.start}…{span.end})"

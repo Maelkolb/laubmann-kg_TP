@@ -38,6 +38,9 @@ class ExtractionResult:
     # How the graph was produced (backend/model/prompt hash/timestamp): feeds the
     # PROV skeleton in kg/rdf.py and measurementMethod in the DwC-A.
     provenance: dict = field(default_factory=dict)
+    # volume -> (start, end) YYYY-MM from configs/volume_coverage.yaml (title
+    # pages); emitted as dcterms:temporal on the DiaryVolume nodes
+    volume_spans: dict = field(default_factory=dict)
 
     @property
     def observations(self) -> list:
@@ -208,8 +211,9 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
         cov_path = Path(cov_cfg.get("path", DEFAULT_PATH))
         if cov_path.exists():
             before = len(result.entries)
-            result.entries, coverage_flags = apply_coverage(
-                result.entries, VolumeCoverage.load(cov_path), cov_cfg)
+            coverage = VolumeCoverage.load(cov_path)
+            result.volume_spans = coverage.as_dict()
+            result.entries, coverage_flags = apply_coverage(result.entries, coverage, cov_cfg)
             logger.info("coverage: %d flags, %d/%d entries excluded",
                         len(coverage_flags), before - len(result.entries), before)
             qa_cfg.setdefault("misdate", False)   # superseded by the coverage check

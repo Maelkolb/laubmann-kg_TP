@@ -105,16 +105,23 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
 - **Volume coverage + date repair** (`configs/volume_coverage.yaml` from the
   34 title pages, `normalization/coverage.py`, config `qa.coverage`): misfiled
   scans re-homed (14 Vol-1 pages in the Vol-15 set), isolated OCR years repaired
-  from the page neighbours (177 entries, e.g. 1901 → 1951), off-span
-  digests/retrospectives kept and flagged (199 entries), non-entries outside
-  1900–1966 excluded (2 entries: the 1875 obituary and a digest whose item number was read as the year 1986; plus 2 duplicates of re-homed pages). `tools/build_volume_coverage.py` re-derives
+  from the page neighbours (209 entries, e.g. 1901 → 1951), off-span
+  off-span entries inside the diary period kept and flagged (158 entries), entries outside it dated by position (10), non-entries outside
+  the diaries excluded (the 1875 obituary; plus 2 duplicates of re-homed pages). `tools/build_volume_coverage.py` re-derives
   the table from `corpus.json` and checks it against the entry dates.
 - **Entity resolution** (`resolution/`, config `resolution`, after linking):
-  taxa 1,064 spellings → 1,182 taxa (same accepted GBIF species key: EXACT/FUZZY, never HIGHERRANK, or same scientific name; written name kept as `dwc:verbatimIdentification` on 6,350 observations); persons 880 name variants → 4,258 persons (840 rule-based rows, 367 cluster-level candidates of which 40 accepted, 12 reviewer-added OCR variants of Walter Wüst); places 689 spellings → 9,666 places (103 orthographic + 586 accepted of 1,048 similar-spelling candidates); habitats 197 labels → 1,480 concepts (9 orthographic + 188 accepted of 292 candidates). Every merge is a `skos:altLabel` on the surviving node; observation/entry IRIs do not change. Decisions for the ambiguous candidates (adjudicated 2026-08-19)
+  taxa 1,064 spellings → 1,182 taxa (same accepted GBIF species key: EXACT/FUZZY, never HIGHERRANK, or same scientific name; written name kept as `dwc:verbatimIdentification` on 6,350 observations); persons 880 name variants → 4,259 persons (840 rule-based rows, 367 cluster-level candidates of which 40 accepted, 12 reviewer-added OCR variants of Walter Wüst); places 689 spellings → 9,669 places (103 orthographic + 586 accepted of 1,048 similar-spelling candidates); habitats 197 labels → 1,480 concepts (9 orthographic + 188 accepted of 292 candidates). Every merge is a `skos:altLabel` on the surviving node; observation/entry IRIs do not change. Decisions for the ambiguous candidates (adjudicated 2026-08-19)
   live in `data/review/*_merges.csv` and are applied via `reviewed_csv`.
 - Ontology **0.4.1**: `skos:altLabel` for merged spellings,
-  `dwc:verbatimIdentification` on merged observations; no new `lkg:` terms.
-- **Current export: Drive `kg_exports_2026-08-19/`** — 9,522 entries (5 excluded by QA + coverage), 74,547 observations, 15,291 vocalisations, 1,706,466 triples, SHACL 0 violations / 410 warnings (empty entries), 1,182 taxa (616 on GBIF), 4,258 persons (300 on Wikidata), 9,666 places (215 georeferenced), 1,480 habitat concepts; DwC-A valid (event 9,522 · occurrence 74,547 · eMoF 102,334 · multimedia 141); `review/` = qa_flags (2,242 rows) + link reviews + the four merge CSVs (3,723 rows); `html/` explorer v7 + workflow page; local run = notebook 07 C1+C3 (`export-all`) against the Drive caches (4 live Gemini calls for the truncated digest entries)
+  `dwc:verbatimIdentification` on merged observations; **0.4.2**: `dcterms:temporal`
+  (title-page span) on every `lkg:DiaryVolume`; no new `lkg:` terms.
+- **Coverage v2** (after review of the first 2026-08-19 export): the year repair applies to
+  every entry kind; entries outside the diary period (1917-04 … 1965-12, the union of the
+  volume spans) that cannot be repaired are dated by their position in the volume
+  (`date_from_position`; a pre-diary written date passes to the observations as their own
+  eventDate); re-homed entries carry a `skos:note` naming the scan set. No entry is dated
+  before April 1917 or after December 1965 any more.
+- **Current export: Drive `kg_exports_2026-08-19/`** — 9,523 entries (4 excluded by QA + coverage), 74,584 observations, 15,297 vocalisations, 1,707,290 triples, SHACL 0 violations / 409 warnings (empty entries), 1,182 taxa (616 on GBIF), 4,259 persons (300 on Wikidata), 9,669 places (215 georeferenced), 1,481 habitat concepts; DwC-A valid (event 9,523 · occurrence 74,584 · eMoF 102,379 · multimedia 141); `review/` = qa_flags (2,281 rows) + link reviews + the four merge CSVs (3,723 rows); `html/` explorer v7 + workflow page; local run = notebook 07 C1+C3 (`export-all`) against the Drive caches (2 live Gemini calls for the truncated digest entries)
 
 ## Previous state (2026-08-18)
 
