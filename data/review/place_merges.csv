@@ -1,0 +1,1152 @@
+merge_id,section,variant,canonical,rule,status,n_variant,n_canonical,detail,decision,reason
+places: Muenchen -> München,places,Muenchen,München,orthographic,auto,7,25142,kind - / settlement,,
+places: katholischer Kirchturm -> Katholischer Kirchturm,places,katholischer Kirchturm,Katholischer Kirchturm,orthographic,auto,2,8,kind locality / locality,,
+places: St. Cosmas -> Sankt Cosmas,places,St. Cosmas,Sankt Cosmas,orthographic,auto,3,16,kind locality / locality,,
+places: Mairinger-See -> Mairinger See,places,Mairinger-See,Mairinger See,orthographic,auto,16,210,kind locality / locality,,
+places: Bogenhauser-Brücke -> Bogenhauser Brücke,places,Bogenhauser-Brücke,Bogenhauser Brücke,orthographic,auto,1,47,kind - / locality,,
+places: St. Leonhard -> Sankt Leonhard,places,St. Leonhard,Sankt Leonhard,orthographic,auto,1,4,kind - / locality,,
+places: Nymphenburger Schloßpark -> Nymphenburger Schlosspark,places,Nymphenburger Schloßpark,Nymphenburger Schlosspark,orthographic,auto,5,321,kind locality / locality,,
+places: Gasteig Anlagen -> Gasteig-Anlagen,places,Gasteig Anlagen,Gasteig-Anlagen,orthographic,auto,4,30,kind locality / locality,,
+"places: München, Äußere Prinzregentenstraße -> München, äußere Prinzregentenstraße",places,"München, Äußere Prinzregentenstraße","München, äußere Prinzregentenstraße",orthographic,auto,2,4,kind locality / locality,,
+places: Schlossberg -> Schloßberg,places,Schlossberg,Schloßberg,orthographic,auto,26,40,kind locality / locality,,
+places: Ob -> OB,places,Ob,OB,orthographic,auto,25,29,kind locality / locality,,
+places: Ob. -> OB,places,Ob.,OB,orthographic,auto,22,29,kind locality / locality,,
+places: St. Alban -> Sankt Alban,places,St. Alban,Sankt Alban,orthographic,auto,14,26,kind locality / locality,,
+places: Markt-Oberdorf -> Markt Oberdorf,places,Markt-Oberdorf,Markt Oberdorf,orthographic,auto,1,6,kind - / -,,
+places: Schloss Laufen -> Schloß Laufen,places,Schloss Laufen,Schloß Laufen,orthographic,auto,1,1,kind - / -,,
+places: Zuerich -> Zürich,places,Zuerich,Zürich,orthographic,auto,2,36,kind - / locality,,
+places: St. Bartholomä -> Sankt Bartholomä,places,St. Bartholomä,Sankt Bartholomä,orthographic,auto,2,6,kind locality / locality,,
+places: Sammister Weiher -> Sammister-Weiher,places,Sammister Weiher,Sammister-Weiher,orthographic,auto,8,12,kind locality / locality,,
+places: Sankt Heinrich -> St. Heinrich,places,Sankt Heinrich,St. Heinrich,orthographic,auto,3,4,kind locality / -,,
+places: Wessling -> Weßling,places,Wessling,Weßling,orthographic,auto,2,22,kind locality / route,,
+places: Zwiefalten - Kloster -> Zwiefalten-Kloster,places,Zwiefalten - Kloster,Zwiefalten-Kloster,orthographic,auto,1,2,kind - / locality,,
+places: Stauwehr der mittleren Isar -> Stauwehr der Mittleren Isar,places,Stauwehr der mittleren Isar,Stauwehr der Mittleren Isar,orthographic,auto,1,2,kind - / -,,
+places: Ismaninger-Kanal -> Ismaninger Kanal,places,Ismaninger-Kanal,Ismaninger Kanal,orthographic,auto,2,138,kind - / locality,,
+places: Anger Moos -> Anger-Moos,places,Anger Moos,Anger-Moos,orthographic,auto,2,6,kind locality / locality,,
+places: Eßsee -> Esssee,places,Eßsee,Esssee,orthographic,auto,6,8,kind locality / locality,,
+"places: Maisinger See, Westseite -> Maisinger See Westseite",places,"Maisinger See, Westseite",Maisinger See Westseite,orthographic,auto,2,2,kind locality / locality,,
+places: St. Emmeram -> Sankt Emmeram,places,St. Emmeram,Sankt Emmeram,orthographic,auto,1,4,kind - / locality,,
+places: alter Schirm -> Alter Schirm,places,alter Schirm,Alter Schirm,orthographic,auto,10,12,kind locality / locality,,
+places: Neuer Schirm -> neuer Schirm,places,Neuer Schirm,neuer Schirm,orthographic,auto,6,20,kind locality / locality,,
+places: Speichersee-Westbecken -> Speichersee Westbecken,places,Speichersee-Westbecken,Speichersee Westbecken,orthographic,auto,6,12,kind locality / locality,,
+places: St. Wolfgang -> Sankt Wolfgang,places,St. Wolfgang,Sankt Wolfgang,orthographic,auto,4,10,kind - / locality,,
+places: St. Margrethen -> Sankt Margrethen,places,St. Margrethen,Sankt Margrethen,orthographic,auto,1,2,kind - / locality,,
+places: Beim Haus -> beim Haus,places,Beim Haus,beim Haus,orthographic,auto,4,46,kind locality / locality,,
+places: Straße Ismaning Aschheim -> Straße Ismaning - Aschheim,places,Straße Ismaning Aschheim,Straße Ismaning - Aschheim,orthographic,auto,1,3,kind - / locality,,
+places: Schloßpark -> Schlosspark,places,Schloßpark,Schlosspark,orthographic,auto,3,10,kind - / locality,,
+places: Schloß Hohenburg -> Schloss Hohenburg,places,Schloß Hohenburg,Schloss Hohenburg,orthographic,auto,1,21,kind - / locality,,
+places: Nussberger Weiher -> Nußberger Weiher,places,Nussberger Weiher,Nußberger Weiher,orthographic,auto,1,14,kind - / locality,,
+places: München - Gera -> München-Gera,places,München - Gera,München-Gera,orthographic,auto,4,4,kind locality / locality,,
+places: Weißach Tal -> Weißach-Tal,places,Weißach Tal,Weißach-Tal,orthographic,auto,2,2,kind locality / locality,,
+"places: Ismaning (Westbecken) -> Ismaning, Westbecken",places,Ismaning (Westbecken),"Ismaning, Westbecken",orthographic,auto,2,2,kind locality / locality,,
+places: Altes Schloss -> Altes Schloß,places,Altes Schloss,Altes Schloß,orthographic,auto,2,8,kind locality / locality,,
+"places: Ismaning Süddamm -> Ismaning, Süddamm",places,Ismaning Süddamm,"Ismaning, Süddamm",orthographic,auto,2,8,kind locality / locality,,
+places: Garten der alten Akademie -> Garten der Alten Akademie,places,Garten der alten Akademie,Garten der Alten Akademie,orthographic,auto,2,2,kind locality / locality,,
+places: Mittleres Westbecken -> mittleres Westbecken,places,Mittleres Westbecken,mittleres Westbecken,orthographic,auto,4,10,kind locality / locality,,
+places: beim Stein -> Beim Stein,places,beim Stein,Beim Stein,orthographic,auto,4,20,kind locality / locality,,
+places: erste Insel -> Erste Insel,places,erste Insel,Erste Insel,orthographic,auto,6,14,kind locality / locality,,
+places: Wittelsbacher-Palais -> Wittelsbacher Palais,places,Wittelsbacher-Palais,Wittelsbacher Palais,orthographic,auto,2,4,kind locality / locality,,
+places: horst -> Horst,places,horst,Horst,orthographic,auto,2,3,kind locality / locality,,
+places: oberer Schluchtweg -> Oberer Schluchtweg,places,oberer Schluchtweg,Oberer Schluchtweg,orthographic,auto,2,6,kind locality / locality,,
+places: Flosslände -> Floßlände,places,Flosslände,Floßlände,orthographic,auto,2,64,kind locality / locality,,
+places: Grünwald - Mühltal -> Grünwald-Mühltal,places,Grünwald - Mühltal,Grünwald-Mühltal,orthographic,auto,2,5,kind locality / locality,,
+places: Maria Eichstraße -> Maria-Eichstraße,places,Maria Eichstraße,Maria-Eichstraße,orthographic,auto,2,2,kind locality / locality,,
+places: St. Zeno -> Sankt Zeno,places,St. Zeno,Sankt Zeno,orthographic,auto,2,4,kind locality / locality,,
+"places: München-Karlingerstraße -> München, Karlingerstraße",places,München-Karlingerstraße,"München, Karlingerstraße",orthographic,auto,2,4,kind locality / locality,,
+"places: München, Fabrikgelände -> München-Fabrikgelände",places,"München, Fabrikgelände",München-Fabrikgelände,orthographic,auto,2,2,kind locality / locality,,
+places: zweite Insel -> Zweite Insel,places,zweite Insel,Zweite Insel,orthographic,auto,4,54,kind locality / locality,,
+places: Grünwalder Perlacher Forst -> Grünwalder-Perlacher Forst,places,Grünwalder Perlacher Forst,Grünwalder-Perlacher Forst,orthographic,auto,1,13,kind - / locality,,
+places: Speichersee Gelände -> Speichersee-Gelände,places,Speichersee Gelände,Speichersee-Gelände,orthographic,auto,1,3,kind - / locality,,
+places: K3 Teiche -> K3-Teiche,places,K3 Teiche,K3-Teiche,orthographic,auto,2,6,kind locality / locality,,
+places: E. W. -> E.W.,places,E. W.,E.W.,orthographic,auto,8,62,kind locality / locality,,
+places: neues E. W. -> neues E.W.,places,neues E. W.,neues E.W.,orthographic,auto,11,12,kind locality / locality,,
+places: Neues E.W. -> neues E.W.,places,Neues E.W.,neues E.W.,orthographic,auto,2,12,kind locality / locality,,
+places: neues Kraftwerk -> Neues Kraftwerk,places,neues Kraftwerk,Neues Kraftwerk,orthographic,auto,2,4,kind locality / locality,,
+places: Sankt Magnusstraße -> St. Magnusstraße,places,Sankt Magnusstraße,St. Magnusstraße,orthographic,auto,2,10,kind locality / locality,,
+places: Wb. -> Wb,places,Wb.,Wb,orthographic,auto,110,187,kind locality / locality,,
+places: WB -> Wb,places,WB,Wb,orthographic,auto,90,187,kind locality / locality,,
+places: Tfb. -> Tfb,places,Tfb.,Tfb,orthographic,auto,8,12,kind locality / locality,,
+places: östlich Tfb. -> östlich Tfb,places,östlich Tfb.,östlich Tfb,orthographic,auto,2,2,kind locality / locality,,
+places: Ft. -> Ft,places,Ft.,Ft,orthographic,auto,6,62,kind locality / locality,,
+places: FT -> Ft,places,FT,Ft,orthographic,auto,15,62,kind locality / locality,,
+places: Vkl. -> Vkl,places,Vkl.,Vkl,orthographic,auto,37,62,kind locality / locality,,
+places: VKL -> Vkl,places,VKL,Vkl,orthographic,auto,56,62,kind locality / locality,,
+places: K 2 / 5 -> K 2/5,places,K 2 / 5,K 2/5,orthographic,auto,2,8,kind locality / locality,,
+places: Vll. -> Vll,places,Vll.,Vll,orthographic,auto,2,2,kind locality / locality,,
+places: VK+ -> VK,places,VK+,VK,orthographic,auto,2,4,kind locality / locality,,
+places: Bauh -> Bauh.,places,Bauh,Bauh.,orthographic,auto,2,6,kind locality / locality,,
+places: Riemer Wiese -> Riemer-Wiese,places,Riemer Wiese,Riemer-Wiese,orthographic,auto,4,45,kind locality / locality,,
+places: KI -> Ki,places,KI,Ki,orthographic,auto,4,20,kind locality / locality,,
+places: k 2/1 -> K 2/1,places,k 2/1,K 2/1,orthographic,auto,2,8,kind locality / locality,,
+places: bb. -> Bb.,places,bb.,Bb.,orthographic,auto,6,10,kind locality / locality,,
+places: Kanal beim E.W. -> Kanal beim E. W.,places,Kanal beim E.W.,Kanal beim E. W.,orthographic,auto,2,4,kind locality / locality,,
+places: Wfb -> Wfb.,places,Wfb,Wfb.,orthographic,auto,12,18,kind locality / locality,,
+places: östliches WB -> östliches Wb,places,östliches WB,östliches Wb,orthographic,auto,4,4,kind locality / locality,,
+places: westliches Wb. -> westliches Wb,places,westliches Wb.,westliches Wb,orthographic,auto,8,8,kind locality / locality,,
+places: Großes Schilffeld -> großes Schilffeld,places,Großes Schilffeld,großes Schilffeld,orthographic,auto,14,20,kind locality / locality,,
+"places: München (Säbenerstraße) -> München, Säbenerstraße",places,München (Säbenerstraße),"München, Säbenerstraße",orthographic,auto,2,4,kind locality / locality,,
+places: k 2/4 -> K 2/4,places,k 2/4,K 2/4,orthographic,auto,6,8,kind locality / locality,,
+places: K 2/9 -> K/2/9,places,K 2/9,K/2/9,orthographic,auto,2,4,kind locality / locality,,
+places: Leinthaler-Straße -> Leinthaler Straße,places,Leinthaler-Straße,Leinthaler Straße,orthographic,auto,1,2,kind - / locality,,
+places: Gs -> GS,places,Gs,GS,orthographic,auto,2,10,kind locality / locality,,
+places: qD -> QD,places,qD,QD,orthographic,auto,2,55,kind locality / locality,,
+places: Geräumt VI / i -> Geräumt VI/i,places,Geräumt VI / i,Geräumt VI/i,orthographic,auto,4,6,kind locality / locality,,
+places: Obere Fischteiche -> obere Fischteiche,places,Obere Fischteiche,obere Fischteiche,orthographic,auto,2,4,kind locality / locality,,
+places: k 2/3 -> K 2/3,places,k 2/3,K 2/3,orthographic,auto,2,4,kind locality / locality,,
+places: Westlicher Wb. -> westlicher Wb.,places,Westlicher Wb.,westlicher Wb.,orthographic,auto,2,2,kind locality / locality,,
+places: mittlerer Hb. -> mittlerer Hb,places,mittlerer Hb.,mittlerer Hb,orthographic,auto,2,4,kind locality / locality,,
+places: Schloß Berg -> Schloss Berg,places,Schloß Berg,Schloss Berg,orthographic,auto,1,2,kind - / -,,
+places: München-Chiemgaustraße -> München (Chiemgaustraße),places,München-Chiemgaustraße,München (Chiemgaustraße),orthographic,auto,2,4,kind locality / locality,,
+"places: München, Chiemgaustraße -> München (Chiemgaustraße)",places,"München, Chiemgaustraße",München (Chiemgaustraße),orthographic,auto,2,4,kind locality / locality,,
+"places: München-Seybothstraße -> München, Seybothstraße",places,München-Seybothstraße,"München, Seybothstraße",orthographic,auto,2,8,kind locality / locality,,
+places: Karolinger-Allee -> Karolinger Allee,places,Karolinger-Allee,Karolinger Allee,orthographic,auto,6,34,kind locality / locality,,
+"places: München-Harlachinger Straße -> München, Harlachinger Straße",places,München-Harlachinger Straße,"München, Harlachinger Straße",orthographic,auto,2,4,kind locality / locality,,
+places: Brahms Promenade -> Brahms-Promenade,places,Brahms Promenade,Brahms-Promenade,orthographic,auto,1,16,kind - / locality,,
+places: Acha-Einmündung -> Achen-Einmündung,places,Acha-Einmündung,Achen-Einmündung,similar,candidate,7,8,similarity 0.91; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achra-Einmündung -> Acha-Einmündung,places,Achra-Einmündung,Acha-Einmündung,similar,candidate,2,7,similarity 0.97; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achen-Mündung -> Achemündung,places,Achen-Mündung,Achemündung,similar,candidate,8,11,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Achemündung -> Achenmündung,places,Achemündung,Achenmündung,similar,candidate,11,126,similarity 0.96; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achsenmündung -> Achemündung,places,Achsenmündung,Achemündung,similar,candidate,2,11,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Achern -> Achen,places,Achern,Achen,similar,candidate,2,6,similarity 0.91; kind locality / locality,y,OCR variant; same V6 Aug 1928 station; Baden town implausible
+places: Achen-Einmündung -> Achen-Mündung,places,Achen-Einmündung,Achen-Mündung,similar,candidate,8,8,similarity 0.90; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Acheneinmündung -> Achen-Einmündung,places,Acheneinmündung,Achen-Einmündung,similar,candidate,2,8,similarity 0.97; kind locality / locality,y,hyphen-only variant of same river-mouth name
+places: Achseeinmündung -> Achen-Einmündung,places,Achseeinmündung,Achen-Einmündung,similar,candidate,1,8,similarity 0.91; kind - / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achsen-Einmündung -> Achen-Einmündung,places,Achsen-Einmündung,Achen-Einmündung,similar,candidate,4,8,similarity 0.97; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achen-Mündung -> Achenmündung,places,Achen-Mündung,Achenmündung,similar,candidate,8,126,similarity 0.96; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achsen-Mündung -> Achen-Mündung,places,Achsen-Mündung,Achen-Mündung,similar,candidate,3,8,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Achsenmündung -> Achen-Mündung,places,Achsenmündung,Achen-Mündung,similar,candidate,2,8,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Achseeinmündung -> Acheneinmündung,places,Achseeinmündung,Acheneinmündung,similar,candidate,1,2,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Acheneinmündung -> Achsen-Einmündung,places,Acheneinmündung,Achsen-Einmündung,similar,candidate,2,4,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Achsen-Mündung -> Achenmündung,places,Achsen-Mündung,Achenmündung,similar,candidate,3,126,similarity 0.93; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achsenmündung -> Achenmündung,places,Achsenmündung,Achenmündung,similar,candidate,2,126,similarity 0.96; kind locality / locality,y,OCR/hyphen variant of Achen mouth; same V6 Aug 1928
+places: Achseeinmündung -> Achsen-Einmündung,places,Achseeinmündung,Achsen-Einmündung,similar,candidate,1,4,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Achseeinmündung -> Achsen-Mündung,places,Achseeinmündung,Achsen-Mündung,similar,candidate,1,3,similarity 0.90; kind - / locality,n,superseded; another canonical accepted
+places: Achseeinmündung -> Achsenmündung,places,Achseeinmündung,Achsenmündung,similar,candidate,1,2,similarity 0.93; kind - / locality,n,superseded; another canonical accepted
+places: Achsen-Mündung -> Achsen-Einmündung,places,Achsen-Mündung,Achsen-Einmündung,similar,candidate,3,4,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Achsenmündung -> Achsen-Mündung,places,Achsenmündung,Achsen-Mündung,similar,candidate,2,3,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Achthal -> Achtal,places,Achthal,Achtal,similar,candidate,1,7,similarity 0.92; kind - / locality,y,old th spelling of Tal; single use
+places: Ahornallee -> Ahorn-Allee,places,Ahornallee,Ahorn-Allee,similar,candidate,14,16,similarity 0.95; kind locality / locality,y,hyphen variant; same Munich locality
+places: Akademie-Garten -> Akademiegarten,places,Akademie-Garten,Akademiegarten,similar,candidate,14,42,similarity 0.97; kind locality / locality,y,hyphen variant; Munich
+places: Akademiengarten -> Akademie-Garten,places,Akademiengarten,Akademie-Garten,similar,candidate,8,14,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Akademiengarten -> Akademiegarten,places,Akademiengarten,Akademiegarten,similar,candidate,8,42,similarity 0.97; kind locality / locality,y,spelling variant; Munich
+places: Amalienstraße 54 -> Amalienstraße,places,Amalienstraße 54,Amalienstraße,similar,candidate,36,156,similarity 0.90; kind locality / locality,n,house number is a specific address within street
+places: Amalienstraße 64 -> Amalienstraße,places,Amalienstraße 64,Amalienstraße,similar,candidate,2,156,similarity 0.90; kind locality / locality,n,house number is a specific address within street
+places: Amalienstraße 64 -> Amalienstraße 54,places,Amalienstraße 64,Amalienstraße 54,similar,candidate,2,36,similarity 0.94; kind locality / locality,n,different house numbers
+places: Ammer-Moos -> Ammermoos,places,Ammer-Moos,Ammermoos,similar,candidate,2,28,similarity 0.95; kind locality / locality,y,hyphen variant
+places: Ammermündung -> Ammer-Mündung,places,Ammermündung,Ammer-Mündung,similar,candidate,5,6,similarity 0.96; kind locality / locality,y,hyphen variant; Ammer mouth Ammersee
+places: Ammerding -> Ammering,places,Ammerding,Ammering,similar,candidate,16,40,similarity 0.94; kind locality / locality,n,unclear; different decades; could be distinct -ing/-ding names
+places: Angeremoos -> Anger-Moos,places,Angeremoos,Anger-Moos,similar,candidate,4,6,similarity 0.90; kind locality / locality,n,superseded; another canonical accepted
+places: Anger-Moos -> Angermoos,places,Anger-Moos,Angermoos,similar,candidate,6,17,similarity 0.95; kind locality / locality,y,hyphen variant
+places: Angeremoos -> Angermoos,places,Angeremoos,Angermoos,similar,candidate,4,17,similarity 0.95; kind locality / locality,y,OCR letter insertion
+places: Angerloh -> Angerlohe,places,Angerloh,Angerlohe,similar,candidate,2,6,similarity 0.94; kind locality / locality,y,spelling variant; Munich Angerlohe wood
+places: Angermaier -> Angermair,places,Angermaier,Angermair,similar,candidate,3,4,similarity 0.95; kind locality / locality,y,Maier/Mair spelling of same farm name; 1947-49
+places: Anhaltfing -> Anhalting,places,Anhaltfing,Anhalting,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,OCR letter insertion; same era Munich
+places: Anigler-Hütte -> Aniglar-Hütte,places,Anigler-Hütte,Aniglar-Hütte,similar,candidate,1,1,similarity 0.93; kind - / -,y,e/a spelling of same hut name
+places: Antenringer Sumpf -> Anteninger Sumpf,places,Antenringer Sumpf,Anteninger Sumpf,similar,candidate,2,18,similarity 0.97; kind - / locality,y,OCR variant of same swamp; V9 1931 Pöcking
+places: Anteringer Sumpf -> Anteninger Sumpf,places,Anteringer Sumpf,Anteninger Sumpf,similar,candidate,3,18,similarity 0.94; kind locality / locality,y,OCR variant of same swamp; V9 1931 Pöcking
+places: Antreninger Sumpf -> Anteninger Sumpf,places,Antreninger Sumpf,Anteninger Sumpf,similar,candidate,6,18,similarity 0.97; kind locality / locality,y,OCR variant of same swamp; V9 1931 Pöcking
+places: Antwinger Sumpf -> Anteninger Sumpf,places,Antwinger Sumpf,Anteninger Sumpf,similar,candidate,4,18,similarity 0.90; kind locality / locality,y,OCR variant of same swamp; V9 1931 Pöcking
+places: Antenringer Sumpf -> Anteringer Sumpf,places,Antenringer Sumpf,Anteringer Sumpf,similar,candidate,2,3,similarity 0.97; kind - / locality,n,superseded; another canonical accepted
+places: Antenringer Sumpf -> Antreninger Sumpf,places,Antenringer Sumpf,Antreninger Sumpf,similar,candidate,2,6,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Anthering -> Antering,places,Anthering,Antering,similar,candidate,2,9,similarity 0.94; kind locality / locality,y,h-insertion spelling; base of Anteringer Moos
+places: Antwringer Moos -> Anteringer Moos,places,Antwringer Moos,Anteringer Moos,similar,candidate,2,24,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Anteringer Sumpf -> Antreninger Sumpf,places,Anteringer Sumpf,Antreninger Sumpf,similar,candidate,3,6,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Anteringer Sumpf -> Antwinger Sumpf,places,Anteringer Sumpf,Antwinger Sumpf,similar,candidate,3,4,similarity 0.90; kind locality / locality,n,superseded; another canonical accepted
+places: Antworinger Filz -> Antwinger Filz,places,Antworinger Filz,Antwinger Filz,similar,candidate,2,18,similarity 0.93; kind locality / locality,y,OCR variant of same Filz
+places: Antwringer Moos -> Antwinger Moos,places,Antwringer Moos,Antwinger Moos,similar,candidate,2,56,similarity 0.97; kind locality / locality,y,OCR letter swap; same Pöcking bog
+places: Anzeler-Park -> Anzelerpark,places,Anzeler-Park,Anzelerpark,similar,candidate,1,4,similarity 0.96; kind - / locality,y,hyphen variant; Kaufbeuren
+places: Arnheim -> Arnsheim,places,Arnheim,Arnsheim,similar,candidate,1,2,similarity 0.93; kind - / locality,n,unclear; Arnheim is a distinct known city
+places: Arnspeckstraße -> Arnpeckstraße,places,Arnspeckstraße,Arnpeckstraße,similar,candidate,2,2,similarity 0.97; kind locality / locality,y,OCR insertion; Arnpeckstraße is real Munich street
+places: Aschheimerstraße -> Aschheimer Straße,places,Aschheimerstraße,Aschheimer Straße,similar,candidate,6,19,similarity 0.97; kind locality / locality,y,space variant
+places: Bachmayer-Garten -> Bachmayr-Garten,places,Bachmayer-Garten,Bachmayr-Garten,similar,candidate,2,2,similarity 0.97; kind locality / locality,y,Mayer/Mayr spelling; Pöcking 1934-35
+places: Bachmayrs Garten -> Bachmayer-Garten,places,Bachmayrs Garten,Bachmayer-Garten,similar,candidate,2,2,similarity 0.94; kind locality / locality,y,genitive/hyphen variant; Pöcking 1934
+places: Bachmayrs Garten -> Bachmayr-Garten,places,Bachmayrs Garten,Bachmayr-Garten,similar,candidate,2,2,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Badehütten -> Badekütten,places,Badehütten,Badekütten,similar,candidate,2,3,similarity 0.91; kind locality / locality,y,OCR k/h; Badekütten is not a word
+places: Bäcker-Mühle -> Bäckermühle,places,Bäcker-Mühle,Bäckermühle,similar,candidate,4,12,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Bärenstatt -> Bärnstatt,places,Bärenstatt,Bärnstatt,similar,candidate,4,8,similarity 0.95; kind locality / locality,y,spelling variant; Hintersteiner See 1938
+places: Baggersee I -> Baggersee,places,Baggersee I,Baggersee,similar,candidate,10,34,similarity 0.90; kind locality / locality,n,numbered lake vs generic term
+places: Baggerseen -> Baggersee,places,Baggerseen,Baggersee,similar,candidate,12,34,similarity 0.95; kind locality / locality,y,plural/singular of same generic term
+places: Baggersee II -> Baggersee I,places,Baggersee II,Baggersee I,similar,candidate,8,10,similarity 0.96; kind locality / locality,n,different numbered lakes
+places: Bahnhof Söcking -> Bahnhof Pöcking,places,Bahnhof Söcking,Bahnhof Pöcking,similar,candidate,2,10,similarity 0.94; kind - / locality,n,Söcking and Pöcking are different villages
+places: Bairwies -> Bairawies,places,Bairwies,Bairawies,similar,candidate,1,9,similarity 0.94; kind - / locality,y,spelling variant of Bairawies
+places: Barrig -> Barig,places,Barrig,Barig,similar,candidate,3,3,similarity 0.91; kind locality / locality,y,double-r variant; same Bad Schandau trip 1957
+places: Bauerwald -> Bauernwald,places,Bauerwald,Bauernwald,similar,candidate,2,12,similarity 0.95; kind locality / locality,y,n-drop variant; Kaufbeuren
+places: Baukhof -> Bauhof,places,Baukhof,Bauhof,similar,candidate,2,254,similarity 0.92; kind locality / locality,y,OCR insertion; Ismaning Bauhof
+places: Beckstettener Moos -> Beckstetter Moos,places,Beckstettener Moos,Beckstetter Moos,similar,candidate,8,18,similarity 0.94; kind locality / locality,y,adjectival variant; Kaufbeuren
+places: Berabacher Weiher -> Bernbacher Weiher,places,Berabacher Weiher,Bernbacher Weiher,similar,candidate,1,28,similarity 0.94; kind - / locality,y,OCR variant
+places: Bergwies -> Bergwiese,places,Bergwies,Bergwiese,similar,candidate,2,19,similarity 0.94; kind locality / locality,y,dialect e-drop of same word
+places: Bernbacher Moor -> Bernbacher Moos,places,Bernbacher Moor,Bernbacher Moos,similar,candidate,2,31,similarity 0.93; kind locality / locality,y,Moor/Moos synonym; same 1919 Kaufbeuren bog
+places: Bernbacher Weiler -> Bernbacher Weiher,places,Bernbacher Weiler,Bernbacher Weiher,similar,candidate,1,28,similarity 0.94; kind - / locality,y,OCR l/h; single use
+places: Bernried Park -> Bernrieder Park,places,Bernried Park,Bernrieder Park,similar,candidate,1,4,similarity 0.93; kind - / locality,y,adjectival variant
+places: Biesenhofen -> Bienenhofen,places,Biesenhofen,Bienenhofen,similar,candidate,3,7,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Biesenhofer -> Biesenhofen,places,Biesenhofer,Biesenhofen,similar,candidate,3,3,similarity 0.91; kind locality / locality,y,adjectival inflection of same village
+places: Biesenhoffen -> Biesenhofen,places,Biesenhoffen,Biesenhofen,similar,candidate,1,3,similarity 0.96; kind - / locality,n,superseded; another canonical accepted
+places: Biesenhofen -> Biessenhofen,places,Biesenhofen,Biessenhofen,similar,candidate,3,32,similarity 0.96; kind locality / locality,y,spelling variant of Biessenhofen
+places: Biesenhoffen -> Biessenhofen,places,Biesenhoffen,Biessenhofen,similar,candidate,1,32,similarity 0.92; kind - / locality,y,spelling variant of Biessenhofen
+places: Birkenmoor -> Birkenmoos,places,Birkenmoor,Birkenmoos,similar,candidate,5,9,similarity 0.90; kind locality / locality,y,Moor/Moos synonym of same generic name
+places: Blutenburger Straße -> Blutenburgstraße,places,Blutenburger Straße,Blutenburgstraße,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,adjectival variant of Munich street
+places: Bodendorf -> Bodensdorf,places,Bodendorf,Bodensdorf,similar,candidate,17,66,similarity 0.95; kind settlement / settlement,y,OCR s-drop; same Sept 1956 trip
+places: Bogenhausener Brücke -> Bogenhauser Brücke,places,Bogenhausener Brücke,Bogenhauser Brücke,similar,candidate,3,47,similarity 0.95; kind locality / locality,y,adjectival variant
+places: Botanischer Garten und Nymphenburger Kanal -> Botanischer Garten und Nymphenburger Park,places,Botanischer Garten und Nymphenburger Kanal,Botanischer Garten und Nymphenburger Park,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,Kanal and Park are different features
+places: Brandl -> Brand,places,Brandl,Brand,similar,candidate,1,8,similarity 0.91; kind - / locality,n,unclear; Brandl likely distinct farm/family name
+places: Brandis Westgrube -> Brandis Ostgrube,places,Brandis Westgrube,Brandis Ostgrube,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,compass-point variants; different pits
+places: Branntweiners Mahd -> Brantweiners Mahd,places,Branntweiners Mahd,Brantweiners Mahd,similar,candidate,2,2,similarity 0.97; kind locality / locality,y,spelling variant; Kaufbeuren
+places: Braunaubrücke -> Braunauer Brücke,places,Braunaubrücke,Braunauer Brücke,similar,candidate,4,9,similarity 0.90; kind locality / locality,y,compound variant; Isar bridge Munich
+places: Braunbrücke -> Braunaubrücke,places,Braunbrücke,Braunaubrücke,similar,candidate,2,4,similarity 0.92; kind locality / locality,y,OCR truncation; entry place Isar
+places: Braunenberg -> Braunberg,places,Braunenberg,Braunberg,similar,candidate,2,45,similarity 0.90; kind locality / locality,n,unclear; different periods; possibly distinct hills
+places: Breitbrunn -> Breitenbrunn,places,Breitbrunn,Breitenbrunn,similar,candidate,1,3,similarity 0.91; kind - / locality,n,both real distinct place names
+places: Brenne -> Brenner,places,Brenne,Brenner,similar,candidate,2,3,similarity 0.92; kind locality / locality,n,Brenne is Isar gravel heath; Brenner distinct
+places: Brückfischer -> Bruckfischer,places,Brückfischer,Bruckfischer,similar,candidate,5,8,similarity 0.96; kind locality / locality,y,umlaut variant; Pupplinger Au
+places: Brückenfischer -> Brückfischer,places,Brückenfischer,Brückfischer,similar,candidate,1,5,similarity 0.93; kind - / locality,y,spelling variant
+places: Brünn -> Brunn,places,Brünn,Brunn,similar,candidate,1,2,similarity 0.91; kind - / -,n,Brünn is Brno; Brunn generic distinct
+places: Brutinsel -> Brütinsel,places,Brutinsel,Brütinsel,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,same entry 1927-06-02 Mering
+places: Buchenberg -> Buchenbergle,places,Buchenberg,Buchenbergle,similar,candidate,1,2,similarity 0.91; kind - / locality,n,Buchenberg is distinct Allgäu town; -le diminutive
+places: Buchenhang -> Buchenhain,places,Buchenhang,Buchenhain,similar,candidate,4,5,similarity 0.90; kind locality / locality,n,Buchenhain is a village; Buchenhang generic slope
+places: Buchloe - Beckstetten -> Buchloe und Beckstetten,places,Buchloe - Beckstetten,Buchloe und Beckstetten,similar,candidate,2,12,similarity 0.90; kind locality / locality,y,formatting variant of same pair
+places: Buckstetten -> Buchstetten,places,Buckstetten,Buchstetten,similar,candidate,3,20,similarity 0.91; kind locality / locality,y,ck/ch OCR; Kaufbeuren
+places: Bucht von Artaki -> Bucht von Arta,places,Bucht von Artaki,Bucht von Arta,similar,candidate,2,24,similarity 0.93; kind locality / locality,n,Artaki Marmara vs Arta Greece; different trips
+places: Büschenberg -> Büchsenberg,places,Büschenberg,Büchsenberg,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,OCR letter swap; same May 1935 Pöcking
+places: Burg Kipfenberg -> Burg Kippenberg,places,Burg Kipfenberg,Burg Kippenberg,similar,candidate,2,6,similarity 0.93; kind locality / locality,y,pf/pp OCR; Kipfenberg castle real
+places: Chiemgau-Straße -> Chiemgaustraße,places,Chiemgau-Straße,Chiemgaustraße,similar,candidate,2,59,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Dachauer Moor -> Dachauer Moos,places,Dachauer Moor,Dachauer Moos,similar,candidate,2,50,similarity 0.92; kind locality / locality,y,Moor/Moos synonym
+places: Dachsee -> Dachssee,places,Dachsee,Dachssee,similar,candidate,5,16,similarity 0.93; kind locality / locality,y,spelling variant; Kaufbeuren
+places: Deggendorf -> Degerndorf,places,Deggendorf,Degerndorf,similar,candidate,4,5,similarity 0.90; kind locality / locality,n,both real distinct towns
+places: Dianis -> Diani,places,Dianis,Diani,similar,candidate,1,2,similarity 0.91; kind - / -,n,unclear; no context
+places: Dickwisch-Weiher -> Dickmich-Weiher,places,Dickwisch-Weiher,Dickmich-Weiher,similar,candidate,1,3,similarity 0.90; kind - / locality,y,both OCR garbles of same pond; Pöcking 1935
+places: Dienst -> Diens,places,Dienst,Diens,similar,candidate,1,2,similarity 0.91; kind - / -,y,same token; t-drop; likely non-place
+places: Dießinger Bucht -> Dießener Bucht,places,Dießinger Bucht,Dießener Bucht,similar,candidate,3,3,similarity 0.90; kind locality / locality,n,unclear; 1928 context differs; Dießing exists
+places: Dießling -> Dießing,places,Dießling,Dießing,similar,candidate,1,33,similarity 0.94; kind - / settlement,y,OCR l-insertion; single use
+places: Douglasshütte -> Douglashütte,places,Douglasshütte,Douglashütte,similar,candidate,1,1,similarity 0.96; kind - / -,y,spelling variant
+places: Ebene -> Eberne,places,Ebene,Eberne,similar,candidate,2,11,similarity 0.91; kind locality / locality,n,Ebene generic plain; different word
+places: Ebenfälle -> Eberfälle,places,Ebenfälle,Eberfälle,similar,candidate,1,4,similarity 0.90; kind locality / locality,y,OCR n/r of same odd name
+places: Ebersbach -> Eberbach,places,Ebersbach,Eberbach,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,both real distinct names; different regions
+places: Eberfäller -> Eberfälle,places,Eberfäller,Eberfälle,similar,candidate,2,4,similarity 0.95; kind locality / locality,y,spelling variant
+places: Eberfalle -> Eberfälle,places,Eberfalle,Eberfälle,similar,candidate,2,4,similarity 0.95; kind locality / locality,y,umlaut variant
+places: Eberfäller -> Eberfalle,places,Eberfäller,Eberfalle,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,superseded; another canonical accepted
+places: Ebern -> Eberne,places,Ebern,Eberne,similar,candidate,4,11,similarity 0.91; kind locality / locality,n,Ebern is distinct Franconian town
+places: Echinger und Moorburger Stauseen -> Echinger und Moosburger Stauseen,places,Echinger und Moorburger Stauseen,Echinger und Moosburger Stauseen,similar,candidate,4,56,similarity 0.97; kind locality / locality,y,OCR variant of Moosburg
+places: Einöde -> Einöd,places,Einöde,Einöd,similar,candidate,1,2,similarity 0.92; kind - / -,y,same word spelling variant
+places: Einstrichter -> Einstriche,places,Einstrichter,Einstriche,similar,candidate,2,3,similarity 0.91; kind locality / locality,y,same garbled name; 1954-55 Speichersee area
+places: Enten-Anlagen -> Entenanlagen,places,Enten-Anlagen,Entenanlagen,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Erlbach -> Erlach,places,Erlbach,Erlach,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,both real distinct names
+places: Ermanning -> Ermaning,places,Ermanning,Ermaning,similar,candidate,4,26,similarity 0.94; kind locality / locality,y,spelling variant
+places: Ermanning -> Ermannig,places,Ermanning,Ermannig,similar,candidate,4,4,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Ess-See -> Esssee,places,Ess-See,Esssee,similar,candidate,2,8,similarity 0.92; kind locality / locality,y,hyphen variant
+places: Esterbergalm -> Esterberg-Alm,places,Esterbergalm,Esterberg-Alm,similar,candidate,2,14,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Feldkirch -> Feldkirchen,places,Feldkirch,Feldkirchen,similar,candidate,17,21,similarity 0.90; kind locality / locality,n,Feldkirch Vorarlberg vs Feldkirchen Munich
+places: Feldmochinger Baggerseen -> Feldmochinger Baggersee,places,Feldmochinger Baggerseen,Feldmochinger Baggersee,similar,candidate,22,24,similarity 0.98; kind locality / locality,y,plural/singular same site
+places: Felix-Dahn-Straße 6 -> Felix-Dahn-Straße,places,Felix-Dahn-Straße 6,Felix-Dahn-Straße,similar,candidate,4,6,similarity 0.95; kind locality / locality,n,house number is a specific address
+places: Felix-Dahnstraße -> Felix-Dahn-Straße,places,Felix-Dahnstraße,Felix-Dahn-Straße,similar,candidate,2,6,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Felix-Dahnstraße -> Felix-Dahn-Straße 6,places,Felix-Dahnstraße,Felix-Dahn-Straße 6,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,street vs house number
+places: Fichtenteiche -> Fichtteiche,places,Fichtenteiche,Fichtteiche,similar,candidate,3,4,similarity 0.92; kind locality / locality,n,unclear; different periods and entry places
+places: Fingermoos -> Fingermoor,places,Fingermoos,Fingermoor,similar,candidate,4,4,similarity 0.90; kind - / locality,y,Moor/Moos synonym of unusual name
+places: Fininger Allee -> Finninger Allee,places,Fininger Allee,Finninger Allee,similar,candidate,2,4,similarity 0.97; kind - / locality,y,n-doubling variant
+places: Fininger Allee -> Finsinger Allee,places,Fininger Allee,Finsinger Allee,similar,candidate,2,3,similarity 0.97; kind - / locality,n,superseded; another canonical accepted
+places: Finkteiche -> Finkenteiche,places,Finkteiche,Finkenteiche,similar,candidate,4,6,similarity 0.91; kind locality / locality,y,spelling variant; Ismaning ponds
+places: Finkleralm -> Finkeralm,places,Finkleralm,Finkeralm,similar,candidate,3,7,similarity 0.95; kind locality / locality,y,spelling variant; Hintersteiner See 1938
+places: Finkteiche -> Finkteich,places,Finkteiche,Finkteich,similar,candidate,4,6,similarity 0.95; kind locality / locality,n,superseded; another canonical accepted
+places: Finnig -> Finning,places,Finnig,Finning,similar,candidate,2,7,similarity 0.92; kind locality / locality,y,n-drop variant
+places: Finsinger Allee -> Finninger Allee,places,Finsinger Allee,Finninger Allee,similar,candidate,3,4,similarity 0.93; kind locality / locality,y,OCR s/n; same V29 March 1956
+places: Fischbach -> Fischbachau,places,Fischbach,Fischbachau,similar,candidate,10,22,similarity 0.90; kind locality / locality,n,Fischbachau distinct village
+places: Fischerbach -> Fischbach,places,Fischerbach,Fischbach,similar,candidate,4,10,similarity 0.90; kind locality / locality,n,different names
+places: Fischteich 14 -> Fischteich 16,places,Fischteich 14,Fischteich 16,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,different numbered ponds
+places: Flaucherauen -> Flaucher-Auen,places,Flaucherauen,Flaucher-Auen,similar,candidate,1,7,similarity 0.96; kind - / locality,y,hyphen variant
+places: Flurlingen -> Flürlingen,places,Flurlingen,Flürlingen,similar,candidate,1,4,similarity 0.95; kind - / locality,y,umlaut variant
+places: Flutbrücke -> Flurbrücke,places,Flutbrücke,Flurbrücke,similar,candidate,1,6,similarity 0.91; kind - / locality,y,OCR t/r; generic term
+places: Forklär-Teich -> Forklärteich,places,Forklär-Teich,Forklärteich,similar,candidate,1,1,similarity 0.96; kind - / -,y,hyphen variant
+places: Forst im Müllergeräumt -> Forst am Müllergeräumt,places,Forst im Müllergeräumt,Forst am Müllergeräumt,similar,candidate,1,1,similarity 0.96; kind - / -,y,preposition variant
+"places: Forst, Geviert VI/27 -> Forst Geviert VI/1",places,"Forst, Geviert VI/27",Forst Geviert VI/1,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Forst Geviert VI/5 -> Forst Geviert VI/1,places,Forst Geviert VI/5,Forst Geviert VI/1,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,different numbered plots
+places: Forst Geviert VI/6 -> Forst Geviert VI/1,places,Forst Geviert VI/6,Forst Geviert VI/1,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,different numbered plots
+places: Forst Geviert VI/i -> Forst Geviert VI/1,places,Forst Geviert VI/i,Forst Geviert VI/1,similar,candidate,2,2,similarity 0.94; kind locality / locality,y,i is OCR of 1
+"places: Forst, Geviert VI/27 -> Forst Geviert VI/5",places,"Forst, Geviert VI/27",Forst Geviert VI/5,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+"places: Forst, Geviert VI/27 -> Forst Geviert VI/6",places,"Forst, Geviert VI/27",Forst Geviert VI/6,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+"places: Forst, Geviert VI/27 -> Forst Geviert VI/i",places,"Forst, Geviert VI/27",Forst Geviert VI/i,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Forst Geviert VI/6 -> Forst Geviert VI/5,places,Forst Geviert VI/6,Forst Geviert VI/5,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,different numbered plots
+places: Forst Geviert VI/i -> Forst Geviert VI/5,places,Forst Geviert VI/i,Forst Geviert VI/5,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,different numbered plots
+places: Forst Geviert VI/i -> Forst Geviert VI/6,places,Forst Geviert VI/i,Forst Geviert VI/6,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,different numbered plots
+places: Forst im Geräum 8. VI -> Forst im Geräum VI,places,Forst im Geräum 8. VI,Forst im Geräum VI,similar,candidate,2,3,similarity 0.95; kind locality / locality,n,unclear; 8. VI may be date or plot
+places: Forst im Geräumt VI -> Forst im Geräum 8. VI,places,Forst im Geräumt VI,Forst im Geräum 8. VI,similar,candidate,1,2,similarity 0.93; kind - / locality,n,unclear; 8. VI may be date or plot
+places: Forst im Geräumt VI -> Forst im Geräum VI,places,Forst im Geräumt VI,Forst im Geräum VI,similar,candidate,1,3,similarity 0.97; kind - / locality,y,Geräumt/Geräum spelling variant
+places: Forst im Geräumt VI / i -> Forst im Geräum VI,places,Forst im Geräumt VI / i,Forst im Geräum VI,similar,candidate,2,3,similarity 0.93; kind locality / locality,n,plot within section
+places: Forst im Geräumt Fr. -> Forst im Geräumt F,places,Forst im Geräumt Fr.,Forst im Geräumt F,similar,candidate,1,2,similarity 0.97; kind - / locality,y,abbreviation variant
+places: Forst im Geräumt VI -> Forst im Geräumt F,places,Forst im Geräumt VI,Forst im Geräumt F,similar,candidate,1,2,similarity 0.92; kind - / locality,n,different section labels
+places: Forst im Geräumt F -> Fort im Geräumt,places,Forst im Geräumt F,Fort im Geräumt,similar,candidate,2,3,similarity 0.91; kind locality / locality,n,section vs unsectioned forest
+places: Forst im Geräumt Fr. -> Forst im Geräumt VI,places,Forst im Geräumt Fr.,Forst im Geräumt VI,similar,candidate,1,1,similarity 0.90; kind - / -,n,different section labels
+places: Forst im Geräumt VI -> Forst im Geräumt VI / i,places,Forst im Geräumt VI,Forst im Geräumt VI / i,similar,candidate,1,2,similarity 0.95; kind - / locality,n,section vs plot
+places: Forst im Geviert VI -> Forst im Geviert VI/30,places,Forst im Geviert VI,Forst im Geviert VI/30,similar,candidate,1,2,similarity 0.93; kind - / locality,n,section vs plot
+places: Forst im Planquadrat VI -> Forst im Planquadrat VI/1,places,Forst im Planquadrat VI,Forst im Planquadrat VI/1,similar,candidate,1,2,similarity 0.96; kind - / locality,n,section vs plot
+places: Forstenrieder Straße -> Forstenriederstraße,places,Forstenrieder Straße,Forstenriederstraße,similar,candidate,2,2,similarity 0.98; kind locality / locality,y,space variant
+places: Forstenwald -> Forstwald,places,Forstenwald,Forstwald,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,unclear; different names and decades
+places: Forstmeister Gark -> Forstmeister Park,places,Forstmeister Gark,Forstmeister Park,similar,candidate,1,2,similarity 0.94; kind - / locality,y,OCR G/P
+places: Forststenfelder bei Gaimert -> Forststenfelder bei Gaimert VI/6,places,Forststenfelder bei Gaimert,Forststenfelder bei Gaimert VI/6,similar,candidate,1,2,similarity 0.92; kind - / locality,n,unsectioned vs plot
+places: Frankenhof -> Frankenhofen,places,Frankenhof,Frankenhofen,similar,candidate,5,8,similarity 0.91; kind locality / locality,y,truncated variant; same 1918 Kaufbeuren
+places: Fraukenried -> Frankenried,places,Fraukenried,Frankenried,similar,candidate,1,58,similarity 0.91; kind - / locality,y,OCR u/n
+places: Frankenrieder Holzweg -> Frankenrieder Hohlweg,places,Frankenrieder Holzweg,Frankenrieder Hohlweg,similar,candidate,6,10,similarity 0.95; kind locality / locality,y,OCR of same lane; different volumes
+places: Franz-e-Markt -> Franz-Markt,places,Franz-e-Markt,Franz-Markt,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,OCR noise; consecutive days 1961
+places: Freinberg -> Freiberg,places,Freinberg,Freiberg,similar,candidate,1,57,similarity 0.94; kind - / locality,n,different names
+places: Freiebinger Straße -> Freisinger Straße,places,Freiebinger Straße,Freisinger Straße,similar,candidate,1,1,similarity 0.92; kind - / -,y,OCR garble
+places: Freisinger Bahnhof -> Freising Bahnhof,places,Freisinger Bahnhof,Freising Bahnhof,similar,candidate,2,2,similarity 0.94; kind locality / locality,y,adjectival variant
+places: Freisinger Autostraße -> Freisinger Straße,places,Freisinger Autostraße,Freisinger Straße,similar,candidate,1,1,similarity 0.90; kind - / -,n,unclear; Autostraße different designation
+places: Friedenaue -> Friedenau,places,Friedenaue,Friedenau,similar,candidate,2,4,similarity 0.95; kind locality / locality,y,spelling variant; Mering
+places: Fröking -> Fröcking,places,Fröking,Fröcking,similar,candidate,3,67,similarity 0.94; kind settlement / settlement,y,spelling variant
+places: Frötting -> Fröttning,places,Frötting,Fröttning,similar,candidate,4,8,similarity 0.95; kind locality / locality,y,OCR variant of Fröttmaning
+places: Fröttmaning -> Fröttning,places,Fröttmaning,Fröttning,similar,candidate,2,8,similarity 0.91; kind - / locality,y,Fröttning is garble of Fröttmaning
+places: Gadenner Moos -> Gadener Moos,places,Gadenner Moos,Gadener Moos,similar,candidate,4,48,similarity 0.96; kind locality / locality,y,spelling variant
+places: Gaisntal -> Gaistal,places,Gaisntal,Gaistal,similar,candidate,1,1,similarity 0.93; kind - / -,y,OCR insertion
+places: Galgen-See -> Galgensee,places,Galgen-See,Galgensee,similar,candidate,2,3,similarity 0.95; kind - / locality,y,hyphen variant
+places: Gallenweiher I -> Gallenweiher II,places,Gallenweiher I,Gallenweiher II,similar,candidate,4,30,similarity 0.97; kind locality / locality,n,different numbered ponds
+places: Galler-Weiher -> Gallerweiher,places,Galler-Weiher,Gallerweiher,similar,candidate,3,97,similarity 0.96; kind - / locality,y,hyphen variant
+places: Gartenlagen -> Gartenanlagen,places,Gartenlagen,Gartenanlagen,similar,candidate,2,17,similarity 0.92; kind locality / locality,y,OCR syllable drop
+places: Gasteiganlagen -> Gasteig-Anlagen,places,Gasteiganlagen,Gasteig-Anlagen,similar,candidate,28,30,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Geiselgasteiger Straße -> Geiselgasteig-Straße,places,Geiselgasteiger Straße,Geiselgasteig-Straße,similar,candidate,1,4,similarity 0.95; kind - / locality,n,superseded; another canonical accepted
+places: Geiselgasteigerstraße -> Geiselgasteig-Straße,places,Geiselgasteigerstraße,Geiselgasteig-Straße,similar,candidate,2,4,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Geiselgasteig-Straße -> Geiselgasteigstraße,places,Geiselgasteig-Straße,Geiselgasteigstraße,similar,candidate,4,20,similarity 0.98; kind locality / locality,y,hyphen variant
+places: Geiselgasteiger Waldstraße -> Geiselgasteiger Straße,places,Geiselgasteiger Waldstraße,Geiselgasteiger Straße,similar,candidate,1,1,similarity 0.92; kind - / -,n,Waldstraße different street name
+places: Geiselgasteiger Straße -> Geiselgasteigerstraße,places,Geiselgasteiger Straße,Geiselgasteigerstraße,similar,candidate,1,2,similarity 0.98; kind - / locality,n,superseded; another canonical accepted
+places: Geiselgasteiger Straße -> Geiselgasteigstraße,places,Geiselgasteiger Straße,Geiselgasteigstraße,similar,candidate,1,20,similarity 0.93; kind - / locality,y,adjectival variant of Munich street
+places: Geiselgasteigerstraße -> Geiselgasteigstraße,places,Geiselgasteigerstraße,Geiselgasteigstraße,similar,candidate,2,20,similarity 0.95; kind locality / locality,y,adjectival variant of Munich street
+places: Geißhorn -> Geishorn,places,Geißhorn,Geishorn,similar,candidate,2,4,similarity 0.94; kind locality / locality,y,ß/s variant
+places: Gelbbachmündung -> Gelbachmündung,places,Gelbbachmündung,Gelbachmündung,similar,candidate,2,6,similarity 0.97; kind locality / locality,y,spelling variant
+places: Gemarkbaum -> Gemarkbäume,places,Gemarkbaum,Gemarkbäume,similar,candidate,1,3,similarity 0.91; kind - / locality,y,singular/plural
+places: Gennbach -> Gennach,places,Gennbach,Gennach,similar,candidate,1,35,similarity 0.93; kind - / locality,y,spelling variant of Gennach river
+places: Gennach-Moos -> Gennachmoos,places,Gennach-Moos,Gennachmoos,similar,candidate,11,64,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Gennachhaus -> Gennachhausen,places,Gennachhaus,Gennachhausen,similar,candidate,1,13,similarity 0.92; kind - / locality,y,truncated variant
+places: Gennachhauser Moor -> Gennachhauser Moos,places,Gennachhauser Moor,Gennachhauser Moos,similar,candidate,1,18,similarity 0.94; kind - / locality,y,Moor/Moos synonym
+places: Gennachshauer Moos -> Gennachhauser Moos,places,Gennachshauer Moos,Gennachhauser Moos,similar,candidate,2,18,similarity 0.94; kind - / locality,y,OCR variant
+places: Geräumt -> Geräum,places,Geräumt,Geräum,similar,candidate,2,2,similarity 0.93; kind locality / locality,y,same generic word
+places: Geräumet V / 4 -> Geräumet V / 2,places,Geräumet V / 4,Geräumet V / 2,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumet V / 2 -> Geräumt VI/2,places,Geräumet V / 2,Geräumt VI/2,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different sections V vs VI
+places: Geräumet V / 4 -> Geräumt VI/4,places,Geräumet V / 4,Geräumt VI/4,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,different sections V vs VI
+places: Geräumt V/i -> Geräumt v/9,places,Geräumt V/i,Geräumt v/9,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt V/i -> Geräumt VI,places,Geräumt V/i,Geräumt VI,similar,candidate,2,4,similarity 0.96; kind locality / locality,n,different sections
+places: Geräumt V/i -> Geräumt VI/i,places,Geräumt V/i,Geräumt VI/i,similar,candidate,2,6,similarity 0.96; kind locality / locality,n,different sections V vs VI
+places: Geräumt VI/1 -> Geräumt VI,places,Geräumt VI/1,Geräumt VI,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,plot vs section
+places: Geräumt VI/2 -> Geräumt VI,places,Geräumt VI/2,Geräumt VI,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,plot vs section
+places: Geräumt VI -> Geräumt VI/3,places,Geräumt VI,Geräumt VI/3,similar,candidate,4,6,similarity 0.92; kind locality / locality,n,section vs plot
+places: Geräumt VI/4 -> Geräumt VI,places,Geräumt VI/4,Geräumt VI,similar,candidate,4,4,similarity 0.92; kind locality / locality,n,plot vs section
+places: Geräumt VI -> Geräumt VI/5,places,Geräumt VI,Geräumt VI/5,similar,candidate,4,6,similarity 0.92; kind locality / locality,n,section vs plot
+places: Geräumt VI -> Geräumt VI/i,places,Geräumt VI,Geräumt VI/i,similar,candidate,4,6,similarity 0.92; kind locality / locality,n,section vs plot
+places: Geräumt VI/2 -> Geräumt VI/1,places,Geräumt VI/2,Geräumt VI/1,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/1 -> Geräumt VI/3,places,Geräumt VI/1,Geräumt VI/3,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/1 -> Geräumt VI/4,places,Geräumt VI/1,Geräumt VI/4,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/1 -> Geräumt VI/5,places,Geräumt VI/1,Geräumt VI/5,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/1 -> Geräumt VI/i,places,Geräumt VI/1,Geräumt VI/i,similar,candidate,2,6,similarity 0.92; kind locality / locality,y,i is OCR of 1
+places: Geräumt VI/2 -> Geräumt VI/3,places,Geräumt VI/2,Geräumt VI/3,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/2 -> Geräumt VI/4,places,Geräumt VI/2,Geräumt VI/4,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/2 -> Geräumt VI/5,places,Geräumt VI/2,Geräumt VI/5,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/2 -> Geräumt VI/i,places,Geräumt VI/2,Geräumt VI/i,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/4 -> Geräumt VI/3,places,Geräumt VI/4,Geräumt VI/3,similar,candidate,4,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/5 -> Geräumt VI/3,places,Geräumt VI/5,Geräumt VI/3,similar,candidate,6,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/i -> Geräumt VI/3,places,Geräumt VI/i,Geräumt VI/3,similar,candidate,6,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/4 -> Geräumt VI/5,places,Geräumt VI/4,Geräumt VI/5,similar,candidate,4,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/4 -> Geräumt VI/i,places,Geräumt VI/4,Geräumt VI/i,similar,candidate,4,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geräumt VI/i -> Geräumt VI/5,places,Geräumt VI/i,Geräumt VI/5,similar,candidate,6,6,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geraumet VI/5 -> Geräumt VI/5,places,Geraumet VI/5,Geräumt VI/5,similar,candidate,2,6,similarity 0.92; kind locality / locality,y,spelling variant same plot
+places: Geraumet VI/6 -> Geraumet VI/5,places,Geraumet VI/6,Geraumet VI/5,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Germaringer Straße -> Germaringer Landstraße,places,Germaringer Straße,Germaringer Landstraße,similar,candidate,2,4,similarity 0.90; kind locality / locality,y,same road to Germaringen; Kaufbeuren
+places: Gernviertel VI -> Gernviertel VI/9,places,Gernviertel VI,Gernviertel VI/9,similar,candidate,1,2,similarity 0.93; kind - / locality,n,section vs plot
+places: Geviert VI/2 -> Geviert VI/1,places,Geviert VI/2,Geviert VI/1,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/3 -> Geviert VI/1,places,Geviert VI/3,Geviert VI/1,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/5 -> Geviert VI/1,places,Geviert VI/5,Geviert VI/1,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/9 -> Geviert VI/1,places,Geviert VI/9,Geviert VI/1,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/3 -> Geviert VI/2,places,Geviert VI/3,Geviert VI/2,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/5 -> Geviert VI/2,places,Geviert VI/5,Geviert VI/2,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/9 -> Geviert VI/2,places,Geviert VI/9,Geviert VI/2,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/5 -> Geviert VI/3,places,Geviert VI/5,Geviert VI/3,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/9 -> Geviert VI/3,places,Geviert VI/9,Geviert VI/3,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Geviert VI/9 -> Geviert VI/5,places,Geviert VI/9,Geviert VI/5,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,different numbered plots
+places: Gewand 5/3 -> Gewand 15/3,places,Gewand 5/3,Gewand 15/3,similar,candidate,2,4,similarity 0.95; kind locality / locality,n,different numbered plots
+places: Gewand VI/5 -> Gewand II/5,places,Gewand VI/5,Gewand II/5,similar,candidate,1,2,similarity 0.91; kind - / locality,n,different sections
+places: Gewand VI/4 -> Gewand V/4,places,Gewand VI/4,Gewand V/4,similar,candidate,1,5,similarity 0.95; kind - / locality,n,different sections
+places: Gewand VI/5 -> Gewand VI/4,places,Gewand VI/5,Gewand VI/4,similar,candidate,1,1,similarity 0.91; kind - / -,n,different numbered plots
+places: Gewanne VI -> Gewann VI,places,Gewanne VI,Gewann VI,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,Gewann/Gewanne spelling variant
+places: Gewann w/3 -> Gewann w/2,places,Gewann w/3,Gewann w/2,similar,candidate,4,4,similarity 0.90; kind locality / locality,n,different numbered plots
+places: Gewann w/5 -> Gewann w/2,places,Gewann w/5,Gewann w/2,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different numbered plots
+places: Gewann w/5 -> Gewann w/3,places,Gewann w/5,Gewann w/3,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different numbered plots
+places: Gewann w/5/6 -> Gewann w/5,places,Gewann w/5/6,Gewann w/5,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,numbered field subdivision differs
+places: Gewinner ū/9 -> Gewinner ū/2,places,Gewinner ū/9,Gewinner ū/2,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,numbered field differs
+places: Giesbächlein -> Gierbächlein,places,Giesbächlein,Gierbächlein,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,s/r swap; same Eisvogel entry at Stauwehr
+places: Gierdamme -> Gierdamm,places,Gierdamme,Gierdamm,similar,candidate,1,8,similarity 0.94; kind - / locality,y,inflected form of Gierdamm
+places: Gierdamme -> Gierdammen,places,Gierdamme,Gierdammen,similar,candidate,1,4,similarity 0.95; kind - / locality,n,superseded; another canonical accepted
+places: Gieringer Waldhaus -> Giesinger Waldhaus,places,Gieringer Waldhaus,Giesinger Waldhaus,similar,candidate,5,68,similarity 0.94; kind locality / locality,y,r/s OCR swap of Giesinger
+places: Gieringer Waldhausstraße -> Giesinger Waldhaus-Straße,places,Gieringer Waldhausstraße,Giesinger Waldhaus-Straße,similar,candidate,2,5,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Gieringer Waldhausstraße -> Giesinger Waldhausstraße,places,Gieringer Waldhausstraße,Giesinger Waldhausstraße,similar,candidate,2,18,similarity 0.96; kind locality / locality,y,r/s OCR swap; same street
+places: Gieringer Waldsaum -> Giesinger Waldsaum,places,Gieringer Waldsaum,Giesinger Waldsaum,similar,candidate,6,20,similarity 0.94; kind locality / locality,y,r/s OCR swap; same locality
+places: Giesinger Forsthaus -> Giesinger Posthaus,places,Giesinger Forsthaus,Giesinger Posthaus,similar,candidate,1,2,similarity 0.92; kind - / locality,y,Posthaus is OCR of Forsthaus
+places: Giesinger Friedhof -> Giesinger Waldfriedhof,places,Giesinger Friedhof,Giesinger Waldfriedhof,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,possibly different Giesing cemeteries
+places: Giesinger Haltebaum -> Giesinger Haltebad,places,Giesinger Haltebaum,Giesinger Haltebad,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,both garbles of same Giesinger place
+places: Giesinger Waldau -> Giesinger Wald,places,Giesinger Waldau,Giesinger Wald,similar,candidate,1,2,similarity 0.93; kind - / locality,n,garbled singleton; target unclear
+places: Giesinger Waldau -> Giesinger Waldbauer,places,Giesinger Waldau,Giesinger Waldbauer,similar,candidate,1,2,similarity 0.91; kind - / locality,n,garbled singleton; target unclear
+places: Giesinger Waldau -> Giesinger Waldhaus,places,Giesinger Waldau,Giesinger Waldhaus,similar,candidate,1,68,similarity 0.94; kind - / locality,n,garbled singleton; target unclear
+places: Giesinger Waldau -> Giesinger Waldsaum,places,Giesinger Waldau,Giesinger Waldsaum,similar,candidate,1,20,similarity 0.94; kind - / locality,n,garbled singleton; target unclear
+places: Giesinger Waldbauernstraße -> Giesinger Waldbahnstraße,places,Giesinger Waldbauernstraße,Giesinger Waldbahnstraße,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,two different garbles; unclear
+places: Giesinger Waldbahnstraße -> Giesinger Waldstraße,places,Giesinger Waldbahnstraße,Giesinger Waldstraße,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,unattested street names; unclear
+places: Giesinger Waldbauernstraße -> Giesinger Waldmauerstraße,places,Giesinger Waldbauernstraße,Giesinger Waldmauerstraße,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,two different garbles; unclear
+places: Giesinger Waldhaus-Weg -> Giesinger Waldhaus,places,Giesinger Waldhaus-Weg,Giesinger Waldhaus,similar,candidate,10,68,similarity 0.90; kind locality / locality,n,path vs building
+places: Giesinger Waldhaus-Straße -> Giesinger Waldhausstraße,places,Giesinger Waldhaus-Straße,Giesinger Waldhausstraße,similar,candidate,5,18,similarity 0.98; kind locality / locality,y,hyphen variant
+places: Giesinger Waldsaum-Straße -> Giesinger Waldhaus-Straße,places,Giesinger Waldsaum-Straße,Giesinger Waldhaus-Straße,similar,candidate,1,5,similarity 0.92; kind - / locality,n,Waldsaum-Straße singleton; unclear
+places: Giesinger Waldmauerstraße -> Giesinger Waldhausstraße,places,Giesinger Waldmauerstraße,Giesinger Waldhausstraße,similar,candidate,2,18,similarity 0.90; kind locality / locality,n,garble target unclear
+places: Giesinger Waldsaum-Straße -> Giesinger Waldhausstraße,places,Giesinger Waldsaum-Straße,Giesinger Waldhausstraße,similar,candidate,1,18,similarity 0.90; kind - / locality,n,garble target unclear
+places: Giesinger Waldstraße -> Giesinger Waldhausstraße,places,Giesinger Waldstraße,Giesinger Waldhausstraße,similar,candidate,2,18,similarity 0.91; kind locality / locality,n,Waldstraße vs Waldhausstraße unclear
+places: Giesinger Waldtraudstraße -> Giesinger Waldhausstraße,places,Giesinger Waldtraudstraße,Giesinger Waldhausstraße,similar,candidate,1,18,similarity 0.90; kind - / locality,n,garble target unclear
+places: Glockenleite -> Glockleite,places,Glockenleite,Glockleite,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,Munich Glockleite vs Karlsreuth Glockenleite
+places: Göckin -> Göcking,places,Göckin,Göcking,similar,candidate,1,27,similarity 0.93; kind - / locality,y,truncated OCR of Göcking
+places: Göring -> Göhring,places,Göring,Göhring,similar,candidate,1,11,similarity 0.93; kind settlement / settlement,y,garbles of same August summer place
+places: Gönnebach -> Gönelbach,places,Gönnebach,Gönelbach,similar,candidate,3,6,similarity 0.90; kind locality / locality,y,same Kochel Weiler; same entry
+places: Görbing -> Göring,places,Görbing,Göring,similar,candidate,1,1,similarity 0.93; kind settlement / settlement,y,garbles of same August summer place
+places: Goldach-See -> Goldachsee,places,Goldach-See,Goldachsee,similar,candidate,1,138,similarity 0.95; kind - / locality,y,hyphen variant
+places: Goldach-See -> Goldbachsee,places,Goldach-See,Goldbachsee,similar,candidate,1,6,similarity 0.91; kind - / locality,n,superseded; another canonical accepted
+places: Golsachmündung -> Goldachmündung,places,Golsachmündung,Goldachmündung,similar,candidate,2,4,similarity 0.93; kind locality / locality,y,OCR variant
+places: Goldbachsee -> Goldachsee,places,Goldbachsee,Goldachsee,similar,candidate,6,138,similarity 0.95; kind locality / locality,y,b insertion OCR; same lake
+places: Goliachsee -> Goldachsee,places,Goliachsee,Goldachsee,similar,candidate,8,138,similarity 0.90; kind locality / locality,y,OCR variant
+places: Gommershofen -> Gommerhofen,places,Gommershofen,Gommerhofen,similar,candidate,1,2,similarity 0.96; kind - / settlement,y,spelling variant
+places: Grän -> Graben,places,Grän,Graben,similar,candidate,5,7,similarity 0.91; kind locality / locality,n,Grän Tyrol vs generic Graben
+places: Graben-Seen -> Grabensee,places,Graben-Seen,Grabensee,similar,candidate,1,2,similarity 0.90; kind - / locality,n,plural ditch ponds vs named lake; unclear
+places: Graswang-Tal -> Graswangtal,places,Graswang-Tal,Graswangtal,similar,candidate,3,13,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Graumel V -> Graumel V/1,places,Graumel V,Graumel V/1,similar,candidate,1,5,similarity 0.90; kind - / locality,n,numbered field vs subfield
+places: Graumel V -> Graumel V/3,places,Graumel V,Graumel V/3,similar,candidate,1,2,similarity 0.90; kind - / locality,n,numbered field vs subfield
+places: Graumel V/3 -> Graumel V/1,places,Graumel V/3,Graumel V/1,similar,candidate,2,5,similarity 0.91; kind locality / locality,n,numbered fields differ
+places: Grauraut IV -> Grauraut IV/1,places,Grauraut IV,Grauraut IV/1,similar,candidate,1,2,similarity 0.92; kind - / locality,n,numbered field vs subfield
+places: Grauraut IV -> Grauraut IV/3,places,Grauraut IV,Grauraut IV/3,similar,candidate,1,2,similarity 0.92; kind - / locality,n,numbered field vs subfield
+places: Grauraut IV/3 -> Grauraut IV/1,places,Grauraut IV/3,Grauraut IV/1,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,numbered fields differ
+places: Griechneplatz -> Griechenplatz,places,Griechneplatz,Griechenplatz,similar,candidate,4,18,similarity 0.92; kind locality / locality,y,OCR letter swap
+places: Griechenstraße -> Griechestraße,places,Griechenstraße,Griechestraße,similar,candidate,2,2,similarity 0.97; kind locality / locality,y,spelling variant
+places: Grieselplatz -> Griesenplatz,places,Grieselplatz,Griesenplatz,similar,candidate,2,4,similarity 0.92; kind locality / locality,y,both garbles of same square near home
+places: Groß-Lappen -> Großlappen,places,Groß-Lappen,Großlappen,similar,candidate,1,11,similarity 0.96; kind - / locality,y,hyphen variant
+places: Großtingharting -> Großdingharting,places,Großtingharting,Großdingharting,similar,candidate,2,3,similarity 0.94; kind locality / locality,y,OCR t/d swap
+places: Großes Schifffeld -> großes Schilffeld,places,Großes Schifffeld,großes Schilffeld,similar,candidate,2,20,similarity 0.94; kind locality / locality,y,Schiff is OCR of Schilf
+places: Grubenplatz -> Grübenplatz,places,Grubenplatz,Grübenplatz,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,umlaut variant
+places: Grünebach -> Grünenbach,places,Grünebach,Grünenbach,similar,candidate,2,5,similarity 0.95; kind locality / locality,y,Grünenbach Allgäu spelling variant
+places: Grünerbach -> Grünebach,places,Grünerbach,Grünebach,similar,candidate,2,2,similarity 0.95; kind locality / locality,n,superseded; another canonical accepted
+places: Grünerbach -> Grünenbach,places,Grünerbach,Grünenbach,similar,candidate,2,5,similarity 0.91; kind locality / locality,y,Grünenbach Allgäu spelling variant
+places: Grünwalder Fort -> Grünwalder Forst,places,Grünwalder Fort,Grünwalder Forst,similar,candidate,5,121,similarity 0.97; kind locality / locality,y,OCR drop of s
+places: Grünwalder und Perlacher Forst -> Grünwalder-Perlacher Forst,places,Grünwalder und Perlacher Forst,Grünwalder-Perlacher Forst,similar,candidate,9,13,similarity 0.93; kind locality / locality,y,same combined forest
+places: Grünwalderstraße -> Grünwalder Straße,places,Grünwalderstraße,Grünwalder Straße,similar,candidate,5,9,similarity 0.97; kind locality / locality,y,compound spacing
+places: Güntherstal -> Günterstal,places,Güntherstal,Günterstal,similar,candidate,1,14,similarity 0.96; kind - / locality,y,spelling variant
+places: Gürdamm -> Gürtdamm,places,Gürdamm,Gürtdamm,similar,candidate,6,14,similarity 0.94; kind locality / locality,y,OCR variant of same dam
+places: Gürtamm -> Gürtdamm,places,Gürtamm,Gürtdamm,similar,candidate,6,14,similarity 0.94; kind locality / locality,y,OCR variant of same dam
+places: Gürteldamm -> Gürtdamm,places,Gürteldamm,Gürtdamm,similar,candidate,6,14,similarity 0.90; kind locality / locality,y,variant of same Ismaning dam
+places: Gurtdamm -> Gurtamm,places,Gurtdamm,Gurtamm,similar,candidate,2,6,similarity 0.93; kind locality / locality,y,OCR variant of same dam
+places: h2-Teich -> h2 Teiche,places,h2-Teich,h2 Teiche,similar,candidate,2,8,similarity 0.94; kind locality / locality,y,singular/plural pond designation
+places: Haberberg -> Haber-Berg,places,Haberberg,Haber-Berg,similar,candidate,1,2,similarity 0.95; kind - / locality,y,hyphen variant
+places: Haguenauer Wald -> Hagnauer Wald,places,Haguenauer Wald,Hagnauer Wald,similar,candidate,1,7,similarity 0.93; kind - / locality,y,Haguenau spelling used for Hagnau; same stays
+places: Haingraben -> Haidgraben,places,Haingraben,Haidgraben,similar,candidate,1,2,similarity 0.90; kind - / locality,n,different names; different regions
+places: Haimhausen -> Haidhausen,places,Haimhausen,Haidhausen,similar,candidate,4,5,similarity 0.90; kind locality / locality,n,Haimhausen village vs Haidhausen district
+places: Halden -> Halde,places,Halden,Halde,similar,candidate,3,10,similarity 0.91; kind - / locality,y,plural/dative of Halde
+places: Hammarsbach -> Hammersbach,places,Hammarsbach,Hammersbach,similar,candidate,2,3,similarity 0.91; kind locality / -,y,spelling variant
+places: Hangwald an der Harlachingerstraße -> Hangwald an der Harlachinger Straße,places,Hangwald an der Harlachingerstraße,Hangwald an der Harlachinger Straße,similar,candidate,1,36,similarity 0.99; kind - / locality,y,compound spacing
+places: Hangwald an der Karlachinger Straße -> Hangwald an der Harlachinger Straße,places,Hangwald an der Karlachinger Straße,Hangwald an der Harlachinger Straße,similar,candidate,2,36,similarity 0.97; kind locality / locality,y,K/H OCR swap
+places: Hangwald an der Harlachingerstraße -> Hangwald an der Karlachinger Straße,places,Hangwald an der Harlachingerstraße,Hangwald an der Karlachinger Straße,similar,candidate,1,2,similarity 0.96; kind - / locality,n,superseded; another canonical accepted
+places: Harlachinger Kirche -> Harlachinger Kirchlein,places,Harlachinger Kirche,Harlachinger Kirchlein,similar,candidate,4,12,similarity 0.93; kind locality / locality,y,same Harlaching church
+places: Harlachingerstraße -> Harlachinger Straße,places,Harlachingerstraße,Harlachinger Straße,similar,candidate,7,273,similarity 0.97; kind locality / locality,y,compound spacing
+places: Harlachingstraße -> Harlachinger Straße,places,Harlachingstraße,Harlachinger Straße,similar,candidate,6,273,similarity 0.92; kind locality / locality,y,garbled Harlachinger
+places: Harlachingstraße -> Harlachingerstraße,places,Harlachingstraße,Harlachingerstraße,similar,candidate,6,7,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Harlachstraße -> Harlachingstraße,places,Harlachstraße,Harlachingstraße,similar,candidate,2,6,similarity 0.90; kind locality / locality,y,garbled Harlachinger
+places: Haus Sonblick -> Haus Sonnblick,places,Haus Sonblick,Haus Sonnblick,similar,candidate,2,22,similarity 0.96; kind locality / locality,y,spelling variant
+places: Haus Sonnblich -> Haus Sonnblick,places,Haus Sonnblich,Haus Sonnblick,similar,candidate,19,22,similarity 0.93; kind locality / locality,y,OCR variant
+places: Haus Sonnenblick -> Haus Sonnblick,places,Haus Sonnenblick,Haus Sonnblick,similar,candidate,9,22,similarity 0.93; kind locality / locality,y,spelling variant same Tutzing house
+places: Heibach -> Heimbach,places,Heibach,Heimbach,similar,candidate,2,6,similarity 0.93; kind locality / locality,n,different regions and eras
+places: Heisbach -> Heibach,places,Heisbach,Heibach,similar,candidate,1,2,similarity 0.93; kind - / locality,n,Heisbach trip vs Heibach Rhön; unclear
+places: Heiden -> Heide,places,Heiden,Heide,similar,candidate,4,5,similarity 0.91; kind locality / locality,n,Heiden/Opf. village vs Heide
+places: Heidlerschen-Platz -> Heidelerchen-Platz,places,Heidlerschen-Platz,Heidelerchen-Platz,similar,candidate,1,3,similarity 0.94; kind - / locality,y,OCR variant Heidelerchen
+places: Heidern -> Heiden,places,Heidern,Heiden,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,Heidern settlement vs Heiden
+places: Hemmering -> Hemering,places,Hemmering,Hemering,similar,candidate,12,16,similarity 0.94; kind locality / locality,y,spelling variant
+places: Herrlingen -> Herblingen,places,Herrlingen,Herblingen,similar,candidate,1,2,similarity 0.90; kind - / -,n,Herrlingen Ulm vs Herblingen Schaffhausen
+places: Herzogspark -> Herzogpark,places,Herzogspark,Herzogpark,similar,candidate,6,27,similarity 0.95; kind locality / locality,y,spelling variant
+places: Himbeer-Schlag -> Himbeerschlag,places,Himbeer-Schlag,Himbeerschlag,similar,candidate,1,2,similarity 0.96; kind - / locality,y,hyphen variant
+places: Hintermshof -> Hintermhof,places,Hintermshof,Hintermhof,similar,candidate,2,15,similarity 0.95; kind settlement / settlement,y,OCR variant same 1928 trip
+places: Hintermhof -> Hinternhof,places,Hintermhof,Hinternhof,similar,candidate,15,21,similarity 0.90; kind settlement / settlement,y,m/n swap same 1928 trip
+places: Hintersteinertal -> Hintersteiner Tal,places,Hintersteinertal,Hintersteiner Tal,similar,candidate,2,12,similarity 0.97; kind locality / locality,y,compound spacing
+places: Hinterteich -> Hinterteiche,places,Hinterteich,Hinterteiche,similar,candidate,4,20,similarity 0.96; kind locality / locality,y,singular/plural
+places: Hirschzeller Kettenwand -> Hirschzeller Lettenwand,places,Hirschzeller Kettenwand,Hirschzeller Lettenwand,similar,candidate,3,4,similarity 0.96; kind locality / locality,y,K/L OCR swap
+places: Högl -> Högle,places,Högl,Högle,similar,candidate,1,2,similarity 0.91; kind - / locality,n,Högl mountain vs Kaufbeuren Högle; unclear
+places: Höhringer Kanal -> Höhninger Kanal,places,Höhringer Kanal,Höhninger Kanal,similar,candidate,2,2,similarity 0.94; kind - / locality,y,both garbles of Föhringer Kanal station
+places: Höllstraße -> Hölzlstraße,places,Höllstraße,Hölzlstraße,similar,candidate,2,4,similarity 0.96; kind locality / locality,n,Höll vs Hölzl; unclear
+places: Hörmannshofen -> Hörmanshofen,places,Hörmannshofen,Hörmanshofen,similar,candidate,2,3,similarity 0.96; kind locality / -,y,nn/n spelling
+places: Hörmanshofen -> Hörmatshofen,places,Hörmanshofen,Hörmatshofen,similar,candidate,3,6,similarity 0.92; kind - / locality,y,garble of same Kaufbeuren village
+places: Hörmathofen -> Hörmatshofen,places,Hörmathofen,Hörmatshofen,similar,candidate,2,6,similarity 0.96; kind - / locality,y,garble of same Kaufbeuren village
+places: Hörmathofen -> Hörmatzhofen,places,Hörmathofen,Hörmatzhofen,similar,candidate,2,4,similarity 0.96; kind - / locality,n,superseded; another canonical accepted
+places: Hörmatzhofen -> Hörmatshofen,places,Hörmatzhofen,Hörmatshofen,similar,candidate,4,6,similarity 0.92; kind locality / locality,y,garble of same Kaufbeuren village
+places: Hohen-Schäftlarn -> Hohenschäftlarn,places,Hohen-Schäftlarn,Hohenschäftlarn,similar,candidate,1,13,similarity 0.97; kind - / locality,y,hyphen variant
+places: Hohenlohestraße 61 -> Hohenlohestraße,places,Hohenlohestraße 61,Hohenlohestraße,similar,candidate,4,15,similarity 0.91; kind locality / locality,n,house number is specific address
+places: Hohenstein -> Hohensteinau,places,Hohenstein,Hohensteinau,similar,candidate,1,39,similarity 0.91; kind - / route,n,Hohenstein vs Hohensteinau different trips
+places: Hollerbach -> Hollarbach,places,Hollerbach,Hollarbach,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,Hollerbach vs Hollarbach contexts differ; unclear
+places: Hollebusch -> Hollerbusch,places,Hollebusch,Hollerbusch,similar,candidate,2,14,similarity 0.95; kind locality / locality,y,OCR variant
+places: Hüttenwang -> Hüttenrang,places,Hüttenwang,Hüttenrang,similar,candidate,2,2,similarity 0.91; kind locality / locality,y,Huttenwang near Aitrang; w/r garble
+places: Ilka-Höhe -> Ilkahöhe,places,Ilka-Höhe,Ilkahöhe,similar,candidate,1,12,similarity 0.95; kind - / locality,y,hyphen variant
+places: Immenring -> Immering,places,Immenring,Immering,similar,candidate,2,2,similarity 0.94; kind locality / locality,y,n insertion; same Erding-area village
+places: Immenstaad -> Immenstadt,places,Immenstaad,Immenstadt,similar,candidate,19,43,similarity 0.90; kind locality / locality,n,Immenstaad Bodensee vs Immenstadt Allgäu
+places: Irschenig -> Irschenraig,places,Irschenig,Irschenraig,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,two different garbles; unclear
+places: Isar-Anlagen -> Isaranlagen,places,Isar-Anlagen,Isaranlagen,similar,candidate,2,22,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Isar-Auen -> Isarauen,places,Isar-Auen,Isarauen,similar,candidate,42,266,similarity 0.94; kind locality / locality,y,hyphen variant
+places: Isar bei den Tierfällen -> Isar bei den Eberfällen,places,Isar bei den Tierfällen,Isar bei den Eberfällen,similar,candidate,2,8,similarity 0.92; kind locality / locality,y,garble of Überfällen
+places: Isar bei den Wehrfällen -> Isar bei den Eberfällen,places,Isar bei den Wehrfällen,Isar bei den Eberfällen,similar,candidate,2,8,similarity 0.92; kind locality / locality,y,garble of Überfällen
+places: Isarauen bei den Überfällen -> Isar bei den Eberfällen,places,Isarauen bei den Überfällen,Isar bei den Eberfällen,similar,candidate,3,8,similarity 0.91; kind locality / locality,y,Isarauen at Überfällen same spot
+places: Isar bei den Wehrfällen -> Isar bei den Tierfällen,places,Isar bei den Wehrfällen,Isar bei den Tierfällen,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Isar bei der Braunauer Brücke -> Isar bei der Braunauerbrücke,places,Isar bei der Braunauer Brücke,Isar bei der Braunauerbrücke,similar,candidate,2,2,similarity 0.98; kind locality / locality,y,compound spacing
+places: Isar bei der Klaumenbrücke -> Isar bei der Klausenbrücke,places,Isar bei der Klaumenbrücke,Isar bei der Klausenbrücke,similar,candidate,2,20,similarity 0.96; kind locality / locality,y,OCR variant
+places: Isar bei der Klauserbrücke -> Isar bei der Klaumenbrücke,places,Isar bei der Klauserbrücke,Isar bei der Klaumenbrücke,similar,candidate,2,2,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Isar bei der Klauserbrücke -> Isar bei der Klausenbrücke,places,Isar bei der Klauserbrücke,Isar bei der Klausenbrücke,similar,candidate,2,20,similarity 0.96; kind locality / locality,y,OCR variant
+places: Isarauen beim Stauwehr -> Isar beim Stauwehr,places,Isarauen beim Stauwehr,Isar beim Stauwehr,similar,candidate,4,26,similarity 0.90; kind locality / locality,y,same entry; same weir spot
+places: Isar-Brücke -> Isarbrücke,places,Isar-Brücke,Isarbrücke,similar,candidate,1,112,similarity 0.96; kind - / locality,y,hyphen variant
+places: Isar-Brücke -> Isarbrücken,places,Isar-Brücke,Isarbrücken,similar,candidate,1,2,similarity 0.92; kind - / locality,n,superseded; another canonical accepted
+places: Isar-Kanal -> Isarkanal,places,Isar-Kanal,Isarkanal,similar,candidate,8,62,similarity 0.95; kind locality / locality,y,hyphen variant
+places: Isarkläranlage -> Isar-Kläranlage,places,Isarkläranlage,Isar-Kläranlage,similar,candidate,2,12,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Isarstauwehr -> Isar-Stauwehr,places,Isarstauwehr,Isar-Stauwehr,similar,candidate,4,12,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Isar-Talsperre -> Isartalsperre,places,Isar-Talsperre,Isartalsperre,similar,candidate,2,8,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Isar Talstraße -> Isartalstraße,places,Isar Talstraße,Isartalstraße,similar,candidate,2,28,similarity 0.97; kind locality / locality,y,compound spacing
+places: Isarufer -> Isar-Ufer,places,Isarufer,Isar-Ufer,similar,candidate,2,3,similarity 0.94; kind locality / locality,y,hyphen variant
+places: Isar zwischen der Bogenhauser Brücke und dem Isarstausee -> Isar zwischen der Bogenhauser Brücke und dem Stauwehr,places,Isar zwischen der Bogenhauser Brücke und dem Isarstausee,Isar zwischen der Bogenhauser Brücke und dem Stauwehr,similar,candidate,2,22,similarity 0.92; kind locality / locality,y,same Isar stretch to Oberföhring weir
+places: Isarbrücken -> Isarbecken,places,Isarbrücken,Isarbecken,similar,candidate,2,2,similarity 0.91; kind locality / -,n,Brücken vs Becken different things
+places: Isarbrücken -> Isarbrücke,places,Isarbrücken,Isarbrücke,similar,candidate,2,112,similarity 0.96; kind locality / locality,y,singular/plural
+places: Isarfallen -> Isarfälle,places,Isarfallen,Isarfälle,similar,candidate,1,92,similarity 0.90; kind - / locality,y,OCR variant
+places: Isargüllen -> Isarfüllen,places,Isargüllen,Isarfüllen,similar,candidate,2,12,similarity 0.91; kind locality / locality,y,garbles of Isarfällen
+places: Isarhüllen -> Isarfüllen,places,Isarhüllen,Isarfüllen,similar,candidate,6,12,similarity 0.91; kind locality / locality,y,garbles of Isarfällen
+places: Isargüllen -> Isarhüllen,places,Isargüllen,Isarhüllen,similar,candidate,2,6,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Isarinsel II/9 -> Isarinsel II/3,places,Isarinsel II/9,Isarinsel II/3,similar,candidate,2,2,similarity 0.93; kind locality / locality,n,numbered islands differ
+places: Isarstauweiher -> Isarstauwehr,places,Isarstauweiher,Isarstauwehr,similar,candidate,3,4,similarity 0.92; kind locality / locality,n,weir vs reservoir pond
+places: Isarsteile -> Isarsteige,places,Isarsteile,Isarsteige,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,unclear different garbles
+places: Isarstille -> Isarsteile,places,Isarstille,Isarsteile,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,unclear different garbles
+places: Isarwiese -> Isarwiesen,places,Isarwiese,Isarwiesen,similar,candidate,2,7,similarity 0.95; kind locality / locality,y,singular/plural
+places: Ismaning 2. Vortreichteich -> Ismaning Vortreichteiche,places,Ismaning 2. Vortreichteich,Ismaning Vortreichteiche,similar,candidate,2,4,similarity 0.94; kind locality / locality,n,numbered pond vs pond group
+places: Ismaning Ostbahnhof -> Ismaning Bahnhof,places,Ismaning Ostbahnhof,Ismaning Bahnhof,similar,candidate,1,5,similarity 0.91; kind - / locality,n,München Ostbahnhof vs Ismaning station
+places: Ismaning Kanal -> Ismaninger Kanal,places,Ismaning Kanal,Ismaninger Kanal,similar,candidate,2,138,similarity 0.93; kind locality / locality,y,Ismaning/Ismaninger variant
+places: Ismaning westliches Speicherbecken -> Ismaning östliches Speicherbecken,places,Ismaning westliches Speicherbecken,Ismaning östliches Speicherbecken,similar,candidate,2,2,similarity 0.97; kind locality / locality,n,west vs east basin
+places: Ismaning Schutzgebiet -> Ismaninger Schutzgebiet,places,Ismaning Schutzgebiet,Ismaninger Schutzgebiet,similar,candidate,2,6,similarity 0.95; kind locality / locality,y,Ismaning/Ismaninger variant
+places: Ismaning und Speichersee -> Ismaning Speichersee,places,Ismaning und Speichersee,Ismaning Speichersee,similar,candidate,6,46,similarity 0.91; kind locality / locality,y,compound; same reservoir destination
+places: Ismaning Speichersee -> Ismaninger Speichersee,places,Ismaning Speichersee,Ismaninger Speichersee,similar,candidate,46,2284,similarity 0.95; kind locality / locality,y,Ismaning/Ismaninger variant
+places: Ismaninger Speicherseen -> Ismaning Speichersee,places,Ismaninger Speicherseen,Ismaning Speichersee,similar,candidate,12,46,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+"places: Ismaning, Speichersee Ost-Becken -> Ismaning Speichersee Oberbecken",places,"Ismaning, Speichersee Ost-Becken",Ismaning Speichersee Oberbecken,similar,candidate,2,6,similarity 0.90; kind locality / locality,n,Ober vs Ost basin unclear
+places: Ismaning Speichersee Oberbecken -> Ismaning Speichersee Ostbecken,places,Ismaning Speichersee Oberbecken,Ismaning Speichersee Ostbecken,similar,candidate,6,18,similarity 0.92; kind locality / locality,n,Ober vs Ost basin unclear
+places: Ismaning Speichersee Oberbecken -> Ismaning Speichersee Unterbecken,places,Ismaning Speichersee Oberbecken,Ismaning Speichersee Unterbecken,similar,candidate,6,16,similarity 0.92; kind locality / locality,n,Ober vs Unter basin differ
+places: Ismaning Speichersee Oberbecken -> Ismaning Speichersee Westbecken,places,Ismaning Speichersee Oberbecken,Ismaning Speichersee Westbecken,similar,candidate,6,20,similarity 0.90; kind locality / locality,n,Ober vs West basin unclear
+"places: Ismaninger Speichersee, Becken -> Ismaning Speichersee Oberbecken",places,"Ismaninger Speichersee, Becken",Ismaning Speichersee Oberbecken,similar,candidate,4,6,similarity 0.90; kind locality / locality,n,generic Becken vs specific basin
+"places: Ismaning, Speichersee Ost-Becken -> Ismaning Speichersee Ostbecken",places,"Ismaning, Speichersee Ost-Becken",Ismaning Speichersee Ostbecken,similar,candidate,2,18,similarity 0.98; kind locality / locality,y,hyphen/spacing variant
+"places: Ismaning, Speichersee Ost-Becken -> Ismaning Speichersee Westbecken",places,"Ismaning, Speichersee Ost-Becken",Ismaning Speichersee Westbecken,similar,candidate,2,20,similarity 0.94; kind locality / locality,n,east vs west basin
+"places: Ismaning, Speichersee Ost-Becken -> Ismaninger Speichersee, Becken",places,"Ismaning, Speichersee Ost-Becken","Ismaninger Speichersee, Becken",similar,candidate,2,4,similarity 0.90; kind locality / locality,n,specific vs unspecified basin
+"places: Ismaning, Speichersee Ost-Becken -> Ismaninger Speichersee Westbecken",places,"Ismaning, Speichersee Ost-Becken",Ismaninger Speichersee Westbecken,similar,candidate,2,44,similarity 0.91; kind locality / locality,n,east vs west basin
+places: Ismaning Speichersee Unterbecken -> Ismaning Speichersee Ostbecken,places,Ismaning Speichersee Unterbecken,Ismaning Speichersee Ostbecken,similar,candidate,16,18,similarity 0.90; kind locality / locality,n,Unter vs Ost basin unclear
+places: Ismaning Speichersee Ostbecken -> Ismaning Speichersee Westbecken,places,Ismaning Speichersee Ostbecken,Ismaning Speichersee Westbecken,similar,candidate,18,20,similarity 0.95; kind locality / locality,n,east vs west basin
+"places: Ismaninger Speichersee, Becken -> Ismaning Speichersee Ostbecken",places,"Ismaninger Speichersee, Becken",Ismaning Speichersee Ostbecken,similar,candidate,4,18,similarity 0.92; kind locality / locality,n,generic Becken vs specific basin
+places: Ismaning Speichersee Ostbecken -> Ismaninger Speichersee Westbecken,places,Ismaning Speichersee Ostbecken,Ismaninger Speichersee Westbecken,similar,candidate,18,44,similarity 0.92; kind locality / locality,n,east vs west basin
+"places: Ismaninger Speichersee, Becken -> Ismaning Speichersee Westbecken",places,"Ismaninger Speichersee, Becken",Ismaning Speichersee Westbecken,similar,candidate,4,20,similarity 0.90; kind locality / locality,n,generic Becken vs specific basin
+places: Ismaning Speichersee Westbecken -> Ismaninger Speichersee Westbecken,places,Ismaning Speichersee Westbecken,Ismaninger Speichersee Westbecken,similar,candidate,20,44,similarity 0.97; kind locality / locality,y,Ismaning/Ismaninger variant
+"places: Ismaninger Vorklärteich -> Ismaning, Vorklärteich",places,Ismaninger Vorklärteich,"Ismaning, Vorklärteich",similar,candidate,2,2,similarity 0.96; kind locality / locality,y,Ismaning/Ismaninger variant
+places: Ismaninger Baggersee -> Ismaninger Baggerseen,places,Ismaninger Baggersee,Ismaninger Baggerseen,similar,candidate,14,18,similarity 0.98; kind locality / locality,y,singular/plural
+places: Ismaningerkanal -> Ismaninger Kanal,places,Ismaningerkanal,Ismaninger Kanal,similar,candidate,1,138,similarity 0.97; kind - / locality,y,compound spacing
+places: Ismaninger Landstraße -> Ismaninger Straße,places,Ismaninger Landstraße,Ismaninger Straße,similar,candidate,2,16,similarity 0.90; kind locality / locality,n,country road vs Munich street; unclear
+places: Ismaninger Naturschutzgebiet -> Ismaninger Schutzgebiet,places,Ismaninger Naturschutzgebiet,Ismaninger Schutzgebiet,similar,candidate,2,6,similarity 0.90; kind locality / locality,y,same protected area
+places: Ismaninger Speicherseen -> Ismaninger Speichersee,places,Ismaninger Speicherseen,Ismaninger Speichersee,similar,candidate,12,2284,similarity 0.98; kind locality / locality,y,plural variant
+"places: Ismaninger Speichersee, Becken -> Ismaninger Speichersee Westbecken",places,"Ismaninger Speichersee, Becken",Ismaninger Speichersee Westbecken,similar,candidate,4,44,similarity 0.94; kind locality / locality,n,generic Becken vs specific basin
+places: Ismaninger Speichersee Norddamm -> Ismaninger Speichersee Damm,places,Ismaninger Speichersee Norddamm,Ismaninger Speichersee Damm,similar,candidate,2,2,similarity 0.93; kind locality / locality,n,Norddamm vs unspecified dam
+"places: Ismaninger Speichersee, östliches Becken -> Ismaninger Speichersee, westliches Becken",places,"Ismaninger Speichersee, östliches Becken","Ismaninger Speichersee, westliches Becken",similar,candidate,2,4,similarity 0.97; kind locality / locality,n,east vs west basin
+places: Ismaninger Speichersee Westufer -> Ismaninger Speichersee Südufer,places,Ismaninger Speichersee Westufer,Ismaninger Speichersee Südufer,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,west vs south shore
+places: Ismaninger Speichersee Westende -> Ismaninger Speichersee Westbecken,places,Ismaninger Speichersee Westende,Ismaninger Speichersee Westbecken,similar,candidate,10,44,similarity 0.91; kind locality / locality,n,west end vs west basin
+"places: Ismaninger Speichersee, westliches Becken -> Ismaninger Speichersee Westbecken",places,"Ismaninger Speichersee, westliches Becken",Ismaninger Speichersee Westbecken,similar,candidate,4,44,similarity 0.90; kind locality / locality,y,same west basin
+places: Ismaninger Speichersee Westufer -> Ismaninger Speichersee Westende,places,Ismaninger Speichersee Westufer,Ismaninger Speichersee Westende,similar,candidate,2,10,similarity 0.90; kind locality / locality,y,west shore equals west end
+places: Isoldenstraße -> Isoldestraße,places,Isoldenstraße,Isoldestraße,similar,candidate,2,4,similarity 0.96; kind locality / locality,y,spelling variant
+places: Jäger bräuner Winkel -> Jägerbrunner Winkel,places,Jäger bräuner Winkel,Jägerbrunner Winkel,similar,candidate,2,27,similarity 0.90; kind locality / locality,y,OCR garble
+places: Jägerbrünn -> Jägerbrünne,places,Jägerbrünn,Jägerbrünne,similar,candidate,7,14,similarity 0.96; kind locality / locality,n,superseded; another canonical accepted
+places: Jägerbrünnen -> Jägerbrünn,places,Jägerbrünnen,Jägerbrünn,similar,candidate,1,7,similarity 0.92; kind - / locality,n,superseded; another canonical accepted
+places: Jägerbrünnl -> Jägerbrünn,places,Jägerbrünnl,Jägerbrünn,similar,candidate,2,7,similarity 0.96; kind locality / locality,n,superseded; another canonical accepted
+places: Jägerbrünn -> Jägerbrunn,places,Jägerbrünn,Jägerbrunn,similar,candidate,7,41,similarity 0.96; kind locality / locality,y,umlaut variant
+places: Jägerbrünn -> Jägersbrunn,places,Jägerbrünn,Jägersbrunn,similar,candidate,7,19,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Jägerbrünnen -> Jägerbrünne,places,Jägerbrünnen,Jägerbrünne,similar,candidate,1,14,similarity 0.96; kind - / locality,y,variant of Jägersbrunn
+places: Jägerbrünnl -> Jägerbrünne,places,Jägerbrünnl,Jägerbrünne,similar,candidate,2,14,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Jägerbrünne -> Jägerbrunn,places,Jägerbrünne,Jägerbrunn,similar,candidate,14,41,similarity 0.92; kind locality / locality,y,variant of Jägersbrunn
+places: Jägerbrünner Moos -> Jägerbrunner Moos,places,Jägerbrünner Moos,Jägerbrunner Moos,similar,candidate,3,4,similarity 0.97; kind locality / locality,y,umlaut variant; same entry
+places: Jägerbrünner Winkel -> Jägerbrunner Winkel,places,Jägerbrünner Winkel,Jägerbrunner Winkel,similar,candidate,21,27,similarity 0.98; kind locality / locality,y,umlaut variant
+places: Jägersbrunner Winkel -> Jägerbrünner Winkel,places,Jägersbrunner Winkel,Jägerbrünner Winkel,similar,candidate,8,21,similarity 0.95; kind locality / locality,n,superseded; another canonical accepted
+places: Jägerbrünnl -> Jägerbrunn,places,Jägerbrünnl,Jägerbrunn,similar,candidate,2,41,similarity 0.92; kind locality / locality,y,variant of Jägersbrunn
+places: Jägersbrunn -> Jägerbrunn,places,Jägersbrunn,Jägerbrunn,similar,candidate,19,41,similarity 0.96; kind locality / locality,y,s variant
+places: Jägersbrunner Winkel -> Jägerbrunner Winkel,places,Jägersbrunner Winkel,Jägerbrunner Winkel,similar,candidate,8,27,similarity 0.98; kind locality / locality,y,s variant
+places: Jahn-Turnhalle -> Jahnturnhalle,places,Jahn-Turnhalle,Jahnturnhalle,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Johannishöhe -> Johanneshöhe,places,Johannishöhe,Johanneshöhe,similar,candidate,1,15,similarity 0.92; kind - / locality,y,spelling variant
+places: Johanniskirchen -> Johanneskirchen,places,Johanniskirchen,Johanneskirchen,similar,candidate,5,11,similarity 0.93; kind locality / locality,y,Munich Johanneskirchen; Ismaning context
+places: Johanniskirchlein -> Johanniskirchen,places,Johanniskirchlein,Johanniskirchen,similar,candidate,2,5,similarity 0.94; kind locality / locality,n,church vs village
+places: Jordananlagen -> Jordan-Anlagen,places,Jordananlagen,Jordan-Anlagen,similar,candidate,12,20,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Josephinum -> Josephinium,places,Josephinum,Josephinium,similar,candidate,1,4,similarity 0.95; kind - / locality,y,spelling variant
+places: K/2/10 -> K 2/1,places,K/2/10,K 2/1,similar,candidate,4,8,similarity 0.91; kind locality / locality,n,numbered fields differ
+places: K 3/ 18 -> K 3/8,places,K 3/ 18,K 3/8,similar,candidate,1,6,similarity 0.91; kind - / locality,n,numbered fields differ
+places: Kaiwald -> Kai-Wald,places,Kaiwald,Kai-Wald,similar,candidate,3,7,similarity 0.93; kind locality / locality,y,hyphen variant
+places: Kanal an der Franklstraße -> Kanal an der FraKalstraße,places,Kanal an der Franklstraße,Kanal an der FraKalstraße,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,garble of Franklstraße
+places: Kantingerstraße -> Kanolingerstraße,places,Kantingerstraße,Kanolingerstraße,similar,candidate,1,2,similarity 0.91; kind locality / locality,y,both garbles of Karolingerstraße home
+places: Kapellenberg -> Kapellberg,places,Kapellenberg,Kapellberg,similar,candidate,6,10,similarity 0.91; kind locality / locality,y,same Ismaning hill; same lists
+places: Kaprunertal -> Kapruner Tal,places,Kaprunertal,Kapruner Tal,similar,candidate,4,10,similarity 0.96; kind locality / locality,y,compound spacing
+places: Kapuziner Hölzl -> Kapuzinerhölzl,places,Kapuziner Hölzl,Kapuzinerhölzl,similar,candidate,2,33,similarity 0.97; kind locality / locality,y,compound spacing
+places: Kapuzinerholz -> Kapuzinerhölzl,places,Kapuzinerholz,Kapuzinerhölzl,similar,candidate,2,33,similarity 0.93; kind - / locality,y,OCR variant
+places: Karbachinger Straße -> Karbachingerstraße,places,Karbachinger Straße,Karbachingerstraße,similar,candidate,2,2,similarity 0.97; kind locality / -,n,superseded; another canonical accepted
+places: Karbachinger Straße -> Karlachinger Straße,places,Karbachinger Straße,Karlachinger Straße,similar,candidate,2,15,similarity 0.95; kind locality / locality,y,garble of Harlachinger Straße
+places: Karbachinger Straße -> Karlachingerstraße,places,Karbachinger Straße,Karlachingerstraße,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Karbachingerstraße -> Karlachinger Straße,places,Karbachingerstraße,Karlachinger Straße,similar,candidate,2,15,similarity 0.92; kind - / locality,y,garble of Harlachinger Straße
+places: Karbachingerstraße -> Karlachingerstraße,places,Karbachingerstraße,Karlachingerstraße,similar,candidate,2,4,similarity 0.95; kind - / locality,n,superseded; another canonical accepted
+places: Karelingerstraße -> Karbeinerstraße,places,Karelingerstraße,Karbeinerstraße,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,Karbeiner garble unclear
+places: Karlinger Straße -> Karelingerstraße,places,Karlinger Straße,Karelingerstraße,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Karelingerstraße -> Karlingerstraße,places,Karelingerstraße,Karlingerstraße,similar,candidate,2,17,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Karlovingerstraße -> Karelingerstraße,places,Karlovingerstraße,Karelingerstraße,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Karlsingerstraße -> Karelingerstraße,places,Karlsingerstraße,Karelingerstraße,similar,candidate,1,2,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Karelingerstraße -> Karolingerstraße,places,Karelingerstraße,Karolingerstraße,similar,candidate,2,190,similarity 0.94; kind locality / locality,y,garble of Karolingerstraße home
+places: Karlschingerstraße -> Karl-Schwigerstraße,places,Karlschingerstraße,Karl-Schwigerstraße,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,Karl-Schwiger unclear
+places: Karl-Theodorstraße -> Karl-Theodor-Straße,places,Karl-Theodorstraße,Karl-Theodor-Straße,similar,candidate,4,8,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Karlachingerstraße -> Karlachinger Straße,places,Karlachingerstraße,Karlachinger Straße,similar,candidate,4,15,similarity 0.97; kind locality / locality,y,compound spacing
+places: Karlinger Straße -> Karlachinger Straße,places,Karlinger Straße,Karlachinger Straße,similar,candidate,2,15,similarity 0.92; kind locality / locality,n,Karolinger vs Harlachinger streets
+places: Karlschingerstraße -> Karlachinger Straße,places,Karlschingerstraße,Karlachinger Straße,similar,candidate,2,15,similarity 0.92; kind locality / locality,y,garble of Harlachinger Straße Hangwald
+places: Karlachingerstraße -> Karlingerstraße,places,Karlachingerstraße,Karlingerstraße,similar,candidate,4,17,similarity 0.91; kind locality / locality,n,Harlachinger vs Karolinger streets
+places: Karlschingerstraße -> Karlachingerstraße,places,Karlschingerstraße,Karlachingerstraße,similar,candidate,2,4,similarity 0.95; kind locality / locality,n,superseded; another canonical accepted
+places: Karlbergstraße -> Karlburgstraße,places,Karlbergstraße,Karlburgstraße,similar,candidate,2,4,similarity 0.93; kind locality / locality,y,e/u OCR; same street
+places: Karlsburgstraße -> Karlbergstraße,places,Karlsburgstraße,Karlbergstraße,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,superseded; another canonical accepted
+places: Karlsburgstraße -> Karlburgstraße,places,Karlsburgstraße,Karlburgstraße,similar,candidate,2,4,similarity 0.97; kind locality / locality,y,s insertion same street
+places: Karlhof -> Karlshof,places,Karlhof,Karlshof,similar,candidate,2,8,similarity 0.93; kind locality / locality,y,s variant
+places: Karlinger Allee -> Karolinger Allee,places,Karlinger Allee,Karolinger Allee,similar,candidate,1,34,similarity 0.97; kind - / locality,y,garble of home street Karolinger Allee
+places: Karlinger Allee -> Karolsinger Allee,places,Karlinger Allee,Karolsinger Allee,similar,candidate,1,2,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Karlinger Allee -> Karwinger Allee,places,Karlinger Allee,Karwinger Allee,similar,candidate,1,2,similarity 0.93; kind - / locality,n,superseded; another canonical accepted
+places: Karlinger Straße -> Karlingerstraße,places,Karlinger Straße,Karlingerstraße,similar,candidate,2,17,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Karlovingerstraße -> Karlinger Straße,places,Karlovingerstraße,Karlinger Straße,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Karlsingerstraße -> Karlinger Straße,places,Karlsingerstraße,Karlinger Straße,similar,candidate,1,2,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Karlinger Straße -> Karolingerstraße,places,Karlinger Straße,Karolingerstraße,similar,candidate,2,190,similarity 0.94; kind locality / locality,y,o dropped OCR; home street
+places: Karlovingerstraße -> Karlingerstraße,places,Karlovingerstraße,Karlingerstraße,similar,candidate,2,17,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Karlschingerstraße -> Karlingerstraße,places,Karlschingerstraße,Karlingerstraße,similar,candidate,2,17,similarity 0.91; kind locality / locality,n,Harlachinger vs Karolinger streets
+places: Karlsebingerstraße -> Karlingerstraße,places,Karlsebingerstraße,Karlingerstraße,similar,candidate,10,17,similarity 0.91; kind locality / locality,n,Karlsebinger unclear garble
+places: Karlsingerstraße -> Karlingerstraße,places,Karlsingerstraße,Karlingerstraße,similar,candidate,1,17,similarity 0.97; kind - / locality,n,superseded; another canonical accepted
+places: Karlsteingerstraße -> Karlingerstraße,places,Karlsteingerstraße,Karlingerstraße,similar,candidate,1,17,similarity 0.91; kind - / locality,n,Karlsteinger unclear garble
+places: Karolingenstraße -> Karlingerstraße,places,Karolingenstraße,Karlingerstraße,similar,candidate,6,17,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Karlingerstraße -> Karolingerstraße,places,Karlingerstraße,Karolingerstraße,similar,candidate,17,190,similarity 0.97; kind locality / locality,y,o dropped OCR; home street
+places: Karlsingerstraße -> Karlovingerstraße,places,Karlsingerstraße,Karlovingerstraße,similar,candidate,1,2,similarity 0.91; kind - / locality,n,superseded; another canonical accepted
+places: Karlovingerstraße -> Karolingerstraße,places,Karlovingerstraße,Karolingerstraße,similar,candidate,2,190,similarity 0.91; kind locality / locality,y,garble of Karolingerstraße
+places: Karlschingerstraße -> Karlschingstraße,places,Karlschingerstraße,Karlschingstraße,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Karlsingerstraße -> Karlschingerstraße,places,Karlsingerstraße,Karlschingerstraße,similar,candidate,1,2,similarity 0.94; kind - / locality,n,Karlsinger vs Karlschinger unclear
+places: Karlsingerstraße -> Karlsebingerstraße,places,Karlsingerstraße,Karlsebingerstraße,similar,candidate,1,10,similarity 0.94; kind - / locality,n,unclear garbles
+places: Karlsteingerstraße -> Karlsebingerstraße,places,Karlsteingerstraße,Karlsebingerstraße,similar,candidate,1,10,similarity 0.95; kind - / locality,n,unclear garbles
+places: Karlsteingestraße -> Karlsebingerstraße,places,Karlsteingestraße,Karlsebingerstraße,similar,candidate,2,10,similarity 0.92; kind locality / locality,n,unclear garbles
+places: Karlsfelderstraße -> Karlsfelder Straße,places,Karlsfelderstraße,Karlsfelder Straße,similar,candidate,2,16,similarity 0.97; kind locality / locality,y,compound spacing
+places: Karlsteingerstraße -> Karlsingerstraße,places,Karlsteingerstraße,Karlsingerstraße,similar,candidate,1,1,similarity 0.94; kind - / -,n,unclear garbles
+places: Karlsingerstraße -> Karlsteingestraße,places,Karlsingerstraße,Karlsteingestraße,similar,candidate,1,2,similarity 0.91; kind - / locality,n,unclear garbles
+places: Karlsingerstraße -> Karolingerstraße,places,Karlsingerstraße,Karolingerstraße,similar,candidate,1,190,similarity 0.94; kind - / locality,y,garble of Karolingerstraße
+places: Karlsteingerstraße -> Karlsteingestraße,places,Karlsteingerstraße,Karlsteingestraße,similar,candidate,1,2,similarity 0.97; kind - / locality,y,r/e variant same garble
+places: Karolinenstraße 18 -> Karolinenstraße,places,Karolinenstraße 18,Karolinenstraße,similar,candidate,4,28,similarity 0.91; kind locality / locality,n,house number is specific address
+places: Karolingenstraße -> Karolinenstraße,places,Karolingenstraße,Karolinenstraße,similar,candidate,6,28,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Karolinenstraße -> Karolingerstraße,places,Karolinenstraße,Karolingerstraße,similar,candidate,28,190,similarity 0.91; kind locality / locality,y,OCR variant of Karolingerstraße; same Munich street
+places: Karolinenstraße 18 -> Karolingerstraße 18,places,Karolinenstraße 18,Karolingerstraße 18,similar,candidate,4,6,similarity 0.92; kind locality / locality,y,same house number 18; OCR variant
+places: Karolingenstraße -> Karolingerstraße,places,Karolingenstraße,Karolingerstraße,similar,candidate,6,190,similarity 0.94; kind locality / locality,y,OCR variant same street
+places: Karolsinger Allee -> Karolinger Allee,places,Karolsinger Allee,Karolinger Allee,similar,candidate,2,34,similarity 0.97; kind locality / locality,y,OCR variant same street
+places: Karwinger Allee -> Karolinger Allee,places,Karwinger Allee,Karolinger Allee,similar,candidate,2,34,similarity 0.90; kind locality / locality,y,OCR variant of Karolinger Allee; same Munich context
+places: Karolingerstraße 13 -> Karolingerstraße,places,Karolingerstraße 13,Karolingerstraße,similar,candidate,2,190,similarity 0.92; kind locality / locality,n,house address vs whole street
+places: Karolingerstraße 18 -> Karolingerstraße,places,Karolingerstraße 18,Karolingerstraße,similar,candidate,6,190,similarity 0.92; kind locality / locality,n,house address vs whole street
+places: Karolingerstraße 13 -> Karolingerstraße 18,places,Karolingerstraße 13,Karolingerstraße 18,similar,candidate,2,6,similarity 0.95; kind locality / locality,n,different house numbers
+places: Karwinskystraße -> Karwinskistraße,places,Karwinskystraße,Karwinskistraße,similar,candidate,4,8,similarity 0.94; kind locality / locality,y,i/y spelling of same street
+places: Kastenkopf beim Schrecksee -> Kastenkopf am Schrecksee,places,Kastenkopf beim Schrecksee,Kastenkopf am Schrecksee,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,preposition variant; same entry
+places: Kaulbachstraße 10 -> Kaulbachstraße,places,Kaulbachstraße 10,Kaulbachstraße,similar,candidate,2,38,similarity 0.91; kind locality / locality,n,house address vs whole street
+places: Kaulbachstraße 14 -> Kaulbachstraße,places,Kaulbachstraße 14,Kaulbachstraße,similar,candidate,1,38,similarity 0.91; kind - / locality,n,house address vs whole street
+places: Kaulbachstraße 14 -> Kaulbachstraße 10,places,Kaulbachstraße 14,Kaulbachstraße 10,similar,candidate,1,2,similarity 0.94; kind - / locality,n,different house numbers
+places: Kemnat -> Kemnath,places,Kemnat,Kemnath,similar,candidate,1,5,similarity 0.92; kind - / locality,y,th/t spelling; Kemnat near Kaufbeuren
+places: Kessel-Alm -> Kesselalm,places,Kessel-Alm,Kesselalm,similar,candidate,1,6,similarity 0.95; kind - / locality,y,hyphen variant
+places: Kesselberg-Straße -> Kesselbergstraße,places,Kesselberg-Straße,Kesselbergstraße,similar,candidate,1,11,similarity 0.97; kind - / locality,y,hyphen variant
+places: Kindeweg -> Kinderweg,places,Kindeweg,Kinderweg,similar,candidate,4,14,similarity 0.94; kind locality / locality,y,OCR dropped letter; same volume
+places: Kirch -> Kirche,places,Kirch,Kirche,similar,candidate,1,16,similarity 0.91; kind - / locality,y,truncated same generic term
+places: Kirschzell -> Kirchzell,places,Kirschzell,Kirchzell,similar,candidate,2,4,similarity 0.95; kind locality / locality,y,spelling variant; both Kaufbeuren context
+places: Klausen -> Klause,places,Klausen,Klause,similar,candidate,5,16,similarity 0.92; kind locality / locality,n,Klausen town vs Klause; different words
+places: Klausenstraße -> Klausenerstraße,places,Klausenstraße,Klausenerstraße,similar,candidate,1,2,similarity 0.93; kind - / locality,y,dropped syllable; same rare Munich street
+places: Kleiner Teich -> Kleine Teiche,places,Kleiner Teich,Kleine Teiche,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,singular vs plural; different entry places
+places: Kleines Walsertal -> Kleinwalsertal,places,Kleines Walsertal,Kleinwalsertal,similar,candidate,8,16,similarity 0.90; kind locality / locality,y,same valley; both spellings used
+places: Knotenkopf -> Knottenkopf,places,Knotenkopf,Knottenkopf,similar,candidate,2,6,similarity 0.95; kind locality / locality,y,single/double t; same days V11
+places: Krähenkolonie -> Krähen-Kolonie,places,Krähenkolonie,Krähen-Kolonie,similar,candidate,3,9,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Kraftwerk Neufinsing -> Kraftwerk Finsing,places,Kraftwerk Neufinsing,Kraftwerk Finsing,similar,candidate,2,10,similarity 0.92; kind locality / locality,y,same power plant; both in same entry
+places: Kraftwerk Neufinsing -> Kraftwerk Neufinning,places,Kraftwerk Neufinsing,Kraftwerk Neufinning,similar,candidate,2,2,similarity 0.95; kind locality / locality,n,superseded; another canonical accepted
+places: Krautäcker -> Krautacker,places,Krautäcker,Krautacker,similar,candidate,1,2,similarity 0.95; kind - / locality,y,singular/plural field name
+places: Kronenberg -> Kroneberg,places,Kronenberg,Kroneberg,similar,candidate,2,2,similarity 0.95; kind locality / locality,n,Kaufbeuren vs Bovenden contexts; different places
+places: Krottenmühle -> Krottmühle,places,Krottenmühle,Krottmühle,similar,candidate,2,3,similarity 0.92; kind locality / locality,y,same trip Aug 1928; spelling variant
+places: Künstersweg -> Künsterweg,places,Künstersweg,Künsterweg,similar,candidate,2,11,similarity 0.96; kind locality / locality,y,OCR variant same street
+places: Künstersweg -> Künterweg,places,Künstersweg,Künterweg,similar,candidate,2,8,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Künterweg -> Künsterweg,places,Künterweg,Künsterweg,similar,candidate,8,11,similarity 0.95; kind locality / locality,y,OCR variant same street V32
+places: Kuntersweg -> Kunterweg,places,Kuntersweg,Kunterweg,similar,candidate,4,10,similarity 0.95; kind locality / locality,y,OCR variant same street
+places: Land Eck -> Landeck,places,Land Eck,Landeck,similar,candidate,2,2,similarity 0.93; kind locality / -,y,split spelling of Landeck
+places: Landshamerstraße -> Landshamer Straße,places,Landshamerstraße,Landshamer Straße,similar,candidate,2,33,similarity 0.97; kind locality / locality,y,space/compound variant
+places: Landskrone -> Landskrona,places,Landskrone,Landskrona,similar,candidate,1,54,similarity 0.90; kind - / locality,y,OCR variant; Sweden 1953 trip
+places: Langbürgener See -> Langbürger See,places,Langbürgener See,Langbürger See,similar,candidate,4,4,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Langbürgener See -> Langbürgner See,places,Langbürgener See,Langbürgner See,similar,candidate,4,12,similarity 0.97; kind locality / locality,y,same Chiemgau lake; spelling variant
+places: Langbürgener See -> Langenbürgner See,places,Langbürgener See,Langenbürgner See,similar,candidate,4,6,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Langbürger See -> Langbürgner See,places,Langbürger See,Langbürgner See,similar,candidate,4,12,similarity 0.97; kind locality / locality,y,same Chiemgau lake; spelling variant
+places: Langbürger See -> Langenbürgner See,places,Langbürger See,Langenbürgner See,similar,candidate,4,6,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+places: Langenbürgner See -> Langbürgner See,places,Langenbürgner See,Langbürgner See,similar,candidate,6,12,similarity 0.94; kind locality / locality,y,same Chiemgau lake; spelling variant
+places: Langengeislingen -> Langengeisling,places,Langengeislingen,Langengeisling,similar,candidate,2,6,similarity 0.93; kind locality / locality,y,inflection variant; Erding district
+places: Langewalter Weiher -> Langenwalder Weiher,places,Langewalter Weiher,Langenwalder Weiher,similar,candidate,14,20,similarity 0.92; kind locality / locality,y,OCR variant same Kaufbeuren-area pond
+places: Lankenheimer Wäldchen -> Lankesheimer Wäldchen,places,Lankenheimer Wäldchen,Lankesheimer Wäldchen,similar,candidate,4,10,similarity 0.95; kind locality / locality,y,OCR variant same wood
+places: Lauffen -> Laufen,places,Lauffen,Laufen,similar,candidate,2,8,similarity 0.92; kind locality / locality,y,ff/f spelling; Laufen Salzach
+places: Lauterer Straße -> Lautererstraße,places,Lauterer Straße,Lautererstraße,similar,candidate,2,6,similarity 0.97; kind locality / locality,y,space/compound variant
+places: Lauterstraße -> Lautererstraße,places,Lauterstraße,Lautererstraße,similar,candidate,2,6,similarity 0.93; kind locality / locality,y,dropped syllable same street
+places: Leinebach -> Leinbach,places,Leinebach,Leinbach,similar,candidate,3,36,similarity 0.94; kind locality / locality,y,same trip April 1953; spelling
+places: Leinthaler Straße -> Leinthalerstraße,places,Leinthaler Straße,Leinthalerstraße,similar,candidate,2,18,similarity 0.97; kind locality / locality,y,space/compound variant; same entry
+places: Lienzi -> Lienz,places,Lienzi,Lienz,similar,candidate,1,4,similarity 0.91; kind - / locality,y,OCR trailing letter
+places: Linau -> Lindau,places,Linau,Lindau,similar,candidate,7,129,similarity 0.91; kind locality / locality,n,possibly Leinau near Kaufbeuren; unclear
+places: linkes Isar-Ufer -> linkes Isarufer,places,linkes Isar-Ufer,linkes Isarufer,similar,candidate,1,1,similarity 0.97; kind - / -,y,hyphen variant
+places: Lustenau -> Lustnau,places,Lustenau,Lustnau,similar,candidate,1,2,similarity 0.93; kind - / locality,n,Lustenau Vorarlberg vs Lustnau Tübingen; unclear
+places: Märgisried -> Mängisried,places,Märgisried,Mängisried,similar,candidate,2,6,similarity 0.91; kind locality / locality,n,different context; unclear which name
+places: Märgisried -> Märisried,places,Märgisried,Märisried,similar,candidate,2,8,similarity 0.95; kind locality / locality,y,OCR variant; both Elbsee context
+places: Märgisried -> Märzisried,places,Märgisried,Märzisried,similar,candidate,2,3,similarity 0.91; kind locality / -,n,superseded; another canonical accepted
+places: Märzisried -> Märisried,places,Märzisried,Märisried,similar,candidate,3,8,similarity 0.95; kind - / locality,y,OCR variant same rare name
+places: Märzburg -> Märzenburg,places,Märzburg,Märzenburg,similar,candidate,2,15,similarity 0.90; kind locality / locality,y,Kaufbeuren Märzenburg; syllable dropped
+places: Märzenhalde -> Märzhalde,places,Märzenhalde,Märzhalde,similar,candidate,2,3,similarity 0.91; kind - / locality,y,Kaufbeuren locality; syllable variant
+places: Märzenriet -> Märzenried,places,Märzenriet,Märzenried,similar,candidate,1,4,similarity 0.91; kind - / locality,y,t/d spelling
+places: Magnisstraße -> Magnusstraße,places,Magnisstraße,Magnusstraße,similar,candidate,4,25,similarity 0.92; kind locality / locality,y,i/u handwriting confusion; same Munich street
+places: Maingraben -> Maieingraben,places,Maingraben,Maieingraben,similar,candidate,1,2,similarity 0.91; kind - / -,n,both garbled; no context; unclear
+places: Maieringer See -> Mairinger See,places,Maieringer See,Mairinger See,similar,candidate,9,210,similarity 0.96; kind locality / locality,y,OCR variant of Maisinger See
+places: Maiing -> Mailing,places,Maiing,Mailing,similar,candidate,1,4,similarity 0.92; kind - / locality,n,superseded; another canonical accepted
+places: Maiing -> Maing,places,Maiing,Maing,similar,candidate,1,2,similarity 0.91; kind - / locality,n,superseded; another canonical accepted
+places: Maiing -> Maining,places,Maiing,Maining,similar,candidate,1,248,similarity 0.92; kind - / locality,y,OCR variant of Maising
+places: Maiing -> Mairing,places,Maiing,Mairing,similar,candidate,1,126,similarity 0.92; kind - / locality,n,superseded; another canonical accepted
+places: Maiing -> Maising,places,Maiing,Maising,similar,candidate,1,113,similarity 0.92; kind - / settlement,n,superseded; another canonical accepted
+places: Mailinger Schlucht -> Mainger Schlucht,places,Mailinger Schlucht,Mainger Schlucht,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Mailinger Schlucht -> Maininger Schlucht,places,Mailinger Schlucht,Maininger Schlucht,similar,candidate,2,22,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Mailinger Schlucht -> Mairinger Schlucht,places,Mailinger Schlucht,Mairinger Schlucht,similar,candidate,2,8,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Mailinger Schlucht -> Maisinger Schlucht,places,Mailinger Schlucht,Maisinger Schlucht,similar,candidate,2,123,similarity 0.94; kind locality / locality,y,OCR variant of Maisinger Schlucht
+places: Mainger Schlucht -> Maininger Schlucht,places,Mainger Schlucht,Maininger Schlucht,similar,candidate,2,22,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Mainger Schlucht -> Mairinger Schlucht,places,Mainger Schlucht,Mairinger Schlucht,similar,candidate,2,8,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Mainger Schlucht -> Maisinger Schlucht,places,Mainger Schlucht,Maisinger Schlucht,similar,candidate,2,123,similarity 0.94; kind locality / locality,y,OCR variant of Maisinger Schlucht
+places: Mainingersee -> Maingersee,places,Mainingersee,Maingersee,similar,candidate,2,2,similarity 0.91; kind - / locality,n,superseded; another canonical accepted
+places: Mairinger Au -> Maininger Au,places,Mairinger Au,Maininger Au,similar,candidate,1,2,similarity 0.92; kind - / locality,n,superseded; another canonical accepted
+places: Maininger Au -> Maisinger Au,places,Maininger Au,Maisinger Au,similar,candidate,2,13,similarity 0.92; kind locality / locality,y,OCR variant of Maisinger Au
+places: Mairinger Bach -> Maininger Bach,places,Mairinger Bach,Maininger Bach,similar,candidate,2,2,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Maininger Bach -> Maisinger Bach,places,Maininger Bach,Maisinger Bach,similar,candidate,2,8,similarity 0.93; kind locality / locality,y,OCR variant of Maisinger Bach
+places: Mairinger Schlucht -> Maininger Schlucht,places,Mairinger Schlucht,Maininger Schlucht,similar,candidate,8,22,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Maininger Schlucht -> Maisinger Schlucht,places,Maininger Schlucht,Maisinger Schlucht,similar,candidate,22,123,similarity 0.94; kind locality / locality,y,OCR variant of Maisinger Schlucht
+places: Mainingersee -> Maininger See,places,Mainingersee,Maininger See,similar,candidate,2,431,similarity 0.96; kind - / locality,y,compound spacing variant
+places: Mairinger See -> Maininger See,places,Mairinger See,Maininger See,similar,candidate,210,431,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Maininger See -> Maisinger See,places,Maininger See,Maisinger See,similar,candidate,431,1560,similarity 0.92; kind locality / locality,y,OCR variant of Maisinger See; Pöcking contexts
+places: Maisinger See Westseite -> Maininger See (Westseite),places,Maisinger See Westseite,Maininger See (Westseite),similar,candidate,2,6,similarity 0.96; kind locality / locality,y,OCR variant; same lake west side
+places: Mairingen See -> Mairinger See,places,Mairingen See,Mairinger See,similar,candidate,2,210,similarity 0.92; kind - / locality,y,inflection variant
+places: Mairinger Au -> Maisinger Au,places,Mairinger Au,Maisinger Au,similar,candidate,1,13,similarity 0.92; kind - / locality,y,OCR variant of Maisinger Au
+places: Mairinger Bach -> Maisinger Bach,places,Mairinger Bach,Maisinger Bach,similar,candidate,2,8,similarity 0.93; kind locality / locality,y,OCR variant of Maisinger Bach
+places: Mairinger Schlucht -> Maisinger Schlucht,places,Mairinger Schlucht,Maisinger Schlucht,similar,candidate,8,123,similarity 0.94; kind locality / locality,y,OCR variant of Maisinger Schlucht
+places: Mairinger See -> Maisinger See,places,Mairinger See,Maisinger See,similar,candidate,210,1560,similarity 0.92; kind locality / locality,y,OCR variant of Maisinger See
+"places: Maisinger See, am Schirm -> Maisinger See (Schirm)",places,"Maisinger See, am Schirm",Maisinger See (Schirm),similar,candidate,4,4,similarity 0.93; kind locality / locality,y,punctuation variant; same hide
+places: Maisinger See Südost-Ende -> Maisinger See Südende,places,Maisinger See Südost-Ende,Maisinger See Südende,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,Südost vs Süd compass variant
+places: Maisinger See Südwest-Ende -> Maisinger See Südost-Ende,places,Maisinger See Südwest-Ende,Maisinger See Südost-Ende,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,Südwest vs Südost; different ends
+places: Maria Hilf -> Mariahilf,places,Maria Hilf,Mariahilf,similar,candidate,1,7,similarity 0.95; kind - / locality,y,space variant
+places: Maria-Theresiastraße -> Maria-Theresia-Straße,places,Maria-Theresiastraße,Maria-Theresia-Straße,similar,candidate,2,6,similarity 0.98; kind locality / locality,y,hyphen variant
+places: Marling -> Maring,places,Marling,Maring,similar,candidate,1,5,similarity 0.92; kind - / locality,n,Marling South Tyrol vs Maring; unclear
+places: Marring -> Maring,places,Marring,Maring,similar,candidate,4,5,similarity 0.92; kind locality / locality,y,rr/r spelling; both Munich context
+places: Markt Altdorf -> Markt Almtorf,places,Markt Altdorf,Markt Almtorf,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,Almtorf OCR of Altdorf
+places: Markt Oberdorf -> Marktoberdorf,places,Markt Oberdorf,Marktoberdorf,similar,candidate,6,19,similarity 0.96; kind - / locality,y,space variant of Marktoberdorf
+places: Marling -> Marzling,places,Marling,Marzling,similar,candidate,1,2,similarity 0.93; kind - / locality,n,Marling vs Marzling; different places
+places: Mauerbrück -> Mauernbrücke,places,Mauerbrück,Mauernbrücke,similar,candidate,1,3,similarity 0.92; kind - / locality,y,dialect shortening same rare name
+places: Mauerkircher Straße -> Mauerkircherstraße,places,Mauerkircher Straße,Mauerkircherstraße,similar,candidate,2,15,similarity 0.97; kind locality / locality,y,space/compound variant
+places: Max Weberplatz -> Max-Weber-Platz,places,Max Weberplatz,Max-Weber-Platz,similar,candidate,1,9,similarity 0.97; kind - / -,y,hyphen variant
+places: Maximilians-Anlagen -> Maximiliananlagen,places,Maximilians-Anlagen,Maximiliananlagen,similar,candidate,2,6,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Maximiliananlagen -> Maximiliansanlagen,places,Maximiliananlagen,Maximiliansanlagen,similar,candidate,6,37,similarity 0.97; kind locality / locality,y,genitive s variant same park
+places: Maximilianbrücke -> Maximiliansbrücke,places,Maximilianbrücke,Maximiliansbrücke,similar,candidate,3,19,similarity 0.97; kind locality / locality,y,genitive s variant same bridge
+places: Maximilians-Anlagen -> Maximiliansanlagen,places,Maximilians-Anlagen,Maximiliansanlagen,similar,candidate,2,37,similarity 0.97; kind - / locality,y,hyphen variant same park
+places: Mayerinstraße -> Mayernstraße,places,Mayerinstraße,Mayernstraße,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,OCR variant same rare Munich street
+places: Meiniger See -> Meininger See,places,Meiniger See,Meininger See,similar,candidate,6,104,similarity 0.96; kind locality / locality,y,OCR variant of Maisinger See
+places: Meiningersee -> Meiniger See,places,Meiningersee,Meiniger See,similar,candidate,4,6,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Meininger Schlicht -> Meininger Schlucht,places,Meininger Schlicht,Meininger Schlucht,similar,candidate,2,4,similarity 0.94; kind locality / locality,y,Schlicht OCR of Schlucht
+places: Meiringer Schlucht -> Meininger Schlucht,places,Meiringer Schlucht,Meininger Schlucht,similar,candidate,3,4,similarity 0.94; kind locality / locality,y,OCR variant of Maisinger Schlucht
+places: Meiningersee -> Meininger See,places,Meiningersee,Meininger See,similar,candidate,4,104,similarity 0.96; kind locality / locality,y,compound spacing variant
+places: Meiringer See -> Meininger See,places,Meiringer See,Meininger See,similar,candidate,59,104,similarity 0.92; kind locality / locality,y,OCR variant of Maisinger See
+places: Meisinger See -> Meininger See,places,Meisinger See,Meininger See,similar,candidate,4,104,similarity 0.92; kind locality / locality,y,OCR variant of Maisinger See
+places: Meisinger See -> Meiringer See,places,Meisinger See,Meiringer See,similar,candidate,4,59,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Mentelschwaige -> Menterschwaige,places,Mentelschwaige,Menterschwaige,similar,candidate,8,28,similarity 0.93; kind locality / locality,y,OCR variant of Menterschwaige
+places: Menzingerstraße -> Menzinger Straße,places,Menzingerstraße,Menzinger Straße,similar,candidate,4,6,similarity 0.97; kind locality / locality,y,space/compound variant
+places: Merzburg -> Merburg,places,Merzburg,Merburg,similar,candidate,1,4,similarity 0.93; kind - / locality,n,both unknown; unclear
+places: Mieminger Platte -> Mieminger Plateau,places,Mieminger Platte,Mieminger Plateau,similar,candidate,1,2,similarity 0.91; kind - / locality,y,Platte/Plateau same Tyrol plateau
+places: Mittelsberg -> Mittelberg,places,Mittelsberg,Mittelberg,similar,candidate,2,11,similarity 0.95; kind locality / locality,y,genitive s variant; same 1948 context
+places: Mittelgeräumt -> Mittergeräumt,places,Mittelgeräumt,Mittergeräumt,similar,candidate,2,23,similarity 0.93; kind locality / locality,y,OCR variant Perlacher Forst trail
+places: Mittlergewand -> Mittergewand,places,Mittlergewand,Mittergewand,similar,candidate,2,9,similarity 0.96; kind locality / locality,y,OCR variant Perlacher Forst trail
+places: mittlerer Thb. -> mittlerer Hb,places,mittlerer Thb.,mittlerer Hb,similar,candidate,2,4,similarity 0.96; kind locality / locality,n,unclear abbreviations
+places: mittlerer Wb. -> mittlerer Hb,places,mittlerer Wb.,mittlerer Hb,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,unclear abbreviations
+places: mittlerer Wb. -> mittleres Wb,places,mittlerer Wb.,mittleres Wb,similar,candidate,2,6,similarity 0.92; kind locality / locality,y,grammatical inflection same abbreviation
+places: Mörsingen -> Mörslingen,places,Mörsingen,Mörslingen,similar,candidate,1,2,similarity 0.95; kind - / locality,n,Mörsingen vs Mörslingen both real; unclear
+places: Moorsburg -> Moosburg,places,Moorsburg,Moosburg,similar,candidate,1,58,similarity 0.94; kind - / locality,y,OCR variant of Moosburg
+places: Moorwiesen -> Mooswiesen,places,Moorwiesen,Mooswiesen,similar,candidate,1,3,similarity 0.90; kind - / -,n,Moor vs Moos different words
+places: Moos-Marie -> Moosmarie,places,Moos-Marie,Moosmarie,similar,candidate,4,15,similarity 0.95; kind locality / locality,y,hyphen variant
+places: Moosbach -> Moosach,places,Moosbach,Moosach,similar,candidate,2,66,similarity 0.93; kind locality / locality,n,Moosbach vs Moosach; different names
+places: Moosining -> Moosinning,places,Moosining,Moosinning,similar,candidate,2,14,similarity 0.95; kind locality / locality,y,spelling variant
+places: Moosinnung -> Moosinning,places,Moosinnung,Moosinning,similar,candidate,2,14,similarity 0.90; kind locality / locality,y,OCR variant
+places: Mornau -> Morau,places,Mornau,Morau,similar,candidate,1,1,similarity 0.91; kind - / -,n,both garbled; no context
+places: Mühle -> Mühlen,places,Mühle,Mühlen,similar,candidate,2,12,similarity 0.92; kind locality / locality,n,singular vs plural generic; different entries
+places: Mühlthal -> Mühltal,places,Mühlthal,Mühltal,similar,candidate,22,72,similarity 0.94; kind locality / locality,y,th/t spelling Mühltal Starnberg
+"places: München, Akademiehof -> München (Akademie)",places,"München, Akademiehof",München (Akademie),similar,candidate,2,2,similarity 0.92; kind locality / locality,n,courtyard vs building; sub-locality
+"places: München, Alienstraße 54 -> München, Amalienstraße 54",places,"München, Alienstraße 54","München, Amalienstraße 54",similar,candidate,6,54,similarity 0.96; kind locality / locality,y,OCR dropped Am; same address
+"places: München, Amalienstraße 54/4 -> München, Alienstraße 54",places,"München, Amalienstraße 54/4","München, Alienstraße 54",similar,candidate,2,6,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+"places: München, Alter Botanischer Garten -> München, Botanischer Garten",places,"München, Alter Botanischer Garten","München, Botanischer Garten",similar,candidate,2,4,similarity 0.90; kind locality / locality,n,Alter Botanischer Garten is different garden
+"places: München, Alter Botanischer Garten -> Münchener Botanischer Garten",places,"München, Alter Botanischer Garten",Münchener Botanischer Garten,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,Alter Botanischer Garten is different garden
+"places: München, Amalienstraße -> München, Amalienstraße 54",places,"München, Amalienstraße","München, Amalienstraße 54",similar,candidate,20,54,similarity 0.94; kind locality / locality,n,street vs house address
+"places: München, Amalienstraße 54/4 -> München, Amalienstraße",places,"München, Amalienstraße 54/4","München, Amalienstraße",similar,candidate,2,20,similarity 0.90; kind locality / locality,n,house address vs street
+"places: München, Amalienstraße 54/4 -> München, Amalienstraße 54",places,"München, Amalienstraße 54/4","München, Amalienstraße 54",similar,candidate,2,54,similarity 0.96; kind locality / locality,y,same building; floor suffix
+"places: München, Amalienstraße 54/III -> München, Amalienstraße 54",places,"München, Amalienstraße 54/III","München, Amalienstraße 54",similar,candidate,2,54,similarity 0.93; kind locality / locality,y,same building; floor suffix
+"places: München, Amalienstraße 54/III -> München, Amalienstraße 54/4",places,"München, Amalienstraße 54/III","München, Amalienstraße 54/4",similar,candidate,2,2,similarity 0.93; kind locality / locality,n,different floor designation; unclear
+"places: München, Kanalstraße -> München, Annastraße",places,"München, Kanalstraße","München, Annastraße",similar,candidate,4,4,similarity 0.93; kind locality / locality,n,Kanalstraße vs Annastraße different streets
+"places: München, Arcisstraße 54 -> München, Arcisstraße",places,"München, Arcisstraße 54","München, Arcisstraße",similar,candidate,2,6,similarity 0.93; kind locality / locality,n,house address vs street
+places: München-Haus -> München-Au,places,München-Haus,München-Au,similar,candidate,4,4,similarity 0.92; kind locality / locality,n,Haus vs Au different
+"places: München, beim Überfällen -> München, vorn beim Überfällen",places,"München, beim Überfällen","München, vorn beim Überfällen",similar,candidate,2,4,similarity 0.91; kind locality / locality,y,same entry; vorn qualifier only
+"places: Münchener Botanischer Garten -> München, Botanischer Garten",places,Münchener Botanischer Garten,"München, Botanischer Garten",similar,candidate,2,4,similarity 0.96; kind locality / locality,y,adjective/comma variant same garden
+"places: München, Chiemgau-Straße -> München (Chiemgaustraße)",places,"München, Chiemgau-Straße",München (Chiemgaustraße),similar,candidate,2,4,similarity 0.98; kind locality / locality,y,punctuation/hyphen variant
+places: München-Fabrikgelände -> München-Fabrikgebäude,places,München-Fabrikgelände,München-Fabrikgebäude,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,Gelände vs Gebäude different words
+"places: München, Otlingerstraße -> München, Fingerstraße",places,"München, Otlingerstraße","München, Fingerstraße",similar,candidate,2,2,similarity 0.91; kind locality / locality,n,both garbled; unclear
+"places: München-Ostfriedhof -> München, Friedhof",places,München-Ostfriedhof,"München, Friedhof",similar,candidate,2,2,similarity 0.92; kind locality / locality,n,Ostfriedhof vs generic Friedhof
+"places: München, Fustelburgstraße -> München, Haselburgstraße",places,"München, Fustelburgstraße","München, Haselburgstraße",similar,candidate,2,2,similarity 0.90; kind locality / locality,n,garbled; unclear
+places: München-Gera -> München-Gern,places,München-Gera,München-Gern,similar,candidate,4,6,similarity 0.92; kind locality / locality,y,Gera OCR of Gern
+"places: München, Hangwald an der Karlowingerstraße -> München, Hangwald an der Harlachingerstraße",places,"München, Hangwald an der Karlowingerstraße","München, Hangwald an der Harlachingerstraße",similar,candidate,3,6,similarity 0.92; kind locality / locality,n,Karlowinger vs Harlachinger unclear
+"places: München, Hangwald an der Karwinskystraße -> München, Hangwald an der Karlowingerstraße",places,"München, Hangwald an der Karwinskystraße","München, Hangwald an der Karlowingerstraße",similar,candidate,2,3,similarity 0.90; kind locality / locality,n,Karwinsky vs Karlowinger different
+"places: München, Harlachinger Straße 38 -> München, Harlachinger Straße",places,"München, Harlachinger Straße 38","München, Harlachinger Straße",similar,candidate,2,4,similarity 0.95; kind locality / locality,n,house address vs street
+"places: München Horlachinger Straße -> München, Harlachinger Straße",places,München Horlachinger Straße,"München, Harlachinger Straße",similar,candidate,2,4,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+"places: München, Harlachinger Straße -> München, Karlachinger Straße",places,"München, Harlachinger Straße","München, Karlachinger Straße",similar,candidate,4,18,similarity 0.97; kind locality / locality,y,K/H OCR of Harlachinger
+"places: München, Harlachinger Straße -> München-Perlachingerstraße",places,"München, Harlachinger Straße",München-Perlachingerstraße,similar,candidate,4,36,similarity 0.91; kind locality / locality,n,Perlachinger vs Harlachinger unclear
+"places: München, Harlachinger Straße 38 -> München Horlachinger Straße",places,"München, Harlachinger Straße 38",München Horlachinger Straße,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,house address vs street
+"places: München, Harlachinger Straße 38 -> München, Karlachinger Straße",places,"München, Harlachinger Straße 38","München, Karlachinger Straße",similar,candidate,2,18,similarity 0.92; kind locality / locality,n,house address vs street
+"places: München Horlachinger Straße -> München, Karlachinger Straße",places,München Horlachinger Straße,"München, Karlachinger Straße",similar,candidate,2,18,similarity 0.93; kind locality / locality,y,both OCR of Harlachinger Straße
+places: München Horlachinger Straße -> München-Perlachingerstraße,places,München Horlachinger Straße,München-Perlachingerstraße,similar,candidate,2,36,similarity 0.91; kind locality / locality,n,Perlachinger vs Horlachinger unclear
+"places: München-Walliserstraße -> München, Kaiserstraße",places,München-Walliserstraße,"München, Kaiserstraße",similar,candidate,2,4,similarity 0.91; kind locality / locality,n,different streets
+"places: München, Karlingerstraße -> München, Karlachinger Straße",places,"München, Karlingerstraße","München, Karlachinger Straße",similar,candidate,4,18,similarity 0.93; kind locality / locality,n,Karlinger vs Karlachinger unclear
+"places: München, Karlachinger Straße -> München, Karolingerstraße",places,"München, Karlachinger Straße","München, Karolingerstraße",similar,candidate,18,68,similarity 0.91; kind locality / locality,n,Karlachinger=Harlachinger not Karolinger
+"places: München, Karlachinger Straße -> München-Perlachingerstraße",places,"München, Karlachinger Straße",München-Perlachingerstraße,similar,candidate,18,36,similarity 0.91; kind locality / locality,n,Perlachinger unclear
+"places: München (Karlinger Allee 24) -> München, Karolinger Allee",places,München (Karlinger Allee 24),"München, Karolinger Allee",similar,candidate,2,6,similarity 0.92; kind locality / locality,n,house address vs street
+"places: München, Karolinenstraße -> München, Karlingerstraße",places,"München, Karolinenstraße","München, Karlingerstraße",similar,candidate,2,4,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+"places: München, Karlingerstraße -> München, Karolingerstraße",places,"München, Karlingerstraße","München, Karolingerstraße",similar,candidate,4,68,similarity 0.98; kind locality / locality,y,dropped o; same street
+"places: München, Karlingerstraße -> München, Karolingerstraße 18",places,"München, Karlingerstraße","München, Karolingerstraße 18",similar,candidate,4,14,similarity 0.93; kind locality / locality,n,street vs house address
+"places: München, Karolingerstraße 24 -> München, Karlingerstraße",places,"München, Karolingerstraße 24","München, Karlingerstraße",similar,candidate,2,4,similarity 0.93; kind locality / locality,n,house address vs street
+"places: München, Karolinenstraße -> München, Karolinengasse",places,"München, Karolinenstraße","München, Karolinengasse",similar,candidate,2,2,similarity 0.92; kind locality / locality,n,Straße vs Gasse; unclear
+"places: München, Karolinenstraße -> München, Karolingerstraße",places,"München, Karolinenstraße","München, Karolingerstraße",similar,candidate,2,68,similarity 0.94; kind locality / locality,y,OCR variant of Karolingerstraße
+"places: München, Karolingerstraße 18 -> München, Karolingerstraße",places,"München, Karolingerstraße 18","München, Karolingerstraße",similar,candidate,14,68,similarity 0.95; kind locality / locality,n,house address vs street
+"places: München, Karolingerstraße 24 -> München, Karolingerstraße",places,"München, Karolingerstraße 24","München, Karolingerstraße",similar,candidate,2,68,similarity 0.95; kind locality / locality,n,house address vs street
+"places: München, Kotzingerstraße -> München, Karolingerstraße",places,"München, Kotzingerstraße","München, Karolingerstraße",similar,candidate,4,68,similarity 0.90; kind locality / locality,n,Kotzinger differs; unclear
+"places: München, Otlingerstraße -> München, Karolingerstraße",places,"München, Otlingerstraße","München, Karolingerstraße",similar,candidate,2,68,similarity 0.92; kind locality / locality,n,Otlinger differs; unclear
+"places: München, Karolingerstraße 24 -> München, Karolingerstraße 18",places,"München, Karolingerstraße 24","München, Karolingerstraße 18",similar,candidate,2,14,similarity 0.93; kind locality / locality,n,different house numbers
+"places: München, Karwinskistraße -> München, Karwinskystraße",places,"München, Karwinskistraße","München, Karwinskystraße",similar,candidate,4,8,similarity 0.96; kind locality / locality,y,i/y spelling
+"places: München, Kauplinstraße -> München-Naupliastraße",places,"München, Kauplinstraße",München-Naupliastraße,similar,candidate,2,4,similarity 0.91; kind locality / locality,y,Kauplin OCR of Nauplia
+"places: München, Neuplinstraße -> München, Kauplinstraße",places,"München, Neuplinstraße","München, Kauplinstraße",similar,candidate,2,2,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+"places: München, Otlingerstraße -> München, Kotzingerstraße",places,"München, Otlingerstraße","München, Kotzingerstraße",similar,candidate,2,4,similarity 0.94; kind locality / locality,n,both garbled; unclear
+"places: München, Liezenstraße -> München, Leitenstraße",places,"München, Liezenstraße","München, Leitenstraße",similar,candidate,4,4,similarity 0.91; kind locality / locality,n,Liezen vs Leiten unclear
+"places: München, Lindenstraße -> München, Leitenstraße",places,"München, Lindenstraße","München, Leitenstraße",similar,candidate,2,4,similarity 0.91; kind locality / locality,n,Linden vs Leiten different
+"places: München, Lindenstraße -> München, Liezenstraße",places,"München, Lindenstraße","München, Liezenstraße",similar,candidate,2,4,similarity 0.91; kind locality / locality,n,Linden vs Liezen different
+"places: München, Ludwigstraße 18 -> München, Ludwigstraße",places,"München, Ludwigstraße 18","München, Ludwigstraße",similar,candidate,2,2,similarity 0.94; kind locality / locality,n,house address vs street
+"places: München, Magmirstraße -> München, Mayrstraße",places,"München, Magmirstraße","München, Mayrstraße",similar,candidate,2,2,similarity 0.90; kind locality / locality,n,garbled; unclear
+"places: München, Neuplinstraße -> München-Naupliastraße",places,"München, Neuplinstraße",München-Naupliastraße,similar,candidate,2,4,similarity 0.91; kind locality / locality,y,Neuplin OCR of Nauplia
+places: München-Ostfriedhof -> München Westfriedhof,places,München-Ostfriedhof,München Westfriedhof,similar,candidate,2,4,similarity 0.93; kind locality / locality,n,Ost vs West cemetery
+places: München-Ostfriedhof -> Münchener Ostfriedhof,places,München-Ostfriedhof,Münchener Ostfriedhof,similar,candidate,2,72,similarity 0.95; kind locality / locality,y,adjective/hyphen variant
+"places: München, Sabenerstraße -> München, Säbenerstraße",places,"München, Sabenerstraße","München, Säbenerstraße",similar,candidate,2,4,similarity 0.98; kind locality / locality,y,umlaut variant
+"places: München, Söllerstraße -> München, Söllstraße",places,"München, Söllerstraße","München, Söllstraße",similar,candidate,2,2,similarity 0.95; kind locality / locality,y,suffix variant same rare street
+"places: München, Söllerstraße -> München, Sollnstraße",places,"München, Söllerstraße","München, Sollnstraße",similar,candidate,2,2,similarity 0.91; kind locality / locality,n,Sollnstraße possibly Sollner Straße; unclear
+"places: München, Söllerstraße -> München-Süllstraße",places,"München, Söllerstraße",München-Süllstraße,similar,candidate,2,2,similarity 0.91; kind locality / locality,n,superseded; another canonical accepted
+"places: München, Sollnstraße -> München, Söllstraße",places,"München, Sollnstraße","München, Söllstraße",similar,candidate,2,2,similarity 0.95; kind locality / locality,n,Sollnstraße possibly Sollner Straße; unclear
+"places: München, Söllstraße -> München-Süllstraße",places,"München, Söllstraße",München-Süllstraße,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,ö/ü OCR variant
+"places: München, Sollnstraße -> München-Süllstraße",places,"München, Sollnstraße",München-Süllstraße,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,Sollnstraße possibly Sollner Straße; unclear
+"places: München, Theresienstraße 1 -> München, Theresienstraße",places,"München, Theresienstraße 1","München, Theresienstraße",similar,candidate,2,2,similarity 0.96; kind locality / locality,n,house address vs street
+places: Münchner Tierpark Hellabrunn -> Münchener Tierpark Hellabrunn,places,Münchner Tierpark Hellabrunn,Münchener Tierpark Hellabrunn,similar,candidate,3,18,similarity 0.98; kind locality / locality,y,Münchner/Münchener variant
+places: Naugliastraße -> Naupliastraße,places,Naugliastraße,Naupliastraße,similar,candidate,2,21,similarity 0.93; kind locality / locality,y,OCR variant
+places: Nebelhorn-Haus -> Nebelhornhaus,places,Nebelhorn-Haus,Nebelhornhaus,similar,candidate,2,7,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Neuaubing -> Neu-Aubing,places,Neuaubing,Neu-Aubing,similar,candidate,2,8,similarity 0.95; kind locality / locality,y,hyphen variant
+places: Neu-Finning -> Neufinning,places,Neu-Finning,Neufinning,similar,candidate,2,16,similarity 0.95; kind - / locality,y,hyphen variant
+places: Neugrünwald -> Neu-Grünwald,places,Neugrünwald,Neu-Grünwald,similar,candidate,1,2,similarity 0.96; kind - / locality,y,hyphen variant
+places: Neusee -> Neu-See,places,Neusee,Neu-See,similar,candidate,2,5,similarity 0.92; kind - / locality,y,hyphen variant
+places: Neu-Weiher -> Neuweiher,places,Neu-Weiher,Neuweiher,similar,candidate,1,19,similarity 0.95; kind - / locality,y,hyphen variant
+places: neue Schirme -> neuer Schirm,places,neue Schirme,neuer Schirm,similar,candidate,2,20,similarity 0.92; kind - / locality,y,singular/plural; same hide area
+places: Neufinning -> Neufinsing,places,Neufinning,Neufinsing,similar,candidate,16,176,similarity 0.90; kind locality / locality,y,OCR variant; same Ismaning context
+places: Neuhauserstraße -> Neuhauser Straße,places,Neuhauserstraße,Neuhauser Straße,similar,candidate,1,2,similarity 0.97; kind - / locality,y,space/compound variant
+places: Neupüring -> Neupiering,places,Neupüring,Neupiering,similar,candidate,2,12,similarity 0.90; kind locality / locality,y,ü/ie handwriting; same Ismaning context
+places: Neusiering -> Neupiering,places,Neusiering,Neupiering,similar,candidate,4,12,similarity 0.90; kind locality / locality,y,s/p OCR; same Ismaning context
+places: Neureut -> Neureuth,places,Neureut,Neureuth,similar,candidate,2,8,similarity 0.93; kind locality / locality,y,th/t spelling
+places: Niederaach -> Niederach,places,Niederaach,Niederach,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,aa/a spelling; same May 1937
+places: Niederaach -> Niedernach,places,Niederaach,Niedernach,similar,candidate,2,5,similarity 0.90; kind locality / locality,n,Niederaach vs Niedernach; different contexts
+places: Niederach -> Niedernach,places,Niederach,Niedernach,similar,candidate,2,5,similarity 0.95; kind locality / locality,n,Niederach vs Niedernach; unclear
+places: Nonner Auen -> Nonner Au,places,Nonner Auen,Nonner Au,similar,candidate,2,6,similarity 0.90; kind locality / locality,y,plural variant; same 1947 trip
+places: Nord-Becken -> Nordbecken,places,Nord-Becken,Nordbecken,similar,candidate,3,76,similarity 0.95; kind locality / locality,y,hyphen variant
+places: Nordufer -> Nord-Ufer,places,Nordufer,Nord-Ufer,similar,candidate,1,2,similarity 0.94; kind - / locality,y,hyphen variant
+places: Norddamm des W.G. -> Norddamm des Wb,places,Norddamm des W.G.,Norddamm des Wb,similar,candidate,1,1,similarity 0.90; kind - / -,n,different abbreviations; unclear
+places: Nordend -> Norden,places,Nordend,Norden,similar,candidate,1,4,similarity 0.92; kind - / -,n,Nordend vs Norden different words
+places: Nordend -> Nordende,places,Nordend,Nordende,similar,candidate,1,9,similarity 0.93; kind - / locality,y,truncated same word
+places: Nymphenburg Park -> Nymphenburger Park,places,Nymphenburg Park,Nymphenburger Park,similar,candidate,7,192,similarity 0.94; kind locality / locality,y,inflection variant
+places: Nymphenburgerkanal -> Nymphenburger Kanal,places,Nymphenburgerkanal,Nymphenburger Kanal,similar,candidate,2,27,similarity 0.97; kind - / locality,y,space/compound variant
+places: Nymphenburger Schloss -> Nymphenburger Schlosspark,places,Nymphenburger Schloss,Nymphenburger Schlosspark,similar,candidate,2,321,similarity 0.91; kind locality / locality,n,palace vs park
+places: Ober-Dillach -> Oberdillach,places,Ober-Dillach,Oberdillach,similar,candidate,2,2,similarity 0.96; kind - / locality,y,hyphen variant
+places: Ober-Germaringen -> Obergermaringen,places,Ober-Germaringen,Obergermaringen,similar,candidate,2,6,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Oberbeuern -> Oberbeiern,places,Oberbeuern,Oberbeiern,similar,candidate,4,4,similarity 0.90; kind locality / -,n,superseded; another canonical accepted
+places: Oberbeuern -> Oberbeuren,places,Oberbeuern,Oberbeuren,similar,candidate,4,63,similarity 0.90; kind locality / locality,y,letter swap of Oberbeuren
+places: Oberbeurer Steig -> Oberbeurer Steige,places,Oberbeurer Steig,Oberbeurer Steige,similar,candidate,3,9,similarity 0.97; kind locality / locality,y,inflection variant
+places: Oberblegi-See -> Oberblegisee,places,Oberblegi-See,Oberblegisee,similar,candidate,6,14,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Oberdorf -> Oberndorf,places,Oberdorf,Oberndorf,similar,candidate,4,11,similarity 0.94; kind locality / locality,n,Oberdorf vs Oberndorf; unclear
+places: östliches Hb. -> östliches Bb.,places,östliches Hb.,östliches Bb.,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,unclear abbreviations
+places: östliches Bb. -> östliches Wb,places,östliches Bb.,östliches Wb,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,unclear abbreviations
+places: östliches Hb. -> östliches Wb,places,östliches Hb.,östliches Wb,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,unclear abbreviations
+places: östliches Wb -> östliches Wl.,places,östliches Wb,östliches Wl.,similar,candidate,4,8,similarity 0.92; kind locality / locality,n,unclear abbreviations
+places: östliches Wo. -> östliches Wb,places,östliches Wo.,östliches Wb,similar,candidate,2,4,similarity 0.92; kind locality / locality,n,unclear abbreviations
+places: östliches Westbecken -> östliches Werkbecken,places,östliches Westbecken,östliches Werkbecken,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,Westbecken vs Werkbecken; unclear
+places: östliches Wo. -> östliches Wl.,places,östliches Wo.,östliches Wl.,similar,candidate,2,8,similarity 0.92; kind locality / locality,n,unclear abbreviations
+places: Ost-Becken -> Ostbecken,places,Ost-Becken,Ostbecken,similar,candidate,1,95,similarity 0.95; kind - / locality,y,hyphen variant
+places: Ost-Insel -> Ostinsel,places,Ost-Insel,Ostinsel,similar,candidate,2,45,similarity 0.94; kind locality / locality,y,hyphen variant
+places: Oster-See -> Ostersee,places,Oster-See,Ostersee,similar,candidate,1,4,similarity 0.94; kind - / locality,y,hyphen variant
+places: Ostersee -> Osterseen,places,Ostersee,Osterseen,similar,candidate,4,62,similarity 0.94; kind locality / locality,y,singular/plural; same lake group
+places: Ostseen -> Ostsee,places,Ostseen,Ostsee,similar,candidate,2,10,similarity 0.92; kind locality / locality,n,Ostseen vs Ostsee; unclear
+places: Pappenheim -> Pappelheim,places,Pappenheim,Pappelheim,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,Pappenheim vs Pappelheim; different contexts
+places: Parkteiche -> Parkteich,places,Parkteiche,Parkteich,similar,candidate,1,1,similarity 0.95; kind - / -,y,singular/plural generic
+places: Partenen -> Parthenen,places,Partenen,Parthenen,similar,candidate,3,6,similarity 0.94; kind - / locality,y,old spelling Montafon village
+places: Perlacher Forstweg -> Perlacher Forst,places,Perlacher Forstweg,Perlacher Forst,similar,candidate,2,584,similarity 0.91; kind locality / locality,n,forest road vs forest
+places: Perlachinger Forst -> Perlacher Forst,places,Perlachinger Forst,Perlacher Forst,similar,candidate,1,584,similarity 0.91; kind - / locality,y,OCR variant
+places: Peterlwand -> Peterlewand,places,Peterlwand,Peterlewand,similar,candidate,1,3,similarity 0.95; kind - / locality,y,dialect e dropped
+places: Pöllatstraße -> Pölltstraße,places,Pöllatstraße,Pölltstraße,similar,candidate,2,6,similarity 0.96; kind locality / locality,y,OCR variant same Munich street
+places: Pölzlstraße -> Pölltstraße,places,Pölzlstraße,Pölltstraße,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,Pölzl vs Pöllt; unclear
+places: Prienz -> Prien,places,Prienz,Prien,similar,candidate,2,25,similarity 0.91; kind locality / locality,y,OCR trailing letter
+places: Prinzen-Weg -> Prinzenweg,places,Prinzen-Weg,Prinzenweg,similar,candidate,1,47,similarity 0.95; kind - / locality,y,hyphen variant
+places: Prinzen-Weg -> Prinzeweg,places,Prinzen-Weg,Prinzeweg,similar,candidate,1,1,similarity 0.90; kind - / -,n,superseded; another canonical accepted
+places: Prinzeweg -> Prinzenweg,places,Prinzeweg,Prinzenweg,similar,candidate,1,47,similarity 0.95; kind - / locality,y,OCR variant of Prinzenweg; Pöcking area
+places: Prinzeweg -> Prinzweg,places,Prinzeweg,Prinzweg,similar,candidate,1,25,similarity 0.94; kind - / locality,n,superseded; another canonical accepted
+places: Prinzregenten-Straße -> Prinzregentenstraße,places,Prinzregenten-Straße,Prinzregentenstraße,similar,candidate,2,21,similarity 0.98; kind locality / locality,y,hyphen variant; same Munich street
+places: Pürklteiche -> Pürklteich,places,Pürklteiche,Pürklteich,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,plural; same entry date
+places: Rappanalptal -> Rappenalptal,places,Rappanalptal,Rappenalptal,similar,candidate,6,28,similarity 0.92; kind locality / locality,y,OCR vowel swap; Oberstdorf valley
+places: Rappenalpental -> Rappenalptal,places,Rappenalpental,Rappenalptal,similar,candidate,2,28,similarity 0.92; kind locality / locality,y,spelling variant of same valley
+places: Ratten -> Raten,places,Ratten,Raten,similar,candidate,1,2,similarity 0.91; kind - / -,n,no context; unclear which place
+places: Ratzen -> Raten,places,Ratzen,Raten,similar,candidate,2,2,similarity 0.91; kind locality / -,n,no context for Raten; unclear
+places: Rauchbeeren -> Rauschbeeren,places,Rauchbeeren,Rauschbeeren,similar,candidate,2,32,similarity 0.96; kind locality / locality,y,OCR dropped s; same V1 weeks
+places: Regensburger -> Regensburg,places,Regensburger,Regensburg,similar,candidate,2,28,similarity 0.91; kind locality / locality,n,adjectival form; likely truncated compound
+places: Reiter Alpe -> Reiteralpe,places,Reiter Alpe,Reiteralpe,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,space variant; Berchtesgaden plateau
+places: Retterschwangertal -> Retterschwanger Tal,places,Retterschwangertal,Retterschwanger Tal,similar,candidate,10,16,similarity 0.97; kind locality / locality,y,compound spacing variant
+places: Reute -> Reutte,places,Reute,Reutte,similar,candidate,2,11,similarity 0.91; kind locality / locality,n,Reute and Reutte both real; unclear
+places: Reutterberg -> Reuter Berg,places,Reutterberg,Reuter Berg,similar,candidate,2,2,similarity 0.91; kind locality / locality,y,spelling variant; same era Munich
+places: Ried-Moos -> Rieder Moos,places,Ried-Moos,Rieder Moos,similar,candidate,2,15,similarity 0.90; kind locality / locality,y,adjectival/hyphen variant; V3 Kaufbeuren
+places: Ried-Moos -> Riedmoos,places,Ried-Moos,Riedmoos,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,superseded; another canonical accepted
+places: Riederloh -> Riedeloh,places,Riederloh,Riedeloh,similar,candidate,2,4,similarity 0.94; kind locality / locality,y,OCR variant of Kaufbeuren Riederloh
+places: Riedeloh -> Riedloh,places,Riedeloh,Riedloh,similar,candidate,4,22,similarity 0.93; kind locality / locality,y,OCR variant; Kaufbeuren 1917
+places: Riedner Moos -> Rieder Moos,places,Riedner Moos,Rieder Moos,similar,candidate,2,15,similarity 0.96; kind locality / locality,n,1960 Munich vs 1921 Kaufbeuren; unclear
+places: Riederau -> Riedrau,places,Riederau,Riedrau,similar,candidate,17,22,similarity 0.93; kind settlement / settlement,y,Riedrau OCR of Riederau am Ammersee
+places: Riedloch -> Riedloh,places,Riedloch,Riedloh,similar,candidate,2,22,similarity 0.93; kind locality / locality,y,OCR h/ch; same V1 Kaufbeuren
+places: Riedlohe -> Riedloh,places,Riedlohe,Riedloh,similar,candidate,4,22,similarity 0.93; kind locality / locality,y,trailing-e variant; same V1
+places: Riemerwiese -> Riemer-Wiese,places,Riemerwiese,Riemer-Wiese,similar,candidate,2,45,similarity 0.96; kind locality / locality,y,hyphen variant; V28
+places: Riet-Moos -> Rietmoos,places,Riet-Moos,Rietmoos,similar,candidate,2,2,similarity 0.94; kind locality / locality,y,hyphen variant; V3 Elbsee area
+places: Rietraue -> Rietrau,places,Rietraue,Rietrau,similar,candidate,8,31,similarity 0.93; kind locality / locality,y,trailing-e variant of same
+places: Rinegger Weiher -> Ringger Weiher,places,Rinegger Weiher,Ringger Weiher,similar,candidate,4,10,similarity 0.97; kind locality / locality,n,different regions/years; unclear
+places: Rishel -> Rishl,places,Rishel,Rishl,similar,candidate,1,2,similarity 0.91; kind - / locality,y,spelling variant; Jachenau
+places: Römerschanze -> Römerchanze,places,Römerschanze,Römerchanze,similar,candidate,2,2,similarity 0.96; kind - / -,y,OCR dropped s
+places: Röthenbach -> Röthbach,places,Röthenbach,Röthbach,similar,candidate,1,2,similarity 0.90; kind - / locality,n,different names; Röthenbach real settlement
+places: Rotlach -> Rotach,places,Rotlach,Rotach,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,OCR l insertion; consecutive days
+places: Rotach -> Rottach,places,Rotach,Rottach,similar,candidate,2,8,similarity 0.92; kind locality / locality,y,spelling variant; Kaufbeuren river
+places: Rothenfels -> Rothenfeld,places,Rothenfels,Rothenfeld,similar,candidate,2,7,similarity 0.90; kind locality / locality,n,different real places
+places: Rubishorn -> Rubihorn,places,Rubishorn,Rubihorn,similar,candidate,2,4,similarity 0.94; kind locality / locality,y,OCR; Oberstdorf peak
+places: Ruderatshofen -> Rudratshofen,places,Ruderatshofen,Rudratshofen,similar,candidate,7,8,similarity 0.96; kind locality / locality,y,spelling variant; Ostallgäu village
+places: Saalachauen -> Saalachau,places,Saalachauen,Saalachau,similar,candidate,2,6,similarity 0.90; kind locality / locality,y,plural
+places: Saatkrähenkolonie -> Saatkrähen-Kolonie,places,Saatkrähenkolonie,Saatkrähen-Kolonie,similar,candidate,3,13,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Sachsenbach -> Sachenbach,places,Sachsenbach,Sachenbach,similar,candidate,21,39,similarity 0.95; kind locality / locality,y,same date 1919-02-15; Walchensee
+places: Sackenbach -> Sachenbach,places,Sackenbach,Sachenbach,similar,candidate,2,39,similarity 0.90; kind locality / locality,y,OCR ch/ck
+places: Säbener Straße -> Säbenerstraße,places,Säbener Straße,Säbenerstraße,similar,candidate,9,26,similarity 0.97; kind locality / locality,y,spacing variant; Harlaching street
+places: Säuenerstraße -> Säbener Straße,places,Säuenerstraße,Säbener Straße,similar,candidate,2,9,similarity 0.90; kind locality / locality,n,superseded; another canonical accepted
+places: Säuenerstraße -> Säbenerstraße,places,Säuenerstraße,Säbenerstraße,similar,candidate,2,26,similarity 0.93; kind locality / locality,y,OCR b/u; same street
+places: Sägmühle -> Sägemühle,places,Sägmühle,Sägemühle,similar,candidate,1,2,similarity 0.95; kind - / locality,y,spelling variant
+places: Salvator-Kirche -> Salvatorkirche,places,Salvator-Kirche,Salvatorkirche,similar,candidate,2,26,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Sankt Kosmas -> Sankt Cosmas,places,Sankt Kosmas,Sankt Cosmas,similar,candidate,1,16,similarity 0.92; kind - / locality,y,K/C spelling; Kaufbeuren church
+places: Sankt-Magnus-Straße -> St. Magnusstraße,places,Sankt-Magnus-Straße,St. Magnusstraße,similar,candidate,4,10,similarity 0.97; kind locality / locality,y,Sankt/St. variant; Harlaching
+places: Schäferradel -> Schäferkadel,places,Schäferradel,Schäferkadel,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,OCR r/k; V3 Kaufbeuren
+places: Schäferstadl -> Schäferstadel,places,Schäferstadl,Schäferstadel,similar,candidate,4,8,similarity 0.96; kind locality / locality,y,dialect spelling; V3 Kaufbeuren
+places: Schargenweiher -> Schergenweiher,places,Schargenweiher,Schergenweiher,similar,candidate,1,6,similarity 0.93; kind - / locality,y,OCR vowel; Bernried
+places: Scheffau -> Schöffau,places,Scheffau,Schöffau,similar,candidate,2,2,similarity 0.94; kind locality / locality,n,both real distinct places
+places: Schelklingen -> Schüllingen,places,Schelklingen,Schüllingen,similar,candidate,2,2,similarity 0.92; kind - / locality,y,Schwäbische Alb ctx; OCR of Schelklingen
+places: Schellenberg -> Schellberg,places,Schellenberg,Schellberg,similar,candidate,2,4,similarity 0.91; kind locality / locality,n,different names; unclear
+places: Schellenberger -> Schellenberg,places,Schellenberger,Schellenberg,similar,candidate,1,2,similarity 0.92; kind - / locality,n,adjectival; likely truncated compound
+places: Schnellenberg -> Schellenberg,places,Schnellenberg,Schellenberg,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,OCR n insertion; Schnellenberg not Bavarian
+places: Schillach -> Schwillach,places,Schillach,Schwillach,similar,candidate,2,16,similarity 0.95; kind locality / locality,y,OCR dropped w; Erding stream
+places: Schinderdaxel -> Schinderdaxet,places,Schinderdaxel,Schinderdaxet,similar,candidate,2,6,similarity 0.92; kind locality / locality,y,OCR l/t; consecutive days V29
+places: Schlacher -> Schlachters,places,Schlacher,Schlachters,similar,candidate,4,7,similarity 0.90; kind locality / locality,n,Black Forest trip vs Lindau; unclear
+places: Schlacken-Sattel -> Schlacker-Sattel,places,Schlacken-Sattel,Schlacker-Sattel,similar,candidate,4,5,similarity 0.94; kind locality / locality,y,OCR; consecutive days 1939
+places: Schloss Berg -> Schloßberg,places,Schloss Berg,Schloßberg,similar,candidate,2,40,similarity 0.96; kind - / locality,n,castle Berg vs Kaufbeuren hill
+places: Schloss Nymphenburg -> Schlosspark Nymphenburg,places,Schloss Nymphenburg,Schlosspark Nymphenburg,similar,candidate,7,26,similarity 0.90; kind locality / locality,n,palace vs park; distinct localities
+places: Schloß-Park -> Schlosspark,places,Schloß-Park,Schlosspark,similar,candidate,2,10,similarity 0.96; kind locality / locality,y,spelling variant
+places: Schlotterwiese -> Schotterwiese,places,Schlotterwiese,Schotterwiese,similar,candidate,4,4,similarity 0.96; kind locality / locality,y,OCR l insertion; V28 March 1955
+places: Schönberg -> Schömberg,places,Schönberg,Schömberg,similar,candidate,1,2,similarity 0.90; kind - / locality,n,both real distinct names
+places: Schöngaising -> Schöngeising,places,Schöngaising,Schöngeising,similar,candidate,2,4,similarity 0.92; kind locality / locality,y,spelling of Schöngeising
+places: Schöngiesing -> Schöngaising,places,Schöngiesing,Schöngaising,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Schöngiesing -> Schöngeising,places,Schöngiesing,Schöngeising,similar,candidate,2,4,similarity 0.92; kind locality / locality,y,spelling of Schöngeising
+places: Schorndorf -> Schondorf,places,Schorndorf,Schondorf,similar,candidate,8,9,similarity 0.95; kind locality / locality,n,Schorndorf real; different eras
+places: Schwarzenbach -> Schwärzenbach,places,Schwarzenbach,Schwärzenbach,similar,candidate,4,4,similarity 0.96; kind locality / locality,n,both real names; unclear
+places: Schwanenweiher -> Schwanen-Weiher,places,Schwanenweiher,Schwanen-Weiher,similar,candidate,6,7,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Schwanen-Weiher -> Schwingen-Weiher,places,Schwanen-Weiher,Schwingen-Weiher,similar,candidate,7,10,similarity 0.90; kind locality / locality,n,different names Schwanen/Schwingen
+places: Schwarzmoor -> Schwarzmoos,places,Schwarzmoor,Schwarzmoos,similar,candidate,2,31,similarity 0.91; kind locality / locality,y,Moor/Moos; same V13 Pöcking
+places: Seebucht -> See-Bucht,places,Seebucht,See-Bucht,similar,candidate,2,5,similarity 0.94; kind locality / locality,y,hyphen variant
+places: See-Ende -> Seeende,places,See-Ende,Seeende,similar,candidate,1,1,similarity 0.93; kind - / -,y,hyphen variant
+places: See-Moos -> Seemoos,places,See-Moos,Seemoos,similar,candidate,2,30,similarity 0.93; kind locality / locality,y,hyphen variant
+places: See-Ufer -> Seeufer,places,See-Ufer,Seeufer,similar,candidate,1,16,similarity 0.93; kind - / locality,y,hyphen variant
+places: Seealpboden -> Seealp-Boden,places,Seealpboden,Seealp-Boden,similar,candidate,7,8,similarity 0.96; kind locality / locality,y,hyphen variant; Oberstdorf
+places: Seealpe -> Seekalpe,places,Seealpe,Seekalpe,similar,candidate,6,10,similarity 0.93; kind locality / locality,n,Seekalpe unclear; not proven same
+places: Seetalpe -> Seealpe,places,Seetalpe,Seealpe,similar,candidate,2,6,similarity 0.93; kind locality / locality,n,unclear; different context
+places: Seebuch -> Seebucht,places,Seebuch,Seebucht,similar,candidate,1,2,similarity 0.93; kind - / locality,y,OCR truncation
+places: Seefelde -> Seefeld,places,Seefelde,Seefeld,similar,candidate,2,15,similarity 0.93; kind - / route,n,unclear; Seefeld vs Seefelden
+places: Seefelde -> Seefelden,places,Seefelde,Seefelden,similar,candidate,2,13,similarity 0.94; kind - / locality,n,unclear; Seefeld vs Seefelden
+places: Seehoff -> Seehof,places,Seehoff,Seehof,similar,candidate,6,86,similarity 0.92; kind locality / locality,y,spelling; Maisinger See
+places: Sendlinger Torplatz -> Sendlinger-Tor-Platz,places,Sendlinger Torplatz,Sendlinger-Tor-Platz,similar,candidate,2,4,similarity 0.97; kind locality / locality,y,spacing/hyphen variant
+places: Sendlingertorplatz -> Sendlinger-Tor-Platz,places,Sendlingertorplatz,Sendlinger-Tor-Platz,similar,candidate,2,4,similarity 0.95; kind locality / locality,y,spacing/hyphen variant
+places: Sendlinger Torplatz -> Sendlingertorplatz,places,Sendlinger Torplatz,Sendlingertorplatz,similar,candidate,2,2,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Seyboldstraße -> Seyboltstraße,places,Seyboldstraße,Seyboltstraße,similar,candidate,2,6,similarity 0.93; kind locality / locality,y,OCR of Seybothstraße Harlaching
+places: Seyboltstraße -> Seybothstraße,places,Seyboltstraße,Seybothstraße,similar,candidate,6,26,similarity 0.93; kind locality / locality,y,OCR of Seybothstraße Harlaching
+places: Seybotstraße -> Seyboltstraße,places,Seybotstraße,Seyboltstraße,similar,candidate,4,6,similarity 0.96; kind locality / locality,n,superseded; another canonical accepted
+places: Seybotstraße -> Seybothstraße,places,Seybotstraße,Seybothstraße,similar,candidate,4,26,similarity 0.96; kind locality / locality,y,OCR of Seybothstraße Harlaching
+places: Siebenbrünner Straße -> Siebenbrunner Straße,places,Siebenbrünner Straße,Siebenbrunner Straße,similar,candidate,4,10,similarity 0.98; kind locality / locality,y,umlaut variant; Munich street
+places: Siebenbrünner Straße -> Siebentünnerstraße,places,Siebenbrünner Straße,Siebentünnerstraße,similar,candidate,4,4,similarity 0.90; kind locality / locality,n,superseded; another canonical accepted
+places: Simssee -> Simsee,places,Simssee,Simsee,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,spelling; Rosenheim lake
+places: Sölkstraße -> Söllstraße,places,Sölkstraße,Söllstraße,similar,candidate,2,50,similarity 0.92; kind locality / locality,y,OCR of Söltlstraße cluster
+places: Söllerstraße -> Söllestraße,places,Söllerstraße,Söllestraße,similar,candidate,10,10,similarity 0.96; kind locality / locality,n,superseded; another canonical accepted
+places: Söllnerstraße -> Söllerstraße,places,Söllnerstraße,Söllerstraße,similar,candidate,10,10,similarity 0.97; kind locality / locality,y,OCR of Söltlstraße cluster
+places: Söllerstraße -> Söllstraße,places,Söllerstraße,Söllstraße,similar,candidate,10,50,similarity 0.92; kind locality / locality,y,OCR of Söltlstraße cluster
+places: Sölnerstraße -> Söllerstraße,places,Sölnerstraße,Söllerstraße,similar,candidate,2,10,similarity 0.93; kind locality / locality,y,OCR of Söltlstraße cluster
+places: Söllnerstraße -> Söllestraße,places,Söllnerstraße,Söllestraße,similar,candidate,10,10,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Söllnstraße -> Söllestraße,places,Söllnstraße,Söllestraße,similar,candidate,4,10,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Söllestraße -> Söllstraße,places,Söllestraße,Söllstraße,similar,candidate,10,50,similarity 0.96; kind locality / locality,y,OCR of Söltlstraße cluster
+places: Söllestraße -> Söltlstraße,places,Söllestraße,Söltlstraße,similar,candidate,10,29,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Söllnstraße -> Söllnerstraße,places,Söllnstraße,Söllnerstraße,similar,candidate,4,10,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Sölnerstraße -> Söllnerstraße,places,Sölnerstraße,Söllnerstraße,similar,candidate,2,10,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Söllnstraße -> Söllstraße,places,Söllnstraße,Söllstraße,similar,candidate,4,50,similarity 0.96; kind locality / locality,y,OCR of Söltlstraße cluster
+places: Söllnstraße -> Söltlstraße,places,Söllnstraße,Söltlstraße,similar,candidate,4,29,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Söltlstraße -> Söllstraße,places,Söltlstraße,Söllstraße,similar,candidate,29,50,similarity 0.96; kind locality / locality,y,Söltlstraße real; Söll OCR variant
+places: Sollerstraße -> Sollner Straße,places,Sollerstraße,Sollner Straße,similar,candidate,2,4,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Sollerstraße -> Sollnerstraße,places,Sollerstraße,Sollnerstraße,similar,candidate,2,25,similarity 0.96; kind locality / locality,y,OCR of Sollner Straße
+places: Sollner Straße -> Sollnerstraße,places,Sollner Straße,Sollnerstraße,similar,candidate,4,25,similarity 0.97; kind locality / locality,y,spacing variant
+places: Sollnstraße -> Sollnerstraße,places,Sollnstraße,Sollnerstraße,similar,candidate,6,25,similarity 0.92; kind locality / locality,y,OCR of Sollner Straße
+places: Sonnhofen -> Sonnenhofen,places,Sonnhofen,Sonnenhofen,similar,candidate,2,18,similarity 0.90; kind - / settlement,y,contracted spelling; settlement
+places: Sonnenspitzl -> Sonnenspitze,places,Sonnenspitzl,Sonnenspitze,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,diminutive may be different peak
+places: Sonnhofen -> Sonnerhofen,places,Sonnhofen,Sonnerhofen,similar,candidate,2,6,similarity 0.90; kind - / locality,n,Sonnerhofen unclear; prefer Sonnenhofen
+places: Speichern -> Speicher,places,Speichern,Speicher,similar,candidate,4,10,similarity 0.94; kind locality / locality,y,dative plural inflection
+places: Speicher Ismaning -> Speichersee Ismaning,places,Speicher Ismaning,Speichersee Ismaning,similar,candidate,2,36,similarity 0.92; kind locality / locality,y,short form of Speichersee
+places: Speicher-See -> Speichersee,places,Speicher-See,Speichersee,similar,candidate,1,733,similarity 0.96; kind - / locality,y,hyphen variant
+places: Speicher-See -> Speicherseen,places,Speicher-See,Speicherseen,similar,candidate,1,4,similarity 0.92; kind - / locality,n,superseded; another canonical accepted
+places: Speichergebiet -> Speicherngebiet,places,Speichergebiet,Speicherngebiet,similar,candidate,2,8,similarity 0.97; kind locality / locality,n,superseded; another canonical accepted
+places: Speichergebiet -> Speicherseegebiet,places,Speichergebiet,Speicherseegebiet,similar,candidate,2,13,similarity 0.90; kind locality / locality,y,short form
+places: Speicherseen -> Speichersee,places,Speicherseen,Speichersee,similar,candidate,4,733,similarity 0.96; kind locality / locality,y,plural
+places: Speichersee-Becken -> Speichersee Westbecken,places,Speichersee-Becken,Speichersee Westbecken,similar,candidate,2,12,similarity 0.90; kind locality / locality,n,unspecified basin vs Westbecken
+places: Speichersee bei Ismaning -> Speichersee Ismaning,places,Speichersee bei Ismaning,Speichersee Ismaning,similar,candidate,8,36,similarity 0.91; kind locality / locality,y,preposition variant
+places: Speicherseegebiet -> Speichersee-Gebiet,places,Speicherseegebiet,Speichersee-Gebiet,similar,candidate,13,80,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Stadbergen -> Stadtbergen,places,Stadbergen,Stadtbergen,similar,candidate,2,66,similarity 0.95; kind locality / locality,y,OCR dropped t
+places: Staltbergen -> Stadtbergen,places,Staltbergen,Stadtbergen,similar,candidate,2,66,similarity 0.91; kind locality / locality,y,OCR d/l
+places: Stadtkirchen -> Statlkirchen,places,Stadtkirchen,Statlkirchen,similar,candidate,1,7,similarity 0.92; kind - / settlement,y,OCR variants of same reading
+places: Starkenberger Straße -> Starnberger Straße,places,Starkenberger Straße,Starnberger Straße,similar,candidate,3,6,similarity 0.95; kind locality / locality,y,OCR insertion; Munich street
+places: Starnberg Bahnhof -> Starnberger Bahnhof,places,Starnberg Bahnhof,Starnberger Bahnhof,similar,candidate,2,4,similarity 0.94; kind locality / locality,n,Starnberger Bahnhof may be Munich Hbf wing
+places: Starnberg Hafen -> Starnberger Hafen,places,Starnberg Hafen,Starnberger Hafen,similar,candidate,4,6,similarity 0.94; kind locality / locality,y,adjectival variant; Starnberg harbour
+places: Station Eibringer Kanal -> Station Pöringer Kanal,places,Station Eibringer Kanal,Station Pöringer Kanal,similar,candidate,1,1,similarity 0.91; kind - / -,n,both garbled; unclear
+places: Station Fininger kanal -> Station Ismaninger Kanal,places,Station Fininger kanal,Station Ismaninger Kanal,similar,candidate,1,9,similarity 0.91; kind - / locality,n,garbled; could be Föhringer
+places: Station Führinger Kanal -> Station Föhringer Kanal,places,Station Führinger Kanal,Station Föhringer Kanal,similar,candidate,4,29,similarity 0.96; kind - / locality,y,umlaut OCR variant
+places: Station Pöringer Kanal -> Station Föhringer Kanal,places,Station Pöringer Kanal,Station Föhringer Kanal,similar,candidate,1,29,similarity 0.94; kind - / locality,y,OCR P/F
+places: Staudenberg -> Staufenberg,places,Staudenberg,Staufenberg,similar,candidate,2,11,similarity 0.91; kind locality / locality,n,different regions Franconia/Allgäu
+places: Stauwehr an der Isar nördlich der Bogenhauser Brücke -> Stauwehr der Isar nördlich der Bogenhauser Brücke,places,Stauwehr an der Isar nördlich der Bogenhauser Brücke,Stauwehr der Isar nördlich der Bogenhauser Brücke,similar,candidate,2,4,similarity 0.97; kind locality / locality,y,wording variant
+places: Stauwehr der Isar nördlich der Bogenhauser Brücke -> Stauwehr nördlich der Bogenhauser Brücke,places,Stauwehr der Isar nördlich der Bogenhauser Brücke,Stauwehr nördlich der Bogenhauser Brücke,similar,candidate,4,10,similarity 0.90; kind locality / locality,y,wording variant
+places: Stauwehr der Mittleren Isar -> Stauwehr der Mittleren Isar A.G.,places,Stauwehr der Mittleren Isar,Stauwehr der Mittleren Isar A.G.,similar,candidate,2,11,similarity 0.93; kind - / locality,y,suffix variant
+places: Steg beim neuen Schirm -> Steg am neuen Schirm,places,Steg beim neuen Schirm,Steg am neuen Schirm,similar,candidate,2,2,similarity 0.90; kind locality / locality,y,preposition variant; Maisinger See
+places: Steinebach -> Steinbach,places,Steinebach,Steinbach,similar,candidate,2,46,similarity 0.95; kind - / locality,n,Steinebach am Wörthsee distinct
+places: Steinber -> Steinberg,places,Steinber,Steinberg,similar,candidate,2,19,similarity 0.94; kind locality / locality,y,OCR truncation
+places: Steiner -> Steinber,places,Steiner,Steinber,similar,candidate,1,2,similarity 0.93; kind - / locality,n,different word; unclear
+places: Steinbrücke -> Steinbrückl,places,Steinbrücke,Steinbrückl,similar,candidate,1,6,similarity 0.92; kind - / locality,n,generic vs diminutive locality; unclear
+places: Steinere Stiege -> Steinerne Stiege,places,Steinere Stiege,Steinerne Stiege,similar,candidate,1,4,similarity 0.97; kind - / locality,y,OCR dropped n
+places: Stockleiten -> Stockleite,places,Stockleiten,Stockleite,similar,candidate,2,24,similarity 0.95; kind locality / locality,y,inflection
+places: Süddamm am Ostbecken -> Süd-Damm am Ost-Becken,places,Süddamm am Ostbecken,Süd-Damm am Ost-Becken,similar,candidate,1,2,similarity 0.95; kind - / -,y,hyphen variant
+places: Süd-Ufer -> Südufer,places,Süd-Ufer,Südufer,similar,candidate,2,13,similarity 0.94; kind locality / locality,y,hyphen variant
+places: Südamm -> Süddamm,places,Südamm,Süddamm,similar,candidate,5,175,similarity 0.93; kind - / locality,y,OCR dropped d
+places: Süddamm am Westbecken -> Süddamm am Ostbecken,places,Süddamm am Westbecken,Süddamm am Ostbecken,similar,candidate,1,1,similarity 0.93; kind - / -,n,compass-point difference
+places: Süddamm des Ismaninger Speichersee-Westbekkens -> Süddamm des Ismaninger Speichersee-Westbeckens,places,Süddamm des Ismaninger Speichersee-Westbekkens,Süddamm des Ismaninger Speichersee-Westbeckens,similar,candidate,1,1,similarity 0.98; kind - / -,y,kk/ck spelling
+places: Süden des Sees -> Südende des Sees,places,Süden des Sees,Südende des Sees,similar,candidate,1,6,similarity 0.94; kind - / locality,y,OCR truncation; same meaning
+places: Südteiche -> Südteich,places,Südteiche,Südteich,similar,candidate,4,10,similarity 0.95; kind locality / locality,y,plural
+places: Südufer der See -> Südufer des Sees,places,Südufer der See,Südufer des Sees,similar,candidate,2,6,similarity 0.91; kind locality / locality,y,grammar variant
+places: Südufer des Elbsees -> Südufer des Sees,places,Südufer des Elbsees,Südufer des Sees,similar,candidate,2,6,similarity 0.92; kind locality / locality,n,specific lake vs generic
+places: Tafelsberg -> Tafelberg,places,Tafelsberg,Tafelberg,similar,candidate,20,380,similarity 0.95; kind locality / locality,y,OCR; Ismaning
+places: Tafelberg-Hütte -> Tafelberghütte,places,Tafelberg-Hütte,Tafelberghütte,similar,candidate,3,8,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Taubenberg -> Tautenberg,places,Taubenberg,Tautenberg,similar,candidate,6,7,similarity 0.90; kind locality / locality,y,OCR b/t; Tautenberg not a place
+places: Tegernseer Straße -> Tegernseer Landstraße,places,Tegernseer Straße,Tegernseer Landstraße,similar,candidate,2,17,similarity 0.90; kind locality / locality,y,short form; Munich 1948
+places: Tegernseerlandstraße -> Tegernseer Landstraße,places,Tegernseerlandstraße,Tegernseer Landstraße,similar,candidate,2,17,similarity 0.98; kind - / locality,y,spacing variant
+places: Teiche -> Teich,places,Teiche,Teich,similar,candidate,1,6,similarity 0.91; kind - / locality,y,plural
+places: Teich K 3/6 -> Teich K3/16,places,Teich K 3/6,Teich K3/16,similar,candidate,2,4,similarity 0.91; kind locality / locality,n,different pond number
+places: Teich K 3/6 -> Teich K3/6,places,Teich K 3/6,Teich K3/6,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,spacing variant
+places: Teich K2/2 -> Teich K2/1,places,Teich K2/2,Teich K2/1,similar,candidate,2,10,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/3 -> Teich K2/1,places,Teich K2/3,Teich K2/1,similar,candidate,2,10,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/4 -> Teich K2/1,places,Teich K2/4,Teich K2/1,similar,candidate,4,10,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/5 -> Teich K2/1,places,Teich K2/5,Teich K2/1,similar,candidate,4,10,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/7 -> Teich K2/1,places,Teich K2/7,Teich K2/1,similar,candidate,4,10,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/9 -> Teich K2/1,places,Teich K2/9,Teich K2/1,similar,candidate,2,10,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/3 -> Teich K2/2,places,Teich K2/3,Teich K2/2,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/2 -> Teich K2/4,places,Teich K2/2,Teich K2/4,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/2 -> Teich K2/5,places,Teich K2/2,Teich K2/5,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/2 -> Teich K2/7,places,Teich K2/2,Teich K2/7,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/9 -> Teich K2/2,places,Teich K2/9,Teich K2/2,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/3 -> Teich K2/4,places,Teich K2/3,Teich K2/4,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/3 -> Teich K2/5,places,Teich K2/3,Teich K2/5,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/3 -> Teich K2/7,places,Teich K2/3,Teich K2/7,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/9 -> Teich K2/3,places,Teich K2/9,Teich K2/3,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/5 -> Teich K2/4,places,Teich K2/5,Teich K2/4,similar,candidate,4,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/7 -> Teich K2/4,places,Teich K2/7,Teich K2/4,similar,candidate,4,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/9 -> Teich K2/4,places,Teich K2/9,Teich K2/4,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/7 -> Teich K2/5,places,Teich K2/7,Teich K2/5,similar,candidate,4,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/9 -> Teich K2/5,places,Teich K2/9,Teich K2/5,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K2/9 -> Teich K2/7,places,Teich K2/9,Teich K2/7,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K3/7 -> Teich K2/7,places,Teich K3/7,Teich K2/7,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different pond number
+places: Teich K3/18 -> Teich K3/16,places,Teich K3/18,Teich K3/16,similar,candidate,4,4,similarity 0.91; kind locality / locality,n,different pond number
+places: Teich K3/6 -> Teich K3/16,places,Teich K3/6,Teich K3/16,similar,candidate,2,4,similarity 0.95; kind locality / locality,n,different pond number
+places: Teich K3/7 -> Teich K3/6,places,Teich K3/7,Teich K3/6,similar,candidate,2,2,similarity 0.90; kind locality / locality,n,different pond number
+places: Thaldirchen -> Thalkirchen,places,Thaldirchen,Thalkirchen,similar,candidate,4,197,similarity 0.91; kind locality / locality,y,OCR k/d
+places: Thalkirchner Isarbrücke -> Thalkirchner Brücke,places,Thalkirchner Isarbrücke,Thalkirchner Brücke,similar,candidate,2,5,similarity 0.91; kind locality / locality,y,same Isar bridge
+places: Thalkirchner Straße 128 -> Thalkirchner Straße,places,Thalkirchner Straße 128,Thalkirchner Straße,similar,candidate,1,3,similarity 0.91; kind - / locality,y,house number on same street
+places: Theodolinden-Straße -> Theodolindenstraße,places,Theodolinden-Straße,Theodolindenstraße,similar,candidate,2,2,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Theodolinden-Straße -> Theotolindenstraße,places,Theodolinden-Straße,Theotolindenstraße,similar,candidate,2,2,similarity 0.92; kind locality / locality,n,superseded; another canonical accepted
+places: Theotolindenstraße -> Theodolindenstraße,places,Theotolindenstraße,Theodolindenstraße,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,OCR d/t
+places: Thoma-Platz -> Thomaplatz,places,Thoma-Platz,Thomaplatz,similar,candidate,1,4,similarity 0.95; kind - / locality,y,hyphen variant
+places: Thüringerberg -> Thüringenberg,places,Thüringerberg,Thüringenberg,similar,candidate,10,10,similarity 0.93; kind locality / locality,y,OCR; consecutive days 1961
+places: Thyrau -> Thyrnau,places,Thyrau,Thyrnau,similar,candidate,2,4,similarity 0.92; kind locality / locality,y,same date; Thyrnau near Passau
+places: Tiergartenau -> Tiergarten,places,Tiergartenau,Tiergarten,similar,candidate,1,16,similarity 0.91; kind - / locality,n,Au meadows vs Tiergarten
+places: Tiergartenau -> Tiergartenauen,places,Tiergartenau,Tiergartenauen,similar,candidate,1,4,similarity 0.92; kind - / locality,y,plural
+places: Tierpark-Brücke -> Tierparkbrücke,places,Tierpark-Brücke,Tierparkbrücke,similar,candidate,5,30,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Tiroler Platz -> Tirolerplatz,places,Tiroler Platz,Tirolerplatz,similar,candidate,6,7,similarity 0.96; kind locality / locality,y,spacing variant
+places: Törbing -> Töring,places,Törbing,Töring,similar,candidate,1,4,similarity 0.93; kind settlement / settlement,n,unclear; possibly Töging
+places: Töring -> Törring,places,Töring,Törring,similar,candidate,4,15,similarity 0.93; kind settlement / settlement,y,spelling; same V9 1931
+places: Überfülle -> Überfälle,places,Überfülle,Überfälle,similar,candidate,9,147,similarity 0.91; kind locality / locality,y,OCR ä/ü; Speichersee overflows
+places: Uferfülle -> Uferfälle,places,Uferfülle,Uferfälle,similar,candidate,2,14,similarity 0.90; kind locality / locality,y,OCR ä/ü
+places: Ungerer-Bad -> Ungererbad,places,Ungerer-Bad,Ungererbad,similar,candidate,1,6,similarity 0.95; kind - / locality,y,hyphen variant
+places: Unteruhldingen -> Unter-Uhldingen,places,Unteruhldingen,Unter-Uhldingen,similar,candidate,11,15,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Unterbergen -> Unterberg,places,Unterbergen,Unterberg,similar,candidate,2,13,similarity 0.90; kind - / locality,n,different names
+places: Unterberg -> Untersberg,places,Unterberg,Untersberg,similar,candidate,13,30,similarity 0.95; kind locality / locality,n,Unterberg distinct; unclear
+places: Untering -> Unterfing,places,Untering,Unterfing,similar,candidate,1,4,similarity 0.94; kind - / locality,n,garbled; unclear
+places: Unterhaching und Taufkirchen -> Unterhaching-Taufkirchen,places,Unterhaching und Taufkirchen,Unterhaching-Taufkirchen,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,same paired designation
+places: Untering -> Unterring,places,Untering,Unterring,similar,candidate,1,2,similarity 0.94; kind - / locality,n,garbled; unclear
+places: Villenkolonien -> Villenkolonie,places,Villenkolonien,Villenkolonie,similar,candidate,2,2,similarity 0.96; kind locality / locality,y,plural
+places: Vkl. I -> Vkl. II,places,Vkl. I,Vkl. II,similar,candidate,2,8,similarity 0.91; kind locality / locality,n,numbered ponds differ
+places: Volkmannsdorfer Au -> Volkmannsdorferau,places,Volkmannsdorfer Au,Volkmannsdorferau,similar,candidate,1,2,similarity 0.97; kind - / locality,y,spacing variant
+places: Vorderes Riedle -> Vorderes Riedloh,places,Vorderes Riedle,Vorderes Riedloh,similar,candidate,2,4,similarity 0.90; kind locality / locality,y,truncated Riedloh; Kaufbeuren
+places: Vorflärteich -> Vorklärteich,places,Vorflärteich,Vorklärteich,similar,candidate,3,111,similarity 0.92; kind locality / locality,y,OCR k/f
+places: Vorflüter -> Vorfluter,places,Vorflüter,Vorfluter,similar,candidate,2,64,similarity 0.95; kind locality / locality,y,OCR umlaut
+places: Vorfluter am QD -> Vorfluter am OD,places,Vorfluter am QD,Vorfluter am OD,similar,candidate,2,4,similarity 0.93; kind locality / locality,n,Querdamm vs Ostdamm; unclear
+places: Vorfluter am Querdamm -> Vorfluter beim Querdamm,places,Vorfluter am Querdamm,Vorfluter beim Querdamm,similar,candidate,2,4,similarity 0.91; kind locality / locality,y,preposition variant
+places: Vorfluter östlich der Landshamer Straße -> Vorfluter östlich Landshammerstraße,places,Vorfluter östlich der Landshamer Straße,Vorfluter östlich Landshammerstraße,similar,candidate,2,2,similarity 0.92; kind locality / locality,y,wording/spelling variant
+places: Vorfluter unterhalb der Landshamer Straße -> Vorfluter unterhalb Landshamer Straße,places,Vorfluter unterhalb der Landshamer Straße,Vorfluter unterhalb Landshamer Straße,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,article variant
+places: Vorklär-Teich -> Vorklärteich,places,Vorklär-Teich,Vorklärteich,similar,candidate,3,111,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Vorklär-Teich -> Vorklärteiche,places,Vorklär-Teich,Vorklärteiche,similar,candidate,3,37,similarity 0.93; kind locality / locality,n,superseded; another canonical accepted
+places: Vorklärbeich -> Vorklärteich,places,Vorklärbeich,Vorklärteich,similar,candidate,2,111,similarity 0.92; kind locality / locality,y,OCR t/b
+places: Vorklärteiche -> Vorklärteich,places,Vorklärteiche,Vorklärteich,similar,candidate,37,111,similarity 0.96; kind locality / locality,y,plural
+places: Wackers Torfstiche -> Wackers Torfstich,places,Wackers Torfstiche,Wackers Torfstich,similar,candidate,2,4,similarity 0.97; kind locality / locality,y,plural; same date
+places: Waininger See -> Wairinger See,places,Waininger See,Wairinger See,similar,candidate,1,8,similarity 0.92; kind - / locality,n,both garbled; unclear lake
+places: Walbecken -> Waldbecken,places,Walbecken,Waldbecken,similar,candidate,1,8,similarity 0.95; kind - / locality,y,OCR dropped d
+places: Waldschänke -> Waldschenke,places,Waldschänke,Waldschenke,similar,candidate,1,2,similarity 0.96; kind - / locality,y,spelling variant
+places: Wallenberger Haus -> Waltenbergerhaus,places,Wallenberger Haus,Waltenbergerhaus,similar,candidate,2,2,similarity 0.91; kind locality / locality,y,OCR; Allgäu hut
+places: Wallenhausen -> Wallhausen,places,Wallenhausen,Wallhausen,similar,candidate,2,7,similarity 0.91; kind locality / locality,n,both real distinct places
+places: Waller-Alpe -> Walleralpe,places,Waller-Alpe,Walleralpe,similar,candidate,2,22,similarity 0.95; kind - / locality,y,hyphen variant
+places: Wartburg -> Warburg,places,Wartburg,Warburg,similar,candidate,2,2,similarity 0.93; kind locality / locality,n,different real places
+places: Watbecken -> Wattbecken,places,Watbecken,Wattbecken,similar,candidate,6,48,similarity 0.95; kind locality / locality,y,spelling; Ismaning
+places: Wehranfälle -> Wehrfälle,places,Wehranfälle,Wehrfälle,similar,candidate,8,13,similarity 0.91; kind locality / locality,y,OCR insertion; same V24
+places: Weicher -> Weiher,places,Weicher,Weiher,similar,candidate,2,4,similarity 0.92; kind locality / locality,y,OCR c insertion
+places: Weingärten -> Weingarten,places,Weingärten,Weingarten,similar,candidate,1,6,similarity 0.95; kind - / locality,y,plural; Hagnau vineyards
+places: Wellenburg -> Weltenburg,places,Wellenburg,Weltenburg,similar,candidate,2,4,similarity 0.90; kind locality / locality,n,different real places
+places: Werkskanal -> Werkkanal,places,Werkskanal,Werkkanal,similar,candidate,18,69,similarity 0.95; kind locality / locality,y,Fugen-s variant
+places: Werlachauen -> Wertachauen,places,Werlachauen,Wertachauen,similar,candidate,2,29,similarity 0.91; kind locality / locality,y,OCR t/l
+places: Werlachwehr -> Wertachwehr,places,Werlachwehr,Wertachwehr,similar,candidate,6,34,similarity 0.91; kind locality / locality,y,OCR t/l
+places: Wertach am Flacken -> Wertach am Hacken,places,Wertach am Flacken,Wertach am Hacken,similar,candidate,2,4,similarity 0.91; kind locality / locality,y,OCR Fl/H; Kaufbeuren
+places: Wertach-Anlagen -> Wertachanlagen,places,Wertach-Anlagen,Wertachanlagen,similar,candidate,2,53,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Wertach-Durchbruch -> Wertachdurchbruch,places,Wertach-Durchbruch,Wertachdurchbruch,similar,candidate,2,33,similarity 0.97; kind locality / locality,y,hyphen variant
+places: Wertach-Ufer -> Wertachufer,places,Wertach-Ufer,Wertachufer,similar,candidate,1,12,similarity 0.96; kind - / locality,y,hyphen variant
+places: Wertach-Wehr -> Wertachwehr,places,Wertach-Wehr,Wertachwehr,similar,candidate,4,34,similarity 0.96; kind locality / locality,y,hyphen variant
+places: Wertachaulagen -> Wertachanlagen,places,Wertachaulagen,Wertachanlagen,similar,candidate,2,53,similarity 0.93; kind locality / locality,y,OCR n/u
+places: Wertachau -> Wertachauen,places,Wertachau,Wertachauen,similar,candidate,8,29,similarity 0.90; kind locality / locality,y,plural
+places: Wertachbruckbruch -> Wertachbruckbach,places,Wertachbruckbruch,Wertachbruckbach,similar,candidate,2,4,similarity 0.91; kind locality / locality,y,OCR; same odd base Kaufbeuren
+places: Westerbecken -> Westbecken,places,Westerbecken,Westbecken,similar,candidate,2,515,similarity 0.91; kind locality / locality,y,OCR insertion; Ismaning
+places: Westerndorf -> Westerdorf,places,Westerndorf,Westerdorf,similar,candidate,2,4,similarity 0.95; kind locality / locality,n,both real names; unclear
+places: westlicher Wb. -> westliches Wb,places,westlicher Wb.,westliches Wb,similar,candidate,2,8,similarity 0.92; kind locality / locality,y,grammar/punctuation variant
+places: westliches Ob. -> westliches Wb,places,westliches Ob.,westliches Wb,similar,candidate,2,8,similarity 0.92; kind locality / locality,n,Ostbecken vs Westbecken
+places: westliches Westbecken -> westliches Ostbecken,places,westliches Westbecken,westliches Ostbecken,similar,candidate,2,2,similarity 0.93; kind locality / locality,n,compass-point difference
+places: Westteiche -> Westteich,places,Westteiche,Westteich,similar,candidate,2,10,similarity 0.95; kind locality / locality,y,plural
+places: Wiesent -> Wiesen,places,Wiesent,Wiesen,similar,candidate,2,5,similarity 0.92; kind locality / locality,n,Wiesent real toponym; unclear
+places: Winterleite -> Winterleiten,places,Winterleite,Winterleiten,similar,candidate,1,2,similarity 0.96; kind - / locality,y,inflection
+places: Wintersweg -> Winterweg,places,Wintersweg,Winterweg,similar,candidate,2,2,similarity 0.95; kind locality / locality,y,Fugen-s variant; same month
+places: Winterteich -> Winterteiche,places,Winterteich,Winterteiche,similar,candidate,2,104,similarity 0.96; kind locality / locality,y,plural
+places: Winzerteiche -> Winterteiche,places,Winzerteiche,Winterteiche,similar,candidate,2,104,similarity 0.92; kind locality / locality,y,OCR z/t
+places: Wittelsbacher Brücke -> Wittelsbacherbrücke,places,Wittelsbacher Brücke,Wittelsbacherbrücke,similar,candidate,4,4,similarity 0.98; kind locality / locality,y,spacing variant
+places: Wittelsbacher Platz -> Wittelsbacherplatz,places,Wittelsbacher Platz,Wittelsbacherplatz,similar,candidate,3,8,similarity 0.97; kind locality / locality,y,spacing variant
+places: Wörthersee -> Wörthsee,places,Wörthersee,Wörthsee,similar,candidate,13,91,similarity 0.90; kind locality / locality,n,Kärnten lake vs Munich lake
+places: Zwiefaltenkloster -> Zwiefalten-Kloster,places,Zwiefaltenkloster,Zwiefalten-Kloster,similar,candidate,1,2,similarity 0.97; kind - / locality,y,hyphen variant

@@ -214,11 +214,14 @@ def apply_coverage(entries: list, coverage: VolumeCoverage, config: Optional[dic
                                     note, "flagged", f"{old} -> {fixed}"))
                 continue
             retrospective = e.entry_kind in RETROSPECTIVE_KINDS
-            if (year < earliest or year > latest) and not retrospective:
+            # digests/retrospectives may look back before the diaries (1859 specimen,
+            # youth notes) but nothing can be dated after the last diary
+            if year > latest or (year < earliest and not retrospective):
                 excluded = exclude
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "date_out_of_span",
                                     f"Jahr {year} ausserhalb der Tagebuchzeit {earliest}-{latest} "
-                                    f"(Band {vol} {span.start}…{span.end}); kein Eintrag",
+                                    f"(Band {vol} {span.start}…{span.end}); "
+                                    + ("OCR-Jahr nicht rekonstruierbar" if retrospective else "kein Eintrag"),
                                     "excluded" if excluded else "flagged", e.entry_date))
                 if excluded:
                     drop.add(e.entry_uid)

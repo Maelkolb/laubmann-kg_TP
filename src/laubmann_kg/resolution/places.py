@@ -115,6 +115,10 @@ def merge_places(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Mer
         if decisions.applies(row):
             mapping[variant] = mapping.get(canonical, canonical)
 
+    for variant, canonical in decisions.manual("places"):
+        if variant in objs and canonical in objs and variant not in mapping and variant != canonical:
+            rows.append(MergeRow("places", variant, canonical, "manual", "manual", usage[variant], usage[canonical]))
+            mapping[variant] = mapping.get(canonical, canonical)
     if not mapping:
         return 0, rows
     # resolve chains and build canonical objects
@@ -207,6 +211,10 @@ def merge_habitats(result, cfg: dict, decisions: Decisions) -> tuple[int, list[M
                        f"similarity {r:.2f}")
         rows.append(row)
         if decisions.applies(row):
+            mapping[variant] = mapping.get(canonical, canonical)
+    for variant, canonical in decisions.manual("habitats"):
+        if variant in usage and canonical in usage and variant not in mapping and variant != canonical:
+            rows.append(MergeRow("habitats", variant, canonical, "manual", "manual", usage[variant], usage[canonical]))
             mapping[variant] = mapping.get(canonical, canonical)
     if not mapping:
         return 0, rows

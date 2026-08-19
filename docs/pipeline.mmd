@@ -13,21 +13,28 @@ flowchart TB
         direction LR
         C(["LLM reading<br/>gemini-3.5-flash · one call per entry<br/>date · place · kind · observations<br/>travel · persons · weather"])
         D["Mapper<br/>vocabulary membership · dates<br/>SHACL-safe legs"]
+        V["Volume coverage<br/>title-page spans · misfiled scans<br/>OCR-year repair from neighbours"]
         E["QA<br/>thresholds on model signals"]
         F["Linking<br/>GBIF species/match · Wikidata"]
-        G["RDF emit<br/>lkg + DwC · SKOS · PROV"]
+        X["Entity resolution<br/>same GBIF key · name rules<br/>orthographic variants · altLabels"]
+        G["RDF emit<br/>DwC-first · SKOS · PROV"]
         H["SHACL gate<br/>0 violations"]
         I["DwC-A<br/>event · occurrence · eMoF · media"]
         K1[("llm_cache_v2")]
         K2[("linking_cache")]
-        R2{{"review CSVs<br/>taxon · person · qa_flags"}}
-        C --> D --> E --> F --> G --> H
-        F --> I
+        K3[("volume_coverage.yaml")]
+        R2{{"review CSVs<br/>qa_flags · taxon/person links<br/>taxon/person/place/habitat merges"}}
+        C --> D --> V --> E --> F --> X --> G --> H
+        X --> I
         C <-.-> K1
         F <-.-> K2
+        K3 -.-> V
+        V -.-> R2
         E -.-> R2
         F -.-> R2
+        X -.-> R2
         R2 -. reviewed_csv .-> F
+        R2 -. reviewed_csv .-> X
     end
 
     subgraph S3["Outputs"]

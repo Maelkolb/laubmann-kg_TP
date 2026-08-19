@@ -117,13 +117,18 @@ def test_persons_merge_rules() -> None:
 def test_persons_accept_candidate_and_never_touch_the_diarist() -> None:
     e = [_entry("e1", persons=[Person("Adolf Müller"), Person("Alois Müller"), Person("A. Müller"), Person("Laubmann"), DIARIST])]
     result = ExtractionResult(entries=e)
-    dec = Decisions(); dec.by_variant["persons|A. Müller"] = "y"           # accept the first candidate row's canonical
+    dec = Decisions(); dec.by_id["persons: A. Müller -> Adolf Müller"] = "y"   # accept exactly this pair
+    dec.by_id["persons: A. Müller -> Alois Müller"] = "n"                          # (rejecting the other pair changes nothing else)
     n, rows = merge_persons(result, {}, dec)
     cand = [r for r in rows if r.variant == "A. Müller"]
     assert cand and all(r.status == "candidate" for r in cand)
-    # accepted: A. Müller merged into the first listed candidate canonical
-    assert "A. Müller" not in [p.name for p in e[0].persons]
-    assert DIARIST in e[0].persons
+    # accepted: A. Müller merged into Adolf Müller only
+    adolf = next(p for p in e[0].persons if p.name == "Adolf Müller")
+    assert adolf.alt_names == ("A. Müller",) and "A. Müller" not in [p.name for p in e[0].persons]
+    # bare "Laubmann" folds into the diarist; the diarist node keeps its identity (uid) and gains the altLabel
+    diarist = next(p for p in e[0].persons if p.name == DIARIST.name)
+    assert diarist.uid == DIARIST.uid and diarist.alt_names == ("Laubmann",)
+    assert "Laubmann" not in [p.name for p in e[0].persons]
 
 
 # --------------------------------------------------------------------------- places / habitats
@@ -189,3 +194,28 @@ def test_fold() -> None:
     assert fold("St. Heinrich") == fold("Sankt Heinrich") == "sankt heinrich"
     assert fold("Wörthsee") == fold("Woerthsee") == "woerthsee"
     assert fold("Ismaninger  Speichersee.") == "ismaninger speichersee"
+
+
+def test_decisions_are_per_pair_not_per_variant() -> None:
+    dec = Decisions(); dec.by_id["persons: Müller -> Arno Müller"] = "n"
+    auto = MergeRow("persons", "Müller", "Adolf Müller", "dominant", "auto", 20, 3000)
+    rejected = MergeRow("persons", "Müller", "Arno Müller", "surname-ambiguous", "candidate", 20, 30)
+    assert dec.applies(auto)                # the rejection of another pair does not veto the automatic merge
+    assert not dec.applies(rejected)
+    dec.by_id["persons: Müller -> Adolf Müller"] = "n"
+    assert not dec.applies(auto)            # rejecting the exact pair does
+
+
+def test_person_candidates_are_cluster_level_and_accepted_chains_follow() -> None:
+    e = [_entry("e1", persons=[Person("Wüst"), Person("Dr Wüst"), Person("Herr Wüst"), Person("Walter Wüst"),
+                                 Person("Dr. Walter Wüst"), Person("Karl Wüst")])]
+    result = ExtractionResult(entries=e)
+    # the decision was recorded in an earlier run under the then-canonical label "Dr. Walter Wüst"
+    dec = Decisions(); dec.by_id["persons: Wüst -> Dr. Walter Wüst"] = "y"
+    n, rows = merge_persons(result, {}, dec)
+    cand = [(r.variant, r.canonical) for r in rows if r.status == "candidate"]
+    # one row per pair of clusters, named by the cluster canonicals (not "Dr Wüst -> …" three times)
+    assert sorted(cand) == [("Wüst", "Karl Wüst"), ("Wüst", "Walter Wüst")]
+    walter = next(p for p in e[0].persons if p.name == "Walter Wüst")
+    assert set(walter.alt_names) == {"Wüst", "Dr Wüst", "Herr Wüst", "Dr. Walter Wüst"}   # the whole cluster followed
+    assert [p.name for p in e[0].persons] == ["Walter Wüst", "Karl Wüst"]

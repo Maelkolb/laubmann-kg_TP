@@ -18,10 +18,14 @@ where a reviewer can reject it):
                         ("A. Müller" → Adolf Müller 3093 vs. Arno Müller 30).
 
 Remaining ambiguous cases (initial matches several full names, bare surname
-with several comparable candidates) are written as ``candidate`` rows and
-applied only after a reviewer accepts them. The canonical name is the most complete spelling
-(most name tokens, then most observations, diacritics preferred); the
-diarist (``model.DIARIST``) is never merged into anything else.
+with several comparable candidates) are written as ``candidate`` rows — one
+row per pair of clusters, both sides named by their cluster's canonical
+spelling (stable across runs) — and applied only after a reviewer accepts
+them; an accepted cluster takes all its spellings along ("Dr Wüst" → "Wüst" →
+"Walter Wüst"). Decisions are matched per pair; a decision recorded under an
+older label of either side still counts. The canonical name is the most
+complete spelling (most name tokens, then most uses, diacritics preferred);
+the diarist (``model.DIARIST``) is never merged into anything else.
 """
 
 from __future__ import annotations
@@ -52,9 +56,9 @@ _GENDERED = ("frau", "frl", "fraeulein", "fräulein", "fr")
 def person_key(name: str) -> str:
     """Comparison key: titles stripped (gendered forms kept), folded, punctuation
     turned into spaces so initials survive as single-letter tokens."""
-    n = _TITLE_RE.sub("", (name or "").strip())
-    n = re.sub(r"\.", ". ", n)          # "W.Wüst" -> "W. Wüst"
-    return fold(n)
+    n = re.sub(r"\.", ". ", (name or "").strip())   # "W.Wüst" -> "W. Wüst", "Prof.Dr.R. Drost" -> "Prof. Dr. R. Drost"
+    n = _TITLE_RE.sub("", n)
+    return fold(n) or fold(name)                     # a bare title ("dr.") keeps its own key
 
 
 def _parts(key: str) -> tuple[list[str], list[str], str]:
@@ -100,8 +104,7 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
                 usage[obs.observer.name] += 1
                 if obs.observer.wikidata_iri:
                     wikidata[obs.observer.name] = obs.observer.wikidata_iri
-    usage.pop(DIARIST.name, None)
-    names = sorted(usage)
+    names = sorted(usage)                # the diarist stays in the pool as a forced canonical
     if not names:
         return 0, []
 
@@ -134,8 +137,12 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
         if n in usage:
             by_qid[q].append(n)
     for q, members in by_qid.items():
-        for m in members[1:]:
-            union(members[0], m, "wikidata")
+        # a Wikidata item never joins a female form ("Frl. W. Wüst") with the male
+        # name it was (wrongly) linked to; gendered forms only merge among themselves
+        for gendered in (False, True):
+            group = [m for m in members if _is_gendered(person_key(m)) == gendered]
+            for m in group[1:]:
+                union(group[0], m, "wikidata")
 
     # 3./4. initials and bare surnames against full names (per surname);
     # initials first so a bare surname sees the already-joined clusters; a name
@@ -147,7 +154,7 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
         _, _, s = _parts(k)
         if s:
             by_surname[s].append(n)
-    candidates: list[MergeRow] = []
+    cand_raw: list[tuple[str, str, str, str]] = []      # (name, target root, rule, detail) — resolved to clusters below
     for surname, members in by_surname.items():
         full = [n for n in members if _parts(keys[n])[1] and not _is_gendered(keys[n])]
         for n in members:
@@ -166,8 +173,7 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
                     union(dom, n, "dominant")
                 else:
                     for c in fits:
-                        candidates.append(MergeRow("persons", n, c, "initial-ambiguous", "candidate",
-                                                   usage[n], cluster_usage(c), f"initials {''.join(initials)} match several full names"))
+                        cand_raw.append((n, c, "initial-ambiguous", f"initials {''.join(initials)} match several full names"))
     if allow_surname:
         for surname, members in by_surname.items():
             for n in members:
@@ -184,25 +190,35 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
                         union(dom, n, "dominant")
                     else:
                         for c in others:
-                            candidates.append(MergeRow("persons", n, c, "surname-ambiguous", "candidate",
-                                                       usage[n], cluster_usage(c), f"bare surname; {len(others)} persons share it"))
+                            cand_raw.append((n, c, "surname-ambiguous", f"bare surname; {len(others)} persons share it"))
 
+    # reviewer-added merges: accepted pairs no rule joined (OCR variants of a
+    # known person, or an accepted candidate whose canonical label has since
+    # changed); a pair that is a candidate of this run is decided below instead
+    proposed = {(n, c) for n, c, _, _ in cand_raw}
+    for variant, canonical in decisions.manual("persons"):
+        if variant in usage and canonical in usage and (variant, canonical) not in proposed and find(variant) != find(canonical):
+            union(canonical, variant, "manual")
     # canonical per cluster
     clusters: dict[str, list[str]] = defaultdict(list)
     for n in names:
         clusters[find(n)].append(n)
-    rows: list[MergeRow] = []
-    mapping: dict[str, str] = {}
     def completeness(n):
         k = keys[n]; init, firsts, _ = _parts(k)
         toks = k.split()
         return (not _is_gendered(k), not any(w in _NON_NAME for w in toks), len(firsts),
                 sum(len(f) for f in firsts) + len(init), usage[n],
-                sum(1 for ch in n if ch in "äöüÄÖÜß"), -len(n))
+                sum(1 for ch in n if ch in "äöüÄÖÜß"),
+                not re.search(r"\.[^\s.]", n),         # "Dr. H. Noll" over the glued "Dr.H. Noll"
+                -len(n))
+    canon_of: dict[str, str] = {root: (DIARIST.name if DIARIST.name in members else max(members, key=completeness))
+                                for root, members in clusters.items()}
+    rows: list[MergeRow] = []
+    mapping: dict[str, str] = {}
     for root, members in clusters.items():
         if len(members) < 2:
             continue
-        canonical = max(members, key=completeness)
+        canonical = canon_of[root]
         for m in members:
             if m == canonical:
                 continue
@@ -211,14 +227,34 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
             rows.append(row)
             if decisions.applies(row):
                 mapping[m] = canonical
-    # accepted candidates
-    for row in candidates:
+    # candidates are decided between clusters and named by the cluster canonicals
+    # (stable across runs — the union-find root is not); one row per pair of
+    # clusters, dropped when a later rule joined them anyway
+    seen_pairs: set[tuple[str, str]] = set()
+    for n, c, rule, detail in cand_raw:
+        rv, rc = find(n), find(c)
+        if rv == rc or has_full[rv]:
+            continue            # joined later, or the variant's cluster got a full name meanwhile (resolved)
+        v_can, c_can = canon_of[rv], canon_of[rc]
+        if (v_can, c_can) in seen_pairs:
+            continue
+        seen_pairs.add((v_can, c_can))
+        row = MergeRow("persons", v_can, c_can, rule, "candidate", cluster_usage(rv), cluster_usage(rc), detail)
         rows.append(row)
-        if decisions.applies(row) and row.variant not in mapping:
-            mapping[row.variant] = mapping.get(row.canonical, row.canonical)
+        # a decision recorded under an older label of either side still counts
+        if decisions.applies(row, variant_aliases=clusters[rv], canonical_aliases=clusters[rc]) and v_can not in mapping:
+            mapping[v_can] = c_can
 
     if not mapping:
         return 0, rows
+    # resolve chains: "Dr Wüst" -> "Wüst" (same-key) -> "Walter Wüst" (accepted candidate)
+    def root_of(n):
+        seen = set()
+        while n in mapping and n not in seen:
+            seen.add(n); n = mapping[n]
+        return n
+    for m in list(mapping):
+        mapping[m] = root_of(m)
     alts: dict[str, list[str]] = defaultdict(list)
     for m, c in mapping.items():
         alts[c].append(m)
@@ -227,6 +263,8 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
         c = mapping.get(name, name)
         if c not in canon_person:
             qid = wikidata.get(c) or next((wikidata[v] for v in alts.get(c, []) if v in wikidata), None)
+            if c == DIARIST.name:
+                qid = qid or DIARIST.wikidata_iri
             canon_person[c] = Person(name=c, role=None, wikidata_iri=qid, alt_names=tuple(sorted(set(alts.get(c, [])))))
         base = canon_person[c]
         return replace(base, role=template.role) if template.role else base

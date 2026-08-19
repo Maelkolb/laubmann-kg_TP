@@ -1,0 +1,302 @@
+merge_id,section,variant,canonical,rule,status,n_variant,n_canonical,detail,decision,reason
+habitats: Fluß -> Fluss,habitats,Fluß,Fluss,orthographic,auto,9,22,,,
+habitats: Flussufer -> Flußufer,habitats,Flussufer,Flußufer,orthographic,auto,1,2,,,
+habitats: Ahorn allee -> Ahorn-Allee,habitats,Ahorn allee,Ahorn-Allee,orthographic,auto,1,10,,,
+"habitats: alte, hohe Bäume -> alte hohe Bäume",habitats,"alte, hohe Bäume",alte hohe Bäume,orthographic,auto,1,1,,,
+habitats: Beim Haus -> beim Haus,habitats,Beim Haus,beim Haus,orthographic,auto,2,28,,,
+habitats: Wb -> WB,habitats,Wb,WB,orthographic,auto,17,21,,,
+habitats: Wb. -> WB,habitats,Wb.,WB,orthographic,auto,7,21,,,
+habitats: Ft. -> Ft,habitats,Ft.,Ft,orthographic,auto,8,10,,,
+habitats: FT -> Ft,habitats,FT,Ft,orthographic,auto,4,10,,,
+habitats: Ahorn-Alleen -> Ahorn-Allee,habitats,Ahorn-Alleen,Ahorn-Allee,similar,candidate,2,10,similarity 0.96,y,plural; hyphen variant
+habitats: Ahornallee -> Ahorn-Allee,habitats,Ahornallee,Ahorn-Allee,similar,candidate,6,10,similarity 0.95,y,hyphen variant
+habitats: Ahorn-Alleen -> Ahornallee,habitats,Ahorn-Alleen,Ahornallee,similar,candidate,2,6,similarity 0.91,n,superseded; another canonical accepted
+habitats: Ahornbäum -> Ahorn-Bäume,habitats,Ahornbäum,Ahorn-Bäume,similar,candidate,1,2,similarity 0.91,n,superseded; another canonical accepted
+habitats: Ahorn-Bäume -> Ahornbäume,habitats,Ahorn-Bäume,Ahornbäume,similar,candidate,2,103,similarity 0.96,y,hyphen variant
+habitats: Ahorn-Bäume -> Ahornbaum,habitats,Ahorn-Bäume,Ahornbaum,similar,candidate,2,4,similarity 0.86,n,superseded; another canonical accepted
+habitats: Ahornbaumen -> Ahorn-Bäume,habitats,Ahornbaumen,Ahorn-Bäume,similar,candidate,1,2,similarity 0.87,n,superseded; another canonical accepted
+habitats: Ahornbeäume -> Ahorn-Bäume,habitats,Ahornbeäume,Ahorn-Bäume,similar,candidate,1,2,similarity 0.92,n,superseded; another canonical accepted
+habitats: Ahornbäum -> Ahornbäume,habitats,Ahornbäum,Ahornbäume,similar,candidate,1,103,similarity 0.95,y,truncated variant
+habitats: Ahornbäum -> Ahornbaum,habitats,Ahornbäum,Ahornbaum,similar,candidate,1,4,similarity 0.95,n,superseded; another canonical accepted
+habitats: Ahornbaumen -> Ahornbäum,habitats,Ahornbaumen,Ahornbäum,similar,candidate,1,1,similarity 0.86,n,superseded; another canonical accepted
+habitats: Ahornbeäume -> Ahornbäum,habitats,Ahornbeäume,Ahornbäum,similar,candidate,1,1,similarity 0.91,n,superseded; another canonical accepted
+habitats: Ahornbaümen -> Ahornbäume,habitats,Ahornbaümen,Ahornbäume,similar,candidate,1,103,similarity 0.87,y,misplaced umlaut; dative
+habitats: Ahornbaum -> Ahornbäume,habitats,Ahornbaum,Ahornbäume,similar,candidate,4,103,similarity 0.90,y,singular/plural
+habitats: Ahornbaumen -> Ahornbäume,habitats,Ahornbaumen,Ahornbäume,similar,candidate,1,103,similarity 0.91,y,dative; missing umlaut
+habitats: Ahornbeäume -> Ahornbäume,habitats,Ahornbeäume,Ahornbäume,similar,candidate,1,103,similarity 0.96,y,OCR typo
+habitats: Ahornbäume am Haus -> Ahornbäume beim Haus,habitats,Ahornbäume am Haus,Ahornbäume beim Haus,similar,candidate,1,31,similarity 0.90,y,am/beim Haus same location
+habitats: Ahornbaumen beim Haus -> Ahornbäume am Haus,habitats,Ahornbaumen beim Haus,Ahornbäume am Haus,similar,candidate,1,1,similarity 0.85,n,superseded; another canonical accepted
+habitats: Ahornbäume beim Zaun -> Ahornbäume beim Haus,habitats,Ahornbäume beim Zaun,Ahornbäume beim Haus,similar,candidate,1,31,similarity 0.90,n,Zaun vs Haus different location
+habitats: Ahornbaum beim Haus -> Ahornbäume beim Haus,habitats,Ahornbaum beim Haus,Ahornbäume beim Haus,similar,candidate,1,31,similarity 0.95,y,singular/plural
+habitats: Ahornbaum beim Zaun -> Ahornbäume beim Haus,habitats,Ahornbaum beim Zaun,Ahornbäume beim Haus,similar,candidate,1,31,similarity 0.85,n,Zaun vs Haus different location
+habitats: Ahornbaumen beim Haus -> Ahornbäume beim Haus,habitats,Ahornbaumen beim Haus,Ahornbäume beim Haus,similar,candidate,1,31,similarity 0.95,y,dative; missing umlaut
+habitats: Ahornbäume beim Zaun -> Ahornbaum beim Haus,habitats,Ahornbäume beim Zaun,Ahornbaum beim Haus,similar,candidate,1,1,similarity 0.85,n,Zaun vs Haus different location
+habitats: Ahornbäume beim Zaun -> Ahornbaum beim Zaun,habitats,Ahornbäume beim Zaun,Ahornbaum beim Zaun,similar,candidate,1,1,similarity 0.95,y,singular/plural
+habitats: Ahornbaumen beim Haus -> Ahornbäume beim Zaun,habitats,Ahornbaumen beim Haus,Ahornbäume beim Zaun,similar,candidate,1,1,similarity 0.86,n,Haus vs Zaun different location
+habitats: Ahornbäume vor dem Haus -> Ahornbäume vor unserem Haus,habitats,Ahornbäume vor dem Haus,Ahornbäume vor unserem Haus,similar,candidate,1,3,similarity 0.88,y,dem/unserem Haus same trees in diary
+habitats: Ahornbaümen -> Ahornbaum,habitats,Ahornbaümen,Ahornbaum,similar,candidate,1,4,similarity 0.86,n,superseded; another canonical accepted
+habitats: Ahornbaumen -> Ahornbaümen,habitats,Ahornbaumen,Ahornbaümen,similar,candidate,1,1,similarity 0.96,n,superseded; another canonical accepted
+habitats: Ahornbaumen -> Ahornbaum,habitats,Ahornbaumen,Ahornbaum,similar,candidate,1,4,similarity 0.90,n,superseded; another canonical accepted
+habitats: Ahornbeäume -> Ahornbaum,habitats,Ahornbeäume,Ahornbaum,similar,candidate,1,4,similarity 0.86,n,superseded; another canonical accepted
+habitats: Ahornbaum beim Zaun -> Ahornbaum beim Haus,habitats,Ahornbaum beim Zaun,Ahornbaum beim Haus,similar,candidate,1,1,similarity 0.89,n,Zaun vs Haus different location
+habitats: Ahornbaumen beim Haus -> Ahornbaum beim Haus,habitats,Ahornbaumen beim Haus,Ahornbaum beim Haus,similar,candidate,1,1,similarity 0.95,n,superseded; another canonical accepted
+habitats: Ahornbaumen beim Haus -> Ahornbaum beim Zaun,habitats,Ahornbaumen beim Haus,Ahornbaum beim Zaun,similar,candidate,1,1,similarity 0.85,n,Haus vs Zaun different location
+habitats: Ahornbaumen -> Ahornbeäume,habitats,Ahornbaumen,Ahornbeäume,similar,candidate,1,1,similarity 0.87,n,superseded; another canonical accepted
+habitats: Alleebaum -> Alleebäume,habitats,Alleebaum,Alleebäume,similar,candidate,1,4,similarity 0.90,y,singular/plural
+habitats: alte Eichen -> alte Eiche,habitats,alte Eichen,alte Eiche,similar,candidate,1,1,similarity 0.95,y,plural/singular
+habitats: alte Weiden -> alte Weide,habitats,alte Weiden,alte Weide,similar,candidate,1,1,similarity 0.95,y,plural/singular
+habitats: Altwässer -> Altwasser,habitats,Altwässer,Altwasser,similar,candidate,4,39,similarity 0.95,y,plural/singular
+habitats: Altwassergraben -> Altwasserauen,habitats,Altwassergraben,Altwasserauen,similar,candidate,1,1,similarity 0.86,n,Graben vs Auen different concepts
+habitats: Aue -> Auen,habitats,Aue,Auen,similar,candidate,36,157,similarity 0.86,y,singular/plural
+habitats: Auwälchen -> Auwäldchen,habitats,Auwälchen,Auwäldchen,similar,candidate,1,9,similarity 0.95,y,typo
+habitats: Auwiesen -> Auwiese,habitats,Auwiesen,Auwiese,similar,candidate,1,1,similarity 0.93,y,plural/singular
+habitats: Bach-Tal -> Bachtal,habitats,Bach-Tal,Bachtal,similar,candidate,1,1,similarity 0.93,y,hyphen variant
+habitats: Bach-Wäldchen -> Bachwäldchen,habitats,Bach-Wäldchen,Bachwäldchen,similar,candidate,2,8,similarity 0.96,y,hyphen variant
+habitats: Bäche -> Bächen,habitats,Bäche,Bächen,similar,candidate,1,2,similarity 0.92,y,plural/dative
+habitats: Bäche -> Bächle,habitats,Bäche,Bächle,similar,candidate,1,2,similarity 0.92,n,Bächle diminutive rivulet vs brooks
+habitats: Bächle -> Bächen,habitats,Bächle,Bächen,similar,candidate,2,2,similarity 0.86,n,diminutive vs base noun
+habitats: Bächen -> Bächlein,habitats,Bächen,Bächlein,similar,candidate,2,5,similarity 0.88,n,base noun vs diminutive
+habitats: Bäumchen -> Bächen,habitats,Bäumchen,Bächen,similar,candidate,1,2,similarity 0.88,n,trees vs brooks
+habitats: Bächle -> Bächlein,habitats,Bächle,Bächlein,similar,candidate,2,5,similarity 0.88,y,dialect diminutive variants; same
+habitats: Bäumchen -> Bäumen,habitats,Bäumchen,Bäumen,similar,candidate,1,2,similarity 0.88,n,saplings vs trees; diminutive
+habitats: Bäumen -> Bäume,habitats,Bäumen,Bäume,similar,candidate,2,62,similarity 0.92,y,dative/plural
+habitats: Bäume am Kanal -> Bäume am Kai,habitats,Bäume am Kanal,Bäume am Kai,similar,candidate,1,1,similarity 0.86,n,Kanal vs Kai different
+habitats: Balkon-Nische -> Balkonnische,habitats,Balkon-Nische,Balkonnische,similar,candidate,1,1,similarity 0.96,y,hyphen variant
+habitats: Bauernhof -> Bauernhöfen,habitats,Bauernhof,Bauernhöfen,similar,candidate,1,2,similarity 0.86,y,singular/plural dative
+habitats: Baumgärten -> Baumgarten,habitats,Baumgärten,Baumgarten,similar,candidate,1,2,similarity 0.95,y,plural/singular
+habitats: Berghänge -> Berghang,habitats,Berghänge,Berghang,similar,candidate,1,1,similarity 0.89,y,plural/singular
+habitats: Bergwälder -> Bergwäldern,habitats,Bergwälder,Bergwäldern,similar,candidate,1,3,similarity 0.96,y,plural/dative
+habitats: Birke -> Birken,habitats,Birke,Birken,similar,candidate,10,13,similarity 0.91,y,singular/plural
+habitats: Birken-Anstück -> Birkenstück,habitats,Birken-Anstück,Birkenstück,similar,candidate,1,2,similarity 0.89,n,unclear term Anstück
+habitats: Birkenbestand -> Birkenbestände,habitats,Birkenbestand,Birkenbestände,similar,candidate,1,6,similarity 0.93,y,singular/plural
+habitats: Birkenmoos -> Birkenmoor,habitats,Birkenmoos,Birkenmoor,similar,candidate,2,10,similarity 0.90,n,Moos (Bavarian) vs Moor kept distinct
+habitats: Brachfelder -> Brachfeld,habitats,Brachfelder,Brachfeld,similar,candidate,1,1,similarity 0.90,y,plural/singular
+habitats: Brachwiesen -> Brachwiese,habitats,Brachwiesen,Brachwiese,similar,candidate,1,1,similarity 0.95,y,plural/singular
+habitats: Buche -> Buchen,habitats,Buche,Buchen,similar,candidate,1,9,similarity 0.91,y,singular/plural
+habitats: Buchen-Wäldchen -> Buchenwäldchen,habitats,Buchen-Wäldchen,Buchenwäldchen,similar,candidate,2,9,similarity 0.97,y,hyphen variant
+habitats: Buchenhangwald -> Buchenhainwald,habitats,Buchenhangwald,Buchenhainwald,similar,candidate,1,2,similarity 0.93,n,Hang vs Hain different
+habitats: Buchenjungwald -> Buchenhangwald,habitats,Buchenjungwald,Buchenhangwald,similar,candidate,1,1,similarity 0.86,n,Jungwald vs Hangwald different
+habitats: Buchenwälder -> Buchenwäldchen,habitats,Buchenwälder,Buchenwäldchen,similar,candidate,1,9,similarity 0.86,n,forest vs diminutive grove
+habitats: Buchenwälder -> Buchenwald,habitats,Buchenwälder,Buchenwald,similar,candidate,1,19,similarity 0.87,y,plural/singular
+habitats: Büschen -> Büsche,habitats,Büschen,Büsche,similar,candidate,4,16,similarity 0.93,y,dative/plural
+habitats: Büschen auf einer Wiese -> Büschen auf der Wiese,habitats,Büschen auf einer Wiese,Büschen auf der Wiese,similar,candidate,1,1,similarity 0.91,y,article only
+habitats: Buschwerk am Altwasser -> Buschwerk am Wasser,habitats,Buschwerk am Altwasser,Buschwerk am Wasser,similar,candidate,1,1,similarity 0.93,n,Altwasser more specific
+habitats: Dickung -> Dickungen,habitats,Dickung,Dickungen,similar,candidate,1,6,similarity 0.88,y,singular/plural
+habitats: Distelfelder -> Distelfeld,habitats,Distelfelder,Distelfeld,similar,candidate,1,1,similarity 0.91,y,plural/singular
+habitats: Dünen -> Düne,habitats,Dünen,Düne,similar,candidate,2,6,similarity 0.91,y,plural/singular
+habitats: Eichen -> Eiche,habitats,Eichen,Eiche,similar,candidate,7,8,similarity 0.91,y,plural/singular
+habitats: Eichen - Erlen Bestand -> Eichen-Birken-Bestand,habitats,Eichen - Erlen Bestand,Eichen-Birken-Bestand,similar,candidate,1,1,similarity 0.88,n,Erlen vs Birken different
+habitats: Eichwald -> Eichenwald,habitats,Eichwald,Eichenwald,similar,candidate,1,6,similarity 0.89,y,spelling variant oak wood
+habitats: Erlenbäume -> Erlbäume,habitats,Erlenbäume,Erlbäume,similar,candidate,1,2,similarity 0.90,y,Erl dialect for Erle
+habitats: Erle -> Erlen,habitats,Erle,Erlen,similar,candidate,6,24,similarity 0.89,y,singular/plural
+habitats: Erlen Auen -> Erlenauen,habitats,Erlen Auen,Erlenauen,similar,candidate,1,1,similarity 0.95,y,spacing variant
+habitats: Erlen-Baum -> Erlenbäume,habitats,Erlen-Baum,Erlenbäume,similar,candidate,1,1,similarity 0.86,y,singular/plural; hyphen
+habitats: Erlen- und Weidenbüschen -> Erlen- und Weidenbüsche,habitats,Erlen- und Weidenbüschen,Erlen- und Weidenbüsche,similar,candidate,1,1,similarity 0.98,y,dative/plural
+habitats: Erlen- und Weidengebüsch -> Erlen- und Weidenbüsche,habitats,Erlen- und Weidengebüsch,Erlen- und Weidenbüsche,similar,candidate,1,1,similarity 0.94,y,Gebüsch collective of Büsche
+habitats: Erlen- und Weidengebüsch -> Erlen- und Weidenbüschen,habitats,Erlen- und Weidengebüsch,Erlen- und Weidenbüschen,similar,candidate,1,1,similarity 0.92,n,superseded; another canonical accepted
+habitats: Erlenlagen -> Erlenanlagen,habitats,Erlenlagen,Erlenanlagen,similar,candidate,1,2,similarity 0.91,y,truncated variant
+habitats: Erlenbüschen -> Erlenbüsche,habitats,Erlenbüschen,Erlenbüsche,similar,candidate,1,2,similarity 0.96,y,dative/plural
+habitats: Erlenbüsche -> Erlengebüsch,habitats,Erlenbüsche,Erlengebüsch,similar,candidate,2,5,similarity 0.88,y,Gebüsch collective of Büsche
+habitats: Eschenbäumchen -> Eschenbäume,habitats,Eschenbäumchen,Eschenbäume,similar,candidate,1,1,similarity 0.89,n,diminutive saplings vs trees
+habitats: Fabrikgebäude -> Fabrikgelände,habitats,Fabrikgebäude,Fabrikgelände,similar,candidate,1,5,similarity 0.86,n,building vs grounds
+habitats: Felde -> Feld,habitats,Felde,Feld,similar,candidate,1,64,similarity 0.89,n,superseded; another canonical accepted
+habitats: Felde -> Felder,habitats,Felde,Felder,similar,candidate,1,156,similarity 0.91,y,dative/plural
+habitats: Feldern -> Felder,habitats,Feldern,Felder,similar,candidate,8,156,similarity 0.92,y,dative/plural
+habitats: Felsblöcke am Ufer -> Felsblöcke am Meer,habitats,Felsblöcke am Ufer,Felsblöcke am Meer,similar,candidate,1,1,similarity 0.89,n,Ufer vs Meer different
+habitats: Felswänden -> Felswände,habitats,Felswänden,Felswände,similar,candidate,1,1,similarity 0.95,y,dative/plural
+habitats: Felswände -> Felswand,habitats,Felswände,Felswand,similar,candidate,1,3,similarity 0.89,y,plural/singular
+habitats: feuchte Wiese -> feuchte Wiesen,habitats,feuchte Wiese,feuchte Wiesen,similar,candidate,1,4,similarity 0.96,y,singular/plural
+habitats: Fichte -> Fichten,habitats,Fichte,Fichten,similar,candidate,28,59,similarity 0.92,y,singular/plural
+habitats: Fichtenau -> Fichten,habitats,Fichtenau,Fichten,similar,candidate,2,59,similarity 0.88,n,Fichtenau different term
+habitats: Fichtendichtung -> fichten Dickung,habitats,Fichtendichtung,fichten Dickung,similar,candidate,1,1,similarity 0.87,n,superseded; another canonical accepted
+habitats: fichten Dickung -> Fichtendickung,habitats,fichten Dickung,Fichtendickung,similar,candidate,1,6,similarity 0.97,y,spacing/case variant
+habitats: fichten Dickung -> Fichtendickungen,habitats,fichten Dickung,Fichtendickungen,similar,candidate,1,6,similarity 0.90,n,superseded; another canonical accepted
+habitats: fichten Dickung -> Fichtendikkung,habitats,fichten Dickung,Fichtendikkung,similar,candidate,1,1,similarity 0.90,n,superseded; another canonical accepted
+habitats: Fichten- und Buchenbestand -> Fichten und Föhrenbestand,habitats,Fichten- und Buchenbestand,Fichten und Föhrenbestand,similar,candidate,1,2,similarity 0.86,n,Buchen vs Föhren different
+habitats: Fichten und Föhren -> Fichten und Erlen,habitats,Fichten und Föhren,Fichten und Erlen,similar,candidate,1,1,similarity 0.89,n,Föhren vs Erlen different
+habitats: Fichten- und Föhren-Bestand -> Fichten und Föhrenbestand,habitats,Fichten- und Föhren-Bestand,Fichten und Föhrenbestand,similar,candidate,1,2,similarity 0.98,y,hyphen variant
+habitats: Fichten-Waldungen -> Fichtenwaldungen,habitats,Fichten-Waldungen,Fichtenwaldungen,similar,candidate,1,1,similarity 0.97,y,hyphen variant
+habitats: Fichtenbäum. -> Fichtenau,habitats,Fichtenbäum.,Fichtenau,similar,candidate,1,2,similarity 0.86,n,Bäume vs Au different
+habitats: Fichtenbäum. -> Fichtenbäume,habitats,Fichtenbäum.,Fichtenbäume,similar,candidate,1,2,similarity 0.96,y,abbreviated variant
+habitats: Fichtenbäumchen -> Fichtenbäume,habitats,Fichtenbäumchen,Fichtenbäume,similar,candidate,1,2,similarity 0.90,n,diminutive saplings vs trees
+habitats: Fichtendichtung -> Fichtendickung,habitats,Fichtendichtung,Fichtendickung,similar,candidate,1,6,similarity 0.90,y,typo for Dickung
+habitats: Fichtendickungen -> Fichtendickung,habitats,Fichtendickungen,Fichtendickung,similar,candidate,6,6,similarity 0.93,y,plural/singular
+habitats: Fichtendikkung -> Fichtendickung,habitats,Fichtendikkung,Fichtendickung,similar,candidate,1,6,similarity 0.93,y,kk spelling variant
+habitats: Fichtendikkung -> Fichtendickungen,habitats,Fichtendikkung,Fichtendickungen,similar,candidate,1,6,similarity 0.87,n,superseded; another canonical accepted
+habitats: Fichtengehölz -> Fichtenholz,habitats,Fichtengehölz,Fichtenholz,similar,candidate,1,1,similarity 0.88,n,Gehölz vs Holz unclear
+habitats: Fichtenlockwald -> Fichtenhochwald,habitats,Fichtenlockwald,Fichtenhochwald,similar,candidate,1,3,similarity 0.87,n,Lockwald vs Hochwald different
+habitats: Fichtenwälder -> Fichtenwäldchen,habitats,Fichtenwälder,Fichtenwäldchen,similar,candidate,1,4,similarity 0.87,n,forest vs diminutive grove
+habitats: Fichtenwälder -> Fichtenwald,habitats,Fichtenwälder,Fichtenwald,similar,candidate,1,8,similarity 0.88,y,plural/singular
+habitats: Fisch- Teiche -> Fischteich,habitats,Fisch- Teiche,Fischteich,similar,candidate,1,13,similarity 0.91,n,superseded; another canonical accepted
+habitats: Fisch- Teiche -> Fischteiche,habitats,Fisch- Teiche,Fischteiche,similar,candidate,1,15,similarity 0.96,y,hyphen/spacing variant
+habitats: Fisch- Teiche -> Fischteichen,habitats,Fisch- Teiche,Fischteichen,similar,candidate,1,1,similarity 0.92,n,superseded; another canonical accepted
+habitats: Fischteich -> Fischteiche,habitats,Fischteich,Fischteiche,similar,candidate,13,15,similarity 0.95,y,singular/plural
+habitats: Fischteichen -> Fischteich,habitats,Fischteichen,Fischteich,similar,candidate,1,13,similarity 0.91,n,superseded; another canonical accepted
+habitats: Fischteichen -> Fischteiche,habitats,Fischteichen,Fischteiche,similar,candidate,1,15,similarity 0.96,y,dative/plural
+habitats: Föhre -> Föhren,habitats,Föhre,Föhren,similar,candidate,4,5,similarity 0.92,y,singular/plural
+habitats: Föhrenbestände -> Föhrenbestand,habitats,Föhrenbestände,Föhrenbestand,similar,candidate,2,2,similarity 0.93,y,plural/singular
+habitats: Friedhofsanlagen -> Friedhofanlagen,habitats,Friedhofsanlagen,Friedhofanlagen,similar,candidate,1,2,similarity 0.97,y,Fugen-s variant
+habitats: Ft. und im Wb. -> Ft. und Wb.,habitats,Ft. und im Wb.,Ft. und Wb.,similar,candidate,1,1,similarity 0.86,y,same abbreviations; preposition only
+habitats: Futterbrete -> Futterbrett,habitats,Futterbrete,Futterbrett,similar,candidate,1,41,similarity 0.91,y,typo
+habitats: Futterplatz am Küchenfenster -> Futterbrett am Küchenfenster,habitats,Futterplatz am Küchenfenster,Futterbrett am Küchenfenster,similar,candidate,4,8,similarity 0.86,n,Futterplatz generic vs Futterbrett
+habitats: Futterhäusel -> Futterhäuschen,habitats,Futterhäusel,Futterhäuschen,similar,candidate,6,9,similarity 0.86,y,dialect diminutive; same feeder
+habitats: Futterhäusl -> Futterhäusel,habitats,Futterhäusl,Futterhäusel,similar,candidate,2,6,similarity 0.96,y,dialect spelling
+habitats: Futterhaus -> Futterhäusel,habitats,Futterhaus,Futterhäusel,similar,candidate,3,6,similarity 0.87,y,feeder house; lexicalised diminutive
+habitats: Futterhäusl -> Futterhaus,habitats,Futterhäusl,Futterhaus,similar,candidate,2,3,similarity 0.91,n,superseded; another canonical accepted
+habitats: Futterstand -> Futterständer,habitats,Futterstand,Futterständer,similar,candidate,4,13,similarity 0.88,y,Stand/Ständer same feeder
+habitats: Gärtchen -> Gärten,habitats,Gärtchen,Gärten,similar,candidate,3,32,similarity 0.88,y,affective diminutive; same habitat
+habitats: Garten-Anlage -> Gartenanlage,habitats,Garten-Anlage,Gartenanlage,similar,candidate,1,5,similarity 0.96,n,superseded; another canonical accepted
+habitats: Garten-Anlage -> Gartenanlagen,habitats,Garten-Anlage,Gartenanlagen,similar,candidate,1,7,similarity 0.92,y,hyphen; plural
+habitats: Gartenanlage -> Gartenanlagen,habitats,Gartenanlage,Gartenanlagen,similar,candidate,5,7,similarity 0.96,y,singular/plural
+habitats: Gartenbäume -> Gartenbaum,habitats,Gartenbäume,Gartenbaum,similar,candidate,1,2,similarity 0.91,y,plural/singular
+habitats: Gebüschen -> Gebüsch,habitats,Gebüschen,Gebüsch,similar,candidate,1,49,similarity 0.89,y,dative
+habitats: Gebusch -> Gebüsch,habitats,Gebusch,Gebüsch,similar,candidate,1,49,similarity 0.93,y,missing umlaut
+habitats: Gebüschen -> Gebüschten,habitats,Gebüschen,Gebüschten,similar,candidate,1,2,similarity 0.95,n,superseded; another canonical accepted
+habitats: Gemüsegärtchen -> Gemüsegarten,habitats,Gemüsegärtchen,Gemüsegarten,similar,candidate,1,3,similarity 0.90,y,affective diminutive; same habitat
+habitats: Getreidefelder -> Getreidefeld,habitats,Getreidefelder,Getreidefeld,similar,candidate,4,8,similarity 0.92,y,plural/singular
+habitats: Gräben -> Graben,habitats,Gräben,Graben,similar,candidate,1,5,similarity 0.92,y,plural/singular
+habitats: Hainbuchenwäldchen -> Hainbuchen-Wäldchen,habitats,Hainbuchenwäldchen,Hainbuchen-Wäldchen,similar,candidate,3,4,similarity 0.97,y,hyphen variant
+habitats: Hang. Wald -> Hangwald,habitats,Hang. Wald,Hangwald,similar,candidate,1,352,similarity 0.94,y,OCR punctuation variant
+habitats: Hauwald -> Hauswald,habitats,Hauwald,Hauswald,similar,candidate,1,2,similarity 0.93,n,Hauwald coppice vs Hauswald
+habitats: Hecken -> Hecke,habitats,Hecken,Hecke,similar,candidate,3,10,similarity 0.91,y,plural/singular
+habitats: hohen Buchen -> hohe Buchen,habitats,hohen Buchen,hohe Buchen,similar,candidate,1,2,similarity 0.96,y,inflection
+habitats: hohen Föhren -> hohe Föhren,habitats,hohen Föhren,hohe Föhren,similar,candidate,1,2,similarity 0.96,y,inflection
+habitats: hohes Gras -> hohen Gras,habitats,hohes Gras,hohen Gras,similar,candidate,1,1,similarity 0.90,y,inflection
+habitats: Hollunderdikkicht -> Hollerdikkicht,habitats,Hollunderdikkicht,Hollerdikkicht,similar,candidate,1,1,similarity 0.90,y,Holler dialect Holunder
+habitats: Hollunderdikkicht -> Hollunderdickicht,habitats,Hollunderdikkicht,Hollunderdickicht,similar,candidate,1,1,similarity 0.94,n,superseded; another canonical accepted
+habitats: Hollundergebüsch -> Holunderbüsche,habitats,Hollundergebüsch,Holunderbüsche,similar,candidate,1,2,similarity 0.88,y,spelling; Gebüsch collective
+habitats: Hollundergebüsch -> Holundergebüsch,habitats,Hollundergebüsch,Holundergebüsch,similar,candidate,1,1,similarity 0.97,n,superseded; another canonical accepted
+habitats: Holunderbüschen -> Holunderbüsche,habitats,Holunderbüschen,Holunderbüsche,similar,candidate,1,2,similarity 0.97,y,dative/plural
+habitats: Holunderbusch -> Holunderbüsche,habitats,Holunderbusch,Holunderbüsche,similar,candidate,1,2,similarity 0.93,y,singular/plural
+habitats: Holundergebüsch -> Holunderbüsche,habitats,Holundergebüsch,Holunderbüsche,similar,candidate,1,2,similarity 0.90,y,Gebüsch collective of Büsche
+habitats: Holunderbüschen -> Holunderbusch,habitats,Holunderbüschen,Holunderbusch,similar,candidate,1,1,similarity 0.90,n,superseded; another canonical accepted
+habitats: Holundergebüsch -> Holunderbüschen,habitats,Holundergebüsch,Holunderbüschen,similar,candidate,1,1,similarity 0.88,n,superseded; another canonical accepted
+habitats: Holundergebüsch -> Holunderbusch,habitats,Holundergebüsch,Holunderbusch,similar,candidate,1,1,similarity 0.90,n,superseded; another canonical accepted
+habitats: Isar-Auen -> Isarauen,habitats,Isar-Auen,Isarauen,similar,candidate,1,6,similarity 0.94,y,hyphen variant
+habitats: Kastanie -> Kastanien,habitats,Kastanie,Kastanien,similar,candidate,1,6,similarity 0.94,y,singular/plural
+habitats: Kiefer -> Kiefern,habitats,Kiefer,Kiefern,similar,candidate,1,3,similarity 0.92,y,singular/plural
+habitats: Kiesufer -> Kiefer,habitats,Kiesufer,Kiefer,similar,candidate,1,1,similarity 0.86,n,gravel shore vs pine
+habitats: Kiesbänke -> Kiesbank,habitats,Kiesbänke,Kiesbank,similar,candidate,2,93,similarity 0.89,y,plural/singular
+habitats: Kiesweite -> Kiesweide,habitats,Kiesweite,Kiesweide,similar,candidate,1,1,similarity 0.89,n,unclear terms
+habitats: Kleingarten -> Kleingärten,habitats,Kleingarten,Kleingärten,similar,candidate,2,3,similarity 0.96,y,singular/plural
+habitats: Lärchen -> Lärche,habitats,Lärchen,Lärche,similar,candidate,3,4,similarity 0.93,y,plural/singular
+habitats: Lärche beim Haus -> Lärche am Haus,habitats,Lärche beim Haus,Lärche am Haus,similar,candidate,2,2,similarity 0.88,y,am/beim Haus same location
+habitats: Lärchenwald -> Lärchenwälder,habitats,Lärchenwald,Lärchenwälder,similar,candidate,1,7,similarity 0.89,y,singular/plural
+habitats: Lagune -> Lagunen,habitats,Lagune,Lagunen,similar,candidate,1,9,similarity 0.92,y,singular/plural
+habitats: Lagunen-Gebiet -> Lagunengebiet,habitats,Lagunen-Gebiet,Lagunengebiet,similar,candidate,1,5,similarity 0.96,y,hyphen variant
+habitats: Latschen- Region -> Latschenregion,habitats,Latschen- Region,Latschenregion,similar,candidate,1,1,similarity 0.97,y,hyphen/spacing variant
+habitats: Latschen- und Grünerlen -> Latschen und Erlen,habitats,Latschen- und Grünerlen,Latschen und Erlen,similar,candidate,1,1,similarity 0.88,n,Grünerlen more specific
+habitats: Liguster-Büsche -> Ligusterbusch,habitats,Liguster-Büsche,Ligusterbusch,similar,candidate,1,1,similarity 0.90,y,hyphen; plural/singular
+habitats: Linden -> Linde,habitats,Linden,Linde,similar,candidate,1,2,similarity 0.91,y,plural/singular
+habitats: Moore -> Moor,habitats,Moore,Moor,similar,candidate,1,251,similarity 0.89,y,plural/singular
+habitats: Moorgelände -> Moosgelände,habitats,Moorgelände,Moosgelände,similar,candidate,1,4,similarity 0.92,n,Moor vs Moos kept distinct
+habitats: Moosgraben -> Moorgraben,habitats,Moosgraben,Moorgraben,similar,candidate,1,3,similarity 0.90,n,Moos vs Moor kept distinct
+habitats: Moosrand -> Moorland,habitats,Moosrand,Moorland,similar,candidate,1,1,similarity 0.88,n,rand vs land; Moos vs Moor
+habitats: Moorwäldchen -> Mooswäldchen,habitats,Moorwäldchen,Mooswäldchen,similar,candidate,2,31,similarity 0.92,n,Moor vs Moos kept distinct
+habitats: Mooswald -> Moorwald,habitats,Mooswald,Moorwald,similar,candidate,1,4,similarity 0.88,n,Moos vs Moor kept distinct
+habitats: Moorwiesen -> Moorwiese,habitats,Moorwiesen,Moorwiese,similar,candidate,1,9,similarity 0.95,y,plural/singular
+habitats: Mooswiese -> Moorwiese,habitats,Mooswiese,Moorwiese,similar,candidate,8,9,similarity 0.89,n,Moos vs Moor kept distinct
+habitats: Moorwiesen -> Mooswiesen,habitats,Moorwiesen,Mooswiesen,similar,candidate,1,7,similarity 0.90,n,Moor vs Moos kept distinct
+habitats: Mooswältchen -> Mooswäldchen,habitats,Mooswältchen,Mooswäldchen,similar,candidate,1,31,similarity 0.92,y,typo
+habitats: Mooswiesen -> Mooswiese,habitats,Mooswiesen,Mooswiese,similar,candidate,7,8,similarity 0.95,y,plural/singular
+habitats: niedriges Buschwerk -> niederes Buschwerk,habitats,niedriges Buschwerk,niederes Buschwerk,similar,candidate,2,2,similarity 0.92,y,niedrig/nieder synonyms
+habitats: Obst-Gärten -> Obstgärten,habitats,Obst-Gärten,Obstgärten,similar,candidate,1,4,similarity 0.96,n,superseded; another canonical accepted
+habitats: Obst-Gärten -> Obstgarten,habitats,Obst-Gärten,Obstgarten,similar,candidate,1,34,similarity 0.91,y,hyphen; plural/singular
+habitats: Obstbäumen -> Obstbäume,habitats,Obstbäumen,Obstbäume,similar,candidate,1,23,similarity 0.95,y,dative/plural
+habitats: Obstbaum -> Obstbäume,habitats,Obstbaum,Obstbäume,similar,candidate,4,23,similarity 0.89,y,singular/plural
+habitats: Obstbäume längs der Straße -> Obstbaum an der Straße,habitats,Obstbäume längs der Straße,Obstbaum an der Straße,similar,candidate,1,1,similarity 0.88,y,roadside fruit trees; number/preposition
+habitats: Obstgärten -> Obstgarten,habitats,Obstgärten,Obstgarten,similar,candidate,4,34,similarity 0.95,y,plural/singular
+habitats: Pappel -> Pappeln,habitats,Pappel,Pappeln,similar,candidate,4,6,similarity 0.92,y,singular/plural
+habitats: Pappelhaim -> Pappelhain,habitats,Pappelhaim,Pappelhain,similar,candidate,2,7,similarity 0.90,y,typo
+habitats: Park und Garten -> Park und Gärten,habitats,Park und Garten,Park und Gärten,similar,candidate,1,1,similarity 0.97,y,singular/plural
+habitats: Rebgarten -> Rebgärten,habitats,Rebgarten,Rebgärten,similar,candidate,1,2,similarity 0.95,y,singular/plural
+habitats: Röhrich -> Röhricht,habitats,Röhrich,Röhricht,similar,candidate,1,47,similarity 0.94,y,typo
+habitats: Rohrricht -> Rohricht,habitats,Rohrricht,Rohricht,similar,candidate,1,1,similarity 0.94,y,spelling variant
+habitats: Rohrwalt -> Rohrwald,habitats,Rohrwalt,Rohrwald,similar,candidate,1,38,similarity 0.88,y,typo
+"habitats: Rohrwald, Schilfrand -> Rohrwald, Schilf",habitats,"Rohrwald, Schilfrand","Rohrwald, Schilf",similar,candidate,1,1,similarity 0.88,n,Schilfrand vs Schilf
+habitats: Rohrwatt -> Rohrwalt,habitats,Rohrwatt,Rohrwalt,similar,candidate,1,1,similarity 0.88,n,Watt vs Wald unclear
+habitats: Saatfelder -> Saatfeld,habitats,Saatfelder,Saatfeld,similar,candidate,2,7,similarity 0.89,y,plural/singular
+habitats: Sandbänke -> Sandbank,habitats,Sandbänke,Sandbank,similar,candidate,4,10,similarity 0.89,y,plural/singular
+habitats: Sandgruben -> Sandgrube,habitats,Sandgruben,Sandgrube,similar,candidate,1,2,similarity 0.95,y,plural/singular
+habitats: Schattenbänke -> Schotterbänke,habitats,Schattenbänke,Schotterbänke,similar,candidate,3,4,similarity 0.86,n,possibly misread but unclear
+habitats: Schilf-Dickicht -> Schilfdickicht,habitats,Schilf-Dickicht,Schilfdickicht,similar,candidate,1,4,similarity 0.97,y,hyphen variant
+habitats: Schilf und Weidicht -> Schilf im Weidicht,habitats,Schilf und Weidicht,Schilf im Weidicht,similar,candidate,1,1,similarity 0.86,n,und vs im different relation
+"habitats: Schilfrand, See -> Schilf und See",habitats,"Schilfrand, See",Schilf und See,similar,candidate,1,4,similarity 0.86,n,Schilfrand vs Schilf
+habitats: Schilfaltrand -> Schilfrand,habitats,Schilfaltrand,Schilfrand,similar,candidate,1,51,similarity 0.87,n,unclear compound
+habitats: Schilfbeständen -> Schilfbestände,habitats,Schilfbeständen,Schilfbestände,similar,candidate,1,2,similarity 0.97,y,dative/plural
+habitats: Schilfbestand -> Schilfbestände,habitats,Schilfbestand,Schilfbestände,similar,candidate,1,2,similarity 0.93,y,singular/plural
+habitats: Schilfbeständen -> Schilfbestand,habitats,Schilfbeständen,Schilfbestand,similar,candidate,1,1,similarity 0.90,n,superseded; another canonical accepted
+habitats: Schilfboden -> Schilfbord,habitats,Schilfboden,Schilfbord,similar,candidate,1,3,similarity 0.86,n,Boden vs Bord different
+habitats: Schilfeld -> Schilffeld,habitats,Schilfeld,Schilffeld,similar,candidate,1,60,similarity 0.95,y,typo
+habitats: Schilfgurt -> Schilfgürtel,habitats,Schilfgurt,Schilfgürtel,similar,candidate,1,18,similarity 0.87,y,Gurt/Gürtel same reed belt
+habitats: Schilfwall -> Schilfwald,habitats,Schilfwall,Schilfwald,similar,candidate,2,12,similarity 0.90,n,Wall vs Wald unclear
+habitats: Schilfwiesen -> Schilfwiese,habitats,Schilfwiesen,Schilfwiese,similar,candidate,2,3,similarity 0.96,y,plural/singular
+habitats: Schilfwiese -> Schulwiese,habitats,Schilfwiese,Schulwiese,similar,candidate,3,3,similarity 0.86,n,reed vs school meadow
+habitats: Schlammbanken -> Schlammbank,habitats,Schlammbanken,Schlammbank,similar,candidate,1,5,similarity 0.92,y,plural/singular
+habitats: Schotter-Ansammlungen -> Schuttansammlungen,habitats,Schotter-Ansammlungen,Schuttansammlungen,similar,candidate,1,1,similarity 0.87,n,Schotter vs Schutt different
+habitats: Schotterbänke -> Schotterbank,habitats,Schotterbänke,Schotterbank,similar,candidate,4,5,similarity 0.92,y,plural/singular
+habitats: Schotterwiesen -> Schotterwiese,habitats,Schotterwiesen,Schotterwiese,similar,candidate,3,13,similarity 0.96,y,plural/singular
+habitats: See-Ufer -> Seeufer,habitats,See-Ufer,Seeufer,similar,candidate,3,6,similarity 0.93,y,hyphen variant
+habitats: Seggenwiese -> Seggewiese,habitats,Seggenwiese,Seggewiese,similar,candidate,1,1,similarity 0.95,y,spelling variant
+habitats: Silberweiden -> Silberweide,habitats,Silberweiden,Silberweide,similar,candidate,1,1,similarity 0.96,y,plural/singular
+habitats: Steinenmauern -> Steinmauern,habitats,Steinenmauern,Steinmauern,similar,candidate,1,1,similarity 0.92,y,spelling variant
+habitats: Stoppelfelder -> Stoppelfeld,habitats,Stoppelfelder,Stoppelfeld,similar,candidate,3,13,similarity 0.92,y,plural/singular
+habitats: Sträuchern -> Sträucher,habitats,Sträuchern,Sträucher,similar,candidate,2,4,similarity 0.95,y,dative/plural
+habitats: Sträucher -> Strauchwerk,habitats,Sträucher,Strauchwerk,similar,candidate,4,5,similarity 0.86,y,Strauchwerk collective of Sträucher
+habitats: Sträucher-Zäune -> Sträucherzäune,habitats,Sträucher-Zäune,Sträucherzäune,similar,candidate,1,2,similarity 0.97,y,hyphen variant
+habitats: Straßen -> Straße,habitats,Straßen,Straße,similar,candidate,2,17,similarity 0.93,y,plural/singular
+habitats: Sumpfsümpfen -> Sumpfsumpf,habitats,Sumpfsümpfen,Sumpfsumpf,similar,candidate,1,1,similarity 0.87,y,inflection variant
+habitats: Sumpfwiesen -> Sumpfwiese,habitats,Sumpfwiesen,Sumpfwiese,similar,candidate,1,15,similarity 0.95,y,plural/singular
+habitats: Tanne -> Tann,habitats,Tanne,Tann,similar,candidate,1,1,similarity 0.89,n,Tann fir forest vs Tanne tree
+habitats: Tanne -> Tannen,habitats,Tanne,Tannen,similar,candidate,1,8,similarity 0.91,y,singular/plural
+habitats: Tannenwaldung -> Tannenwald,habitats,Tannenwaldung,Tannenwald,similar,candidate,1,2,similarity 0.87,y,Waldung/Wald same fir forest
+habitats: Teiche -> Teich,habitats,Teiche,Teich,similar,candidate,14,30,similarity 0.91,y,plural/singular
+habitats: Teichen -> Teiche,habitats,Teichen,Teiche,similar,candidate,3,14,similarity 0.92,y,dative/plural
+habitats: Telegrafenleitungen -> Telegraphenleitung,habitats,Telegrafenleitungen,Telegraphenleitung,similar,candidate,1,1,similarity 0.86,y,spelling; plural
+habitats: Torfstiche -> Torfstich,habitats,Torfstiche,Torfstich,similar,candidate,4,7,similarity 0.95,y,plural/singular
+habitats: überschwemmte Auen -> überschwemmte Wiesen,habitats,überschwemmte Auen,überschwemmte Wiesen,similar,candidate,1,2,similarity 0.85,n,Auen vs Wiesen different
+habitats: überschwemmte Wiesen -> überschwemmte Wiese,habitats,überschwemmte Wiesen,überschwemmte Wiese,similar,candidate,2,5,similarity 0.98,y,plural/singular
+habitats: überstwemmte Wiese -> überschwemmte Wiese,habitats,überstwemmte Wiese,überschwemmte Wiese,similar,candidate,2,5,similarity 0.92,y,typo
+habitats: überschwemmte Wiesen -> überstwemmte Wiese,habitats,überschwemmte Wiesen,überstwemmte Wiese,similar,candidate,2,2,similarity 0.90,n,superseded; another canonical accepted
+habitats: Ufer dieses Weihers -> Ufer des Weihers,habitats,Ufer dieses Weihers,Ufer des Weihers,similar,candidate,1,1,similarity 0.91,y,determiner only
+habitats: Uferbusch -> Ufergebüsch,habitats,Uferbusch,Ufergebüsch,similar,candidate,3,6,similarity 0.86,y,Gebüsch collective of Busch
+habitats: Uferrand -> Ufersand,habitats,Uferrand,Ufersand,similar,candidate,2,3,similarity 0.88,n,rand vs sand
+habitats: Uferwand -> Uferrand,habitats,Uferwand,Uferrand,similar,candidate,1,2,similarity 0.88,n,wand vs rand
+habitats: Ufersaum -> Uferraum,habitats,Ufersaum,Uferraum,similar,candidate,1,1,similarity 0.88,n,saum vs raum unclear
+habitats: Uferwand -> Ufersand,habitats,Uferwand,Ufersand,similar,candidate,1,3,similarity 0.88,n,wand vs sand
+habitats: Ulmen -> Ulme,habitats,Ulmen,Ulme,similar,candidate,1,1,similarity 0.89,y,plural/singular
+habitats: verschneites Feld -> verschneite Felder,habitats,verschneites Feld,verschneite Felder,similar,candidate,1,2,similarity 0.91,y,singular/plural
+habitats: Vorgärtchen -> Vorgarten,habitats,Vorgärtchen,Vorgarten,similar,candidate,1,2,similarity 0.86,y,affective diminutive; same habitat
+habitats: Vorklärteich -> Vorklär-Teich,habitats,Vorklärteich,Vorklär-Teich,similar,candidate,2,4,similarity 0.96,y,hyphen variant
+habitats: Wachholder -> Wacholder,habitats,Wachholder,Wacholder,similar,candidate,1,1,similarity 0.95,y,spelling variant
+habitats: Wäldern -> Wälder,habitats,Wäldern,Wälder,similar,candidate,3,20,similarity 0.93,y,dative/plural
+habitats: Walde -> Wald,habitats,Walde,Wald,similar,candidate,1,320,similarity 0.89,y,dative
+habitats: Waldteil -> Waldabteil,habitats,Waldteil,Waldabteil,similar,candidate,3,5,similarity 0.89,n,Abteil forestry term; unclear
+habitats: Waldessaum -> Waldsaum,habitats,Waldessaum,Waldsaum,similar,candidate,1,7,similarity 0.89,y,genitive linking variant
+habitats: Waldrain -> Waldrand,habitats,Waldrain,Waldrand,similar,candidate,1,27,similarity 0.88,y,Rain = Rand; forest edge
+habitats: Waldung -> Waldungen,habitats,Waldung,Waldungen,similar,candidate,4,6,similarity 0.88,y,singular/plural
+habitats: Wasserfläche -> Wasserflächen,habitats,Wasserfläche,Wasserflächen,similar,candidate,1,2,similarity 0.96,y,singular/plural
+habitats: Wasserfläche -> Wasserlache,habitats,Wasserfläche,Wasserlache,similar,candidate,1,1,similarity 0.92,n,surface vs puddle
+habitats: Wasserlache -> Wasserflächen,habitats,Wasserlache,Wasserflächen,similar,candidate,1,2,similarity 0.88,n,puddle vs surfaces
+habitats: Watt-Becken -> Wattbecken,habitats,Watt-Becken,Wattbecken,similar,candidate,1,1,similarity 0.95,y,hyphen variant
+habitats: Weide -> Weiden,habitats,Weide,Weiden,similar,candidate,5,20,similarity 0.91,y,singular/plural
+habitats: Weiden und Föhren -> Weiden und Erlen,habitats,Weiden und Föhren,Weiden und Erlen,similar,candidate,1,2,similarity 0.88,n,Föhren vs Erlen different
+habitats: Weiden- und Erlengebüsch -> Weidenund Erlengebüsch,habitats,Weiden- und Erlengebüsch,Weidenund Erlengebüsch,similar,candidate,1,1,similarity 0.98,y,spacing/hyphen variant
+habitats: Weidenbüschen -> Weidenbüsche,habitats,Weidenbüschen,Weidenbüsche,similar,candidate,2,5,similarity 0.96,n,superseded; another canonical accepted
+habitats: Weidenbüsche -> Weidenbusch,habitats,Weidenbüsche,Weidenbusch,similar,candidate,5,7,similarity 0.92,n,superseded; another canonical accepted
+habitats: Weidenbüsche -> Weidengebüsch,habitats,Weidenbüsche,Weidengebüsch,similar,candidate,5,11,similarity 0.89,y,Gebüsch collective of Büsche
+habitats: Weidenbüschen -> Weidenbusch,habitats,Weidenbüschen,Weidenbusch,similar,candidate,2,7,similarity 0.88,n,superseded; another canonical accepted
+habitats: Weidenbüschen -> Weidengebüsch,habitats,Weidenbüschen,Weidengebüsch,similar,candidate,2,11,similarity 0.86,y,Gebüsch collective of Büsche
+habitats: Weidenbusch -> Weidengebüsch,habitats,Weidenbusch,Weidengebüsch,similar,candidate,7,11,similarity 0.88,y,Gebüsch collective of Busch
+habitats: Weingarten -> Weingärten,habitats,Weingarten,Weingärten,similar,candidate,1,15,similarity 0.95,y,singular/plural
+habitats: Werkskanal -> Werkkanal,habitats,Werkskanal,Werkkanal,similar,candidate,2,3,similarity 0.95,y,Fugen-s variant
+habitats: Wiesen -> Wiese,habitats,Wiesen,Wiese,similar,candidate,76,185,similarity 0.91,y,plural/singular
+habitats: Wieser -> Wiese,habitats,Wieser,Wiese,similar,candidate,1,185,similarity 0.91,y,typo
+habitats: Wiesn -> Wiesen,habitats,Wiesn,Wiesen,similar,candidate,1,76,similarity 0.91,y,typo
+habitats: Wiesen und Acker -> Wiesen und Äcker,habitats,Wiesen und Acker,Wiesen und Äcker,similar,candidate,1,2,similarity 0.97,y,umlaut plural variant
+"habitats: Wiesen und Felder, Eis -> Wiesen und Felder",habitats,"Wiesen und Felder, Eis",Wiesen und Felder,similar,candidate,1,10,similarity 0.89,n,Eis extra qualifier
+habitats: Wiesen und Feldern -> Wiesen und Felder,habitats,Wiesen und Feldern,Wiesen und Felder,similar,candidate,7,10,similarity 0.97,y,dative/plural
+"habitats: Wiesen und Felder, Eis -> Wiesen und Feldern",habitats,"Wiesen und Felder, Eis",Wiesen und Feldern,similar,candidate,1,7,similarity 0.87,n,Eis extra qualifier
+habitats: Winterteich -> Winterteiche,habitats,Winterteich,Winterteiche,similar,candidate,2,5,similarity 0.96,y,singular/plural
+habitats: Winterteichen -> Winterteich,habitats,Winterteichen,Winterteich,similar,candidate,2,2,similarity 0.92,n,superseded; another canonical accepted
+habitats: Winterteichen -> Winterteiche,habitats,Winterteichen,Winterteiche,similar,candidate,2,5,similarity 0.96,y,dative/plural

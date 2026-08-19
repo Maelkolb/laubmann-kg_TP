@@ -46,11 +46,10 @@ volume, edit `sample.volume`; set it to `null` to build the whole corpus.
 ## 4. Run both exports
 
 ```python
-# Knowledge graph (Turtle + JSON-LD, SHACL-validated)
-!laubmann-kg export-jsonld --config configs/sample.yaml --input-dir data/corpus --output-dir data/exports
-
-# Darwin Core Archive (event + occurrence + measurementOrFact + multimedia, zipped)
-!laubmann-kg export-dwca   --config configs/sample.yaml --input-dir data/corpus --output-dir data/exports
+# Knowledge graph (Turtle + JSON-LD, SHACL-validated) + Darwin Core Archive
+# (event + occurrence + measurementOrFact + multimedia, zipped) from one pipeline run
+!laubmann-kg export-all --config configs/sample.yaml --input-dir data/corpus --output-dir data/exports
+# (export-jsonld / export-dwca produce just one of the two)
 ```
 
 Outputs land in:
@@ -83,8 +82,7 @@ import os
 os.environ['GOOGLE_API_KEY'] = 'YOUR_API_KEY'   # from https://aistudio.google.com/apikey
 
 # run with the LLM config (adjust extraction.model to an available Gemini model)
-!laubmann-kg export-jsonld --config configs/sample_llm.yaml --input-dir data/corpus --output-dir data/exports
-!laubmann-kg export-dwca   --config configs/sample_llm.yaml --input-dir data/corpus --output-dir data/exports
+!laubmann-kg export-all --config configs/sample_llm.yaml --input-dir data/corpus --output-dir data/exports
 ```
 
 - Calls run at temperature 0 and are cached under `data/cache/llm/`, so re-runs

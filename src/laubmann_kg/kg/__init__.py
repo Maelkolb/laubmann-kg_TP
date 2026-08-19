@@ -14,9 +14,12 @@ logger = logging.getLogger(__name__)
 
 
 def export(config: dict, input_dir: Optional[Path], output_dir: Path,
-           validate: bool = True) -> dict:
-    from laubmann_kg.pipeline import run_pipeline
-    result = run_pipeline(config, input_dir)
+           validate: bool = True, result=None) -> dict:
+    """RDF/Turtle + JSON-LD (+ SHACL) of ``result``; runs the pipeline when no
+    result is passed. ``export_all`` shares one pipeline run with the DwC-A."""
+    if result is None:
+        from laubmann_kg.pipeline import run_pipeline
+        result = run_pipeline(config, input_dir)
 
     output_dir = Path(output_dir)
     if result.qa_flags:
@@ -51,9 +54,29 @@ def export(config: dict, input_dir: Optional[Path], output_dir: Path,
     }
 
 
+def export_all(config: dict, input_dir: Optional[Path], output_dir: Path, validate: bool = True) -> dict:
+    """One pipeline run -> RDF/JSON-LD (+ SHACL) and the Darwin Core Archive.
+    The two exports are consistent by construction (a live LLM call for an
+    uncached entry is made once, not once per export)."""
+    from laubmann_kg.dwca import export as export_dwca
+    from laubmann_kg.pipeline import run_pipeline
+    result = run_pipeline(config, input_dir)
+    summary = export(config, input_dir, output_dir, validate=validate, result=result)
+    summary["dwca"] = export_dwca(config, input_dir, output_dir, validate=validate, result=result)
+    return summary
+
+
 def run(config: Path, input_dir: Path, output_dir: Path) -> None:
     """Run the kg export pipeline stage."""
     from laubmann_kg.pipeline import load_config
     logger.info("kg export: config=%s input_dir=%s output_dir=%s", config, input_dir, output_dir)
     summary = export(load_config(config), input_dir, output_dir)
     logger.info("kg export summary: %s", summary)
+
+
+def run_all(config: Path, input_dir: Path, output_dir: Path) -> None:
+    """Run RDF/JSON-LD + SHACL + DwC-A from one pipeline run."""
+    from laubmann_kg.pipeline import load_config
+    logger.info("kg+dwca export: config=%s input_dir=%s output_dir=%s", config, input_dir, output_dir)
+    summary = export_all(load_config(config), input_dir, output_dir)
+    logger.info("kg+dwca export summary: %s", summary)

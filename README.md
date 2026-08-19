@@ -38,7 +38,7 @@ Open `notebooks/07_full_workflow_colab.ipynb` in Colab. It mounts Drive and runs
 
 1. **Corpus build** — `HistOrniGraph_addons/build_corpus.py` over the `Laubmann_NN_gemini/` region JSONs
 2. **Dedup** — `dedup/detect_duplicates.py` → human review via `review.html` → `dedup/apply_dedup.py` writes `corpus_*_dedup/` (non-destructive, manifest of every dropped page)
-3. **Knowledge graph** — `laubmann-kg export-jsonld / export-dwca --config configs/full_llm.yaml --input-dir <corpus_dedup>` (Gemini extraction, SHACL-validated, resumable via the on-Drive LLM cache)
+3. **Knowledge graph** — `laubmann-kg export-all --config configs/full_llm.yaml --input-dir <corpus_dedup> --output-dir <exports>` (Gemini extraction → volume-coverage date repair → QA → GBIF/Wikidata linking → entity resolution → RDF/JSON-LD + SHACL + Darwin Core Archive from one pipeline run; resumable via the on-Drive LLM cache; `export-jsonld` / `export-dwca` still produce one of the two)
 
 ## Pipeline stages
 
@@ -47,6 +47,7 @@ Open `notebooks/07_full_workflow_colab.ipynb` in Colab. It mounts Drive and runs
 3. `detect-entries` — detect and link diary entries
 4. `transcribe` — transcribe text from regions
 5. `extract-observations` — extract structured observations
-6. `export-jsonld` — export JSON-LD knowledge graph
-7. `export-dwca` — export Darwin Core Archive
-8. `evaluate` — compare outputs to gold annotations
+6. `export-jsonld` — export the RDF/JSON-LD knowledge graph (SHACL-validated)
+7. `export-dwca` — export the Darwin Core Archive
+8. `export-all` — both from one pipeline run (consistent graph and archive)
+9. `evaluate` — compare outputs to gold annotations

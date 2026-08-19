@@ -97,6 +97,16 @@ def export_dwca_cmd(
     _run_stage(dwca.run, config, input_dir, output_dir)
 
 
+@app.command("export-all")
+def export_all_cmd(
+    config: Path = typer.Option(..., "--config", help="Path to the pipeline config file."),
+    input_dir: Path = typer.Option(..., "--input-dir", help="Directory containing input files."),
+    output_dir: Path = typer.Option(..., "--output-dir", help="Directory for output files."),
+) -> None:
+    """RDF/JSON-LD + SHACL and the Darwin Core Archive from ONE pipeline run (consistent exports)."""
+    _run_stage(kg.run_all, config, input_dir, output_dir)
+
+
 @app.command("link-entities")
 def link_entities_cmd(
     config: Path = typer.Option(..., "--config", help="Path to the pipeline config file."),

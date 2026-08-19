@@ -6,7 +6,10 @@ Review CSV contract (all four sections): one row per proposed merge
 
 * ``auto``       – applied unless a reviewer writes ``n`` / ``no`` / ``0`` /
                    ``reject`` / ``keep`` into ``decision``;
-* ``candidate``  – applied only when ``decision`` is ``y`` / ``yes`` / ``merge`` / ``1``.
+* ``candidate``  – applied only when ``decision`` is ``y`` / ``yes`` / ``merge`` / ``1``;
+* ``manual``     – a row a reviewer ADDED to the CSV (``merge_id`` = "<section>: <variant> -> <canonical>",
+                   decision accepted) for a merge no rule proposes, e.g. an OCR variant "H. W. Wüst"
+                   → "Walter Wüst"; applied when both names exist in the run.
 
 The pipeline reads decisions from ``reviewed_csv`` (config) or, absent that,
 from the review file it writes itself, so adjudication is a matter of editing
@@ -72,9 +75,11 @@ class MergeRow:
 
 @dataclass
 class Decisions:
-    """Reviewer decisions keyed by merge_id (and by variant string as fallback)."""
+    """Reviewer decisions keyed by merge_id, i.e. by the exact
+    ``variant -> canonical`` pair. A decision never spills over to another
+    pair with the same variant: rejecting the candidate "Müller -> Arno Müller"
+    must not veto the automatic "Müller -> Adolf Müller"."""
     by_id: dict[str, str] = field(default_factory=dict)
-    by_variant: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def load(cls, path: Optional[Path | str]) -> "Decisions":
@@ -91,15 +96,35 @@ class Decisions:
                 if not dec:
                     continue
                 d.by_id[row.get("merge_id") or ""] = dec
-                key = f"{row.get('section','')}|{row.get('variant','')}"
-                d.by_variant[key] = dec
         return d
 
-    def applies(self, row: MergeRow) -> bool:
-        dec = self.by_id.get(row.merge_id) or self.by_variant.get(f"{row.section}|{row.variant}")
+    def applies(self, row: MergeRow, variant_aliases: Iterable[str] = (), canonical_aliases: Iterable[str] = ()) -> bool:
+        """``variant_aliases`` / ``canonical_aliases``: other spellings of the two
+        sides (cluster members) — a decision recorded under one of them (an
+        older canonical label, say) applies to this pair as well."""
+        dec = self.by_id.get(row.merge_id)
+        if dec is None and (variant_aliases or canonical_aliases):
+            for v in (row.variant, *variant_aliases):
+                for c in (row.canonical, *canonical_aliases):
+                    dec = self.by_id.get(f"{row.section}: {v} -> {c}")
+                    if dec is not None:
+                        break
+                if dec is not None:
+                    break
         if row.status == "auto":
             return dec not in REJECT
         return dec in ACCEPT
+
+    def manual(self, section: str) -> list[tuple[str, str]]:
+        """Accepted (variant, canonical) pairs of ``section`` present in the
+        decisions file — used for reviewer-added merges no rule proposed."""
+        out = []
+        prefix = f"{section}: "
+        for mid, dec in self.by_id.items():
+            if dec in ACCEPT and mid.startswith(prefix) and " -> " in mid:
+                variant, canonical = mid[len(prefix):].split(" -> ", 1)
+                out.append((variant.strip(), canonical.strip()))
+        return out
 
 
 def write_merge_rows(rows: Iterable[MergeRow], path: Path) -> Path:

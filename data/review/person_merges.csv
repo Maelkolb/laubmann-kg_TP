@@ -1,0 +1,1253 @@
+merge_id,section,variant,canonical,rule,status,n_variant,n_canonical,detail,decision,reason
+persons: A. A. Allen -> A.A. Allen,persons,A. A. Allen,A.A. Allen,same-key,auto,1,1,,,
+persons: A. Bachmann -> Alf. Bachmann,persons,A. Bachmann,Alf. Bachmann,dominant,auto,2,9,,,
+persons: Alf Bachmann -> Alf. Bachmann,persons,Alf Bachmann,Alf. Bachmann,same-key,auto,7,9,,,
+persons: Bachmann -> Alf. Bachmann,persons,Bachmann,Alf. Bachmann,dominant,auto,1,9,,,
+persons: Baumann -> A. Baumann,persons,Baumann,A. Baumann,surname-unique,auto,1,1,,,
+persons: Prof. Baumann -> A. Baumann,persons,Prof. Baumann,A. Baumann,same-key,auto,2,1,,,
+persons: Rektor A. Büchner -> A. Büchner,persons,Rektor A. Büchner,A. Büchner,same-key,auto,1,3,,,
+persons: Dürer -> A. DÜRER,persons,Dürer,A. DÜRER,surname-unique,auto,4,1,,,
+persons: A. Fischer -> Anton Fischer,persons,A. Fischer,Anton Fischer,initial-unique,auto,20,39,,,
+persons: Fischer -> Anton Fischer,persons,Fischer,Anton Fischer,dominant,auto,13,39,,,
+persons: A. Gauckler -> Anton Gauckler,persons,A. Gauckler,Anton Gauckler,initial-unique,auto,11,2,,,
+persons: A.GAUCKLER -> Anton Gauckler,persons,A.GAUCKLER,Anton Gauckler,same-key,auto,1,2,,,
+persons: GAUCKLER -> Anton Gauckler,persons,GAUCKLER,Anton Gauckler,surname-unique,auto,2,2,,,
+persons: Gauckler -> Anton Gauckler,persons,Gauckler,Anton Gauckler,same-key,auto,30,2,,,
+persons: Prof. Gauckler -> Anton Gauckler,persons,Prof. Gauckler,Anton Gauckler,same-key,auto,1,2,,,
+persons: Prof. A. Ghigi -> A. Ghigi,persons,Prof. A. Ghigi,A. Ghigi,same-key,auto,1,1,,,
+persons: Prof. Dr. A. Ghigi -> A. Ghigi,persons,Prof. Dr. A. Ghigi,A. Ghigi,same-key,auto,1,1,,,
+persons: Prof. Ghigi -> A. Ghigi,persons,Prof. Ghigi,A. Ghigi,surname-unique,auto,3,1,,,
+persons: Miller -> A. H. Miller,persons,Miller,A. H. Miller,surname-unique,auto,1,1,,,
+persons: A. K. Müller -> Ad. Kl. Müller,persons,A. K. Müller,Ad. Kl. Müller,dominant,auto,20,5,,,
+persons: K. Müller -> Ad. Kl. Müller,persons,K. Müller,Ad. Kl. Müller,dominant,auto,22,5,,,
+persons: A. Kögel -> Anton Kögel,persons,A. Kögel,Anton Kögel,initial-unique,auto,3,10,,,
+persons: A. L.-L. -> A.L.=L.,persons,A. L.-L.,A.L.=L.,same-key,auto,3,3,,,
+persons: Kain -> A. Leitner-Kain,persons,Kain,A. Leitner-Kain,surname-unique,auto,1,2,,,
+persons: A. Müller -> Adolf Müller,persons,A. Müller,Adolf Müller,dominant,auto,1653,3093,,,
+persons: Dr. Müller -> Adolf Müller,persons,Dr. Müller,Adolf Müller,dominant,auto,1,3093,,,
+persons: Hr. Müller -> Adolf Müller,persons,Hr. Müller,Adolf Müller,same-key,auto,2,3093,,,
+persons: Ing. Müller -> Adolf Müller,persons,Ing. Müller,Adolf Müller,same-key,auto,3,3093,,,
+persons: Müller -> Adolf Müller,persons,Müller,Adolf Müller,same-key,auto,100,3093,,,
+persons: Prof. Müller -> Adolf Müller,persons,Prof. Müller,Adolf Müller,same-key,auto,5,3093,,,
+persons: Dr. Portmann -> A. Portmann,persons,Dr. Portmann,A. Portmann,surname-unique,auto,1,1,,,
+persons: A. Seitz -> Dr. Alfred Seitz,persons,A. Seitz,Dr. Alfred Seitz,initial-unique,auto,2,2,,,
+persons: A. Wetmore -> Alexander Wetmore,persons,A. Wetmore,Alexander Wetmore,initial-unique,auto,3,1,,,
+persons: Dr. A. Wetmore -> Alexander Wetmore,persons,Dr. A. Wetmore,Alexander Wetmore,same-key,auto,2,1,,,
+persons: Wetmore -> Alexander Wetmore,persons,Wetmore,Alexander Wetmore,surname-unique,auto,2,1,,,
+persons: A. Würtz -> Andreas Würtz,persons,A. Würtz,Andreas Würtz,initial-unique,auto,2,2,,,
+persons: A. Wüstli -> Alex Wüstli,persons,A. Wüstli,Alex Wüstli,initial-unique,auto,2,4,,,
+persons: Finken -> A. finken,persons,Finken,A. finken,surname-unique,auto,1,1,,,
+persons: A. von Jordans -> Adolf von Jordans,persons,A. von Jordans,Adolf von Jordans,same-key,auto,2,5,,,
+persons: Dr. Adolf von Jordans -> Adolf von Jordans,persons,Dr. Adolf von Jordans,Adolf von Jordans,wikidata,auto,1,5,,,
+persons: Prof. Dr. Adolf von Jordans -> Adolf von Jordans,persons,Prof. Dr. Adolf von Jordans,Adolf von Jordans,same-key,auto,1,5,,,
+persons: Adolf -> Onkel Adolf,persons,Adolf,Onkel Adolf,surname-unique,auto,252,1,,,
+persons: Obermaier -> Adolf Obermaier,persons,Obermaier,Adolf Obermaier,surname-unique,auto,1,1,,,
+persons: Adolf von Gärtner -> Gärtner,persons,Adolf von Gärtner,Gärtner,same-key,auto,1,2,,,
+persons: Dr. Gärtner -> Gärtner,persons,Dr. Gärtner,Gärtner,surname-unique,auto,2,2,,,
+persons: Agner -> Georg Anton Agner,persons,Agner,Georg Anton Agner,surname-unique,auto,2,2,,,
+persons: Albrecht -> Prinz Albrecht,persons,Albrecht,Prinz Albrecht,dominant,auto,2,6,,,
+persons: P. Albrecht -> Prinz Albrecht,persons,P. Albrecht,Prinz Albrecht,initial-unique,auto,1,6,,,
+persons: Kahlert -> Alfred Kahlert,persons,Kahlert,Alfred Kahlert,surname-unique,auto,1,1,,,
+persons: Dr. Alfred Laubmann -> Alfred Laubmann,persons,Dr. Alfred Laubmann,Alfred Laubmann,same-key,auto,1,2,,,
+persons: Altner -> Helmut Altner,persons,Altner,Helmut Altner,surname-unique,auto,1,1,,,
+persons: H.Altner -> Helmut Altner,persons,H.Altner,Helmut Altner,initial-unique,auto,1,1,,,
+persons: Eber. -> Angela Eber,persons,Eber.,Angela Eber,surname-unique,auto,4,1,,,
+persons: Anni -> Geier-Anni,persons,Anni,Geier-Anni,surname-unique,auto,1,1,,,
+persons: Förster -> Anton Förster,persons,Förster,Anton Förster,surname-unique,auto,2,2,,,
+persons: Kögl -> Anton Kögl,persons,Kögl,Anton Kögl,surname-unique,auto,2,6,,,
+persons: Apotheker Lotte -> Lotte,persons,Apotheker Lotte,Lotte,same-key,auto,2,5,,,
+persons: Apotheker Vogel -> Hanns Vogel,persons,Apotheker Vogel,Hanns Vogel,surname-unique,auto,4,2,,,
+persons: Dr. Vogel -> Hanns Vogel,persons,Dr. Vogel,Hanns Vogel,same-key,auto,1,2,,,
+persons: H. Vogel -> Hanns Vogel,persons,H. Vogel,Hanns Vogel,initial-unique,auto,3,2,,,
+persons: Vogel -> Hanns Vogel,persons,Vogel,Hanns Vogel,same-key,auto,4,2,,,
+persons: Prof. Wagner -> Apotheker Wagner,persons,Prof. Wagner,Apotheker Wagner,same-key,auto,2,5,,,
+persons: Arbeiter -> Finninger Kraftwerk-Arbeiter,persons,Arbeiter,Finninger Kraftwerk-Arbeiter,surname-unique,auto,1,2,,,
+persons: Arnold -> Heinz Arnold,persons,Arnold,Heinz Arnold,dominant,auto,3,43,,,
+persons: Dr. Arnold -> Heinz Arnold,persons,Dr. Arnold,Heinz Arnold,same-key,auto,2,43,,,
+persons: H. Arnold -> Heinz Arnold,persons,H. Arnold,Heinz Arnold,dominant,auto,1,43,,,
+persons: Hr. Arnold -> Heinz Arnold,persons,Hr. Arnold,Heinz Arnold,same-key,auto,3,43,,,
+persons: Arty von Gontard -> v. Gontard,persons,Arty von Gontard,v. Gontard,initial-unique,auto,1,1,,,
+persons: Aug Müller -> Aug. Müller,persons,Aug Müller,Aug. Müller,same-key,auto,10,23,,,
+persons: Axel von Gartner -> Prof. Gartner,persons,Axel von Gartner,Prof. Gartner,surname-unique,auto,1,1,,,
+persons: Prof. B. Hoffmann -> B. Hoffmann,persons,Prof. B. Hoffmann,B. Hoffmann,same-key,auto,2,3,,,
+persons: Prof. Dr. B. Hoffmann -> B. Hoffmann,persons,Prof. Dr. B. Hoffmann,B. Hoffmann,same-key,auto,1,3,,,
+persons: BAUER -> Bauer,persons,BAUER,Bauer,same-key,auto,1,60,,,
+persons: Baron Bauer -> Bauer,persons,Baron Bauer,Bauer,same-key,auto,1,60,,,
+persons: Herr BAUER -> Bauer,persons,Herr BAUER,Bauer,same-key,auto,1,60,,,
+persons: Herr Bauer -> Bauer,persons,Herr Bauer,Bauer,same-key,auto,5,60,,,
+persons: BERNECKER -> Bernecker,persons,BERNECKER,Bernecker,same-key,auto,3,4,,,
+persons: BEZZEL -> Einhart Bezzel,persons,BEZZEL,Einhart Bezzel,dominant,auto,3,342,,,
+persons: Bezzel -> Einhart Bezzel,persons,Bezzel,Einhart Bezzel,same-key,auto,176,342,,,
+persons: Dr. Bezzel -> Einhart Bezzel,persons,Dr. Bezzel,Einhart Bezzel,same-key,auto,1,342,,,
+persons: Dr. E. Bezzel -> Einhart Bezzel,persons,Dr. E. Bezzel,Einhart Bezzel,dominant,auto,1,342,,,
+persons: E. Bezzel -> Einhart Bezzel,persons,E. Bezzel,Einhart Bezzel,same-key,auto,1656,342,,,
+persons: E. Bezzel? -> Einhart Bezzel,persons,E. Bezzel?,Einhart Bezzel,same-key,auto,14,342,,,
+persons: E.Bezzel -> Einhart Bezzel,persons,E.Bezzel,Einhart Bezzel,same-key,auto,1,342,,,
+persons: Bacmeister -> W. Bacmeister,persons,Bacmeister,W. Bacmeister,surname-unique,auto,8,16,,,
+persons: Balzac -> Flaine de Balzac,persons,Balzac,Flaine de Balzac,surname-unique,auto,1,1,,,
+persons: Bamberger -> Fritz Bamberger,persons,Bamberger,Fritz Bamberger,dominant,auto,20,23,,,
+persons: Benner -> Baron Benner,persons,Benner,Baron Benner,same-key,auto,2,9,,,
+persons: Baron Berlepsch -> Berlepsch,persons,Baron Berlepsch,Berlepsch,same-key,auto,1,1,,,
+persons: Baron Berner -> v. Berner,persons,Baron Berner,v. Berner,surname-unique,auto,15,1,,,
+persons: Baron von Berner -> v. Berner,persons,Baron von Berner,v. Berner,initial-unique,auto,7,1,,,
+persons: Berner -> v. Berner,persons,Berner,v. Berner,same-key,auto,3,1,,,
+persons: von Berner -> v. Berner,persons,von Berner,v. Berner,same-key,auto,1,1,,,
+persons: Baron von Besserer -> Baron Besserer,persons,Baron von Besserer,Baron Besserer,surname-unique,auto,5,21,,,
+persons: Baron von Beurer -> Baron Beurer,persons,Baron von Beurer,Baron Beurer,surname-unique,auto,1,6,,,
+persons: Beurer -> Baron Beurer,persons,Beurer,Baron Beurer,same-key,auto,1,6,,,
+persons: Baron Bodmann -> v. Bodmann,persons,Baron Bodmann,v. Bodmann,surname-unique,auto,1,1,,,
+persons: Baron von Bodmann -> v. Bodmann,persons,Baron von Bodmann,v. Bodmann,initial-unique,auto,1,1,,,
+persons: Baron Bonn -> Kira Bonn,persons,Baron Bonn,Kira Bonn,dominant,auto,2,7,,,
+persons: Bonn -> Kira Bonn,persons,Bonn,Kira Bonn,same-key,auto,4,7,,,
+persons: E. Graf von Freiberg -> Baron Freiberg,persons,E. Graf von Freiberg,Baron Freiberg,surname-unique,auto,1,3,,,
+persons: Baron Geyr -> Prof.Dr.Baron Geyr,persons,Baron Geyr,Prof.Dr.Baron Geyr,surname-unique,auto,1,1,,,
+persons: Geyr -> Prof.Dr.Baron Geyr,persons,Geyr,Prof.Dr.Baron Geyr,same-key,auto,1,1,,,
+persons: Prof. Dr. Baron Geyr -> Prof.Dr.Baron Geyr,persons,Prof. Dr. Baron Geyr,Prof.Dr.Baron Geyr,same-key,auto,1,1,,,
+persons: Prof. Geyr -> Prof.Dr.Baron Geyr,persons,Prof. Geyr,Prof.Dr.Baron Geyr,same-key,auto,1,1,,,
+persons: Baron Transehe -> Dr. Transehe,persons,Baron Transehe,Dr. Transehe,same-key,auto,1,1,,,
+persons: Bartl -> Bruno Bartl,persons,Bartl,Bruno Bartl,surname-unique,auto,1,2,,,
+persons: Friedrich -> Bau-Friedrich,persons,Friedrich,Bau-Friedrich,surname-unique,auto,7,3,,,
+persons: Friedrichs -> Bau-Friedrichs,persons,Friedrichs,Bau-Friedrichs,surname-unique,auto,1,1,,,
+persons: Beck -> G. Beck,persons,Beck,G. Beck,surname-unique,auto,4,3,,,
+persons: Dr. Beck -> G. Beck,persons,Dr. Beck,G. Beck,same-key,auto,2,3,,,
+persons: Bejohr -> Wolfgang Bejohr,persons,Bejohr,Wolfgang Bejohr,surname-unique,auto,1,6,,,
+persons: Berg -> Bengt Berg,persons,Berg,Bengt Berg,surname-unique,auto,1,1,,,
+persons: Beobachter -> ungenannter Beobachter,persons,Beobachter,ungenannter Beobachter,surname-unique,auto,4,2,,,
+persons: Beppel -> E. Beppel,persons,Beppel,E. Beppel,surname-unique,auto,1,43,,,
+persons: Herr Berchtold -> Berchtold,persons,Herr Berchtold,Berchtold,same-key,auto,2,3,,,
+persons: Herr Bergmann -> Bergmann,persons,Herr Bergmann,Bergmann,same-key,auto,2,4,,,
+persons: Bergmiller -> Fritz Bergmiller,persons,Bergmiller,Fritz Bergmiller,surname-unique,auto,2,2,,,
+persons: Berlioz -> J. Berlioz,persons,Berlioz,J. Berlioz,surname-unique,auto,2,2,,,
+persons: Dr Berlioz -> J. Berlioz,persons,Dr Berlioz,J. Berlioz,same-key,auto,1,2,,,
+persons: Dr. Berlioz -> J. Berlioz,persons,Dr. Berlioz,J. Berlioz,same-key,auto,1,2,,,
+persons: Prof. Berlioz -> J. Berlioz,persons,Prof. Berlioz,J. Berlioz,same-key,auto,1,2,,,
+persons: Prof. Dr. J. Berlioz -> J. Berlioz,persons,Prof. Dr. J. Berlioz,J. Berlioz,same-key,auto,1,2,,,
+persons: Hauptlehrer Bertel -> Bertel,persons,Hauptlehrer Bertel,Bertel,same-key,auto,2,2,,,
+persons: Beubner -> Günter Beubner,persons,Beubner,Günter Beubner,surname-unique,auto,3,4,,,
+persons: Bierl -> Hans Bierl,persons,Bierl,Hans Bierl,surname-unique,auto,4,2,,,
+persons: Birnaichner -> Franz Birnaichner,persons,Birnaichner,Franz Birnaichner,surname-unique,auto,2,2,,,
+persons: Blasius -> R. Blasius,persons,Blasius,R. Blasius,surname-unique,auto,1,1,,,
+persons: Bodenstein -> Günther Bodenstein,persons,Bodenstein,Günther Bodenstein,surname-unique,auto,1,4,,,
+persons: Dr G. Bodenstein -> Günther Bodenstein,persons,Dr G. Bodenstein,Günther Bodenstein,initial-unique,auto,4,4,,,
+persons: Dr. Bodenstein -> Günther Bodenstein,persons,Dr. Bodenstein,Günther Bodenstein,same-key,auto,1,4,,,
+persons: Dr. G. Bodenstein -> Günther Bodenstein,persons,Dr. G. Bodenstein,Günther Bodenstein,same-key,auto,61,4,,,
+persons: Dr. Günther Bodenstein -> Günther Bodenstein,persons,Dr. Günther Bodenstein,Günther Bodenstein,same-key,auto,3,4,,,
+persons: G. Bodenstein -> Günther Bodenstein,persons,G. Bodenstein,Günther Bodenstein,same-key,auto,23,4,,,
+persons: Bogdanovicz -> Dr. H. Bogdanovicz,persons,Bogdanovicz,Dr. H. Bogdanovicz,surname-unique,auto,6,20,,,
+persons: Dr. Bogdanovicz -> Dr. H. Bogdanovicz,persons,Dr. Bogdanovicz,Dr. H. Bogdanovicz,same-key,auto,65,20,,,
+persons: H. Bogdanovicz -> Dr. H. Bogdanovicz,persons,H. Bogdanovicz,Dr. H. Bogdanovicz,same-key,auto,4,20,,,
+persons: Bogdanowicz -> Helmut Bogdanowicz,persons,Bogdanowicz,Helmut Bogdanowicz,dominant,auto,12,20,,,
+persons: Dr Bogdanowicz -> Helmut Bogdanowicz,persons,Dr Bogdanowicz,Helmut Bogdanowicz,same-key,auto,24,20,,,
+persons: Dr. Bogdanowicz -> Helmut Bogdanowicz,persons,Dr. Bogdanowicz,Helmut Bogdanowicz,same-key,auto,25,20,,,
+persons: Dr. H. Bogdanowicz -> Helmut Bogdanowicz,persons,Dr. H. Bogdanowicz,Helmut Bogdanowicz,initial-unique,auto,2,20,,,
+persons: Prof. Bogdanowicz -> Helmut Bogdanowicz,persons,Prof. Bogdanowicz,Helmut Bogdanowicz,same-key,auto,107,20,,,
+persons: Bohmann -> Stud. Bohmann,persons,Bohmann,Stud. Bohmann,same-key,auto,2,8,,,
+persons: Dr. Bohmann -> Stud. Bohmann,persons,Dr. Bohmann,Stud. Bohmann,same-key,auto,3,8,,,
+persons: Bopp -> Hans Bopp,persons,Bopp,Hans Bopp,surname-unique,auto,14,2,,,
+persons: Präparator Bopp -> Hans Bopp,persons,Präparator Bopp,Hans Bopp,same-key,auto,6,2,,,
+persons: Klaus -> Bringer Klaus,persons,Klaus,Bringer Klaus,surname-unique,auto,2,1,,,
+persons: Herr Lenz -> Brüder Lenz,persons,Herr Lenz,Brüder Lenz,surname-unique,auto,2,1,,,
+persons: Lenz -> Brüder Lenz,persons,Lenz,Brüder Lenz,same-key,auto,3,1,,,
+persons: Buller -> Herbert Buller,persons,Buller,Herbert Buller,surname-unique,auto,1,1,,,
+persons: Burkart -> Emil Burkart,persons,Burkart,Emil Burkart,surname-unique,auto,2,2,,,
+persons: Inspektor Burkhardt -> Burkhardt,persons,Inspektor Burkhardt,Burkhardt,same-key,auto,16,16,,,
+persons: Böhm -> Dr. Anton Böhm,persons,Böhm,Dr. Anton Böhm,surname-unique,auto,1,1,,,
+persons: Bühler -> Hans Bühler,persons,Bühler,Hans Bühler,surname-unique,auto,1,15,,,
+persons: C.E. Hellmayr -> C. E. Hellmayr,persons,C.E. Hellmayr,C. E. Hellmayr,same-key,auto,3,47,,,
+persons: Dr. Hellmayr -> C. E. Hellmayr,persons,Dr. Hellmayr,C. E. Hellmayr,surname-unique,auto,1,47,,,
+persons: Hellmayr -> C. E. Hellmayr,persons,Hellmayr,C. E. Hellmayr,same-key,auto,18,47,,,
+persons: C. Lauter -> Carl Lauter,persons,C. Lauter,Carl Lauter,initial-unique,auto,1,1,,,
+persons: Steinmetz -> C. Steinmetz,persons,Steinmetz,C. Steinmetz,surname-unique,auto,2,4,,,
+persons: Zink -> Cand. G. Zink,persons,Zink,Cand. G. Zink,surname-unique,auto,1,2,,,
+persons: Dr. Kunk -> Cand. rer. nat. Kunk,persons,Dr. Kunk,Cand. rer. nat. Kunk,same-key,auto,2,3,,,
+persons: Dr. Carl Fischer -> Carl Fischer,persons,Dr. Carl Fischer,Carl Fischer,same-key,auto,2,5,,,
+persons: Carpenter -> Prof. G. D. Carpenter,persons,Carpenter,Prof. G. D. Carpenter,surname-unique,auto,1,1,,,
+persons: Chapin -> Dr James P. Chapin,persons,Chapin,Dr James P. Chapin,surname-unique,auto,1,1,,,
+persons: Dr. J. Chapin -> Dr James P. Chapin,persons,Dr. J. Chapin,Dr James P. Chapin,initial-unique,auto,1,1,,,
+persons: Ertz -> Chr. D. Ertz,persons,Ertz,Chr. D. Ertz,dominant,auto,2,29,,,
+persons: Fritz -> Chr. D. Fritz,persons,Fritz,Chr. D. Fritz,surname-unique,auto,17,11,,,
+persons: Chr.WALTHER -> Chr. Walther,persons,Chr.WALTHER,Chr. Walther,same-key,auto,1,5,,,
+persons: Schütz -> Christian Schütz,persons,Schütz,Christian Schütz,surname-unique,auto,5,1,,,
+persons: Seibold -> Christian Seibold,persons,Seibold,Christian Seibold,surname-unique,auto,8,5,,,
+persons: Hr. Walther -> Christian Walther,persons,Hr. Walther,Christian Walther,dominant,auto,2,51,,,
+persons: WALTHER -> Christian Walther,persons,WALTHER,Christian Walther,same-key,auto,2,51,,,
+persons: Walther -> Christian Walther,persons,Walther,Christian Walther,same-key,auto,30,51,,,
+persons: Corti -> Dr. Ulrich A. Corti,persons,Corti,Dr. Ulrich A. Corti,dominant,auto,1,5,,,
+persons: Ulrich A. Corti -> Dr. Ulrich A. Corti,persons,Ulrich A. Corti,Dr. Ulrich A. Corti,same-key,auto,1,5,,,
+persons: D. Amadon -> Dean Amadon,persons,D. Amadon,Dean Amadon,initial-unique,auto,1,1,,,
+persons: Herr Rethmeyer -> D. Rethmeyer,persons,Herr Rethmeyer,D. Rethmeyer,surname-unique,auto,7,1,,,
+persons: Rethmeyer -> D. Rethmeyer,persons,Rethmeyer,D. Rethmeyer,same-key,auto,2,1,,,
+persons: Dahlem -> Kunstmaler Dahlem,persons,Dahlem,Kunstmaler Dahlem,surname-unique,auto,2,4,,,
+persons: Dekan Hall -> Dr. W. Hall,persons,Dekan Hall,Dr. W. Hall,surname-unique,auto,1,1,,,
+persons: Delacour -> Jean Delacour,persons,Delacour,Jean Delacour,surname-unique,auto,1,3,,,
+persons: J. Delacour -> Jean Delacour,persons,J. Delacour,Jean Delacour,initial-unique,auto,1,3,,,
+persons: Depp -> Herr Depp,persons,Depp,Herr Depp,same-key,auto,1,2,,,
+persons: Dick -> K. Dick,persons,Dick,K. Dick,surname-unique,auto,3,2,,,
+persons: Diener -> M. Diener,persons,Diener,M. Diener,surname-unique,auto,3,3,,,
+persons: Dr. Diener -> M. Diener,persons,Dr. Diener,M. Diener,same-key,auto,2,3,,,
+persons: Herr Diener -> M. Diener,persons,Herr Diener,M. Diener,same-key,auto,6,3,,,
+persons: Dierer -> M. Dierer,persons,Dierer,M. Dierer,surname-unique,auto,5,4,,,
+persons: Dr. Burckhardt -> Dieter Burckhardt,persons,Dr. Burckhardt,Dieter Burckhardt,surname-unique,auto,2,1,,,
+persons: Herr Dietl -> Dietl,persons,Herr Dietl,Dietl,same-key,auto,2,4,,,
+persons: Dietrich -> F. Dietrich,persons,Dietrich,F. Dietrich,surname-unique,auto,2,14,,,
+persons: Dietz -> Dr. Dietz,persons,Dietz,Dr. Dietz,same-key,auto,1,4,,,
+persons: Inspektor Schacht -> Dipl. Gartenbau-Inspektor Schacht,persons,Inspektor Schacht,Dipl. Gartenbau-Inspektor Schacht,surname-unique,auto,6,2,,,
+persons: Schacht -> Dipl. Gartenbau-Inspektor Schacht,persons,Schacht,Dipl. Gartenbau-Inspektor Schacht,same-key,auto,2,2,,,
+persons: Direktor Heck -> Heinz Heck,persons,Direktor Heck,Heinz Heck,dominant,auto,2,3,,,
+persons: H. Heck -> Heinz Heck,persons,H. Heck,Heinz Heck,initial-unique,auto,2,3,,,
+persons: Heck -> Heinz Heck,persons,Heck,Heinz Heck,same-key,auto,2,3,,,
+persons: Direktor Ruß -> Neunzig-Ruß,persons,Direktor Ruß,Neunzig-Ruß,surname-unique,auto,1,1,,,
+persons: Direktor Schillinger -> Schillinger,persons,Direktor Schillinger,Schillinger,same-key,auto,4,6,,,
+persons: Dr. Schillinger -> Schillinger,persons,Dr. Schillinger,Schillinger,same-key,auto,5,6,,,
+persons: Förster Schillinger -> Schillinger,persons,Förster Schillinger,Schillinger,same-key,auto,1,6,,,
+persons: Herr Schillinger -> Schillinger,persons,Herr Schillinger,Schillinger,same-key,auto,2,6,,,
+persons: Dorf -> H. Dorf,persons,Dorf,H. Dorf,surname-unique,auto,1,1,,,
+persons: Heinz von Dort -> Dort,persons,Heinz von Dort,Dort,surname-unique,auto,29,1,,,
+persons: Dr Engel -> Dr Herbert Engel,persons,Dr Engel,Dr Herbert Engel,dominant,auto,49,82,,,
+persons: Dr. Engel -> Dr Herbert Engel,persons,Dr. Engel,Dr Herbert Engel,same-key,auto,158,82,,,
+persons: Dr. H. Engel -> Dr Herbert Engel,persons,Dr. H. Engel,Dr Herbert Engel,initial-unique,auto,5,82,,,
+persons: Dr. Herbert Engel -> Dr Herbert Engel,persons,Dr. Herbert Engel,Dr Herbert Engel,same-key,auto,30,82,,,
+persons: Engel -> Dr Herbert Engel,persons,Engel,Dr Herbert Engel,same-key,auto,10,82,,,
+persons: H Engel -> Dr Herbert Engel,persons,H Engel,Dr Herbert Engel,same-key,auto,10,82,,,
+persons: H. Engel -> Dr Herbert Engel,persons,H. Engel,Dr Herbert Engel,same-key,auto,80,82,,,
+persons: H. H. Engel -> Dr Herbert Engel,persons,H. H. Engel,Dr Herbert Engel,initial-unique,auto,1,82,,,
+persons: Herbert Engel -> Dr Herbert Engel,persons,Herbert Engel,Dr Herbert Engel,same-key,auto,14,82,,,
+persons: Herr Engel -> Dr Herbert Engel,persons,Herr Engel,Dr Herbert Engel,same-key,auto,2,82,,,
+persons: Hr Engel -> Dr Herbert Engel,persons,Hr Engel,Dr Herbert Engel,same-key,auto,9,82,,,
+persons: Hr. Engel -> Dr Herbert Engel,persons,Hr. Engel,Dr Herbert Engel,same-key,auto,4,82,,,
+persons: Dr Ernst Mayr -> Ernst Mayr,persons,Dr Ernst Mayr,Ernst Mayr,same-key,auto,1,1,,,
+persons: Dr. E. Mayr -> Ernst Mayr,persons,Dr. E. Mayr,Ernst Mayr,initial-unique,auto,2,1,,,
+persons: E. Mayr -> Ernst Mayr,persons,E. Mayr,Ernst Mayr,same-key,auto,2,1,,,
+persons: Prof. E. Mayr -> Ernst Mayr,persons,Prof. E. Mayr,Ernst Mayr,same-key,auto,1,1,,,
+persons: Dr Frank -> Frank,persons,Dr Frank,Frank,same-key,auto,1,4,,,
+persons: Dr. Frank -> Frank,persons,Dr. Frank,Frank,same-key,auto,4,4,,,
+persons: Herr Frank -> Frank,persons,Herr Frank,Frank,same-key,auto,2,4,,,
+persons: Dr G. C. A. Junge -> G. C. A. Junge,persons,Dr G. C. A. Junge,G. C. A. Junge,same-key,auto,1,1,,,
+persons: Dr. G. Junge -> G. C. A. Junge,persons,Dr. G. Junge,G. C. A. Junge,wikidata,auto,2,1,,,
+persons: Dr Ganger -> Dr. Ganger,persons,Dr Ganger,Dr. Ganger,same-key,auto,3,4,,,
+persons: Ganger -> Dr. Ganger,persons,Ganger,Dr. Ganger,same-key,auto,3,4,,,
+persons: Dr Gauger -> Dr. G. Gauger,persons,Dr Gauger,Dr. G. Gauger,surname-unique,auto,52,3,,,
+persons: Dr. Gauger -> Dr. G. Gauger,persons,Dr. Gauger,Dr. G. Gauger,same-key,auto,16,3,,,
+persons: Gauger -> Dr. G. Gauger,persons,Gauger,Dr. G. Gauger,same-key,auto,1,3,,,
+persons: Dr Gengler -> Dr J. Gengler,persons,Dr Gengler,Dr J. Gengler,dominant,auto,28,21,,,
+persons: Dr. G. Gengler -> Dr J. Gengler,persons,Dr. G. Gengler,Dr J. Gengler,same-key,auto,1,21,,,
+persons: Dr. Gengler -> Dr J. Gengler,persons,Dr. Gengler,Dr J. Gengler,surname-unique,auto,10,21,,,
+persons: Gengler -> Dr J. Gengler,persons,Gengler,Dr J. Gengler,same-key,auto,1,21,,,
+persons: Dr Georg Steinbacher -> Georg Steinbacher,persons,Dr Georg Steinbacher,Georg Steinbacher,same-key,auto,3,6,,,
+persons: Dr. G. Steinbacher -> Georg Steinbacher,persons,Dr. G. Steinbacher,Georg Steinbacher,initial-unique,auto,1,6,,,
+persons: G. Steinbacher -> Georg Steinbacher,persons,G. Steinbacher,Georg Steinbacher,same-key,auto,1,6,,,
+persons: Dr Hans Kummerloeve -> Dr. Hans Kumerloeve,persons,Dr Hans Kummerloeve,Dr. Hans Kumerloeve,wikidata,auto,1,30,,,
+persons: Dr. H. Kummerlöwe -> Dr. Hans Kumerloeve,persons,Dr. H. Kummerlöwe,Dr. Hans Kumerloeve,initial-unique,auto,2,30,,,
+persons: Dr. Kummerlöwe -> Dr. Hans Kumerloeve,persons,Dr. Kummerlöwe,Dr. Hans Kumerloeve,surname-unique,auto,2,30,,,
+persons: Hans Kummerlöwe -> Dr. Hans Kumerloeve,persons,Hans Kummerlöwe,Dr. Hans Kumerloeve,wikidata,auto,1,30,,,
+persons: Dr. H. Stadler -> Dr Hans Stadler,persons,Dr. H. Stadler,Dr Hans Stadler,initial-unique,auto,4,5,,,
+persons: Dr. Stadler -> Dr Hans Stadler,persons,Dr. Stadler,Dr Hans Stadler,surname-unique,auto,7,5,,,
+persons: Dr. med. Hans Stadler -> Dr Hans Stadler,persons,Dr. med. Hans Stadler,Dr Hans Stadler,same-key,auto,1,5,,,
+persons: Förster Stadler -> Dr Hans Stadler,persons,Förster Stadler,Dr Hans Stadler,same-key,auto,2,5,,,
+persons: Stadler -> Dr Hans Stadler,persons,Stadler,Dr Hans Stadler,same-key,auto,10,5,,,
+persons: Dr Heinroth -> Dr. O. Heinroth,persons,Dr Heinroth,Dr. O. Heinroth,surname-unique,auto,1,1,,,
+persons: Heinroth -> Dr. O. Heinroth,persons,Heinroth,Dr. O. Heinroth,same-key,auto,2,1,,,
+persons: Dr Jacobs -> Prof. Jacobs,persons,Dr Jacobs,Prof. Jacobs,same-key,auto,2,9,,,
+persons: Dr. Jacobs -> Prof. Jacobs,persons,Dr. Jacobs,Prof. Jacobs,same-key,auto,2,9,,,
+persons: Jacobs -> Prof. Jacobs,persons,Jacobs,Prof. Jacobs,same-key,auto,2,9,,,
+persons: Prof. Dr. Jacobs -> Prof. Jacobs,persons,Prof. Dr. Jacobs,Prof. Jacobs,same-key,auto,1,9,,,
+persons: Dr Kleiner -> Dr. A. Kleiner,persons,Dr Kleiner,Dr. A. Kleiner,surname-unique,auto,1,2,,,
+persons: Kleiner -> Dr. A. Kleiner,persons,Kleiner,Dr. A. Kleiner,same-key,auto,2,2,,,
+persons: Dr Mayer -> Mayer,persons,Dr Mayer,Mayer,same-key,auto,1,1,,,
+persons: Dr. Mayer -> Mayer,persons,Dr. Mayer,Mayer,same-key,auto,1,1,,,
+persons: Dr Parrot -> Parrot,persons,Dr Parrot,Parrot,same-key,auto,1,52,,,
+persons: Dr. Parrot -> Parrot,persons,Dr. Parrot,Parrot,same-key,auto,11,52,,,
+persons: Hr Parrot -> Parrot,persons,Hr Parrot,Parrot,same-key,auto,2,52,,,
+persons: Dr Renner -> K. Renner,persons,Dr Renner,K. Renner,dominant,auto,3,30,,,
+persons: Dr. Renner -> K. Renner,persons,Dr. Renner,K. Renner,surname-unique,auto,4,30,,,
+persons: Freund von Renner -> K. Renner,persons,Freund von Renner,K. Renner,same-key,auto,6,30,,,
+persons: Renner -> K. Renner,persons,Renner,K. Renner,same-key,auto,4,30,,,
+persons: Rudolf Tietze -> Dr Rudolf Tietze,persons,Rudolf Tietze,Dr Rudolf Tietze,same-key,auto,1,3,,,
+persons: Dr Sanger -> Werner Sanger,persons,Dr Sanger,Werner Sanger,surname-unique,auto,2,1,,,
+persons: Dr. Sanger -> Werner Sanger,persons,Dr. Sanger,Werner Sanger,same-key,auto,2,1,,,
+persons: Sanger -> Werner Sanger,persons,Sanger,Werner Sanger,same-key,auto,4,1,,,
+persons: Dr Schlich -> Schlich,persons,Dr Schlich,Schlich,same-key,auto,1,4,,,
+persons: Dr. Schlich -> Schlich,persons,Dr. Schlich,Schlich,same-key,auto,1,4,,,
+persons: Dr Sommerfeldt -> Dr. Sommerfeldt,persons,Dr Sommerfeldt,Dr. Sommerfeldt,same-key,auto,1,5,,,
+persons: Dr Steinfatt -> O. Steinfatt,persons,Dr Steinfatt,O. Steinfatt,surname-unique,auto,1,1,,,
+persons: Dr. O. Steinfatt -> O. Steinfatt,persons,Dr. O. Steinfatt,O. Steinfatt,same-key,auto,1,1,,,
+persons: Dr Thienemann -> Professor Dr. Thienemann,persons,Dr Thienemann,Professor Dr. Thienemann,surname-unique,auto,1,1,,,
+persons: Thienemann -> Professor Dr. Thienemann,persons,Thienemann,Professor Dr. Thienemann,same-key,auto,1,1,,,
+persons: Dr W. Meise -> Dr.W. Meise,persons,Dr W. Meise,Dr.W. Meise,same-key,auto,1,1,,,
+persons: Dr. Meise -> Dr.W. Meise,persons,Dr. Meise,Dr.W. Meise,dominant,auto,1,1,,,
+persons: Dr. W. Meise -> Dr.W. Meise,persons,Dr. W. Meise,Dr.W. Meise,same-key,auto,4,1,,,
+persons: Meise -> Dr.W. Meise,persons,Meise,Dr.W. Meise,surname-unique,auto,2,1,,,
+persons: Dr W. Wüst -> Walter Wüst,persons,Dr W. Wüst,Walter Wüst,dominant,auto,1,749,,,
+persons: Dr. H. Wüst -> Walter Wüst,persons,Dr. H. Wüst,Walter Wüst,same-key,auto,19,749,,,
+persons: Dr. W. Wüst -> Walter Wüst,persons,Dr. W. Wüst,Walter Wüst,same-key,auto,31,749,,,
+persons: Dr. Walter Wüst -> Walter Wüst,persons,Dr. Walter Wüst,Walter Wüst,same-key,auto,31,749,,,
+persons: Er Wüst -> Walter Wüst,persons,Er Wüst,Walter Wüst,manual,auto,8,749,,,
+persons: Er. Wüst -> Walter Wüst,persons,Er. Wüst,Walter Wüst,same-key,auto,3,749,,,
+persons: F. H. Wüst -> Walter Wüst,persons,F. H. Wüst,Walter Wüst,manual,auto,5,749,,,
+persons: F. W. Wüst -> Walter Wüst,persons,F. W. Wüst,Walter Wüst,manual,auto,34,749,,,
+persons: F.W. Wüst -> Walter Wüst,persons,F.W. Wüst,Walter Wüst,same-key,auto,3,749,,,
+persons: H. W. Wüst -> Walter Wüst,persons,H. W. Wüst,Walter Wüst,manual,auto,70,749,,,
+persons: H. Wust -> Walter Wüst,persons,H. Wust,Walter Wüst,manual,auto,37,749,,,
+persons: H. Wüst -> Walter Wüst,persons,H. Wüst,Walter Wüst,manual,auto,405,749,,,
+persons: H. Wüst? -> Walter Wüst,persons,H. Wüst?,Walter Wüst,same-key,auto,15,749,,,
+persons: H.W. Wüst -> Walter Wüst,persons,H.W. Wüst,Walter Wüst,same-key,auto,13,749,,,
+persons: Hr H. Wüst -> Walter Wüst,persons,Hr H. Wüst,Walter Wüst,same-key,auto,5,749,,,
+persons: W. H. Wüst -> Walter Wüst,persons,W. H. Wüst,Walter Wüst,same-key,auto,1,749,,,
+persons: W. Wüst -> Walter Wüst,persons,W. Wüst,Walter Wüst,same-key,auto,990,749,,,
+persons: W.H. Wüst -> Walter Wüst,persons,W.H. Wüst,Walter Wüst,manual,auto,5,749,,,
+persons: Dr Wüst -> Wüst,persons,Dr Wüst,Wüst,same-key,auto,47,471,,,
+persons: Dr. Wüst -> Wüst,persons,Dr. Wüst,Wüst,same-key,auto,296,471,,,
+persons: Herr Wüst -> Wüst,persons,Herr Wüst,Wüst,same-key,auto,13,471,,,
+persons: Hr Wüst -> Wüst,persons,Hr Wüst,Wüst,same-key,auto,18,471,,,
+persons: Hr. Wüst -> Wüst,persons,Hr. Wüst,Wüst,same-key,auto,10,471,,,
+persons: Wüst? -> Wüst,persons,Wüst?,Wüst,same-key,auto,1,471,,,
+persons: cand. Wüst -> Wüst,persons,cand. Wüst,Wüst,same-key,auto,6,471,,,
+persons: cand. phil. Wüst -> Wüst,persons,cand. phil. Wüst,Wüst,same-key,auto,10,471,,,
+persons: Schifferli -> Dr. A. Schifferli,persons,Schifferli,Dr. A. Schifferli,surname-unique,auto,2,1,,,
+persons: Rensch -> Dr. B. Rensch,persons,Rensch,Dr. B. Rensch,surname-unique,auto,1,1,,,
+persons: Geheimrat Bosch -> Dr. Bosch,persons,Geheimrat Bosch,Dr. Bosch,same-key,auto,1,1,,,
+persons: Zimmermann -> Dr. D. Zimmermann,persons,Zimmermann,Dr. D. Zimmermann,surname-unique,auto,1,1,,,
+persons: Dr. Diebach -> Walter Diebach,persons,Dr. Diebach,Walter Diebach,surname-unique,auto,1,2,,,
+persons: Hartert -> Dr. E. Hartert,persons,Hartert,Dr. E. Hartert,surname-unique,auto,5,1,,,
+persons: Dr. E. Kattinger -> E. Kattinger,persons,Dr. E. Kattinger,E. Kattinger,same-key,auto,1,2,,,
+persons: Dr. E. Merikallio -> E. Merikallio,persons,Dr. E. Merikallio,E. Merikallio,same-key,auto,1,1,,,
+persons: Merikallio -> E. Merikallio,persons,Merikallio,E. Merikallio,surname-unique,auto,1,1,,,
+persons: Dr. Moltoni -> Dr. E. Moltoni,persons,Dr. Moltoni,Dr. E. Moltoni,surname-unique,auto,1,1,,,
+persons: Dr. E. Schüz -> Ernst Schüz,persons,Dr. E. Schüz,Ernst Schüz,initial-unique,auto,5,1,,,
+persons: Dr. Schüz -> Ernst Schüz,persons,Dr. Schüz,Ernst Schüz,dominant,auto,6,1,,,
+persons: E. Schüz -> Ernst Schüz,persons,E. Schüz,Ernst Schüz,same-key,auto,4,1,,,
+persons: Prof. Dr. Schüz -> Ernst Schüz,persons,Prof. Dr. Schüz,Ernst Schüz,same-key,auto,1,1,,,
+persons: Prof. Schüz -> Ernst Schüz,persons,Prof. Schüz,Ernst Schüz,same-key,auto,1,1,,,
+persons: Schüz -> Ernst Schüz,persons,Schüz,Ernst Schüz,same-key,auto,2,1,,,
+persons: Dr. E. Sommerfeld -> Eckart Sommerfeld,persons,Dr. E. Sommerfeld,Eckart Sommerfeld,initial-unique,auto,3,20,,,
+persons: Dr. Sommerfeld -> Eckart Sommerfeld,persons,Dr. Sommerfeld,Eckart Sommerfeld,dominant,auto,3,20,,,
+persons: E. Sommerfeld -> Eckart Sommerfeld,persons,E. Sommerfeld,Eckart Sommerfeld,same-key,auto,35,20,,,
+persons: Hr Sommerfeld -> Eckart Sommerfeld,persons,Hr Sommerfeld,Eckart Sommerfeld,same-key,auto,2,20,,,
+persons: Sommerfeld -> Eckart Sommerfeld,persons,Sommerfeld,Eckart Sommerfeld,same-key,auto,16,20,,,
+persons: Dr. Sonnenschein -> Dr. E. Sonnenschein,persons,Dr. Sonnenschein,Dr. E. Sonnenschein,surname-unique,auto,1,1,,,
+persons: Dr. E. Sutter -> E. Sutter,persons,Dr. E. Sutter,E. Sutter,same-key,auto,1,2,,,
+persons: Dr. Egerer -> RUDOLF EGERER,persons,Dr. Egerer,RUDOLF EGERER,surname-unique,auto,2,2,,,
+persons: Dr. Egger -> Inge Egger,persons,Dr. Egger,Inge Egger,surname-unique,auto,1,1,,,
+persons: E. Engel -> Dr. Erich Engel,persons,E. Engel,Dr. Erich Engel,initial-unique,auto,6,2,,,
+persons: Dr. Ertl -> E. F. Ertl,persons,Dr. Ertl,E. F. Ertl,surname-unique,auto,2,1,,,
+persons: Ertl -> E. F. Ertl,persons,Ertl,E. F. Ertl,same-key,auto,2,1,,,
+persons: Dr. Flückmann -> v. Flückmann,persons,Dr. Flückmann,v. Flückmann,surname-unique,auto,2,1,,,
+persons: Dr. Fr. -> Fr.,persons,Dr. Fr.,Fr.,same-key,auto,1,1,,,
+persons: Dr. Franz -> Franz,persons,Dr. Franz,Franz,same-key,auto,3,6,,,
+persons: Franz [?] -> Franz,persons,Franz [?],Franz,same-key,auto,2,6,,,
+persons: Hr Franz -> Franz,persons,Hr Franz,Franz,same-key,auto,2,6,,,
+persons: Revierförster Franz -> Franz,persons,Revierförster Franz,Franz,same-key,auto,2,6,,,
+persons: Franz Uhl -> Dr. Franz Uhl,persons,Franz Uhl,Dr. Franz Uhl,same-key,auto,5,12,,,
+persons: Dr. Fratz -> Prof. Fratz,persons,Dr. Fratz,Prof. Fratz,same-key,auto,1,3,,,
+persons: Fratz -> Prof. Fratz,persons,Fratz,Prof. Fratz,same-key,auto,2,3,,,
+persons: Dr. Frickhing -> H. Frickhing,persons,Dr. Frickhing,H. Frickhing,surname-unique,auto,1,1,,,
+persons: Dr. Frickhinger -> Frickhinger,persons,Dr. Frickhinger,Frickhinger,same-key,auto,1,2,,,
+persons: Herr Frickhinger -> Frickhinger,persons,Herr Frickhinger,Frickhinger,same-key,auto,1,2,,,
+persons: Dr. G. (Engler) -> Dr. G. (Engler,persons,Dr. G. (Engler),Dr. G. (Engler,same-key,auto,1,3,,,
+persons: Dr. G. Diesselhorst -> Dr. Gert Diesselhorst,persons,Dr. G. Diesselhorst,Dr. Gert Diesselhorst,initial-unique,auto,5,9,,,
+persons: G. Diesselhorst -> Dr. Gert Diesselhorst,persons,G. Diesselhorst,Dr. Gert Diesselhorst,same-key,auto,2,9,,,
+persons: Prof. Kietz -> Dr. G. Kietz,persons,Prof. Kietz,Dr. G. Kietz,surname-unique,auto,2,5,,,
+persons: Dr. Gebhardt -> Erwin Gebhardt,persons,Dr. Gebhardt,Erwin Gebhardt,dominant,auto,2,11,,,
+persons: E. Gebhardt -> Erwin Gebhardt,persons,E. Gebhardt,Erwin Gebhardt,initial-unique,auto,33,11,,,
+persons: Gebhardt -> Erwin Gebhardt,persons,Gebhardt,Erwin Gebhardt,same-key,auto,3,11,,,
+persons: Dr. Gert Franz -> Gert Franz,persons,Dr. Gert Franz,Gert Franz,same-key,auto,2,6,,,
+persons: Dr. Goebbels -> Prof. Dr Georg Goebbels,persons,Dr. Goebbels,Prof. Dr Georg Goebbels,surname-unique,auto,1,1,,,
+persons: Göbbels -> Prof. Dr Georg Goebbels,persons,Göbbels,Prof. Dr Georg Goebbels,same-key,auto,1,1,,,
+persons: Graf Gyldenstolpe -> Dr. Graf N. Gyldenstolpe,persons,Graf Gyldenstolpe,Dr. Graf N. Gyldenstolpe,surname-unique,auto,1,1,,,
+persons: Dr. Grigg -> Grigg,persons,Dr. Grigg,Grigg,same-key,auto,1,1,,,
+persons: Dr. H. Dathe -> Heinrich Dathe,persons,Dr. H. Dathe,Heinrich Dathe,initial-unique,auto,1,1,,,
+persons: Dr. H. Frieling -> Heinrich Frieling,persons,Dr. H. Frieling,Heinrich Frieling,initial-unique,auto,2,1,,,
+persons: Dr. H. Hirt -> H. Hirt,persons,Dr. H. Hirt,H. Hirt,same-key,auto,5,39,,,
+persons: Dr. H. Johansen -> Herrn Johansen,persons,Dr. H. Johansen,Herrn Johansen,initial-unique,auto,1,1,,,
+persons: Johansen -> Herrn Johansen,persons,Johansen,Herrn Johansen,surname-unique,auto,1,1,,,
+persons: Dr. H. Kust -> H. Kust,persons,Dr. H. Kust,H. Kust,same-key,auto,1,14,,,
+persons: Dr. Münch -> Dr. H. Münch,persons,Dr. Münch,Dr. H. Münch,dominant,auto,2,11,,,
+persons: Münch -> Dr. H. Münch,persons,Münch,Dr. H. Münch,same-key,auto,3,11,,,
+persons: Dr. H. Rust -> H. Rust,persons,Dr. H. Rust,H. Rust,same-key,auto,2,3,,,
+persons: Dr. H. Scharnke -> Hans Scharnke,persons,Dr. H. Scharnke,Hans Scharnke,initial-unique,auto,1,1,,,
+persons: Dr. Scharnke -> Hans Scharnke,persons,Dr. Scharnke,Hans Scharnke,surname-unique,auto,2,1,,,
+persons: Dr. SCHULTE -> Dr. H. Schulte,persons,Dr. SCHULTE,Dr. H. Schulte,surname-unique,auto,1,2,,,
+persons: Dr. H. Weigold -> Dr. Hugo Weigold,persons,Dr. H. Weigold,Dr. Hugo Weigold,wikidata,auto,2,12,,,
+persons: Hr Haenel -> Dr. Haenel,persons,Hr Haenel,Dr. Haenel,same-key,auto,1,2,,,
+persons: Dr. Hagemann -> Hagemann,persons,Dr. Hagemann,Hagemann,same-key,auto,1,1,,,
+persons: Dr. Heinz Remold -> Heinz Remold,persons,Dr. Heinz Remold,Heinz Remold,same-key,auto,1,702,,,
+persons: H. Remold -> Heinz Remold,persons,H. Remold,Heinz Remold,initial-unique,auto,212,702,,,
+persons: H.REMOLD -> Heinz Remold,persons,H.REMOLD,Heinz Remold,same-key,auto,1,702,,,
+persons: HEINZ REMOLD -> Heinz Remold,persons,HEINZ REMOLD,Heinz Remold,same-key,auto,2,702,,,
+persons: Heinz REMOLD -> Heinz Remold,persons,Heinz REMOLD,Heinz Remold,same-key,auto,2,702,,,
+persons: REMOLD -> Heinz Remold,persons,REMOLD,Heinz Remold,dominant,auto,45,702,,,
+persons: Remold -> Heinz Remold,persons,Remold,Heinz Remold,same-key,auto,82,702,,,
+persons: Hermann -> Dr. Hermann,persons,Hermann,Dr. Hermann,same-key,auto,2,3,,,
+persons: Hirt -> Dr. Hirt,persons,Hirt,Dr. Hirt,same-key,auto,10,16,,,
+persons: Dr. Hoffmann -> Hoffmann,persons,Dr. Hoffmann,Hoffmann,same-key,auto,4,6,,,
+persons: Dr. Hofmann -> Joachim Hofmann,persons,Dr. Hofmann,Joachim Hofmann,dominant,auto,1,16,,,
+persons: J. M. Harrison -> Dr. J. M. Harrison,persons,J. M. Harrison,Dr. J. M. Harrison,same-key,auto,1,2,,,
+persons: Rasch -> Dr. J. M. Rasch,persons,Rasch,Dr. J. M. Rasch,surname-unique,auto,2,1,,,
+persons: Dr. Junge -> Junge,persons,Dr. Junge,Junge,same-key,auto,1,1,,,
+persons: K. Engel -> Dr. K. Engel,persons,K. Engel,Dr. K. Engel,same-key,auto,3,4,,,
+persons: Dr. K. Lorenz -> Prof. Konrad Lorenz,persons,Dr. K. Lorenz,Prof. Konrad Lorenz,initial-unique,auto,1,1,,,
+persons: K. Lorenz -> Prof. Konrad Lorenz,persons,K. Lorenz,Prof. Konrad Lorenz,same-key,auto,1,1,,,
+persons: Lorenz -> Prof. Konrad Lorenz,persons,Lorenz,Prof. Konrad Lorenz,surname-unique,auto,2,1,,,
+persons: Dr. K. Voous -> K. H. Voous,persons,Dr. K. Voous,K. H. Voous,wikidata,auto,1,1,,,
+persons: Prof. Kahmann -> Dr. Kahmann,persons,Prof. Kahmann,Dr. Kahmann,same-key,auto,1,2,,,
+persons: Dr. Karl Haenel -> Karl Haenel,persons,Dr. Karl Haenel,Karl Haenel,same-key,auto,1,1,,,
+persons: Dr. Keil -> Keil,persons,Dr. Keil,Keil,same-key,auto,1,8,,,
+persons: Dr. Kiefer -> Michael Kiefer,persons,Dr. Kiefer,Michael Kiefer,dominant,auto,2,84,,,
+persons: Kiefer -> Michael Kiefer,persons,Kiefer,Michael Kiefer,same-key,auto,69,84,,,
+persons: M. Kiefer -> Michael Kiefer,persons,M. Kiefer,Michael Kiefer,dominant,auto,224,84,,,
+persons: Dr. Kimmelhorst -> H. Kimmelhorst,persons,Dr. Kimmelhorst,H. Kimmelhorst,surname-unique,auto,2,1,,,
+persons: Dr. Kleinschmidt -> Kleinschmidt,persons,Dr. Kleinschmidt,Kleinschmidt,same-key,auto,3,8,,,
+persons: Dr. Krauß -> Krauß,persons,Dr. Krauß,Krauß,same-key,auto,2,2,,,
+persons: Dr. Kuck -> Walter Kuck,persons,Dr. Kuck,Walter Kuck,surname-unique,auto,2,1,,,
+persons: W. Kuck -> Walter Kuck,persons,W. Kuck,Walter Kuck,initial-unique,auto,2,1,,,
+persons: Dr. Kuhk -> R. Kuhk,persons,Dr. Kuhk,R. Kuhk,surname-unique,auto,1,1,,,
+persons: Dr. R. Kuhk -> R. Kuhk,persons,Dr. R. Kuhk,R. Kuhk,same-key,auto,1,1,,,
+persons: Dr. Kunze -> O. Kunze,persons,Dr. Kunze,O. Kunze,surname-unique,auto,1,2,,,
+persons: Forstmeister Kunze -> O. Kunze,persons,Forstmeister Kunze,O. Kunze,same-key,auto,1,2,,,
+persons: Kunze -> O. Kunze,persons,Kunze,O. Kunze,same-key,auto,4,2,,,
+persons: Dr. König -> König,persons,Dr. König,König,same-key,auto,2,2,,,
+persons: Dr. Kühk -> R. Kühk,persons,Dr. Kühk,R. Kühk,surname-unique,auto,1,1,,,
+persons: Dr. Kühlhorn -> Kühlhorn,persons,Dr. Kühlhorn,Kühlhorn,same-key,auto,4,4,,,
+persons: Stud. Kühlhorn -> Kühlhorn,persons,Stud. Kühlhorn,Kühlhorn,same-key,auto,2,4,,,
+persons: L. -> Dr. L.,persons,L.,Dr. L.,same-key,auto,1,3,,,
+persons: Dr. Lanker -> Karl Lanker,persons,Dr. Lanker,Karl Lanker,surname-unique,auto,3,5,,,
+persons: K. Lanker -> Karl Lanker,persons,K. Lanker,Karl Lanker,initial-unique,auto,5,5,,,
+persons: Lanker -> Karl Lanker,persons,Lanker,Karl Lanker,same-key,auto,13,5,,,
+persons: Dr. Laubmann -> Laubmann,persons,Dr. Laubmann,Laubmann,same-key,auto,1,1,,,
+persons: Dr. Leber -> Leber,persons,Dr. Leber,Leber,same-key,auto,2,6,,,
+persons: Dr. Lindner -> Georg Lindner,persons,Dr. Lindner,Georg Lindner,surname-unique,auto,2,2,,,
+persons: Dr. Lutz -> Lutz,persons,Dr. Lutz,Lutz,same-key,auto,3,8,,,
+persons: Sassi -> Dr. M. Sassi,persons,Sassi,Dr. M. Sassi,surname-unique,auto,6,1,,,
+persons: Dr. Makatsch -> Dr. W. Makatsch,persons,Dr. Makatsch,Dr. W. Makatsch,surname-unique,auto,1,1,,,
+persons: Makatsch -> Dr. W. Makatsch,persons,Makatsch,Dr. W. Makatsch,same-key,auto,2,1,,,
+persons: Dr. Mang -> Mang,persons,Dr. Mang,Mang,same-key,auto,1,1,,,
+persons: Martin -> Dr. Martin,persons,Martin,Dr. Martin,same-key,auto,2,3,,,
+persons: Dr. Meyer -> Lehrer Meyer,persons,Dr. Meyer,Lehrer Meyer,same-key,auto,1,2,,,
+persons: Dr. Neubaur -> Dr. NEUBAUR,persons,Dr. Neubaur,Dr. NEUBAUR,same-key,auto,2,2,,,
+persons: Förster Neubauer -> Dr. Neubauer,persons,Förster Neubauer,Dr. Neubauer,same-key,auto,1,2,,,
+persons: Dr. O. Kleinschmidt -> Otto Kleinschmidt,persons,Dr. O. Kleinschmidt,Otto Kleinschmidt,initial-unique,auto,1,1,,,
+persons: O. Kleinschmidt -> Otto Kleinschmidt,persons,O. Kleinschmidt,Otto Kleinschmidt,same-key,auto,1,1,,,
+persons: Dr. Völker -> Dr. O. Völker,persons,Dr. Völker,Dr. O. Völker,surname-unique,auto,1,1,,,
+persons: Dr. Otto von Frisch -> OTTO v. FRISCH,persons,Dr. Otto von Frisch,OTTO v. FRISCH,wikidata,auto,2,1,,,
+persons: O. v. Frisch -> OTTO v. FRISCH,persons,O. v. Frisch,OTTO v. FRISCH,initial-unique,auto,1,1,,,
+persons: Otto v. Frisch -> OTTO v. FRISCH,persons,Otto v. Frisch,OTTO v. FRISCH,same-key,auto,1,1,,,
+persons: Otto von Frisch -> OTTO v. FRISCH,persons,Otto von Frisch,OTTO v. FRISCH,same-key,auto,5,1,,,
+persons: Dr. Pateff -> P. Pateff,persons,Dr. Pateff,P. Pateff,surname-unique,auto,1,1,,,
+persons: Dr. Pontus Palmgren -> Pontus Palmgren,persons,Dr. Pontus Palmgren,Pontus Palmgren,same-key,auto,1,1,,,
+persons: R. Hoffmann -> Dr. R. Hoffmann,persons,R. Hoffmann,Dr. R. Hoffmann,same-key,auto,1,11,,,
+persons: Dr. Rau -> Rau,persons,Dr. Rau,Rau,same-key,auto,2,2,,,
+persons: Dr. Reichel -> Reichel,persons,Dr. Reichel,Reichel,same-key,auto,1,1,,,
+persons: Dr. Rothmeyer -> Hermann Rothmeyer,persons,Dr. Rothmeyer,Hermann Rothmeyer,surname-unique,auto,1,2,,,
+persons: Dr. Rück -> Rück,persons,Dr. Rück,Rück,same-key,auto,1,8,,,
+persons: Dr. Salomonsen -> Salomonsen,persons,Dr. Salomonsen,Salomonsen,same-key,auto,1,2,,,
+persons: Prof. Salomonsen -> Salomonsen,persons,Prof. Salomonsen,Salomonsen,same-key,auto,1,2,,,
+persons: Dr. Schmidt -> Schmidt,persons,Dr. Schmidt,Schmidt,same-key,auto,3,6,,,
+persons: Dr. Schneider -> Schneider,persons,Dr. Schneider,Schneider,same-key,auto,1,5,,,
+persons: Hr Schneider -> Schneider,persons,Hr Schneider,Schneider,same-key,auto,1,5,,,
+persons: Dr. Schnetter -> Wolfgang Schnetter,persons,Dr. Schnetter,Wolfgang Schnetter,surname-unique,auto,1,1,,,
+persons: Hr Sellmayr -> Dr. Sellmayr,persons,Hr Sellmayr,Dr. Sellmayr,same-key,auto,2,4,,,
+persons: Dr. Senger -> Dr. W. Senger,persons,Dr. Senger,Dr. W. Senger,surname-unique,auto,17,1,,,
+persons: Senger -> Dr. W. Senger,persons,Senger,Dr. W. Senger,same-key,auto,4,1,,,
+persons: Dr. Sick -> Sick,persons,Dr. Sick,Sick,same-key,auto,1,1,,,
+persons: Knecht -> Dr. Sigrid Knecht,persons,Knecht,Dr. Sigrid Knecht,surname-unique,auto,1,2,,,
+persons: Dr. Springer -> Springer,persons,Dr. Springer,Springer,same-key,auto,2,8,,,
+persons: Prof. Stange -> Dr. Stange,persons,Prof. Stange,Dr. Stange,same-key,auto,1,2,,,
+persons: Dr. Statler -> Ludwig Statler,persons,Dr. Statler,Ludwig Statler,surname-unique,auto,1,2,,,
+persons: Statler -> Ludwig Statler,persons,Statler,Ludwig Statler,same-key,auto,1,2,,,
+persons: Dr. Stein -> Stein,persons,Dr. Stein,Stein,same-key,auto,1,5,,,
+persons: Dr. Steinbacher -> Steinbacher,persons,Dr. Steinbacher,Steinbacher,same-key,auto,4,5,,,
+persons: Prof. Steinbacher -> Steinbacher,persons,Prof. Steinbacher,Steinbacher,same-key,auto,1,5,,,
+persons: Strauss -> Dr. Strauß,persons,Strauss,Dr. Strauß,same-key,auto,1,4,,,
+persons: Strauß -> Dr. Strauß,persons,Strauß,Dr. Strauß,same-key,auto,3,4,,,
+persons: Dr. Stresemann -> E. Stresemann,persons,Dr. Stresemann,E. Stresemann,surname-unique,auto,3,7,,,
+persons: Prof. Dr. E. Stresemann -> E. Stresemann,persons,Prof. Dr. E. Stresemann,E. Stresemann,same-key,auto,2,7,,,
+persons: Prof. Dr. Stresemann -> E. Stresemann,persons,Prof. Dr. Stresemann,E. Stresemann,same-key,auto,1,7,,,
+persons: Prof. E. Stresemann -> E. Stresemann,persons,Prof. E. Stresemann,E. Stresemann,same-key,auto,1,7,,,
+persons: Prof. Stresemann -> E. Stresemann,persons,Prof. Stresemann,E. Stresemann,same-key,auto,2,7,,,
+persons: Stresemann -> E. Stresemann,persons,Stresemann,E. Stresemann,same-key,auto,31,7,,,
+persons: Dr. Tratz -> Tratz,persons,Dr. Tratz,Tratz,same-key,auto,1,14,,,
+persons: Prof. Dr. Tratz -> Tratz,persons,Prof. Dr. Tratz,Tratz,same-key,auto,2,14,,,
+persons: Prof. Tratz -> Tratz,persons,Prof. Tratz,Tratz,same-key,auto,2,14,,,
+persons: Frhr. Uhl -> Dr. Uhl,persons,Frhr. Uhl,Dr. Uhl,same-key,auto,6,13,,,
+persons: Hr. Uhl -> Dr. Uhl,persons,Hr. Uhl,Dr. Uhl,same-key,auto,2,13,,,
+persons: Prof. Uhl -> Dr. Uhl,persons,Prof. Uhl,Dr. Uhl,same-key,auto,5,13,,,
+persons: Studienrat Uhl -> Dr. Uhl,persons,Studienrat Uhl,Dr. Uhl,same-key,auto,2,13,,,
+persons: Uhl -> Dr. Uhl,persons,Uhl,Dr. Uhl,same-key,auto,1,13,,,
+persons: Dr. Unger -> Herr Unger,persons,Dr. Unger,Herr Unger,same-key,auto,1,2,,,
+persons: V. Wüst -> Dr. V. Wüst,persons,V. Wüst,Dr. V. Wüst,same-key,auto,1,2,,,
+persons: Dr. W. Götz -> Wilh. H. J. Götz,persons,Dr. W. Götz,Wilh. H. J. Götz,wikidata,auto,1,3,,,
+persons: Dr. W. Wundt -> W. Wundt,persons,Dr. W. Wundt,W. Wundt,same-key,auto,1,2,,,
+persons: Wundt -> W. Wundt,persons,Wundt,W. Wundt,surname-unique,auto,1,2,,,
+persons: Dr. Walde -> K. Walde,persons,Dr. Walde,K. Walde,surname-unique,auto,1,2,,,
+persons: Dr. Walter Müller -> Walter Müller,persons,Dr. Walter Müller,Walter Müller,same-key,auto,1,1,,,
+persons: Dr. West -> Walter West,persons,Dr. West,Walter West,surname-unique,auto,1,1,,,
+persons: W. West -> Walter West,persons,W. West,Walter West,initial-unique,auto,12,1,,,
+persons: West -> Walter West,persons,West,Walter West,same-key,auto,20,1,,,
+persons: Dr. Wink -> H. Wink,persons,Dr. Wink,H. Wink,dominant,auto,1,22,,,
+persons: Wink -> H. Wink,persons,Wink,H. Wink,same-key,auto,1,22,,,
+persons: Dr. med. Ernst Müller -> Ernst Müller,persons,Dr. med. Ernst Müller,Ernst Müller,same-key,auto,1,1,,,
+persons: Prof. Dr. von Jordans -> Dr. von Jordans,persons,Prof. Dr. von Jordans,Dr. von Jordans,same-key,auto,1,2,,,
+persons: von Jordans -> Dr. von Jordans,persons,von Jordans,Dr. von Jordans,same-key,auto,1,2,,,
+persons: E. Franck -> Erich Franck,persons,E. Franck,Erich Franck,initial-unique,auto,2,3,,,
+persons: Franck -> Erich Franck,persons,Franck,Erich Franck,surname-unique,auto,2,3,,,
+persons: E. Frank -> Erich Frank,persons,E. Frank,Erich Frank,initial-unique,auto,3,7,,,
+persons: Erich frank -> Erich Frank,persons,Erich frank,Erich Frank,same-key,auto,2,7,,,
+persons: E. Gebhard -> Erwin Gebhard,persons,E. Gebhard,Erwin Gebhard,initial-unique,auto,2,2,,,
+persons: Gebhard -> Erwin Gebhard,persons,Gebhard,Erwin Gebhard,surname-unique,auto,1,2,,,
+persons: Hartmann -> E. Hartmann,persons,Hartmann,E. Hartmann,surname-unique,auto,1,1,,,
+persons: Hesse -> E. Hesse,persons,Hesse,E. Hesse,surname-unique,auto,1,8,,,
+persons: E. Laubmann -> ELISABETH LAUBMANN,persons,E. Laubmann,ELISABETH LAUBMANN,initial-unique,auto,6,1,,,
+persons: E. Leibbrand -> Eduard Leibbrand,persons,E. Leibbrand,Eduard Leibbrand,initial-unique,auto,2,11,,,
+persons: Leibbrand -> Eduard Leibbrand,persons,Leibbrand,Eduard Leibbrand,surname-unique,auto,9,11,,,
+persons: E. Pappel -> Einhart Pappel,persons,E. Pappel,Einhart Pappel,initial-unique,auto,20,19,,,
+persons: E. Pfeiffer -> Ernst Pfeiffer,persons,E. Pfeiffer,Ernst Pfeiffer,initial-unique,auto,3,2,,,
+persons: Rappel -> E. Rappel,persons,Rappel,E. Rappel,surname-unique,auto,1,9,,,
+persons: E. Rogge -> Einhart Rogge,persons,E. Rogge,Einhart Rogge,initial-unique,auto,1,69,,,
+persons: Rogge -> Einhart Rogge,persons,Rogge,Einhart Rogge,surname-unique,auto,7,69,,,
+persons: E. Ruppel -> Einhart Ruppel,persons,E. Ruppel,Einhart Ruppel,initial-unique,auto,126,70,,,
+persons: Ruppel -> Einhart Ruppel,persons,Ruppel,Einhart Ruppel,dominant,auto,1,70,,,
+persons: Ruppert -> E. Ruppert,persons,Ruppert,E. Ruppert,surname-unique,auto,7,2,,,
+persons: Rygel -> E. Rygel,persons,Rygel,E. Rygel,surname-unique,auto,2,21,,,
+persons: E. Ryzel -> Einhart Ryzel,persons,E. Ryzel,Einhart Ryzel,initial-unique,auto,19,26,,,
+persons: Schalkhaußer -> E. Schalkhaußer,persons,Schalkhaußer,E. Schalkhaußer,surname-unique,auto,4,2,,,
+persons: Schalkhäuser -> E. Schalkhäuser,persons,Schalkhäuser,E. Schalkhäuser,surname-unique,auto,14,22,,,
+persons: E. Schnabel -> Emil Schnabel,persons,E. Schnabel,Emil Schnabel,initial-unique,auto,4,3,,,
+persons: Hauptlehrer Schnabel -> Emil Schnabel,persons,Hauptlehrer Schnabel,Emil Schnabel,surname-unique,auto,1,3,,,
+persons: Schnabel -> Emil Schnabel,persons,Schnabel,Emil Schnabel,same-key,auto,1,3,,,
+persons: E. Schuhmacher -> Eugen Schuhmacher,persons,E. Schuhmacher,Eugen Schuhmacher,initial-unique,auto,489,52,,,
+persons: Schuhmacher -> Eugen Schuhmacher,persons,Schuhmacher,Eugen Schuhmacher,dominant,auto,89,52,,,
+persons: E. Schumacher -> Eugen Schumacher,persons,E. Schumacher,Eugen Schumacher,initial-unique,auto,80,1,,,
+persons: E. Seippel -> Eduard Seippel,persons,E. Seippel,Eduard Seippel,initial-unique,auto,1,9,,,
+persons: E. Sommerfeldt -> Ekart Sommerfeldt,persons,E. Sommerfeldt,Ekart Sommerfeldt,initial-unique,auto,3,2,,,
+persons: Voigt -> E. Voigt,persons,Voigt,E. Voigt,surname-unique,auto,31,2,,,
+persons: Winkler -> E.Winkler,persons,Winkler,E.Winkler,surname-unique,auto,1,1,,,
+persons: EINHARD BEZZEL -> Einhard Bezzel,persons,EINHARD BEZZEL,Einhard Bezzel,same-key,auto,1,47,,,
+persons: Prof. Eberhard -> Eberhard,persons,Prof. Eberhard,Eberhard,same-key,auto,1,1,,,
+persons: Roppel -> Eberhard Roppel,persons,Roppel,Eberhard Roppel,dominant,auto,2,5,,,
+persons: Seppel -> Eberhard Seppel,persons,Seppel,Eberhard Seppel,surname-unique,auto,62,1,,,
+persons: Eckart -> Karl Eckart,persons,Eckart,Karl Eckart,surname-unique,auto,2,2,,,
+persons: Frhr. Hammerstein -> Eckart Hammerstein,persons,Frhr. Hammerstein,Eckart Hammerstein,surname-unique,auto,1,2,,,
+persons: Edelmann -> Hans Edelmann,persons,Edelmann,Hans Edelmann,surname-unique,auto,2,2,,,
+persons: Rektor Edelmann -> Hans Edelmann,persons,Rektor Edelmann,Hans Edelmann,same-key,auto,1,2,,,
+persons: Himmelhorst -> Eg. Himmelhorst,persons,Himmelhorst,Eg. Himmelhorst,dominant,auto,1,13,,,
+persons: Graf Eisenreich -> Eisenreich,persons,Graf Eisenreich,Eisenreich,same-key,auto,2,2,,,
+persons: Engelmann -> Herr Major Engelmann,persons,Engelmann,Herr Major Engelmann,same-key,auto,1,2,,,
+persons: Herr Engelmann -> Herr Major Engelmann,persons,Herr Engelmann,Herr Major Engelmann,same-key,auto,1,2,,,
+persons: Engl -> Hans Engl,persons,Engl,Hans Engl,surname-unique,auto,2,2,,,
+persons: Herr Engl -> Hans Engl,persons,Herr Engl,Hans Engl,same-key,auto,4,2,,,
+persons: Entfellner -> Fritz Entfellner,persons,Entfellner,Fritz Entfellner,surname-unique,auto,1,98,,,
+persons: Entmayr -> Heinz Entmayr,persons,Entmayr,Heinz Entmayr,surname-unique,auto,2,1,,,
+persons: Enzfellner -> Fritz Enzfellner,persons,Enzfellner,Fritz Enzfellner,surname-unique,auto,1,2,,,
+persons: Oberpostmeister Eppner -> Eppner,persons,Oberpostmeister Eppner,Eppner,same-key,auto,1,3,,,
+persons: Er [?] -> Er,persons,Er [?],Er,same-key,auto,4,7,,,
+persons: er -> Er,persons,er,Er,same-key,auto,2,7,,,
+persons: Wurst -> Er-Wurst,persons,Wurst,Er-Wurst,surname-unique,auto,19,4,,,
+persons: Erdt -> Ober.-L. Erdt,persons,Erdt,Ober.-L. Erdt,surname-unique,auto,5,2,,,
+persons: Fröhlich -> Erl. Fröhlich,persons,Fröhlich,Erl. Fröhlich,surname-unique,auto,6,2,,,
+persons: Inspektor Burkhart -> Ernst Burkhart,persons,Inspektor Burkhart,Ernst Burkhart,surname-unique,auto,2,1,,,
+persons: Schuster -> Eva Schuster,persons,Schuster,Eva Schuster,surname-unique,auto,2,2,,,
+persons: Horn -> F. E. Horn,persons,Horn,F. E. Horn,surname-unique,auto,2,3,,,
+persons: F.K. Engel -> F. K. Engel,persons,F.K. Engel,F. K. Engel,same-key,auto,4,33,,,
+persons: F. Müller -> Franz Müller,persons,F. Müller,Franz Müller,dominant,auto,6,31,,,
+persons: Friderici -> FRIDERICI,persons,Friderici,FRIDERICI,same-key,auto,1,2,,,
+persons: Faulhaber -> Hans Faulhaber,persons,Faulhaber,Hans Faulhaber,dominant,auto,2,13,,,
+persons: Stephan -> Fischer Stephan,persons,Stephan,Fischer Stephan,surname-unique,auto,1,2,,,
+persons: Wächter -> Fischer-Wächter,persons,Wächter,Fischer-Wächter,surname-unique,auto,3,2,,,
+persons: Präparator Flake -> Flake,persons,Präparator Flake,Flake,same-key,auto,1,2,,,
+persons: Koch -> Forstmeister Koch,persons,Koch,Forstmeister Koch,same-key,auto,4,12,,,
+persons: Fr Engel -> Fr. Engel,persons,Fr Engel,Fr. Engel,same-key,auto,26,174,,,
+persons: Fr Gauger -> Fr. Gauger,persons,Fr Gauger,Fr. Gauger,same-key,auto,4,6,,,
+persons: Fr. H. Engel -> Fr H. Engel,persons,Fr. H. Engel,Fr H. Engel,same-key,auto,1,12,,,
+persons: Fr. Singer -> Fr Singer,persons,Fr. Singer,Fr Singer,same-key,auto,1,1,,,
+persons: Fr Uhl -> Fr. Uhl,persons,Fr Uhl,Fr. Uhl,same-key,auto,2,7,,,
+persons: Fr Wüst -> Fr. Wüst,persons,Fr Wüst,Fr. Wüst,same-key,auto,10,167,,,
+persons: Herr Auer -> Franz Auer,persons,Herr Auer,Franz Auer,surname-unique,auto,2,3,,,
+persons: Hr. Auer -> Franz Auer,persons,Hr. Auer,Franz Auer,same-key,auto,12,3,,,
+persons: Hr. Maier -> Franz Maier,persons,Hr. Maier,Franz Maier,dominant,auto,2,33,,,
+persons: Maier -> Franz Maier,persons,Maier,Franz Maier,same-key,auto,11,33,,,
+persons: Hr. Meier -> Franz Meier,persons,Hr. Meier,Franz Meier,surname-unique,auto,7,9,,,
+persons: Meier -> Franz Meier,persons,Meier,Franz Meier,same-key,auto,3,9,,,
+persons: Murr -> Franz Murr,persons,Murr,Franz Murr,dominant,auto,3,40,,,
+persons: Hr. Mürr -> Franz Mürr,persons,Hr. Mürr,Franz Mürr,surname-unique,auto,1,10,,,
+persons: Mürr -> Franz Mürr,persons,Mürr,Franz Mürr,same-key,auto,8,10,,,
+persons: Stauder -> Franz Stauder,persons,Stauder,Franz Stauder,surname-unique,auto,1,3,,,
+persons: Frau Koenig -> Frau König,persons,Frau Koenig,Frau König,same-key,auto,1,1,,,
+persons: Frau W. Wüst -> Frl. W. Wüst,persons,Frau W. Wüst,Frl. W. Wüst,wikidata,auto,1,17,,,
+persons: Freund Groebbels -> Groebbels,persons,Freund Groebbels,Groebbels,dominant,auto,7,1,,,
+persons: Frhr. Schrenck-Notzing von Vietinghoff-Riesch -> Riesch,persons,Frhr. Schrenck-Notzing von Vietinghoff-Riesch,Riesch,surname-unique,auto,1,1,,,
+persons: Kaiser -> Fritz Kaiser,persons,Kaiser,Fritz Kaiser,surname-unique,auto,1,2,,,
+persons: Prof. Fritz Steinmetzger -> Fritz Steinmetzger,persons,Prof. Fritz Steinmetzger,Fritz Steinmetzger,same-key,auto,2,2,,,
+persons: Sturm -> Fritz Sturm,persons,Sturm,Fritz Sturm,surname-unique,auto,5,4,,,
+persons: Frl. FRÖHLICH -> Frl. Fröhlich,persons,Frl. FRÖHLICH,Frl. Fröhlich,same-key,auto,2,26,,,
+persons: Förster Bamberg -> Melchior Bamberg,persons,Förster Bamberg,Melchior Bamberg,surname-unique,auto,3,2,,,
+persons: Förster Bertold -> Jäger Bertold,persons,Förster Bertold,Jäger Bertold,surname-unique,auto,2,2,,,
+persons: Förster Faubner -> Heider Faubner,persons,Förster Faubner,Heider Faubner,surname-unique,auto,5,1,,,
+persons: Förster Weber -> Maria Weber,persons,Förster Weber,Maria Weber,dominant,auto,3,38,,,
+persons: Hauptlehrer Weber -> Maria Weber,persons,Hauptlehrer Weber,Maria Weber,same-key,auto,2,38,,,
+persons: Weber -> Maria Weber,persons,Weber,Maria Weber,same-key,auto,14,38,,,
+persons: Fürst -> Ing. Dr. A. Fürst,persons,Fürst,Ing. Dr. A. Fürst,surname-unique,auto,1,1,,,
+persons: G. Frank -> Georg Frank,persons,G. Frank,Georg Frank,initial-unique,auto,1,2,,,
+persons: Herold -> G. Herold,persons,Herold,G. Herold,surname-unique,auto,1,4,,,
+persons: G. Kaminski -> Gerhard Kaminski,persons,G. Kaminski,Gerhard Kaminski,initial-unique,auto,5,13,,,
+persons: Kaminski -> Gerhard Kaminski,persons,Kaminski,Gerhard Kaminski,surname-unique,auto,1,13,,,
+persons: G. Kammer -> Gerhard Kammer,persons,G. Kammer,Gerhard Kammer,initial-unique,auto,4,2,,,
+persons: Knick -> G. Knick,persons,Knick,G. Knick,surname-unique,auto,1,1,,,
+persons: Kramer -> G. Kramer,persons,Kramer,G. Kramer,surname-unique,auto,1,1,,,
+persons: Link -> G. Link,persons,Link,G. Link,surname-unique,auto,7,2,,,
+persons: cand. Link -> G. Link,persons,cand. Link,G. Link,same-key,auto,2,2,,,
+persons: G. Müller -> Gerhard Müller,persons,G. Müller,Gerhard Müller,initial-unique,auto,3,2,,,
+persons: G. Olivier -> Georges Olivier,persons,G. Olivier,Georges Olivier,initial-unique,auto,2,1,,,
+persons: G. Schanz -> Georg Schanz,persons,G. Schanz,Georg Schanz,initial-unique,auto,1,1,,,
+persons: G. Straubinger -> Gert Straubinger,persons,G. Straubinger,Gert Straubinger,initial-unique,auto,2,2,,,
+persons: Werner -> G. Werner,persons,Werner,G. Werner,surname-unique,auto,2,4,,,
+persons: GABEL -> Gabel,persons,GABEL,Gabel,same-key,auto,1,2,,,
+persons: Gerstein -> GERSTEIN,persons,Gerstein,GERSTEIN,same-key,auto,1,1,,,
+persons: Gapp -> Präparator Gapp,persons,Gapp,Präparator Gapp,same-key,auto,2,2,,,
+persons: Seil -> Georg Seil,persons,Seil,Georg Seil,surname-unique,auto,1,1,,,
+persons: Gerber -> Robert Gerber,persons,Gerber,Robert Gerber,surname-unique,auto,1,12,,,
+persons: Ritter -> Gerhart Ritter,persons,Ritter,Gerhart Ritter,surname-unique,auto,5,1,,,
+persons: Giebel -> Rudolf Giebel,persons,Giebel,Rudolf Giebel,surname-unique,auto,1,2,,,
+persons: Giersberg -> Prof. Dr. H. Giersberg,persons,Giersberg,Prof. Dr. H. Giersberg,surname-unique,auto,1,1,,,
+persons: Prof. Giersberg -> Prof. Dr. H. Giersberg,persons,Prof. Giersberg,Prof. Dr. H. Giersberg,same-key,auto,1,1,,,
+persons: Glück -> Herr Glück,persons,Glück,Herr Glück,same-key,auto,2,4,,,
+persons: Haeseler -> Gottlieb Haeseler,persons,Haeseler,Gottlieb Haeseler,surname-unique,auto,1,1,,,
+persons: Graf -> v. Graf,persons,Graf,v. Graf,surname-unique,auto,2,2,,,
+persons: Graf Ries -> Professor Dr. A. Ries,persons,Graf Ries,Professor Dr. A. Ries,dominant,auto,1,3,,,
+persons: Prof. A. Ries -> Professor Dr. A. Ries,persons,Prof. A. Ries,Professor Dr. A. Ries,same-key,auto,29,3,,,
+persons: Prof. Dr. Ries -> Professor Dr. A. Ries,persons,Prof. Dr. Ries,Professor Dr. A. Ries,surname-unique,auto,2,3,,,
+persons: Prof. Ries -> Professor Dr. A. Ries,persons,Prof. Ries,Professor Dr. A. Ries,same-key,auto,14,3,,,
+persons: Ries -> Professor Dr. A. Ries,persons,Ries,Professor Dr. A. Ries,same-key,auto,3,3,,,
+persons: Graff -> Joachim Graff,persons,Graff,Joachim Graff,surname-unique,auto,1,24,,,
+persons: Grawert -> Prof. Grawert,persons,Grawert,Prof. Grawert,same-key,auto,1,2,,,
+persons: Grimm -> Josef Grimm,persons,Grimm,Josef Grimm,surname-unique,auto,1,2,,,
+persons: Griscom -> L. Griscom,persons,Griscom,L. Griscom,surname-unique,auto,1,1,,,
+persons: Gugg -> K. Gugg,persons,Gugg,K. Gugg,surname-unique,auto,2,1,,,
+persons: Witherby -> H. F. Witherby,persons,Witherby,H. F. Witherby,surname-unique,auto,1,1,,,
+persons: Hildebrandt -> H. Hildebrandt,persons,Hildebrandt,H. Hildebrandt,surname-unique,auto,2,1,,,
+persons: H. K -> H.K.,persons,H. K,H.K.,same-key,auto,2,11,,,
+persons: H. Kange -> Prof. H. Kange,persons,H. Kange,Prof. H. Kange,same-key,auto,1,2,,,
+persons: Kange -> Prof. H. Kange,persons,Kange,Prof. H. Kange,surname-unique,auto,1,2,,,
+persons: H. Kanzl -> Hans Kanzl,persons,H. Kanzl,Hans Kanzl,initial-unique,auto,7,4,,,
+persons: Herr Kanzl -> Hans Kanzl,persons,Herr Kanzl,Hans Kanzl,surname-unique,auto,3,4,,,
+persons: Kanzl -> Hans Kanzl,persons,Kanzl,Hans Kanzl,same-key,auto,1,4,,,
+persons: Kink -> H. Kink,persons,Kink,H. Kink,dominant,auto,2,8,,,
+persons: Krug -> H. Krug,persons,Krug,H. Krug,surname-unique,auto,6,2,,,
+persons: Prof. Krug -> H. Krug,persons,Prof. Krug,H. Krug,same-key,auto,1,2,,,
+persons: H. Kurt -> Haller Kurt,persons,H. Kurt,Haller Kurt,initial-unique,auto,10,12,,,
+persons: H. Kögel -> Hans Kögel,persons,H. Kögel,Hans Kögel,initial-unique,auto,3,4,,,
+persons: Kühl -> H. Kühl,persons,Kühl,H. Kühl,surname-unique,auto,2,18,,,
+persons: Rathmayr -> H. Rathmayr,persons,Rathmayr,H. Rathmayr,surname-unique,auto,3,1,,,
+persons: Remert -> H. Remert,persons,Remert,H. Remert,surname-unique,auto,2,1,,,
+persons: H. Rundt -> Heinz Rundt,persons,H. Rundt,Heinz Rundt,initial-unique,auto,7,1,,,
+persons: Hr H. Rück -> H. Rück,persons,Hr H. Rück,H. Rück,same-key,auto,1,20,,,
+persons: Hr H. Sachtleben -> H. Sachtleben,persons,Hr H. Sachtleben,H. Sachtleben,same-key,auto,2,2,,,
+persons: H. Taubenberger -> Hans Taubenberger,persons,H. Taubenberger,Hans Taubenberger,dominant,auto,4,17,,,
+persons: Herr Taubenberger -> Hans Taubenberger,persons,Herr Taubenberger,Hans Taubenberger,dominant,auto,2,17,,,
+persons: Taubenberger -> Hans Taubenberger,persons,Taubenberger,Hans Taubenberger,same-key,auto,17,17,,,
+persons: H. Weber -> Hubert Weber,persons,H. Weber,Hubert Weber,initial-unique,auto,1,4,,,
+persons: Wirt -> H. Wirt,persons,Wirt,H. Wirt,dominant,auto,33,58,,,
+persons: Wolf -> H. Wolf,persons,Wolf,H. Wolf,dominant,auto,93,18,,,
+persons: Wörl -> H. Wörl,persons,Wörl,H. Wörl,surname-unique,auto,1,1,,,
+persons: Wörz -> H. Wörz,persons,Wörz,H. Wörz,surname-unique,auto,4,2,,,
+persons: Haas -> de Haas,persons,Haas,de Haas,surname-unique,auto,1,1,,,
+persons: Oberlehrer Haas -> de Haas,persons,Oberlehrer Haas,de Haas,same-key,auto,2,1,,,
+persons: Prof. Hamp -> Hamp,persons,Prof. Hamp,Hamp,same-key,auto,1,1,,,
+persons: Rathmeyer -> Hanna Rathmeyer,persons,Rathmeyer,Hanna Rathmeyer,surname-unique,auto,1,1,,,
+persons: Hans -> Ludwig Hans,persons,Hans,Ludwig Hans,surname-unique,auto,11,1,,,
+persons: Högel -> Hans Högel,persons,Högel,Hans Högel,surname-unique,auto,2,1,,,
+persons: Krieg -> Hans Krieg,persons,Krieg,Hans Krieg,surname-unique,auto,5,1,,,
+persons: Prof. Dr. Krieg -> Hans Krieg,persons,Prof. Dr. Krieg,Hans Krieg,same-key,auto,4,1,,,
+persons: Prof. Krieg -> Hans Krieg,persons,Prof. Krieg,Hans Krieg,same-key,auto,20,1,,,
+persons: Prof. SCHWARZ -> Hans Schwarz,persons,Prof. SCHWARZ,Hans Schwarz,surname-unique,auto,1,1,,,
+persons: Schwarz -> Hans Schwarz,persons,Schwarz,Hans Schwarz,same-key,auto,1,1,,,
+persons: Venzl -> Hans Venzl,persons,Venzl,Hans Venzl,surname-unique,auto,3,2,,,
+persons: Hauptlehrer Ried -> N. Ried,persons,Hauptlehrer Ried,N. Ried,surname-unique,auto,2,2,,,
+persons: Heer -> Jakob Chr. Heer,persons,Heer,Jakob Chr. Heer,surname-unique,auto,2,1,,,
+persons: Oberst Heinrich Ehrlich -> Heinrich Ehrlich,persons,Oberst Heinrich Ehrlich,Heinrich Ehrlich,same-key,auto,1,2,,,
+persons: Rennert -> Heinz Rennert,persons,Rennert,Heinz Rennert,dominant,auto,2,68,,,
+persons: Reusch -> Heinz Reusch,persons,Reusch,Heinz Reusch,surname-unique,auto,1,1,,,
+persons: Sedlmayr -> Heinz Sedlmayr,persons,Sedlmayr,Heinz Sedlmayr,surname-unique,auto,4,1,,,
+persons: Helliger -> Martin Helliger,persons,Helliger,Martin Helliger,surname-unique,auto,3,2,,,
+persons: M. Helliger -> Martin Helliger,persons,M. Helliger,Martin Helliger,initial-unique,auto,3,2,,,
+persons: Henseler -> Nikolaus Henseler,persons,Henseler,Nikolaus Henseler,surname-unique,auto,7,2,,,
+persons: Herr Engelhardt -> Hr Engelhardt,persons,Herr Engelhardt,Hr Engelhardt,same-key,auto,1,1,,,
+persons: Herr Hattiger -> M. Hattiger,persons,Herr Hattiger,M. Hattiger,surname-unique,auto,2,3,,,
+persons: Herr Hettiger -> Martin Hettiger,persons,Herr Hettiger,Martin Hettiger,surname-unique,auto,1,2,,,
+persons: Hettiger -> Martin Hettiger,persons,Hettiger,Martin Hettiger,same-key,auto,7,2,,,
+persons: M. Hettiger -> Martin Hettiger,persons,M. Hettiger,Martin Hettiger,initial-unique,auto,4,2,,,
+persons: Jordans -> Herr Jordans,persons,Jordans,Herr Jordans,same-key,auto,3,5,,,
+persons: Herr Kargin -> Kargin,persons,Herr Kargin,Kargin,same-key,auto,1,5,,,
+persons: Kengl -> Herr Kengl,persons,Kengl,Herr Kengl,same-key,auto,1,3,,,
+persons: Herr Kierer -> Hr. Kierer,persons,Herr Kierer,Hr. Kierer,same-key,auto,2,2,,,
+persons: Herr Krüger -> Krüger,persons,Herr Krüger,Krüger,same-key,auto,1,1,,,
+persons: Stud. Krüger -> Krüger,persons,Stud. Krüger,Krüger,same-key,auto,1,1,,,
+persons: Herr Kugl -> Kugl,persons,Herr Kugl,Kugl,same-key,auto,6,9,,,
+persons: Herr Laufer -> Laufer,persons,Herr Laufer,Laufer,same-key,auto,3,6,,,
+persons: Mück -> Herr Mario Mück,persons,Mück,Herr Mario Mück,surname-unique,auto,6,14,,,
+persons: Herr Morgenthaler -> Otto Morgenthaler,persons,Herr Morgenthaler,Otto Morgenthaler,surname-unique,auto,1,1,,,
+persons: Morgenthaler -> Otto Morgenthaler,persons,Morgenthaler,Otto Morgenthaler,same-key,auto,1,1,,,
+persons: Herr Prager -> M. Prager,persons,Herr Prager,M. Prager,surname-unique,auto,2,6,,,
+persons: Herr Röger -> Valentin Röger,persons,Herr Röger,Valentin Röger,surname-unique,auto,1,1,,,
+persons: S. Engel -> Herr S. Engel,persons,S. Engel,Herr S. Engel,same-key,auto,2,3,,,
+persons: Herr Stark -> Walter Stark,persons,Herr Stark,Walter Stark,dominant,auto,2,90,,,
+persons: Stark -> Walter Stark,persons,Stark,Walter Stark,same-key,auto,12,90,,,
+persons: W. Stark -> Walter Stark,persons,W. Stark,Walter Stark,initial-unique,auto,41,90,,,
+persons: Herr Vogt -> Stud. Vogt,persons,Herr Vogt,Stud. Vogt,same-key,auto,2,4,,,
+persons: Vogt -> Stud. Vogt,persons,Vogt,Stud. Vogt,same-key,auto,1,4,,,
+persons: Warnke -> Hildegard Warnke,persons,Warnke,Hildegard Warnke,surname-unique,auto,2,21,,,
+persons: Hilliger -> Martin Hilliger,persons,Hilliger,Martin Hilliger,surname-unique,auto,1,1,,,
+persons: Hinz -> Walter Hinz,persons,Hinz,Walter Hinz,surname-unique,auto,2,3,,,
+persons: Huber -> Ludwig Huber,persons,Huber,Ludwig Huber,dominant,auto,4,20,,,
+"persons: Hubert -> Riegler, Hubert",persons,Hubert,"Riegler, Hubert",surname-unique,auto,2,2,,,
+persons: Otto -> Hugo Otto,persons,Otto,Hugo Otto,surname-unique,auto,5,2,,,
+persons: Hübner -> Michael Hübner,persons,Hübner,Michael Hübner,surname-unique,auto,1,2,,,
+persons: cand. Hübner -> Michael Hübner,persons,cand. Hübner,Michael Hübner,same-key,auto,1,2,,,
+persons: IRMGARD -> Irmgard,persons,IRMGARD,Irmgard,same-key,auto,1,2,,,
+persons: Inspektor Künhardt -> Künhardt,persons,Inspektor Künhardt,Künhardt,same-key,auto,2,2,,,
+persons: Rückhardt -> Inspektor Rückhardt,persons,Rückhardt,Inspektor Rückhardt,same-key,auto,2,5,,,
+persons: Inspektor Schwangart -> Prof. Schwangart,persons,Inspektor Schwangart,Prof. Schwangart,same-key,auto,2,23,,,
+persons: Schwangart -> Prof. Schwangart,persons,Schwangart,Prof. Schwangart,same-key,auto,14,23,,,
+persons: J. Jacobs -> Jürgen Jacobs,persons,J. Jacobs,Jürgen Jacobs,initial-unique,auto,1,1,,,
+persons: Konrad -> J. Konrad,persons,Konrad,J. Konrad,surname-unique,auto,1,1,,,
+persons: J. Schenk -> Jakob Schenk,persons,J. Schenk,Jakob Schenk,initial-unique,auto,1,1,,,
+persons: Jaeckel -> Jäckel,persons,Jaeckel,Jäckel,same-key,auto,1,11,,,
+persons: Schrick -> Jakob Schrick,persons,Schrick,Jakob Schrick,surname-unique,auto,3,7,,,
+persons: Lechner -> Johann Lechner,persons,Lechner,Johann Lechner,surname-unique,auto,2,1,,,
+persons: Scherer -> Jäger Scherer,persons,Scherer,Jäger Scherer,surname-unique,auto,2,2,,,
+persons: K. E. Olszewski -> Karl Ewald Olszewski,persons,K. E. Olszewski,Karl Ewald Olszewski,initial-unique,auto,1,2,,,
+persons: Olszewski -> Karl Ewald Olszewski,persons,Olszewski,Karl Ewald Olszewski,surname-unique,auto,1,2,,,
+persons: K. Flake -> Karl Flake,persons,K. Flake,Karl Flake,initial-unique,auto,2,1,,,
+persons: Laukas -> K. Laukas,persons,Laukas,K. Laukas,surname-unique,auto,2,2,,,
+persons: K. Lauter -> Karl Lauter,persons,K. Lauter,Karl Lauter,initial-unique,auto,2,2,,,
+persons: Remonat -> K. Remonat,persons,Remonat,K. Remonat,surname-unique,auto,1,16,,,
+persons: Präparator Sepp -> K. Sepp,persons,Präparator Sepp,K. Sepp,surname-unique,auto,23,2,,,
+persons: Sepp -> K. Sepp,persons,Sepp,K. Sepp,same-key,auto,24,2,,,
+persons: K. Wagner -> Kurt Wagner,persons,K. Wagner,Kurt Wagner,initial-unique,auto,1,9,,,
+persons: Witt -> K. Witt,persons,Witt,K. Witt,dominant,auto,1,5,,,
+persons: Lanken -> Karl Lanken,persons,Lanken,Karl Lanken,surname-unique,auto,2,2,,,
+persons: Ritz -> Karl Ritz,persons,Ritz,Karl Ritz,surname-unique,auto,1,3,,,
+persons: Kind -> N. Kind,persons,Kind,N. Kind,dominant,auto,13,46,,,
+persons: Kinnear -> N. B. Kinnear,persons,Kinnear,N. B. Kinnear,surname-unique,auto,1,1,,,
+persons: Kummer -> Prof. Kummer,persons,Kummer,Prof. Kummer,same-key,auto,1,2,,,
+persons: Kurt. -> Kurt,persons,Kurt.,Kurt,same-key,auto,1,76,,,
+persons: Käthe -> Tante Käthe,persons,Käthe,Tante Käthe,surname-unique,auto,2,4,,,
+persons: Küfer -> Michael Küfer,persons,Küfer,Michael Küfer,surname-unique,auto,2,2,,,
+persons: M. Küfer -> Michael Küfer,persons,M. Küfer,Michael Küfer,initial-unique,auto,2,2,,,
+persons: Kühn -> W. Kühn,persons,Kühn,W. Kühn,surname-unique,auto,2,2,,,
+persons: Künz -> Walter Künz,persons,Künz,Walter Künz,surname-unique,auto,4,13,,,
+persons: Küst -> W.W. Küst,persons,Küst,W.W. Küst,surname-unique,auto,4,3,,,
+persons: Prof. L. Müller -> L. Müller,persons,Prof. L. Müller,L. Müller,same-key,auto,4,5,,,
+persons: L. Stühler -> Ludwig Stühler,persons,L. Stühler,Ludwig Stühler,initial-unique,auto,1,1,,,
+persons: Prof. Lambrecht -> Lambrecht,persons,Prof. Lambrecht,Lambrecht,same-key,auto,2,2,,,
+persons: Liebmann -> W. Liebmann,persons,Liebmann,W. Liebmann,surname-unique,auto,1,2,,,
+persons: Rothschild -> Lord Rothschild,persons,Rothschild,Lord Rothschild,surname-unique,auto,1,2,,,
+persons: Schiffer -> Ludwig Schiffer,persons,Schiffer,Ludwig Schiffer,surname-unique,auto,1,2,,,
+persons: Lönnberg -> Prof. E. Lönnberg,persons,Lönnberg,Prof. E. Lönnberg,surname-unique,auto,3,1,,,
+persons: Prof. Dr. E. Lönnberg -> Prof. E. Lönnberg,persons,Prof. Dr. E. Lönnberg,Prof. E. Lönnberg,same-key,auto,1,1,,,
+persons: M. Hermann -> Max Hermann,persons,M. Hermann,Max Hermann,initial-unique,auto,2,2,,,
+persons: Stettiger -> M. Stettiger,persons,Stettiger,M. Stettiger,surname-unique,auto,4,2,,,
+persons: Zierer -> M. Zierer,persons,Zierer,M. Zierer,surname-unique,auto,1,2,,,
+persons: Rieger -> Martin Rieger,persons,Rieger,Martin Rieger,surname-unique,auto,12,2,,,
+persons: Wied -> Martin Wied,persons,Wied,Martin Wied,dominant,auto,2,24,,,
+persons: Reiser -> Max Reiser,persons,Reiser,Max Reiser,surname-unique,auto,3,1,,,
+persons: Schmid -> Max Schmid,persons,Schmid,Max Schmid,dominant,auto,1,9,,,
+persons: Moreau -> R. E. Moreau,persons,Moreau,R. E. Moreau,surname-unique,auto,1,1,,,
+persons: Mutter -> Nettis Mutter,persons,Mutter,Nettis Mutter,surname-unique,auto,4,1,,,
+persons: März -> Robert März,persons,März,Robert März,dominant,auto,8,28,,,
+persons: Türk -> N. Türk,persons,Türk,N. Türk,surname-unique,auto,3,6,,,
+persons: Prof. Naumann -> Naumann,persons,Prof. Naumann,Naumann,same-key,auto,1,7,,,
+persons: Neumann -> O. Neumann,persons,Neumann,O. Neumann,surname-unique,auto,3,2,,,
+persons: Prof. O. Neumann -> O. Neumann,persons,Prof. O. Neumann,O. Neumann,same-key,auto,2,2,,,
+persons: Prof. Noll -> Noll,persons,Prof. Noll,Noll,same-key,auto,1,1,,,
+persons: Prof. Dr. Koehler -> O. Koehler,persons,Prof. Dr. Koehler,O. Koehler,surname-unique,auto,1,1,,,
+persons: Prof. Dr. O. Koehler -> O. Koehler,persons,Prof. Dr. O. Koehler,O. Koehler,same-key,auto,1,1,,,
+persons: Prof. Koehler -> O. Koehler,persons,Prof. Koehler,O. Koehler,same-key,auto,1,1,,,
+persons: Prof. O. Koehler -> O. Koehler,persons,Prof. O. Koehler,O. Koehler,same-key,auto,1,1,,,
+persons: Uttendörfer -> O. Uttendörfer,persons,Uttendörfer,O. Uttendörfer,surname-unique,auto,1,1,,,
+persons: Vatter -> O.E. Vatter,persons,Vatter,O.E. Vatter,surname-unique,auto,12,1,,,
+persons: Oberförster Reindl -> Reindl,persons,Oberförster Reindl,Reindl,same-key,auto,2,4,,,
+persons: P. Kuhlemann -> Peter Kuhlemann,persons,P. Kuhlemann,Peter Kuhlemann,initial-unique,auto,21,2,,,
+persons: P. Steinbacher -> Prof.Dr.Fr. Steinbacher,persons,P. Steinbacher,Prof.Dr.Fr. Steinbacher,initial-unique,auto,15,1,,,
+persons: Paul -> Prof. Paul,persons,Paul,Prof. Paul,same-key,auto,3,4,,,
+persons: Peitzmeier -> Prof. J. Peitzmeier,persons,Peitzmeier,Prof. J. Peitzmeier,surname-unique,auto,1,1,,,
+persons: Ranke -> Pfarrer Ranke,persons,Ranke,Pfarrer Ranke,same-key,auto,1,4,,,
+persons: Popp -> Präparator Popp,persons,Popp,Präparator Popp,same-key,auto,24,25,,,
+persons: Prof. Dr. Drost -> Prof. Drost,persons,Prof. Dr. Drost,Prof. Drost,same-key,auto,2,2,,,
+persons: Välikangas -> Prof. Dr. J. Välikangas,persons,Välikangas,Prof. Dr. J. Välikangas,surname-unique,auto,1,1,,,
+persons: Prof. Dr. L. F. de Beaufort -> Prof. L. F. de Beaufort,persons,Prof. Dr. L. F. de Beaufort,Prof. L. F. de Beaufort,same-key,auto,1,1,,,
+persons: Prof. Dr. R. Drost -> R. Drost,persons,Prof. Dr. R. Drost,R. Drost,same-key,auto,1,1,,,
+persons: Prof. Dr. Zimmer -> Prof. Zimmer,persons,Prof. Dr. Zimmer,Prof. Zimmer,same-key,auto,2,2,,,
+persons: Zimmer -> Prof. Zimmer,persons,Zimmer,Prof. Zimmer,same-key,auto,1,2,,,
+persons: Prof. Seidel -> Seidel,persons,Prof. Seidel,Seidel,same-key,auto,1,2,,,
+persons: R. Karl -> Ruppi Karl,persons,R. Karl,Ruppi Karl,initial-unique,auto,1,1,,,
+persons: RATHMAYER -> Werner Rathmayer,persons,RATHMAYER,Werner Rathmayer,dominant,auto,3,243,,,
+persons: Rathmayer -> Werner Rathmayer,persons,Rathmayer,Werner Rathmayer,same-key,auto,56,243,,,
+persons: W. RATHMAYER -> Werner Rathmayer,persons,W. RATHMAYER,Werner Rathmayer,dominant,auto,1,243,,,
+persons: W. Rathmayer -> Werner Rathmayer,persons,W. Rathmayer,Werner Rathmayer,same-key,auto,45,243,,,
+persons: WERNER RATHMAYER -> Werner Rathmayer,persons,WERNER RATHMAYER,Werner Rathmayer,same-key,auto,2,243,,,
+persons: Sohn von Rathke -> Rathke,persons,Sohn von Rathke,Rathke,surname-unique,auto,2,1,,,
+persons: Schlegel -> Richard Schlegel,persons,Schlegel,Richard Schlegel,surname-unique,auto,1,1,,,
+persons: Wörsching -> Richard Wörsching,persons,Wörsching,Richard Wörsching,surname-unique,auto,6,1,,,
+persons: stud. R. Wagner -> Robert Wagner,persons,stud. R. Wagner,Robert Wagner,initial-unique,auto,2,1,,,
+persons: Thien -> Roland Thien,persons,Thien,Roland Thien,surname-unique,auto,1,1,,,
+persons: Rossitten -> Vogelwarte Rossitten,persons,Rossitten,Vogelwarte Rossitten,surname-unique,auto,2,7,,,
+persons: Wacker -> Rupert Wacker,persons,Wacker,Rupert Wacker,surname-unique,auto,1,6,,,
+persons: Rösl -> Susi Rösl,persons,Rösl,Susi Rösl,surname-unique,auto,3,1,,,
+persons: SCHEUENPFLUG -> Scheuenpflug,persons,SCHEUENPFLUG,Scheuenpflug,same-key,auto,2,3,,,
+persons: Schraudolph -> Witwe Schraudolph,persons,Schraudolph,Witwe Schraudolph,surname-unique,auto,8,2,,,
+persons: Schröder -> Wilhelm Schröder,persons,Schröder,Wilhelm Schröder,dominant,auto,8,1,,,
+persons: Stud. Schröder -> Wilhelm Schröder,persons,Stud. Schröder,Wilhelm Schröder,same-key,auto,10,1,,,
+persons: W. Schröder -> Wilhelm Schröder,persons,W. Schröder,Wilhelm Schröder,initial-unique,auto,24,1,,,
+persons: Schröter -> Stud. Schröter,persons,Schröter,Stud. Schröter,same-key,auto,8,14,,,
+persons: Würz -> Schuhmacher & Würz,persons,Würz,Schuhmacher & Würz,surname-unique,auto,13,2,,,
+persons: Sclater -> W. L. Sclater,persons,Sclater,W. L. Sclater,surname-unique,auto,2,1,,,
+persons: Sohn -> Wüst & Sohn,persons,Sohn,Wüst & Sohn,surname-unique,auto,1,2,,,
+persons: Starke -> W. Starke,persons,Starke,W. Starke,surname-unique,auto,1,1,,,
+persons: Stuck -> W. Stuck,persons,Stuck,W. Stuck,surname-unique,auto,1,2,,,
+persons: ein aus Ostpreußen stammender Teilnehmer -> Teilnehmer,persons,ein aus Ostpreußen stammender Teilnehmer,Teilnehmer,surname-unique,auto,2,1,,,
+persons: Ziegler -> Theodor Ziegler,persons,Ziegler,Theodor Ziegler,surname-unique,auto,5,1,,,
+persons: W [?] -> W,persons,W [?],W,same-key,auto,1,2,,,
+persons: W. E. Clyde Todd -> W.E. Clyde Todd,persons,W. E. Clyde Todd,W.E. Clyde Todd,same-key,auto,1,1,,,
+persons: W. Hirt -> Walter Hirt,persons,W. Hirt,Walter Hirt,initial-unique,auto,21,18,,,
+persons: W. Knust -> Walter Knust,persons,W. Knust,Walter Knust,initial-unique,auto,6,1,,,
+persons: W. Künk -> Walter Künk,persons,W. Künk,Walter Künk,initial-unique,auto,3,3,,,
+persons: W. Schröter -> Wilhelm Schröter,persons,W. Schröter,Wilhelm Schröter,initial-unique,auto,53,2,,,
+persons: W. Stock -> Wilhelm Stock,persons,W. Stock,Wilhelm Stock,initial-unique,auto,42,9,,,
+persons: W. Weiß -> Walter Weiß,persons,W. Weiß,Walter Weiß,initial-unique,auto,6,1,,,
+persons: W. Wink -> Walter Wink,persons,W. Wink,Walter Wink,initial-unique,auto,3,1,,,
+persons: WüZ -> Wüz,persons,WüZ,Wüz,same-key,auto,3,4,,,
+persons: von Hedemann -> v. Hedemann,persons,von Hedemann,v. Hedemann,initial-unique,auto,1,1,,,
+persons: von Lucanus -> v. Lucanus,persons,von Lucanus,v. Lucanus,initial-unique,auto,1,1,,,
+persons: A. Engel -> Aug. Engel,persons,A. Engel,Aug. Engel,initial-ambiguous,candidate,2,3,initials a match several full names,n,Aug. = August Engel same person; August row chosen
+persons: A. Engel -> August Engel,persons,A. Engel,August Engel,initial-ambiguous,candidate,2,2,initials a match several full names,y,A. Engel = August Engel; initial matches
+persons: H. Fischer -> Heinrich Fischer,persons,H. Fischer,Heinrich Fischer,initial-ambiguous,candidate,2,1,initials h match several full names,n,three H. Fischer expansions; unsure
+persons: H. Fischer -> Heinz Fischer,persons,H. Fischer,Heinz Fischer,initial-ambiguous,candidate,2,2,initials h match several full names,n,three H. Fischer expansions; unsure
+persons: H. Fischer -> Prof. Dr. Hermann Fischer,persons,H. Fischer,Prof. Dr. Hermann Fischer,initial-ambiguous,candidate,2,1,initials h match several full names,n,three H. Fischer expansions; unsure
+persons: H. Müller -> Herbert Adolf Müller,persons,H. Müller,Herbert Adolf Müller,initial-ambiguous,candidate,30,1,initials h match several full names,n,H. Müller 1931-56 (n=30) not clearly this rare candidate
+persons: H. Müller -> Hugo Müller,persons,H. Müller,Hugo Müller,initial-ambiguous,candidate,30,2,initials h match several full names,n,H. Müller 1931-56 (n=30) not clearly this rare candidate
+persons: L. Müller -> Ludwig Müller,persons,L. Müller,Ludwig Müller,initial-ambiguous,candidate,9,5,initials l match several full names,n,Ludwig vs Lorenz Müller comparable; Lenz = Lorenz; unsure
+persons: L. Müller -> Lenz Müller,persons,L. Müller,Lenz Müller,initial-ambiguous,candidate,9,2,initials l match several full names,n,Ludwig vs Lorenz Müller comparable; Lenz = Lorenz; unsure
+persons: L. Müller -> Prof. Lorenz Müller,persons,L. Müller,Prof. Lorenz Müller,initial-ambiguous,candidate,9,3,initials l match several full names,n,Ludwig vs Lorenz Müller comparable; Lenz = Lorenz; unsure [conflict resolved]
+persons: H. Stark -> Haller Stark,persons,H. Stark,Haller Stark,initial-ambiguous,candidate,25,3,initials h match several full names,n,no year overlap; small candidates; unsure
+persons: H. Stark -> Hans Stark,persons,H. Stark,Hans Stark,initial-ambiguous,candidate,25,2,initials h match several full names,n,no year overlap; small candidates; unsure
+persons: v. Jordans -> Adolf von Jordans,persons,v. Jordans,Adolf von Jordans,initial-ambiguous,candidate,1,9,initials v match several full names,y,Adolf von Jordans Bonn at IOC 1930; Dr. row same person
+persons: v. Jordans -> Dr. von Jordans,persons,v. Jordans,Dr. von Jordans,initial-ambiguous,candidate,1,4,initials v match several full names,n,same person; merged via A. von Jordans row
+persons: B. Wüst -> Brig. Wüst,persons,B. Wüst,Brig. Wüst,initial-ambiguous,candidate,3,1,initials b match several full names,n,B. Wüst 1933 probably OCR of W. Wüst; not these candidates
+persons: B. Wüst -> Bruder von Fr. Wüst,persons,B. Wüst,Bruder von Fr. Wüst,initial-ambiguous,candidate,3,1,initials b match several full names,n,B. Wüst 1933 probably OCR of W. Wüst; not these candidates
+persons: B. Wüst -> Brigitte Wüst,persons,B. Wüst,Brigitte Wüst,initial-ambiguous,candidate,3,2,initials b match several full names,n,B. Wüst 1933 probably OCR of W. Wüst; not these candidates
+persons: B. Wüst -> Bekannter von Wüst,persons,B. Wüst,Bekannter von Wüst,initial-ambiguous,candidate,3,2,initials b match several full names,n,B. Wüst 1933 probably OCR of W. Wüst; not these candidates
+persons: Dr. V. Wüst -> Bruder von Fr. Wüst,persons,Dr. V. Wüst,Bruder von Fr. Wüst,initial-ambiguous,candidate,3,1,initials v match several full names,n,Dr. V. Wüst = OCR of Dr. W. Wüst; not these relatives
+persons: Dr. V. Wüst -> Gattin von Walter Wüst,persons,Dr. V. Wüst,Gattin von Walter Wüst,initial-ambiguous,candidate,3,1,initials v match several full names,n,Dr. V. Wüst = OCR of Dr. W. Wüst; not these relatives
+persons: Dr. V. Wüst -> Bekannter von Wüst,persons,Dr. V. Wüst,Bekannter von Wüst,initial-ambiguous,candidate,3,2,initials v match several full names,n,Dr. V. Wüst = OCR of Dr. W. Wüst; not these relatives
+persons: E. Wüst -> Ed. Wüst,persons,E. Wüst,Ed. Wüst,initial-ambiguous,candidate,32,3,initials e match several full names,n,E. Wüst probably OCR of W./Hr. Wüst = Walter; not these candidates
+persons: E. Wüst -> Walter Wüst,persons,E. Wüst,Walter Wüst,initial-ambiguous,candidate,32,2425,initials e match several full names,n,E. Wüst probably OCR of W./Hr. Wüst = Walter; not these candidates
+persons: F. Wüst -> Fritz Wüst,persons,F. Wüst,Fritz Wüst,initial-ambiguous,candidate,3,1,initials f match several full names,n,F. Wüst 1932 probably OCR of W./Hr. Wüst; not these
+persons: F. Wüst -> Freund Wüst,persons,F. Wüst,Freund Wüst,initial-ambiguous,candidate,3,1,initials f match several full names,n,F. Wüst 1932 probably OCR of W./Hr. Wüst; not these
+persons: Prof. Dr. A. Laubmann -> Professor Dr. ALFRED LAUBMANN,persons,Prof. Dr. A. Laubmann,Professor Dr. ALFRED LAUBMANN,initial-ambiguous,candidate,2,1,initials a match several full names,n,same person (diarist); Dr. Alfred Laubmann row chosen
+persons: Prof. Dr. A. Laubmann -> Herrn Professor Dr. Alfred Laubmann,persons,Prof. Dr. A. Laubmann,Herrn Professor Dr. Alfred Laubmann,initial-ambiguous,candidate,2,1,initials a match several full names,n,same person (diarist); Dr. Alfred Laubmann row chosen
+persons: Prof. Dr. A. Laubmann -> Alfred Laubmann,persons,Prof. Dr. A. Laubmann,Alfred Laubmann,initial-ambiguous,candidate,2,3,initials a match several full names,y,the diarist Alfred Laubmann; cleanest canonical
+persons: H. Sick -> Hellmut Sick,persons,H. Sick,Hellmut Sick,initial-ambiguous,candidate,1,2,initials h match several full names,n,spelling variant of Helmut Sick; merged via correct spelling row
+persons: H. Sick -> Dr. Helmuth Sick,persons,H. Sick,Dr. Helmuth Sick,initial-ambiguous,candidate,1,1,initials h match several full names,n,spelling variant of Helmut Sick; merged via correct spelling row
+persons: H. Sick -> Helmut Sick,persons,H. Sick,Helmut Sick,initial-ambiguous,candidate,1,13,initials h match several full names,y,Helmut Sick ornithologist; Hellmuth/Hellmut/Dr. rows spelling variants
+persons: H. Sick -> Hellmuth Sick,persons,H. Sick,Hellmuth Sick,initial-ambiguous,candidate,1,27,initials h match several full names,n,spelling variant of Helmut Sick; merged via correct spelling row
+persons: H. Brandt -> Dr. Herbert Brandt,persons,H. Brandt,Dr. Herbert Brandt,initial-ambiguous,candidate,1,7,initials h match several full names,n,Heinz vs Herbert Brandt both H.; both 1954/55; unresolved
+persons: H. Brandt -> Heinz Brandt,persons,H. Brandt,Heinz Brandt,initial-ambiguous,candidate,1,13,initials h match several full names,n,Heinz vs Herbert Brandt both H.; both 1954/55; unresolved
+persons: E. Seggel -> Eberhard Seggel,persons,E. Seggel,Eberhard Seggel,initial-ambiguous,candidate,9,75,initials e match several full names,n,Einhart vs Eberhard Seggel likely same person; true name unclear
+persons: E. Seggel -> Einhart Seggel,persons,E. Seggel,Einhart Seggel,initial-ambiguous,candidate,9,78,initials e match several full names,n,Einhart vs Eberhard Seggel likely same person; true name unclear
+persons: v. Bibra -> Friedr. Freiherrn von Bibra,persons,v. Bibra,Friedr. Freiherrn von Bibra,initial-ambiguous,candidate,2,2,initials v match several full names,n,same person; Friedrich Frh. row chosen
+persons: v. Bibra -> Friedrich Frh. von Bibra,persons,v. Bibra,Friedrich Frh. von Bibra,initial-ambiguous,candidate,2,3,initials v match several full names,y,von Bibra stork reporter = Friedrich Frh. von Bibra
+persons: Büchner -> A. Büchner,persons,Büchner,A. Büchner,surname-ambiguous,candidate,157,4,bare surname; 2 persons share it,n,bare Büchner 1917-21 (n=157) not clearly this small candidate
+persons: Büchner -> Hans Büchner,persons,Büchner,Hans Büchner,surname-ambiguous,candidate,157,3,bare surname; 2 persons share it,n,bare Büchner 1917-21 (n=157) not clearly this small candidate
+persons: Fiedler -> A. Fiedler,persons,Fiedler,A. Fiedler,surname-ambiguous,candidate,1,2,bare surname; 2 persons share it,n,A. Fiedler 1934 vs Oskar 1938; bare 1950 unresolved
+persons: Fiedler -> Oskar Fiedler,persons,Fiedler,Oskar Fiedler,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,A. Fiedler 1934 vs Oskar 1938; bare 1950 unresolved
+persons: Hoffmann -> A. Hoffmann,persons,Hoffmann,A. Hoffmann,surname-ambiguous,candidate,10,2,bare surname; 6 persons share it,n,several Dr. Hoffmann possible; unsure
+persons: Hoffmann -> Prof.Dr.B. Hoffmann,persons,Hoffmann,Prof.Dr.B. Hoffmann,surname-ambiguous,candidate,10,1,bare surname; 6 persons share it,n,several Dr. Hoffmann possible; unsure
+persons: Hoffmann -> Joachim Hoffmann,persons,Hoffmann,Joachim Hoffmann,surname-ambiguous,candidate,10,1,bare surname; 6 persons share it,n,several Dr. Hoffmann possible; unsure
+persons: Hoffmann -> Dr. R. Hoffmann,persons,Hoffmann,Dr. R. Hoffmann,surname-ambiguous,candidate,10,12,bare surname; 6 persons share it,n,several Dr. Hoffmann possible; unsure
+persons: Hoffmann -> B. Hoffmann,persons,Hoffmann,B. Hoffmann,surname-ambiguous,candidate,10,6,bare surname; 6 persons share it,n,several Dr. Hoffmann possible; unsure
+persons: Hoffmann -> Kurt Hoffmann,persons,Hoffmann,Kurt Hoffmann,surname-ambiguous,candidate,10,1,bare surname; 6 persons share it,n,several Dr. Hoffmann possible; unsure
+persons: Kleinschmidt -> A. Kleinschmidt,persons,Kleinschmidt,A. Kleinschmidt,surname-ambiguous,candidate,11,1,bare surname; 2 persons share it,n,Uppsala 1950 could be A. Kleinschmidt not Otto; unsure
+persons: Kleinschmidt -> Otto Kleinschmidt,persons,Kleinschmidt,Otto Kleinschmidt,surname-ambiguous,candidate,11,3,bare surname; 2 persons share it,y,bare Kleinschmidt 1918-50 = Otto Kleinschmidt (famous) [conflict resolved]
+persons: Kögel -> Anton Kögel,persons,Kögel,Anton Kögel,surname-ambiguous,candidate,2,13,bare surname; 4 persons share it,n,Anton and Hans Kögel both active 1942-44
+persons: Kögel -> Jäger Kögel,persons,Kögel,Jäger Kögel,surname-ambiguous,candidate,2,2,bare surname; 4 persons share it,n,Anton and Hans Kögel both active 1942-44
+persons: Kögel -> Stamm Kögel,persons,Kögel,Stamm Kögel,surname-ambiguous,candidate,2,2,bare surname; 4 persons share it,n,Anton and Hans Kögel both active 1942-44
+persons: Kögel -> Hans Kögel,persons,Kögel,Hans Kögel,surname-ambiguous,candidate,2,7,bare surname; 4 persons share it,n,Anton and Hans Kögel both active 1942-44
+persons: Mayer -> E. Schütze[?]mayer,persons,Mayer,E. Schütze[?]mayer,surname-ambiguous,candidate,3,2,bare surname; 5 persons share it,n,no Dr. candidate; common surname; unresolved
+persons: Mayer -> Kemmater-Mayer,persons,Mayer,Kemmater-Mayer,surname-ambiguous,candidate,3,1,bare surname; 5 persons share it,n,no Dr. candidate; common surname; unresolved
+persons: Mayer -> Franz Mayer,persons,Mayer,Franz Mayer,surname-ambiguous,candidate,3,2,bare surname; 5 persons share it,n,no Dr. candidate; common surname; unresolved
+persons: Mayer -> A. Mayer,persons,Mayer,A. Mayer,surname-ambiguous,candidate,3,1,bare surname; 5 persons share it,n,no Dr. candidate; common surname; unresolved
+persons: Mayer -> Clara Mayer,persons,Mayer,Clara Mayer,surname-ambiguous,candidate,3,1,bare surname; 5 persons share it,n,no Dr. candidate; common surname; unresolved
+persons: Herr Brunner -> A. Müller-Brunner,persons,Herr Brunner,A. Müller-Brunner,surname-ambiguous,candidate,2,2,bare surname; 3 persons share it,n,no matching Brunner candidate
+persons: Herr Brunner -> Karl Brunner,persons,Herr Brunner,Karl Brunner,surname-ambiguous,candidate,2,1,bare surname; 3 persons share it,n,no matching Brunner candidate
+persons: Herr Brunner -> Sohn von Staatsanwalt Brunner,persons,Herr Brunner,Sohn von Staatsanwalt Brunner,surname-ambiguous,candidate,2,2,bare surname; 3 persons share it,n,no matching Brunner candidate
+persons: Prof. Dr. Peters -> Ursula Peters,persons,Prof. Dr. Peters,Ursula Peters,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,female; 1960
+persons: Prof. Dr. Peters -> A. Peters,persons,Prof. Dr. Peters,A. Peters,surname-ambiguous,candidate,1,2,bare surname; 3 persons share it,n,not Prof.; A. Peters 1918 or Ursula female
+persons: Prof. Dr. Peters -> Prof. Dr. H. Peters,persons,Prof. Dr. Peters,Prof. Dr. H. Peters,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,y,same title; same 1949 Radolfzell event; only Prof. candidate
+persons: Roth -> Felix Roth,persons,Roth,Felix Roth,surname-ambiguous,candidate,2,4,bare surname; 3 persons share it,n,Felix vs W. Roth; unsure
+persons: Roth -> W. Roth,persons,Roth,W. Roth,surname-ambiguous,candidate,2,2,bare surname; 3 persons share it,n,Felix vs W. Roth; unsure
+persons: Roth -> A. Roth,persons,Roth,A. Roth,surname-ambiguous,candidate,2,2,bare surname; 3 persons share it,n,Felix vs W. Roth; unsure
+persons: Schneider -> A. SCHNEIDER,persons,Schneider,A. SCHNEIDER,surname-ambiguous,candidate,7,1,bare surname; 3 persons share it,n,common surname; three Schneiders; no fit
+persons: Schneider -> Heinrich Schneider,persons,Schneider,Heinrich Schneider,surname-ambiguous,candidate,7,2,bare surname; 3 persons share it,n,common surname; three Schneiders; no fit
+persons: Schneider -> Manfred Schneider,persons,Schneider,Manfred Schneider,surname-ambiguous,candidate,7,2,bare surname; 3 persons share it,n,common surname; three Schneiders; no fit
+persons: Schnell -> A. Schnell,persons,Schnell,A. Schnell,surname-ambiguous,candidate,3,1,bare surname; 2 persons share it,n,E. vs A. Schnell; unsure
+persons: Schnell -> E. Schnell,persons,Schnell,E. Schnell,surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,E. vs A. Schnell; unsure
+persons: Stud. Schröter -> H. Schröter,persons,Stud. Schröter,H. Schröter,surname-ambiguous,candidate,22,16,bare surname; 4 persons share it,y,bare Schröter 1937-38 = H. Schröter 1937-38
+persons: Stud. Schröter -> Eva-Maria Schröter,persons,Stud. Schröter,Eva-Maria Schröter,surname-ambiguous,candidate,22,1,bare surname; 4 persons share it,n,female; different person
+persons: Stud. Schröter -> Wilhelm Schröter,persons,Stud. Schröter,Wilhelm Schröter,surname-ambiguous,candidate,22,55,bare surname; 4 persons share it,n,other Schröter; Wilhelm 1942 possibly same if H=W OCR
+persons: Stud. Schröter -> A. Schröter,persons,Stud. Schröter,A. Schröter,surname-ambiguous,candidate,22,1,bare surname; 4 persons share it,n,other Schröter; Wilhelm 1942 possibly same if H=W OCR
+persons: Schlick -> Dr. A. F. Schlick,persons,Schlick,Dr. A. F. Schlick,surname-ambiguous,candidate,3,1,bare surname; 2 persons share it,n,A. Th. vs Dr. A. F. Schlick; unsure
+persons: Schlick -> A. Th. Schlick,persons,Schlick,A. Th. Schlick,surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,A. Th. vs Dr. A. F. Schlick; unsure
+persons: Ulrich -> A. Ulrich,persons,Ulrich,A. Ulrich,surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,1931; different Ulrich
+persons: Ulrich -> Walter Ulrich,persons,Ulrich,Walter Ulrich,surname-ambiguous,candidate,3,1,bare surname; 2 persons share it,y,Ulrich 1954 Basel same trip as Walter Ulrich 1954
+persons: Herr Jordans -> v. Jordans,persons,Herr Jordans,v. Jordans,surname-ambiguous,candidate,8,1,bare surname; 3 persons share it,y,same cluster as the accepted pair (A. von Jordans / Dr. H. Noll)
+persons: Herr Jordans -> Adolf von Jordans,persons,Herr Jordans,Adolf von Jordans,surname-ambiguous,candidate,8,9,bare surname; 3 persons share it,y,Adolf von Jordans (Bonn Museum Koenig); only Jordans
+persons: Herr Jordans -> Dr. von Jordans,persons,Herr Jordans,Dr. von Jordans,surname-ambiguous,candidate,8,4,bare surname; 3 persons share it,n,same person Adolf von Jordans; A. von Jordans row chosen
+persons: Apotheker Wagner -> Adolf Wagner,persons,Apotheker Wagner,Adolf Wagner,surname-ambiguous,candidate,7,1,bare surname; 3 persons share it,n,no Apotheker among candidates; unsure
+persons: Apotheker Wagner -> Robert Wagner,persons,Apotheker Wagner,Robert Wagner,surname-ambiguous,candidate,7,3,bare surname; 3 persons share it,n,no Apotheker among candidates; unsure
+persons: Apotheker Wagner -> Kurt Wagner,persons,Apotheker Wagner,Kurt Wagner,surname-ambiguous,candidate,7,10,bare surname; 3 persons share it,n,no Apotheker among candidates; unsure
+persons: Jordan -> Adolf von Jordan,persons,Jordan,Adolf von Jordan,surname-ambiguous,candidate,1,3,bare surname; 3 persons share it,n,Jordan 1930 Amsterdam may be Karl Jordan Tring; von Jordans spelled separately
+persons: Jordan -> Beate von Jordan,persons,Jordan,Beate von Jordan,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,female; 1958
+persons: Jordan -> Dr. von Jordan,persons,Jordan,Dr. von Jordan,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,Jordan 1930 Amsterdam may be Karl Jordan Tring; von Jordans spelled separately
+persons: Schillinger -> F. Schillinger,persons,Schillinger,F. Schillinger,surname-ambiguous,candidate,18,2,bare surname; 2 persons share it,n,Albert vs F. Schillinger; unsure
+persons: Schillinger -> Albert Schillinger,persons,Schillinger,Albert Schillinger,surname-ambiguous,candidate,18,5,bare surname; 2 persons share it,n,Albert vs F. Schillinger; unsure
+persons: Wüst -> Brig. Wüst,persons,Wüst,Brig. Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> E. Wüst,persons,Wüst,E. Wüst,surname-ambiguous,candidate,872,32,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Wüst -> Bruder von Fr. Wüst,persons,Wüst,Bruder von Fr. Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,relational description; not the person himself
+persons: Wüst -> Gattin von Walter Wüst,persons,Wüst,Gattin von Walter Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,relational description; not the person himself
+persons: Wüst -> B. Wüst,persons,Wüst,B. Wüst,surname-ambiguous,candidate,872,3,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Wüst -> Walter Wüst,persons,Wüst,Walter Wüst,surname-ambiguous,candidate,872,2425,bare surname; 27 persons share it,y,bare Wüst = Walter Wüst; dominant Munich ornithologist [conflict resolved]
+persons: Wüst -> Fritz Wüst,persons,Wüst,Fritz Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> N. Wüst,persons,Wüst,N. Wüst,surname-ambiguous,candidate,872,9,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Wüst -> K. Wüst,persons,Wüst,K. Wüst,surname-ambiguous,candidate,872,33,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> F. Wüst,persons,Wüst,F. Wüst,surname-ambiguous,candidate,872,3,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Wüst -> Prälat Wüst,persons,Wüst,Prälat Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> Brigitte Wüst,persons,Wüst,Brigitte Wüst,surname-ambiguous,candidate,872,2,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> Ed. Wüst,persons,Wüst,Ed. Wüst,surname-ambiguous,candidate,872,3,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Wüst -> Dr. V. Wüst,persons,Wüst,Dr. V. Wüst,surname-ambiguous,candidate,872,3,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Wüst -> Dr.W. Wüst,persons,Wüst,Dr.W. Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Wüst -> Freund Wüst,persons,Wüst,Freund Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,relational description; not the person himself
+persons: Wüst -> Albert Wüst,persons,Wüst,Albert Wüst,surname-ambiguous,candidate,872,2,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> Rainer Wüst,persons,Wüst,Rainer Wüst,surname-ambiguous,candidate,872,1,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> Wolfgang Wüst,persons,Wüst,Wolfgang Wüst,surname-ambiguous,candidate,872,3,bare surname; 27 persons share it,n,different or later Wüst; bare form denotes Walter Wüst
+persons: Wüst -> Bekannter von Wüst,persons,Wüst,Bekannter von Wüst,surname-ambiguous,candidate,872,2,bare surname; 27 persons share it,n,relational description; not the person himself
+persons: Wüst -> E. W. Wüst,persons,Wüst,E. W. Wüst,surname-ambiguous,candidate,872,2,bare surname; 27 persons share it,n,likely OCR/initial variant of Walter Wüst; merge target is Walter row
+persons: Nieth -> Alex Nieth,persons,Nieth,Alex Nieth,surname-ambiguous,candidate,2,13,bare surname; 2 persons share it,y,rare surname; only Alex Nieth in diaries
+persons: Nieth -> Herrn Nieth,persons,Nieth,Herrn Nieth,surname-ambiguous,candidate,2,3,bare surname; 2 persons share it,n,Herrn Nieth same person; Alex row chosen
+persons: König -> Alexander Koenig,persons,König,Alexander Koenig,surname-ambiguous,candidate,4,1,bare surname; 3 persons share it,n,different König; 1934
+persons: König -> Dr. Claus König,persons,König,Dr. Claus König,surname-ambiguous,candidate,4,4,bare surname; 3 persons share it,n,1934 Museum Koenig vs 1960 mixed; unsure [conflict resolved]
+persons: König -> Walter König,persons,König,Walter König,surname-ambiguous,candidate,4,1,bare surname; 3 persons share it,n,different König; 1934
+persons: Beckmann -> Karl Otto Beckmann,persons,Beckmann,Karl Otto Beckmann,surname-ambiguous,candidate,16,3,bare surname; 3 persons share it,n,three small Beckmann candidates; unsure which
+persons: Beckmann -> K.A. Beckmann,persons,Beckmann,K.A. Beckmann,surname-ambiguous,candidate,16,5,bare surname; 3 persons share it,n,three small Beckmann candidates; unsure which
+persons: Beckmann -> Alf Beckmann,persons,Beckmann,Alf Beckmann,surname-ambiguous,candidate,16,3,bare surname; 3 persons share it,n,three small Beckmann candidates; unsure which
+persons: Laubmann -> Professor Dr. ALFRED LAUBMANN,persons,Laubmann,Professor Dr. ALFRED LAUBMANN,surname-ambiguous,candidate,2,1,bare surname; 8 persons share it,n,same person Alfred Laubmann; merged via Dr. Alfred row
+persons: Laubmann -> Prof. Dr. A. Laubmann,persons,Laubmann,Prof. Dr. A. Laubmann,surname-ambiguous,candidate,2,2,bare surname; 8 persons share it,n,same person Alfred Laubmann; merged via Dr. Alfred row
+persons: Laubmann -> ELISABETH LAUBMANN,persons,Laubmann,ELISABETH LAUBMANN,surname-ambiguous,candidate,2,7,bare surname; 8 persons share it,n,wife Elisabeth; female; not Dr.
+persons: Laubmann -> Professor Dr. Laubmann,persons,Laubmann,Professor Dr. Laubmann,surname-ambiguous,candidate,2,1,bare surname; 8 persons share it,n,same person Alfred Laubmann; merged via Dr. Alfred row
+persons: Laubmann -> Herrn Professor Dr. Alfred Laubmann,persons,Laubmann,Herrn Professor Dr. Alfred Laubmann,surname-ambiguous,candidate,2,1,bare surname; 8 persons share it,n,same person Alfred Laubmann; merged via Dr. Alfred row
+persons: Laubmann -> Professor Laubmann,persons,Laubmann,Professor Laubmann,surname-ambiguous,candidate,2,1,bare surname; 8 persons share it,n,same person Alfred Laubmann; merged via Dr. Alfred row
+persons: Laubmann -> Professor Dr. A. Laubmann,persons,Laubmann,Professor Dr. A. Laubmann,surname-ambiguous,candidate,2,1,bare surname; 8 persons share it,n,same person Alfred Laubmann; merged via Dr. Alfred row
+persons: Laubmann -> Alfred Laubmann,persons,Laubmann,Alfred Laubmann,surname-ambiguous,candidate,2,3,bare surname; 8 persons share it,y,diarist Alfred Laubmann; all non-Elisabeth rows same person
+persons: Alois -> Jäger Alois,persons,Alois,Jäger Alois,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,first name only
+persons: Alois -> By[?]ck Alois,persons,Alois,By[?]ck Alois,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,first name only
+persons: Prof. Stimmelmayr -> Anton Stimmelmayr,persons,Prof. Stimmelmayr,Anton Stimmelmayr,surname-ambiguous,candidate,2,3,bare surname; 4 persons share it,n,Professor row is the match; this row not titled
+persons: Prof. Stimmelmayr -> Professor Stimmelmayr,persons,Prof. Stimmelmayr,Professor Stimmelmayr,surname-ambiguous,candidate,2,1,bare surname; 4 persons share it,y,same title form; Prof. abbreviates Professor; one professor Stimmelmayr
+persons: Prof. Stimmelmayr -> Alois Stimmelmayr,persons,Prof. Stimmelmayr,Alois Stimmelmayr,surname-ambiguous,candidate,2,2,bare surname; 4 persons share it,n,Professor row is the match; this row not titled
+persons: Prof. Stimmelmayr -> Gebrüder Stimmelmayr,persons,Prof. Stimmelmayr,Gebrüder Stimmelmayr,surname-ambiguous,candidate,2,2,bare surname; 4 persons share it,n,Professor row is the match; this row not titled
+persons: Amann -> C. Amann,persons,Amann,C. Amann,surname-ambiguous,candidate,3,5,bare surname; 2 persons share it,n,no year overlap; E./C. Amann unclear
+persons: Amann -> E. Amann,persons,Amann,E. Amann,surname-ambiguous,candidate,3,11,bare surname; 2 persons share it,n,no year overlap; E./C. Amann unclear
+"persons: Georg -> Anhaiser, Georg",persons,Georg,"Anhaiser, Georg",surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,first name only
+"persons: Georg -> Beck, Georg",persons,Georg,"Beck, Georg",surname-ambiguous,candidate,3,3,bare surname; 2 persons share it,n,first name only
+persons: Fink -> Anton Fink,persons,Fink,Anton Fink,surname-ambiguous,candidate,6,2,bare surname; 3 persons share it,n,G. vs H. Fink both 1949; unsure
+persons: Fink -> H. Fink,persons,Fink,H. Fink,surname-ambiguous,candidate,6,9,bare surname; 3 persons share it,n,G. vs H. Fink both 1949; unsure
+persons: Fink -> G. Fink,persons,Fink,G. Fink,surname-ambiguous,candidate,6,12,bare surname; 3 persons share it,n,G. vs H. Fink both 1949; unsure
+persons: Schenk -> v. Schenk,persons,Schenk,v. Schenk,surname-ambiguous,candidate,1,2,bare surname; 4 persons share it,n,v./Anton/Freund Schenk not congress ornithologist Jakob Schenk
+persons: Schenk -> Jakob Schenk,persons,Schenk,Jakob Schenk,surname-ambiguous,candidate,1,2,bare surname; 4 persons share it,y,IOC Amsterdam 1930 context; Hungarian ornithologist Jakob Schenk
+persons: Schenk -> Freund Schenk,persons,Schenk,Freund Schenk,surname-ambiguous,candidate,1,1,bare surname; 4 persons share it,n,v./Anton/Freund Schenk not congress ornithologist Jakob Schenk
+persons: Schenk -> Anton Schenk,persons,Schenk,Anton Schenk,surname-ambiguous,candidate,1,2,bare surname; 4 persons share it,n,v./Anton/Freund Schenk not congress ornithologist Jakob Schenk
+persons: Schmidt -> Rob. Schmidt,persons,Schmidt,Rob. Schmidt,surname-ambiguous,candidate,9,2,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Schmidt -> Chr. Schmidt,persons,Schmidt,Chr. Schmidt,surname-ambiguous,candidate,9,2,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Schmidt -> Anton Schmidt,persons,Schmidt,Anton Schmidt,surname-ambiguous,candidate,9,2,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Schmidt -> Manfred Schmidt,persons,Schmidt,Manfred Schmidt,surname-ambiguous,candidate,9,2,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Schmidt -> Hans Schmidt,persons,Schmidt,Hans Schmidt,surname-ambiguous,candidate,9,2,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Schmidt -> F. Schmidt,persons,Schmidt,F. Schmidt,surname-ambiguous,candidate,9,1,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Schmidt -> Max Schmidt,persons,Schmidt,Max Schmidt,surname-ambiguous,candidate,9,3,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Schmidt -> Prof. Bastian Schmidt,persons,Schmidt,Prof. Bastian Schmidt,surname-ambiguous,candidate,9,2,bare surname; 8 persons share it,n,very common surname; unsure
+persons: Dr. Schmitz -> Sibylle Schmitz,persons,Dr. Schmitz,Sibylle Schmitz,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,female; 1950
+persons: Dr. Schmitz -> Carl Schmitz,persons,Dr. Schmitz,Carl Schmitz,surname-ambiguous,candidate,1,2,bare surname; 3 persons share it,n,Generaloberarzt Dr. Schmitz; no candidate matches
+persons: Dr. Schmitz -> Anton Schmitz,persons,Dr. Schmitz,Anton Schmitz,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,Generaloberarzt Dr. Schmitz; no candidate matches
+persons: Wimmer -> Thomas Wimmer,persons,Wimmer,Thomas Wimmer,surname-ambiguous,candidate,8,1,bare surname; 3 persons share it,n,different Wimmer
+persons: Wimmer -> Aukton Wimmer,persons,Wimmer,Aukton Wimmer,surname-ambiguous,candidate,8,2,bare surname; 3 persons share it,n,OCR of Anton Wimmer; same person; Anton row chosen
+persons: Wimmer -> Anton Wimmer,persons,Wimmer,Anton Wimmer,surname-ambiguous,candidate,8,5,bare surname; 3 persons share it,y,Anton Wimmer 1931-50 spans variant years; Aukton = OCR of Anton
+persons: Jäckel -> Anton. Amm. Jaeckel,persons,Jäckel,Anton. Amm. Jaeckel,surname-ambiguous,candidate,12,2,bare surname; 2 persons share it,n,Anton Jaeckel vs Dr. von Jaeckel 1931; bare 1929 unresolved
+persons: Jäckel -> Dr. von Jäckel,persons,Jäckel,Dr. von Jäckel,surname-ambiguous,candidate,12,1,bare surname; 2 persons share it,n,Anton Jaeckel vs Dr. von Jaeckel 1931; bare 1929 unresolved
+persons: Dr. Hermann -> Max Hermann,persons,Dr. Hermann,Max Hermann,surname-ambiguous,candidate,5,4,bare surname; 4 persons share it,n,no Dr. Hermann candidate; unsure
+persons: Dr. Hermann -> Zahnarzt Hermann,persons,Dr. Hermann,Zahnarzt Hermann,surname-ambiguous,candidate,5,1,bare surname; 4 persons share it,n,no Dr. Hermann candidate; unsure
+persons: Dr. Hermann -> August Hermann,persons,Dr. Hermann,August Hermann,surname-ambiguous,candidate,5,2,bare surname; 4 persons share it,n,no Dr. Hermann candidate; unsure
+persons: Dr. Hermann -> G. Hermann,persons,Dr. Hermann,G. Hermann,surname-ambiguous,candidate,5,7,bare surname; 4 persons share it,n,no Dr. Hermann candidate; unsure
+persons: Walter -> Chr. Walter,persons,Walter,Chr. Walter,surname-ambiguous,candidate,409,2,bare surname; 2 persons share it,n,first name only; candidates are surname Walter
+persons: Walter -> August Walter,persons,Walter,August Walter,surname-ambiguous,candidate,409,2,bare surname; 2 persons share it,n,first name only; candidates are surname Walter
+persons: Förster St. -> Luise St.,persons,Förster St.,Luise St.,surname-ambiguous,candidate,4,1,bare surname; 3 persons share it,n,abbreviated surname; candidates unrelated
+persons: Förster St. -> B. St.,persons,Förster St.,B. St.,surname-ambiguous,candidate,4,3,bare surname; 3 persons share it,n,abbreviated surname; candidates unrelated
+persons: Förster St. -> E. St.,persons,Förster St.,E. St.,surname-ambiguous,candidate,4,2,bare surname; 3 persons share it,n,abbreviated surname; candidates unrelated
+persons: Bauer -> Mira Bauer,persons,Bauer,Mira Bauer,surname-ambiguous,candidate,68,20,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Lisa Bauer,persons,Bauer,Lisa Bauer,surname-ambiguous,candidate,68,6,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Luise Bauer,persons,Bauer,Luise Bauer,surname-ambiguous,candidate,68,3,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Nina Bauer,persons,Bauer,Nina Bauer,surname-ambiguous,candidate,68,32,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Hans Bauer,persons,Bauer,Hans Bauer,surname-ambiguous,candidate,68,1,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Rosa Bauer,persons,Bauer,Rosa Bauer,surname-ambiguous,candidate,68,6,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Elisa Bauer,persons,Bauer,Elisa Bauer,surname-ambiguous,candidate,68,8,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> G. Bauer,persons,Bauer,G. Bauer,surname-ambiguous,candidate,68,1,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Vera Bauer,persons,Bauer,Vera Bauer,surname-ambiguous,candidate,68,2,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Lorenz Bauer,persons,Bauer,Lorenz Bauer,surname-ambiguous,candidate,68,7,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Nisa Bauer,persons,Bauer,Nisa Bauer,surname-ambiguous,candidate,68,5,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> freie Bauer,persons,Bauer,freie Bauer,surname-ambiguous,candidate,68,4,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Bauer -> Nora Bauer,persons,Bauer,Nora Bauer,surname-ambiguous,candidate,68,21,bare surname; 13 persons share it,n,very common surname; many Bauers mostly female; no fit
+persons: Baron Benner -> v. Benner,persons,Baron Benner,v. Benner,surname-ambiguous,candidate,11,2,bare surname; 2 persons share it,y,Baron Benner = v. Benner; same noble Munich contact [conflict resolved]
+persons: Baron Benner -> Mira Benner,persons,Baron Benner,Mira Benner,surname-ambiguous,candidate,11,3,bare surname; 2 persons share it,n,female; different person
+persons: Berlepsch -> v. Berlepsch,persons,Berlepsch,v. Berlepsch,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,bare v. Berlepsch could be Graf or Freiherr; merged via Freiherr row
+persons: Berlepsch -> Dr. h. c. Hans Freiherr v. Berlepsch,persons,Berlepsch,Dr. h. c. Hans Freiherr v. Berlepsch,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,could be Graf (systematist) or Freiherr (protection); ambiguous [conflict resolved]
+persons: Baumeister -> H. Baumeister,persons,Baumeister,H. Baumeister,surname-ambiguous,candidate,2,2,bare surname; 2 persons share it,n,bare Baumeister may be profession; candidates weak; years differ
+persons: Baumeister -> Maler Baumeister,persons,Baumeister,Maler Baumeister,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,bare Baumeister may be profession; candidates weak; years differ
+persons: Berthold -> Karl Berthold,persons,Berthold,Karl Berthold,surname-ambiguous,candidate,4,2,bare surname; 2 persons share it,n,Revierjäger vs Forst-Verwalter Berthold; possibly same but unsure
+persons: Berthold -> Forst-Verwalter Berthold,persons,Berthold,Forst-Verwalter Berthold,surname-ambiguous,candidate,4,3,bare surname; 2 persons share it,n,Revierjäger vs Forst-Verwalter Berthold; possibly same but unsure
+persons: Besser -> von Besser,persons,Besser,von Besser,surname-ambiguous,candidate,5,2,bare surname; 2 persons share it,n,same person; L. von Besser row chosen
+persons: Besser -> L. von Besser,persons,Besser,L. von Besser,surname-ambiguous,candidate,5,3,bare surname; 2 persons share it,y,only one Besser (L. von Besser; OG Bayern); von Besser same
+persons: Krumbach -> Hans Br[?] Krumbach,persons,Krumbach,Hans Br[?] Krumbach,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,Krumbach 1956 Muenster; candidates 1927/1936 unrelated
+persons: Krumbach -> Bezirksamt Krumbach,persons,Krumbach,Bezirksamt Krumbach,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,Bezirksamt Krumbach is an office/place
+"persons: Vater -> Bezzel, Vater",persons,Vater,"Bezzel, Vater",surname-ambiguous,candidate,20,2,bare surname; 2 persons share it,n,description (father); not a specific person
+persons: Vater -> Bezzel's Vater,persons,Vater,Bezzel's Vater,surname-ambiguous,candidate,20,2,bare surname; 2 persons share it,n,description (father); not a specific person
+persons: Braun -> Werner Braun,persons,Braun,Werner Braun,surname-ambiguous,candidate,5,1,bare surname; 4 persons share it,n,Justizrat vs Johann Braun; unsure
+persons: Braun -> Joh. Braun,persons,Braun,Joh. Braun,surname-ambiguous,candidate,5,1,bare surname; 4 persons share it,n,Justizrat vs Johann Braun; unsure
+persons: Braun -> Justizrat Braun,persons,Braun,Justizrat Braun,surname-ambiguous,candidate,5,6,bare surname; 4 persons share it,n,Justizrat vs Johann Braun; unsure
+persons: Braun -> Johann Braun,persons,Braun,Johann Braun,surname-ambiguous,candidate,5,10,bare surname; 4 persons share it,n,Justizrat vs Johann Braun; unsure
+persons: Burkhardt -> Stadtinspektor Burkhardt,persons,Burkhardt,Stadtinspektor Burkhardt,surname-ambiguous,candidate,32,2,bare surname; 2 persons share it,y,only one Munich Burkhardt (Inspektor; Planegg reports); early contexts fit
+persons: Burkhardt -> K. Burkhardt,persons,Burkhardt,K. Burkhardt,surname-ambiguous,candidate,32,2,bare surname; 2 persons share it,n,K. Burkhardt 1932 probably same person; Stadtinspektor row chosen
+persons: Lauter -> Karl Lauter,persons,Lauter,Karl Lauter,surname-ambiguous,candidate,1,4,bare surname; 3 persons share it,n,Karl/Carl Lauter later years; R. Lauter matches 1918
+persons: Lauter -> R. Lauter,persons,Lauter,R. Lauter,surname-ambiguous,candidate,1,4,bare surname; 3 persons share it,y,R. Lauter attested 4x same year 1918; Karl/Carl later
+persons: Lauter -> Carl Lauter,persons,Lauter,Carl Lauter,surname-ambiguous,candidate,1,2,bare surname; 3 persons share it,n,Karl/Carl Lauter later years; R. Lauter matches 1918
+persons: Prof. Zimmer -> Michael Zimmer,persons,Prof. Zimmer,Michael Zimmer,surname-ambiguous,candidate,5,1,bare surname; 2 persons share it,n,Michael Zimmer 1949 unrelated; Prof. Dr. is Carl Zimmer
+persons: Prof. Zimmer -> C. Zimmer,persons,Prof. Zimmer,C. Zimmer,surname-ambiguous,candidate,5,2,bare surname; 2 persons share it,y,Carl Zimmer director Berlin Naturkunde museum 1926; same person [conflict resolved]
+persons: Dürr -> Franz Dürr,persons,Dürr,Franz Dürr,surname-ambiguous,candidate,20,7,bare surname; 2 persons share it,n,Carl vs Franz Dürr both plausible; unsure
+persons: Dürr -> Carl Dürr,persons,Dürr,Carl Dürr,surname-ambiguous,candidate,20,9,bare surname; 2 persons share it,n,Carl vs Franz Dürr both plausible; unsure
+persons: Meinertzhagen -> R. Meinertzhagen,persons,Meinertzhagen,R. Meinertzhagen,surname-ambiguous,candidate,1,2,bare surname; 3 persons share it,y,Richard Meinertzhagen at IOC Uppsala 1950; Col. rows same person
+persons: Meinertzhagen -> Col. Meinertzhagen,persons,Meinertzhagen,Col. Meinertzhagen,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,same person Richard Meinertzhagen; merged via R. row
+persons: Meinertzhagen -> Col. R. Meinertzhagen,persons,Meinertzhagen,Col. R. Meinertzhagen,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,same person Richard Meinertzhagen; merged via R. row
+persons: Schmitt -> Manfred Schmitt,persons,Schmitt,Manfred Schmitt,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,years 1960/1963 do not overlap 1918
+persons: Schmitt -> Cornel Schmitt,persons,Schmitt,Cornel Schmitt,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,years 1960/1963 do not overlap 1918
+persons: Danker -> Karl Danker,persons,Danker,Karl Danker,surname-ambiguous,candidate,2,3,bare surname; 2 persons share it,n,two Dankers different years; 1925 mention unresolved
+persons: Danker -> Heinrich Danker,persons,Danker,Heinrich Danker,surname-ambiguous,candidate,2,2,bare surname; 2 persons share it,n,two Dankers different years; 1925 mention unresolved
+persons: Demoll -> K. Demoll,persons,Demoll,K. Demoll,surname-ambiguous,candidate,1,8,bare surname; 2 persons share it,n,same person as H. Demoll likely; merged via larger row
+persons: Demoll -> H. Demoll,persons,Demoll,H. Demoll,surname-ambiguous,candidate,1,10,bare surname; 2 persons share it,y,H./K. Demoll likely one person (Reinhard Demoll?); larger cluster
+persons: Jäger -> Josef Jäger,persons,Jäger,Josef Jäger,surname-ambiguous,candidate,4,1,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Jäger -> Oberstdorfer Jäger,persons,Jäger,Oberstdorfer Jäger,surname-ambiguous,candidate,4,2,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Jäger -> einem Jäger,persons,Jäger,einem Jäger,surname-ambiguous,candidate,4,2,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Jäger -> Der deutsche Jäger,persons,Jäger,Der deutsche Jäger,surname-ambiguous,candidate,4,1,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Jäger -> ortserfahrener Jäger,persons,Jäger,ortserfahrener Jäger,surname-ambiguous,candidate,4,4,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Jäger -> ortskundiger Jäger,persons,Jäger,ortskundiger Jäger,surname-ambiguous,candidate,4,1,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Jäger -> ein Jäger,persons,Jäger,ein Jäger,surname-ambiguous,candidate,4,4,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Jäger -> ein bekannter Jäger,persons,Jäger,ein bekannter Jäger,surname-ambiguous,candidate,4,3,bare surname; 8 persons share it,n,generic hunter descriptions; not a person
+persons: Dr. Dietz -> Dr. F. Dietz,persons,Dr. Dietz,Dr. F. Dietz,surname-ambiguous,candidate,5,14,bare surname; 4 persons share it,n,four Dr. Dietz clusters; bare 1954 unresolved
+persons: Dr. Dietz -> Dr. G. Dietz,persons,Dr. Dietz,Dr. G. Dietz,surname-ambiguous,candidate,5,4,bare surname; 4 persons share it,n,four Dr. Dietz clusters; bare 1954 unresolved
+persons: Dr. Dietz -> Max Dietz,persons,Dr. Dietz,Max Dietz,surname-ambiguous,candidate,5,2,bare surname; 4 persons share it,n,four Dr. Dietz clusters; bare 1954 unresolved
+persons: Dr. Dietz -> Dr. J. Dietz,persons,Dr. Dietz,Dr. J. Dietz,surname-ambiguous,candidate,5,3,bare surname; 4 persons share it,n,four Dr. Dietz clusters; bare 1954 unresolved
+persons: Direktor Rebel -> Villa Rebel,persons,Direktor Rebel,Villa Rebel,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,Villa Rebel is a place not a person
+persons: Direktor Rebel -> Friedr. Rebel,persons,Direktor Rebel,Friedr. Rebel,surname-ambiguous,candidate,2,2,bare surname; 2 persons share it,y,only person candidate; same year 1920; Villa Rebel is place
+persons: Mayr -> Ernst Mayr,persons,Mayr,Ernst Mayr,surname-ambiguous,candidate,2,7,bare surname; 2 persons share it,y,international congress contexts London/Basel; famous ornithologist Ernst Mayr
+persons: Mayr -> Leonhard Mayr,persons,Mayr,Leonhard Mayr,surname-ambiguous,candidate,2,2,bare surname; 2 persons share it,n,local Leonhard Mayr 1931; congress context points to Ernst Mayr
+persons: Frank -> Georg Frank,persons,Frank,Georg Frank,surname-ambiguous,candidate,11,3,bare surname; 5 persons share it,n,no Dr. candidate; Rouen 1938 congress; unresolved
+persons: Frank -> H. Frank,persons,Frank,H. Frank,surname-ambiguous,candidate,11,2,bare surname; 5 persons share it,n,no Dr. candidate; Rouen 1938 congress; unresolved
+persons: Frank -> Reichsleiter Frank,persons,Frank,Reichsleiter Frank,surname-ambiguous,candidate,11,1,bare surname; 5 persons share it,n,Reichsleiter Frank 1942 unrelated
+persons: Frank -> Erich Frank,persons,Frank,Erich Frank,surname-ambiguous,candidate,11,12,bare surname; 5 persons share it,n,no Dr. candidate; Rouen 1938 congress; unresolved
+persons: Frank -> Vogelhändler Frank,persons,Frank,Vogelhändler Frank,surname-ambiguous,candidate,11,3,bare surname; 5 persons share it,n,no Dr. candidate; Rouen 1938 congress; unresolved
+persons: Junge -> G. C. A. Junge,persons,Junge,G. C. A. Junge,surname-ambiguous,candidate,2,4,bare surname; 3 persons share it,y,G. C. A. Junge Leiden at IOC Rouen 1938; Karl junge adjective
+persons: Junge -> d. Junge,persons,Junge,d. Junge,surname-ambiguous,candidate,2,1,bare surname; 3 persons share it,n,d. Junge is 'der Junge' not surname
+persons: Junge -> Karl junge,persons,Junge,Karl junge,surname-ambiguous,candidate,2,6,bare surname; 3 persons share it,n,Karl junge is 'young Karl' not surname
+persons: Steinbacher -> F. G. Steinbacher,persons,Steinbacher,F. G. Steinbacher,surname-ambiguous,candidate,10,1,bare surname; 6 persons share it,n,Georg or Joachim Steinbacher; unsure
+persons: Steinbacher -> Prof.Dr.Fr. Steinbacher,persons,Steinbacher,Prof.Dr.Fr. Steinbacher,surname-ambiguous,candidate,10,16,bare surname; 6 persons share it,n,Friedrich Georg Joachim Steinbacher genuinely different people [conflict resolved]
+persons: Steinbacher -> Georg Steinbacher,persons,Steinbacher,Georg Steinbacher,surname-ambiguous,candidate,10,11,bare surname; 6 persons share it,n,Georg or Joachim Steinbacher; unsure
+persons: Steinbacher -> Dr. J. Steinbacher,persons,Steinbacher,Dr. J. Steinbacher,surname-ambiguous,candidate,10,3,bare surname; 6 persons share it,n,Georg or Joachim Steinbacher; unsure
+persons: Steinbacher -> Prof. Dr. F. Steinbacher,persons,Steinbacher,Prof. Dr. F. Steinbacher,surname-ambiguous,candidate,10,1,bare surname; 6 persons share it,n,Georg or Joachim Steinbacher; unsure
+persons: Steinbacher -> H. G. Steinbacher,persons,Steinbacher,H. G. Steinbacher,surname-ambiguous,candidate,10,3,bare surname; 6 persons share it,n,Georg or Joachim Steinbacher; unsure
+persons: Prof. Jacobs -> Jürgen Jacobs,persons,Prof. Jacobs,Jürgen Jacobs,surname-ambiguous,candidate,16,2,bare surname; 2 persons share it,n,no Dr. candidate; Martha female; Juergen 1955 far
+persons: Prof. Jacobs -> Schwester Martha Jacobs,persons,Prof. Jacobs,Schwester Martha Jacobs,surname-ambiguous,candidate,16,2,bare surname; 2 persons share it,n,no Dr. candidate; Martha female; Juergen 1955 far
+persons: Parrot -> Dr. Carl Parrot,persons,Parrot,Dr. Carl Parrot,surname-ambiguous,candidate,66,1,bare surname; 3 persons share it,y,Carl Parrot founder OG Bayern; the Parrot of Bavarian ornithology [conflict resolved]
+persons: Parrot -> E. Parrot,persons,Parrot,E. Parrot,surname-ambiguous,candidate,66,1,bare surname; 3 persons share it,n,not Dr.; Carl Parrot is the ornithologist Dr.
+persons: Parrot -> F Parrot,persons,Parrot,F Parrot,surname-ambiguous,candidate,66,1,bare surname; 3 persons share it,n,not Dr.; Carl Parrot is the ornithologist Dr.
+persons: Dr. Sommerfeldt -> Ekart Sommerfeldt,persons,Dr. Sommerfeldt,Ekart Sommerfeldt,surname-ambiguous,candidate,6,5,bare surname; 2 persons share it,n,Ekart 1955 likely same person; merged via 1947 row
+persons: Dr. Sommerfeldt -> F.E. Sommerfeldt,persons,Dr. Sommerfeldt,F.E. Sommerfeldt,surname-ambiguous,candidate,6,19,bare surname; 2 persons share it,y,same year 1947; 19 mentions; Ekart row likely same person
+persons: Dr. Diesselhorst -> Dr. Gert Diesselhorst,persons,Dr. Diesselhorst,Dr. Gert Diesselhorst,surname-ambiguous,candidate,4,16,bare surname; 2 persons share it,y,Gerd Diesselhorst Munich ornithologist; Hort = OCR
+persons: Dr. Diesselhorst -> Dr. Hort Diesselhorst,persons,Dr. Diesselhorst,Dr. Hort Diesselhorst,surname-ambiguous,candidate,4,4,bare surname; 2 persons share it,n,Hort = OCR of Gert; same person; Gert row chosen
+persons: Nagy -> Dr. E. Nagy,persons,Nagy,Dr. E. Nagy,surname-ambiguous,candidate,1,2,bare surname; 2 persons share it,y,same year 1934; Hungarian ornithologist Eugen Nagy; only fit
+persons: Nagy -> L. Homag Nagy,persons,Nagy,L. Homag Nagy,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,L. Homag Nagy 1950 different person
+persons: Franz -> Jost Franz,persons,Franz,Jost Franz,surname-ambiguous,candidate,15,2,bare surname; 3 persons share it,n,Dr. Gert Franz plausible but not convincing; unsure
+persons: Franz -> Ortolf Franz,persons,Franz,Ortolf Franz,surname-ambiguous,candidate,15,1,bare surname; 3 persons share it,n,Dr. Gert Franz plausible but not convincing; unsure
+persons: Franz -> Gert Franz,persons,Franz,Gert Franz,surname-ambiguous,candidate,15,8,bare surname; 3 persons share it,n,Dr. Gert Franz plausible but not convincing; unsure
+persons: Frickhinger -> Dr. H. W. Frickhinger,persons,Frickhinger,Dr. H. W. Frickhinger,surname-ambiguous,candidate,4,3,bare surname; 2 persons share it,n,1918 'ein gewisser Frickhinger' unknown to diarist; 13 years earlier; unsure [conflict resolved]
+persons: Frickhinger -> V. Frickhinger,persons,Frickhinger,V. Frickhinger,surname-ambiguous,candidate,4,2,bare surname; 2 persons share it,n,V. Frickhinger 1939 likely OCR of W.; merged via Dr. row
+persons: Niethammer -> Dr. G. Niethammer,persons,Niethammer,Dr. G. Niethammer,surname-ambiguous,candidate,7,1,bare surname; 2 persons share it,y,Günther Niethammer the famous ornithologist; Oxford 1934 fits
+persons: Niethammer -> R. Niethammer,persons,Niethammer,R. Niethammer,surname-ambiguous,candidate,7,2,bare surname; 2 persons share it,n,R. Niethammer likely OCR error; not distinct known person
+persons: Franke -> K. Franke,persons,Franke,K. Franke,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,K. Franke 1954 vs Dr. H. Franke 1952; bare 1947 unresolved
+persons: Franke -> Dr. H. Franke,persons,Franke,Dr. H. Franke,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,K. Franke 1954 vs Dr. H. Franke 1952; bare 1947 unresolved
+persons: Hr. Frieling -> Heinrich Frieling,persons,Hr. Frieling,Heinrich Frieling,surname-ambiguous,candidate,1,3,bare surname; 2 persons share it,y,Heinrich Frieling Ismaning observer 1930s; Dr.H. row same person
+persons: Hr. Frieling -> Dr.H. Frieling,persons,Hr. Frieling,Dr.H. Frieling,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,same person Heinrich Frieling; merged via full-name row
+persons: Dr. Hirt -> H. Hirt,persons,Dr. Hirt,H. Hirt,surname-ambiguous,candidate,26,44,bare surname; 3 persons share it,y,Dr. Hirt 1931-36 matches Dr. H. Hirt 1933 (n=44) [conflict resolved]
+persons: Dr. Hirt -> F. H. Hirt,persons,Dr. Hirt,F. H. Hirt,surname-ambiguous,candidate,26,16,bare surname; 3 persons share it,n,later Hirt; possibly same person but years do not fit
+persons: Dr. Hirt -> Walter Hirt,persons,Dr. Hirt,Walter Hirt,surname-ambiguous,candidate,26,39,bare surname; 3 persons share it,n,later Hirt; possibly same person but years do not fit
+persons: Dr. H. Münch -> Er Münch.,persons,Dr. H. Münch,Er Münch.,surname-ambiguous,candidate,16,1,bare surname; 2 persons share it,n,Er Münch 1931 = Hr Münch; possibly same; unsure
+persons: Dr. H. Münch -> Karl Münch,persons,Dr. H. Münch,Karl Münch,surname-ambiguous,candidate,16,2,bare surname; 2 persons share it,y,Münch 1949 Uffing = Karl Münch 1949
+persons: Noll -> Dr. H. Noll,persons,Noll,Dr. H. Noll,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,y,Hans Noll Swiss ornithologist at IOC 1950; rows spacing variants
+persons: Noll -> Dr.H. Noll,persons,Noll,Dr.H. Noll,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,y,same cluster as the accepted pair (A. von Jordans / Dr. H. Noll)
+persons: Dr. Rust -> Walter Rust,persons,Dr. Rust,Walter Rust,surname-ambiguous,candidate,3,2,bare surname; 3 persons share it,n,no year overlap; several Rust; unsure
+persons: Dr. Rust -> H. Rust,persons,Dr. Rust,H. Rust,surname-ambiguous,candidate,3,5,bare surname; 3 persons share it,n,no year overlap; several Rust; unsure
+persons: Dr. Rust -> F. W. Rust,persons,Dr. Rust,F. W. Rust,surname-ambiguous,candidate,3,2,bare surname; 3 persons share it,n,no year overlap; several Rust; unsure
+persons: Dr. Haenel -> Forstrat Haenel,persons,Dr. Haenel,Forstrat Haenel,surname-ambiguous,candidate,3,1,bare surname; 3 persons share it,n,probably same person as Karl Haenel; merged via Karl row
+persons: Dr. Haenel -> Karl Haenel,persons,Dr. Haenel,Karl Haenel,surname-ambiguous,candidate,3,2,bare surname; 3 persons share it,y,rare surname; all Haenel rows 1931-32 likely one Forstrat Dr. [conflict resolved]
+persons: Dr. Haenel -> Dr. h. c. Haenel,persons,Dr. Haenel,Dr. h. c. Haenel,surname-ambiguous,candidate,3,1,bare surname; 3 persons share it,n,probably same person as Karl Haenel; merged via Karl row
+persons: Sick -> Hellmut Sick,persons,Sick,Hellmut Sick,surname-ambiguous,candidate,2,2,bare surname; 6 persons share it,n,spelling/OCR variant of Helmut Sick; merged via correct spelling row
+persons: Sick -> Dr. Helmuth Sick,persons,Sick,Dr. Helmuth Sick,surname-ambiguous,candidate,2,1,bare surname; 6 persons share it,n,spelling/OCR variant of Helmut Sick; merged via correct spelling row
+persons: Sick -> Helmut Sick,persons,Sick,Helmut Sick,surname-ambiguous,candidate,2,13,bare surname; 6 persons share it,y,Helmut Sick (Dr. 1937) at IOC Rouen; other rows spelling variants
+persons: Sick -> H. Sick,persons,Sick,H. Sick,surname-ambiguous,candidate,2,1,bare surname; 6 persons share it,n,spelling/OCR variant of Helmut Sick; merged via correct spelling row
+persons: Sick -> F. Sick,persons,Sick,F. Sick,surname-ambiguous,candidate,2,1,bare surname; 6 persons share it,n,spelling/OCR variant of Helmut Sick; merged via correct spelling row
+persons: Sick -> Hellmuth Sick,persons,Sick,Hellmuth Sick,surname-ambiguous,candidate,2,27,bare surname; 6 persons share it,n,spelling/OCR variant of Helmut Sick; merged via correct spelling row
+persons: Salomonsen -> Dr. J. Salomonsen,persons,Salomonsen,Dr. J. Salomonsen,surname-ambiguous,candidate,4,1,bare surname; 2 persons share it,n,same person Finn Salomonsen; merged via P. row
+persons: Salomonsen -> P. Salomonsen,persons,Salomonsen,P. Salomonsen,surname-ambiguous,candidate,4,1,bare surname; 2 persons share it,y,Finn Salomonsen at IOC Rouen 1938; Dr. J. row same person
+persons: Dr. Jourdain -> Rev. Jourdain,persons,Dr. Jourdain,Rev. Jourdain,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,same person; merged via full-name row
+persons: Dr. Jourdain -> F. C. R. Jourdain,persons,Dr. Jourdain,F. C. R. Jourdain,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,y,F. C. R. Jourdain at IOC Rouen 1938; Rev. row same person
+persons: Reinhardt -> H. Reinhardt,persons,Reinhardt,H. Reinhardt,surname-ambiguous,candidate,2,2,bare surname; 3 persons share it,n,three Reinhardts different years; bare 1927 mention unresolved
+persons: Reinhardt -> Dr. K. Reinhardt,persons,Reinhardt,Dr. K. Reinhardt,surname-ambiguous,candidate,2,2,bare surname; 3 persons share it,n,three Reinhardts different years; bare 1927 mention unresolved
+persons: Reinhardt -> V. Reinhardt,persons,Reinhardt,V. Reinhardt,surname-ambiguous,candidate,2,1,bare surname; 3 persons share it,n,three Reinhardts different years; bare 1927 mention unresolved
+persons: Krauß -> H. Krauss,persons,Krauß,H. Krauss,surname-ambiguous,candidate,4,2,bare surname; 4 persons share it,n,mineralogist Dr. Krauss 1939; no candidate matches
+persons: Krauß -> Werner Krauß,persons,Krauß,Werner Krauß,surname-ambiguous,candidate,4,1,bare surname; 4 persons share it,n,mineralogist Dr. Krauss 1939; no candidate matches
+persons: Krauß -> G. Krauss,persons,Krauß,G. Krauss,surname-ambiguous,candidate,4,1,bare surname; 4 persons share it,n,mineralogist Dr. Krauss 1939; no candidate matches
+persons: Krauß -> Walter Krauss,persons,Krauß,Walter Krauss,surname-ambiguous,candidate,4,1,bare surname; 4 persons share it,n,mineralogist Dr. Krauss 1939; no candidate matches
+persons: Dr. Lang -> W.M. Lang,persons,Dr. Lang,W.M. Lang,surname-ambiguous,candidate,1,1,bare surname; 3 persons share it,n,Basel 1954 Dr. Lang likely E. M. Lang zoo; W.M. row unproven
+persons: Dr. Lang -> Frhr. v. Lang,persons,Dr. Lang,Frhr. v. Lang,surname-ambiguous,candidate,1,2,bare surname; 3 persons share it,n,Basel 1954 Dr. Lang likely E. M. Lang zoo; W.M. row unproven
+persons: Dr. Lang -> Ludwig Lang,persons,Dr. Lang,Ludwig Lang,surname-ambiguous,candidate,1,2,bare surname; 3 persons share it,n,Basel 1954 Dr. Lang likely E. M. Lang zoo; W.M. row unproven
+persons: Dr. Martin -> Stalig -Martin,persons,Dr. Martin,Stalig -Martin,surname-ambiguous,candidate,5,1,bare surname; 3 persons share it,n,no Dr. Martin candidate
+persons: Dr. Martin -> Fischer Martin,persons,Dr. Martin,Fischer Martin,surname-ambiguous,candidate,5,1,bare surname; 3 persons share it,n,no Dr. Martin candidate
+persons: Dr. Martin -> Forstwart Martin,persons,Dr. Martin,Forstwart Martin,surname-ambiguous,candidate,5,2,bare surname; 3 persons share it,n,no Dr. Martin candidate
+persons: Rück -> H.W. Rück,persons,Rück,H.W. Rück,surname-ambiguous,candidate,9,4,bare surname; 4 persons share it,n,H./W./H.W./N. Rueck clusters unclear; Dr. title unmatched
+persons: Rück -> W. Rück,persons,Rück,W. Rück,surname-ambiguous,candidate,9,18,bare surname; 4 persons share it,n,H./W./H.W./N. Rueck clusters unclear; Dr. title unmatched
+persons: Rück -> H. Rück,persons,Rück,H. Rück,surname-ambiguous,candidate,9,21,bare surname; 4 persons share it,n,H./W./H.W./N. Rueck clusters unclear; Dr. title unmatched
+persons: Rück -> N. Rück,persons,Rück,N. Rück,surname-ambiguous,candidate,9,2,bare surname; 4 persons share it,n,H./W./H.W./N. Rueck clusters unclear; Dr. title unmatched
+persons: Stein -> Roland Stein,persons,Stein,Roland Stein,surname-ambiguous,candidate,6,2,bare surname; 3 persons share it,n,Rouen 1938 Dr. Stein; Hans/Roland Stein later; unproven
+persons: Stein -> Schwester von Roland Stein,persons,Stein,Schwester von Roland Stein,surname-ambiguous,candidate,6,2,bare surname; 3 persons share it,n,female description; not a Dr.
+persons: Stein -> Hans Stein,persons,Stein,Hans Stein,surname-ambiguous,candidate,6,2,bare surname; 3 persons share it,n,Rouen 1938 Dr. Stein; Hans/Roland Stein later; unproven
+persons: Tratz -> Emil Tratz,persons,Tratz,Emil Tratz,surname-ambiguous,candidate,19,2,bare surname; 3 persons share it,n,misread/misexpansion of E. P. Tratz; merged to correct-name row
+persons: Tratz -> E. P. Tratz,persons,Tratz,E. P. Tratz,surname-ambiguous,candidate,19,1,bare surname; 3 persons share it,y,Eduard Paul Tratz Salzburg; E. F./Emil rows are misreadings
+persons: Tratz -> E. F. Tratz,persons,Tratz,E. F. Tratz,surname-ambiguous,candidate,19,4,bare surname; 3 persons share it,n,misread/misexpansion of E. P. Tratz; merged to correct-name row
+persons: Götz -> Hans Götz,persons,Götz,Hans Götz,surname-ambiguous,candidate,3,2,bare surname; 3 persons share it,n,1926 Kopenhagen and 1934 mixed; unsure
+persons: Götz -> Wilh. H. J. Götz,persons,Götz,Wilh. H. J. Götz,surname-ambiguous,candidate,3,4,bare surname; 3 persons share it,n,1926 Kopenhagen and 1934 mixed; unsure
+persons: Götz -> Dr. Wilhelm Götz,persons,Götz,Dr. Wilhelm Götz,surname-ambiguous,candidate,3,1,bare surname; 3 persons share it,n,1926 Kopenhagen and 1934 mixed; unsure
+persons: Rüppell -> Dr.W. Rüppell,persons,Rüppell,Dr.W. Rüppell,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,spacing variant; merged via clean row
+persons: Rüppell -> Dr. W. Rüppell,persons,Rüppell,Dr. W. Rüppell,surname-ambiguous,candidate,1,4,bare surname; 2 persons share it,y,Werner Rüppell at DOG 1935; other row spacing variant
+persons: H. Wink -> Walter Wink,persons,H. Wink,Walter Wink,surname-ambiguous,candidate,24,4,bare surname; 5 persons share it,y,rare surname; F.W./H.W./K./Freund Wink likely OCR variants of Walter
+persons: H. Wink -> F. W. Wink,persons,H. Wink,F. W. Wink,surname-ambiguous,candidate,24,1,bare surname; 5 persons share it,n,likely OCR variant of Walter Wink; merged via full-name row
+persons: H. Wink -> H.W. Wink,persons,H. Wink,H.W. Wink,surname-ambiguous,candidate,24,1,bare surname; 5 persons share it,n,likely OCR variant of Walter Wink; merged via full-name row
+persons: H. Wink -> Freund Wink,persons,H. Wink,Freund Wink,surname-ambiguous,candidate,24,1,bare surname; 5 persons share it,n,likely OCR variant of Walter Wink; merged via full-name row
+persons: H. Wink -> K. Wink,persons,H. Wink,K. Wink,surname-ambiguous,candidate,24,1,bare surname; 5 persons share it,n,likely OCR variant of Walter Wink; merged via full-name row
+persons: Seggel -> Eberhard Seggel,persons,Seggel,Eberhard Seggel,surname-ambiguous,candidate,2,75,bare surname; 3 persons share it,n,same person as Einhart Seggel; merged via larger cluster
+persons: Seggel -> E. Seggel,persons,Seggel,E. Seggel,surname-ambiguous,candidate,2,9,bare surname; 3 persons share it,n,same person as Einhart Seggel; merged via larger cluster
+persons: Seggel -> Einhart Seggel,persons,Seggel,Einhart Seggel,surname-ambiguous,candidate,2,78,bare surname; 3 persons share it,y,Einhart/Eberhard/E. Seggel one person; largest; possibly Bezzel misread
+persons: Steinmann -> E. Steinmann,persons,Steinmann,E. Steinmann,surname-ambiguous,candidate,3,1,bare surname; 2 persons share it,n,1918 vs 1951 mentions; unsure
+persons: Steinmann -> Freund Steinmann,persons,Steinmann,Freund Steinmann,surname-ambiguous,candidate,3,4,bare surname; 2 persons share it,n,1918 vs 1951 mentions; unsure
+persons: Stolz -> Heinrich Stolz,persons,Stolz,Heinrich Stolz,surname-ambiguous,candidate,1,3,bare surname; 2 persons share it,n,Heinrich 1941 vs Eduard 1954; bare 1951 unresolved
+persons: Stolz -> Eduard Stolz,persons,Stolz,Eduard Stolz,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,Heinrich 1941 vs Eduard 1954; bare 1951 unresolved
+persons: Kurt -> Haller Kurt,persons,Kurt,Haller Kurt,surname-ambiguous,candidate,77,22,bare surname; 4 persons share it,n,first name or unclear surname; multiple candidates; Er Kurt = Hr Kurt
+persons: Kurt -> Er Kurt,persons,Kurt,Er Kurt,surname-ambiguous,candidate,77,3,bare surname; 4 persons share it,n,Er = OCR of Hr; title form not a proper canonical
+persons: Kurt -> Freund Kurt,persons,Kurt,Freund Kurt,surname-ambiguous,candidate,77,1,bare surname; 4 persons share it,n,first name or unclear surname; multiple candidates; Er Kurt = Hr Kurt
+persons: Kurt -> W. Kurt,persons,Kurt,W. Kurt,surname-ambiguous,candidate,77,19,bare surname; 4 persons share it,n,first name or unclear surname; multiple candidates; Er Kurt = Hr Kurt
+persons: Weiß -> Walter Weiß,persons,Weiß,Walter Weiß,surname-ambiguous,candidate,7,7,bare surname; 3 persons share it,n,Er. Weiß = Hr Weiß same reporter; true canonical unclear
+persons: Weiß -> Er. Weiß,persons,Weiß,Er. Weiß,surname-ambiguous,candidate,7,2,bare surname; 3 persons share it,n,Er. Weiß = Hr Weiß same reporter; true canonical unclear
+persons: Weiß -> F. Weiß,persons,Weiß,F. Weiß,surname-ambiguous,candidate,7,1,bare surname; 3 persons share it,n,Er. Weiß = Hr Weiß same reporter; true canonical unclear
+persons: Ludwig -> Kasper Ludwig,persons,Ludwig,Kasper Ludwig,surname-ambiguous,candidate,15,2,bare surname; 3 persons share it,n,first name usage; candidates are surname Ludwig
+persons: Ludwig -> Eugen Ludwig,persons,Ludwig,Eugen Ludwig,surname-ambiguous,candidate,15,3,bare surname; 3 persons share it,n,first name usage; candidates are surname Ludwig
+persons: Ludwig -> Georg Ludwig,persons,Ludwig,Georg Ludwig,surname-ambiguous,candidate,15,1,bare surname; 3 persons share it,n,first name usage; candidates are surname Ludwig
+persons: Schreiber -> Eva Schreiber,persons,Schreiber,Eva Schreiber,surname-ambiguous,candidate,3,3,bare surname; 2 persons share it,n,1932 vs 1951 mentions; unsure
+persons: Schreiber -> H. Schreiber,persons,Schreiber,H. Schreiber,surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,1932 vs 1951 mentions; unsure
+persons: Hr Engelhardt -> F. Engelhardt,persons,Hr Engelhardt,F. Engelhardt,surname-ambiguous,candidate,2,9,bare surname; 2 persons share it,n,F. Engelhardt only 1950; H. attested 1934
+persons: Hr Engelhardt -> H. Engelhardt,persons,Hr Engelhardt,H. Engelhardt,surname-ambiguous,candidate,2,3,bare surname; 2 persons share it,n,1958 beyond both clusters; F./H. unresolved [conflict resolved]
+persons: Flake -> R. Flake,persons,Flake,R. Flake,surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,Karl vs R. Flake both 1928; unclear if same taxidermist
+persons: Flake -> Karl Flake,persons,Flake,Karl Flake,surname-ambiguous,candidate,3,3,bare surname; 2 persons share it,n,Karl vs R. Flake both 1928; unclear if same taxidermist
+persons: Krembs -> Forstassessor Krembs,persons,Krembs,Forstassessor Krembs,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,Oskar vs Forstassessor Krembs 1932; possibly same; unproven
+persons: Krembs -> Oskar Krembs,persons,Krembs,Oskar Krembs,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,Oskar vs Forstassessor Krembs 1932; possibly same; unproven
+persons: Forstmeister Koch -> R. L. Koch,persons,Forstmeister Koch,R. L. Koch,surname-ambiguous,candidate,16,1,bare surname; 4 persons share it,n,no Forstmeister among candidates; different Kochs
+persons: Forstmeister Koch -> Ludwig Koch,persons,Forstmeister Koch,Ludwig Koch,surname-ambiguous,candidate,16,1,bare surname; 4 persons share it,n,no Forstmeister among candidates; different Kochs
+persons: Forstmeister Koch -> Franz Koch,persons,Forstmeister Koch,Franz Koch,surname-ambiguous,candidate,16,1,bare surname; 4 persons share it,n,no Forstmeister among candidates; different Kochs
+persons: Forstmeister Koch -> Präp. Koch,persons,Forstmeister Koch,Präp. Koch,surname-ambiguous,candidate,16,1,bare surname; 4 persons share it,n,no Forstmeister among candidates; different Kochs
+persons: Würt -> Walter Würt,persons,Würt,Walter Würt,surname-ambiguous,candidate,8,2,bare surname; 3 persons share it,y,Würt = OCR of Wüst; both = Walter Wüst
+persons: Würt -> H. Würt,persons,Würt,H. Würt,surname-ambiguous,candidate,8,9,bare surname; 3 persons share it,n,also OCR of Wüst probably; Walter row chosen
+persons: Würt -> v. Würt,persons,Würt,v. Würt,surname-ambiguous,candidate,8,1,bare surname; 3 persons share it,n,also OCR of Wüst probably; Walter row chosen
+persons: Münz -> Franz Münz,persons,Münz,Franz Münz,surname-ambiguous,candidate,3,5,bare surname; 2 persons share it,n,Franz vs W. Münz; unsure
+persons: Münz -> W. Münz,persons,Münz,W. Münz,surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,Franz vs W. Münz; unsure
+persons: Wachter -> Ruppert Wachter,persons,Wachter,Ruppert Wachter,surname-ambiguous,candidate,1,17,bare surname; 3 persons share it,n,spelling variant of Rupert Wachter; merged via larger row
+persons: Wachter -> Wärter Wachter,persons,Wachter,Wärter Wachter,surname-ambiguous,candidate,1,2,bare surname; 3 persons share it,n,keeper Wachter 1929 probably same person; merged via Rupert row
+persons: Wachter -> Rupert Wachter,persons,Wachter,Rupert Wachter,surname-ambiguous,candidate,1,19,bare surname; 3 persons share it,y,Rupert Wachter dominant; Ruppert spelling variant; Maisinger See keeper
+persons: Frey -> Friedrich Frey,persons,Frey,Friedrich Frey,surname-ambiguous,candidate,1,10,bare surname; 2 persons share it,n,Frey. Killermann likely title misread; Hans/Friedrich Frey comparable
+persons: Frey -> Hans Frey,persons,Frey,Hans Frey,surname-ambiguous,candidate,1,11,bare surname; 2 persons share it,n,Frey. Killermann likely title misread; Hans/Friedrich Frey comparable
+persons: Stud. Vogt -> Hans Vogt,persons,Stud. Vogt,Hans Vogt,surname-ambiguous,candidate,7,2,bare surname; 4 persons share it,n,four Vogts comparable presence; unresolved
+persons: Stud. Vogt -> Karl Vogt,persons,Stud. Vogt,Karl Vogt,surname-ambiguous,candidate,7,2,bare surname; 4 persons share it,n,four Vogts comparable presence; unresolved
+persons: Stud. Vogt -> Fürst Vogt,persons,Stud. Vogt,Fürst Vogt,surname-ambiguous,candidate,7,2,bare surname; 4 persons share it,n,Fuerst Vogt 1934; title mismatch with Herr
+persons: Stud. Vogt -> W. Vogt,persons,Stud. Vogt,W. Vogt,surname-ambiguous,candidate,7,1,bare surname; 4 persons share it,n,four Vogts comparable presence; unresolved
+persons: Inspektor Küsthardt -> G. Küsthardt,persons,Inspektor Küsthardt,G. Küsthardt,surname-ambiguous,candidate,4,4,bare surname; 2 persons share it,y,rare surname; one Munich Küsthardt; G. most frequent
+persons: Inspektor Küsthardt -> H. Küsthardt,persons,Inspektor Küsthardt,H. Küsthardt,surname-ambiguous,candidate,4,1,bare surname; 2 persons share it,n,H. likely OCR of G.; same person; G. row chosen
+persons: Rupprecht -> Kronprinz Rupprecht,persons,Rupprecht,Kronprinz Rupprecht,surname-ambiguous,candidate,2,3,bare surname; 2 persons share it,n,bare Rupprecht may be first name; Kronprinz unlikely; unresolved
+persons: Rupprecht -> G. Rupprecht,persons,Rupprecht,G. Rupprecht,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,bare Rupprecht may be first name; Kronprinz unlikely; unresolved
+persons: Straubinger -> Gert Straubinger,persons,Straubinger,Gert Straubinger,surname-ambiguous,candidate,2,4,bare surname; 2 persons share it,n,Gert 1951 vs Karl 1961; not convincing
+persons: Straubinger -> Karl Straubinger,persons,Straubinger,Karl Straubinger,surname-ambiguous,candidate,2,2,bare surname; 2 persons share it,n,Gert 1951 vs Karl 1961; not convincing
+persons: Herr Laukes -> H. Laukes,persons,Herr Laukes,H. Laukes,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,H. Laukes 1936 likely OCR of K.; merged via K. row
+persons: Herr Laukes -> K. Laukes,persons,Herr Laukes,K. Laukes,surname-ambiguous,candidate,2,3,bare surname; 2 persons share it,y,rare surname; K. Laukes spans 1920-24; H. likely OCR variant
+persons: Rank -> H. Rank,persons,Rank,H. Rank,surname-ambiguous,candidate,1,2,bare surname; 2 persons share it,n,years 1952/1961 do not overlap 1932
+persons: Rank -> Karl Rank,persons,Rank,Karl Rank,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,years 1952/1961 do not overlap 1932
+persons: Schulz -> H. Schulz,persons,Schulz,H. Schulz,surname-ambiguous,candidate,1,2,bare surname; 2 persons share it,n,common surname; H. 1938 vs M. 1950; unresolved
+persons: Schulz -> M. Schulz,persons,Schulz,M. Schulz,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,common surname; H. 1938 vs M. 1950; unresolved
+persons: Stück -> H. Stück,persons,Stück,H. Stück,surname-ambiguous,candidate,2,3,bare surname; 2 persons share it,n,Stueck likely count word not person; no merge
+persons: Stück -> W. Stück,persons,Stück,W. Stück,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,Stueck likely count word not person; no merge
+persons: Veit -> H. Veit,persons,Veit,H. Veit,surname-ambiguous,candidate,2,4,bare surname; 2 persons share it,n,H. Veit 1942 vs N. Veit 1953; unresolved
+persons: Veit -> N. Veit,persons,Veit,N. Veit,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,H. Veit 1942 vs N. Veit 1953; unresolved
+persons: Wick -> H. Wick,persons,Wick,H. Wick,surname-ambiguous,candidate,2,15,bare surname; 2 persons share it,n,H. Wick smaller; W. Wick dominant 1954; possibly same person
+persons: Wick -> W. Wick,persons,Wick,W. Wick,surname-ambiguous,candidate,2,43,bare surname; 2 persons share it,y,dominant Wick in 1954 (43 mentions); H. Wick possibly OCR variant
+persons: Hagen -> Tante Hagen,persons,Hagen,Tante Hagen,surname-ambiguous,candidate,6,1,bare surname; 4 persons share it,n,decades later; different Hagen
+persons: Hagen -> J. Hagen,persons,Hagen,J. Hagen,surname-ambiguous,candidate,6,1,bare surname; 4 persons share it,n,decades later; different Hagen
+persons: Hagen -> W. Hagen,persons,Hagen,W. Hagen,surname-ambiguous,candidate,6,1,bare surname; 4 persons share it,y,Hagen 1918-19 matches only contemporary candidate W. Hagen 1918
+persons: Hagen -> Kramer-Hagen,persons,Hagen,Kramer-Hagen,surname-ambiguous,candidate,6,1,bare surname; 4 persons share it,n,decades later; different Hagen
+persons: Haller -> von Haller,persons,Haller,von Haller,surname-ambiguous,candidate,11,1,bare surname; 3 persons share it,n,no candidate near 1958; unsure
+persons: Haller -> P. Haller,persons,Haller,P. Haller,surname-ambiguous,candidate,11,1,bare surname; 3 persons share it,n,no candidate near 1958; unsure
+persons: Haller -> Werner Haller,persons,Haller,Werner Haller,surname-ambiguous,candidate,11,1,bare surname; 3 persons share it,n,no candidate near 1958; unsure
+persons: Schwaiger -> Hans Schwaiger,persons,Schwaiger,Hans Schwaiger,surname-ambiguous,candidate,3,1,bare surname; 2 persons share it,n,no year overlap; unsure
+persons: Schwaiger -> Jäger Schwaiger,persons,Schwaiger,Jäger Schwaiger,surname-ambiguous,candidate,3,2,bare surname; 2 persons share it,n,no year overlap; unsure
+persons: Reichert -> Maria Reichert,persons,Reichert,Maria Reichert,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,female; 1960 vs 1929
+persons: Reichert -> Herbert Reichert,persons,Reichert,Herbert Reichert,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,years 1954/1960 do not overlap 1929; Maria female
+persons: Sievert -> Horst Sievert,persons,Sievert,Horst Sievert,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,y,same year 1935 same DOG Tagung; Horst Siewert filmmaker
+persons: Sievert -> J. H. Sievert,persons,Sievert,J. H. Sievert,surname-ambiguous,candidate,1,1,bare surname; 2 persons share it,n,J. H. Sievert 1938 different initials; Horst matches 1935
+persons: Karl -> Lorenz Karl,persons,Karl,Lorenz Karl,surname-ambiguous,candidate,56,3,bare surname; 4 persons share it,n,first name only; candidates unrelated
+persons: Karl -> Onkel Karl,persons,Karl,Onkel Karl,surname-ambiguous,candidate,56,1,bare surname; 4 persons share it,n,first name only; candidates unrelated
+persons: Karl -> Wolfgang Karl,persons,Karl,Wolfgang Karl,surname-ambiguous,candidate,56,1,bare surname; 4 persons share it,n,first name only; candidates unrelated
+persons: Karl -> Ruppi Karl,persons,Karl,Ruppi Karl,surname-ambiguous,candidate,56,2,bare surname; 4 persons share it,n,first name only; candidates unrelated
+persons: Kraus -> Manfred Kraus,persons,Kraus,Manfred Kraus,surname-ambiguous,candidate,5,4,bare surname; 2 persons share it,n,Manfred vs Karl Kraus; unsure
+persons: Kraus -> Karl Kraus,persons,Kraus,Karl Kraus,surname-ambiguous,candidate,5,1,bare surname; 2 persons share it,n,Manfred vs Karl Kraus; unsure
+persons: Lehrer Spranger -> M. Spranger,persons,Lehrer Spranger,M. Spranger,surname-ambiguous,candidate,2,2,bare surname; 2 persons share it,n,Viktor 1925 plausible but M. Spranger exists; not convincing
+persons: Lehrer Spranger -> Viktor Spranger,persons,Lehrer Spranger,Viktor Spranger,surname-ambiguous,candidate,2,2,bare surname; 2 persons share it,n,Viktor 1925 plausible but M. Spranger exists; not convincing
+persons: Murphy -> Mr. R. C. B. Murphy,persons,Murphy,Mr. R. C. B. Murphy,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,n,same person as R. C. Murphy; merged via correct-name row
+persons: Murphy -> R. C. Murphy,persons,Murphy,R. C. Murphy,surname-ambiguous,candidate,2,1,bare surname; 2 persons share it,y,Robert Cushman Murphy at IOC congresses; R. C. B. row same person
+persons: Prof. Paul -> Professor Dr. Paul,persons,Prof. Paul,Professor Dr. Paul,surname-ambiguous,candidate,7,1,bare surname; 2 persons share it,y,same title; 1935 vs 1938-42; same professor [conflict resolved]
+persons: Prof. Paul -> Seilerer Paul,persons,Prof. Paul,Seilerer Paul,surname-ambiguous,candidate,7,1,bare surname; 2 persons share it,n,first name usage
+persons: Prof. Drost -> Prof.Dr.R. Drost,persons,Prof. Drost,Prof.Dr.R. Drost,surname-ambiguous,candidate,4,1,bare surname; 2 persons share it,n,spacing variant of Prof. Dr. R. Drost; merged via clean row
+persons: Prof. Drost -> R. Drost,persons,Prof. Drost,R. Drost,surname-ambiguous,candidate,4,2,bare surname; 2 persons share it,y,Rudolf Drost Vogelwarte Helgoland; other row spacing variant
+persons: H. Wüst -> Walter Wüst,persons,H. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: H. Wust -> Walter Wüst,persons,H. Wust,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: H. Wüst? -> Walter Wüst,persons,H. Wüst?,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: H. W. Wüst -> Walter Wüst,persons,H. W. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: H.W. Wüst -> Walter Wüst,persons,H.W. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: W.H. Wüst -> Walter Wüst,persons,W.H. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: F. W. Wüst -> Walter Wüst,persons,F. W. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: F. H. Wüst -> Walter Wüst,persons,F. H. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: Dr. H. Wüst -> Walter Wüst,persons,Dr. H. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: Hr H. Wüst -> Walter Wüst,persons,Hr H. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: Er Wüst -> Walter Wüst,persons,Er Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: Er. Wüst -> Walter Wüst,persons,Er. Wüst,Walter Wüst,manual,manual,,,reviewer-added (OCR variant of a known person),y,manual
+persons: G. C. A. Junge -> d. Junge,persons,G. C. A. Junge,d. Junge,surname-ambiguous,candidate,6,1,bare surname; 3 persons share it,n,other Junge persons; the bare surname already resolved to G. C. A. Junge
+persons: G. C. A. Junge -> Karl junge,persons,G. C. A. Junge,Karl junge,surname-ambiguous,candidate,6,6,bare surname; 3 persons share it,n,other Junge persons; the bare surname already resolved to G. C. A. Junge
+persons: Steinbacher -> P. Steinbacher,persons,Steinbacher,P. Steinbacher,surname-ambiguous,candidate,10,15,bare surname; 6 persons share it,n,reviewed 2026-08-19
+persons: H. Hirt -> F. H. Hirt,persons,H. Hirt,F. H. Hirt,surname-ambiguous,candidate,70,16,bare surname; 3 persons share it,n,H. ≠ Walter; F. H. Hirt unverified
+persons: H. Hirt -> Walter Hirt,persons,H. Hirt,Walter Hirt,surname-ambiguous,candidate,70,39,bare surname; 3 persons share it,n,H. ≠ Walter; F. H. Hirt unverified

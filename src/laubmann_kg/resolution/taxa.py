@@ -68,6 +68,11 @@ def merge_taxa(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Merge
             if decisions.applies(row):
                 mapping[m] = canonical
 
+    for variant, canonical in decisions.manual("taxa"):
+        v, c = variant.lower(), canonical.lower()
+        if v in seen and c in seen and v not in mapping and v != c:
+            rows.append(MergeRow("taxa", seen[v][0].vernacular_de, seen[c][0].vernacular_de, "manual", "manual", seen[v][1], seen[c][1]))
+            mapping[v] = mapping.get(c, c)
     if not mapping:
         return 0, rows
     # canonical taxon objects with their alt names

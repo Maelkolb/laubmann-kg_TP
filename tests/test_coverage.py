@@ -83,6 +83,19 @@ def test_digests_and_retrospectives_keep_their_dates() -> None:
     assert {f.reason for f in flags} == {"date_out_of_coverage"} and all(f.action == "flagged" for f in flags)
 
 
+def test_nothing_is_dated_after_the_last_diary_not_even_a_digest() -> None:
+    # "11.IV. 86.) Türkentaube" — the digest item number read as a year: no
+    # neighbour agreement, so it cannot be repaired; a future date is impossible
+    # for every entry kind -> excluded (recoverable from qa_flags.csv)
+    seq = [_entry("a", 1, "1905-03-19", kind="species-digest"),
+           _entry("x", 1, "1986-04-11", kind="species-digest", raw="11.IV. 86"),
+           _entry("b", 1, "1912-05-02", kind="species-digest")]
+    kept, flags = apply_coverage(seq, COV)
+    assert [e.entry_uid for e in kept] == ["a", "b"]
+    fx = next(f for f in flags if f.entry_uid == "x")
+    assert fx.reason == "date_out_of_span" and fx.action == "excluded" and "nicht rekonstruierbar" in fx.detail
+
+
 def test_block_of_off_span_dates_is_not_repaired() -> None:
     # a run of consistently dated entries (a transcribed older notebook) has no
     # in-span neighbours close by -> flagged, never rewritten

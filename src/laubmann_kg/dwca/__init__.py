@@ -14,8 +14,11 @@ logger = logging.getLogger(__name__)
 
 
 def export(config: dict, input_dir: Optional[Path], output_dir: Path,
-           validate: bool = True) -> dict:
-    result = run_pipeline(config, input_dir)
+           validate: bool = True, result=None) -> dict:
+    """Darwin Core Archive of ``result``; runs the pipeline when no result is
+    passed (``kg.export_all`` shares one run with the RDF export)."""
+    if result is None:
+        result = run_pipeline(config, input_dir)
     dwca_dir = Path(output_dir) / "dwca"
     # the dwca: config section carries EML metadata (title, package_id,
     # publisher, license); result.provenance feeds methods/measurementMethod
