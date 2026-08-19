@@ -15,17 +15,22 @@ flowchart TB
         D["Mapper<br/>vocabulary membership · dates<br/>SHACL-safe legs"]
         V["Volume coverage<br/>title-page spans · misfiled scans<br/>OCR-year repair from neighbours"]
         E["QA<br/>thresholds on model signals"]
-        F["Linking<br/>GBIF species/match · Wikidata"]
+        F["Linking<br/>GBIF species/match · Wikidata<br/>places: Nominatim cache · GeoNames · Wikidata"]
         X["Entity resolution<br/>same GBIF key · name rules<br/>orthographic variants · altLabels"]
+        Y(["Habitat → EUNIS<br/>LLM per label · skos:*Match<br/>EUNIS classes + broader chain"])
         G["RDF emit<br/>DwC-first · SKOS · PROV"]
         H["SHACL gate<br/>0 violations"]
         I["DwC-A<br/>event · occurrence · eMoF · media"]
         K1[("llm_cache_v2")]
         K2[("linking_cache")]
         K3[("volume_coverage.yaml")]
-        R2{{"review CSVs<br/>qa_flags · taxon/person links<br/>taxon/person/place/habitat merges"}}
-        C --> D --> V --> E --> F --> X --> G --> H
-        X --> I
+        K4[("nominatim_cache · geonames dumps<br/>llm_habitats cache")]
+        R2{{"review CSVs<br/>qa_flags · taxon/person/place links<br/>taxon/person/place/habitat merges · habitat links"}}
+        C --> D --> V --> E --> F --> X --> Y --> G --> H
+        Y --> I
+        K4 <-.-> F
+        K4 <-.-> Y
+        Y -.-> R2
         C <-.-> K1
         F <-.-> K2
         K3 -.-> V

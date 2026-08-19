@@ -474,9 +474,9 @@ def resolve_label(label: str, kind: Optional[str], osm_hits: Optional[list], gn_
             return score, ""
         if f_mid >= 0.2:
             return score, ""
-        if d > far_km or f_mid == 0:
+        if d > far_km:
             return score - 0.3, f"{d:.0f} km from the entries' other places ({f_mid:.0%} within {2 * near_km:.0f} km)"
-        return score - 0.15, f"far from most of the entries' other places ({f_mid:.0%} within {2 * near_km:.0f} km)"
+        return score - 0.15, f"far from most of the entries' other places ({f_mid:.0%} within {2 * near_km:.0f} km, nearest {d:.0f} km)"
 
     def dist(l: PlaceLink) -> float:
         return nearest_km(l.lat, l.lon) if points and l.lat is not None else 0.0
@@ -516,7 +516,7 @@ def resolve_label(label: str, kind: Optional[str], osm_hits: Optional[list], gn_
         elif nt == "contains":
             score = 0.55
         elif g.fclass == "P" and g.population >= 10000 and not home:
-            score = 0.6            # an exonym of a town (Korfu, Mailand, Venedig …): alternate names are how GeoNames knows it
+            score = 0.65           # an exonym of a town (Korfu, Mailand, Venedig …): alternate names are how GeoNames knows it
         else:
             score = 0.4
         if g.fclass == "S":
@@ -525,7 +525,7 @@ def resolve_label(label: str, kind: Optional[str], osm_hits: Optional[list], gn_
             score -= 0.1                                      # the admin unit stands for the place but is not it
         l = PlaceLink(lat=g.lat, lon=g.lon, geonames=g, uncertainty_m=_UNCERT_GN.get(g.fcode, 2000), source="geonames")
         notes = [f"GeoNames {nt} name match ({g.cc})"]
-        score, note = ctx_adjust(score, g.lat, g.lon, False)
+        score, note = ctx_adjust(score, g.lat, g.lon, g.fcode in _BIG_CITY_CODES or g.population >= 20000)
         if note:
             notes.append(note)
         l.note = "; ".join(notes)

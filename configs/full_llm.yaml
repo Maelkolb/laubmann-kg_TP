@@ -95,7 +95,7 @@ linking:
     enabled: true
     reviewed_csv: data/review/habitat_link_review.csv
     vocabulary: data/eunis_habitats.csv      # tools/build_eunis_vocab.py (Eionet EUNIS habitats vocabulary)
-    min_confidence: 0.8      # LLM confidence at/above -> linked (skos:*Match emitted); below -> review
+    min_confidence: 0.7      # LLM confidence at/above -> linked (skos:*Match emitted); below -> review (the model's 0.7 is a defensible broad/close reading)
     review_confidence: 0.4   # below -> no_match
     batch_size: 40           # labels per LLM call (one cached call per batch)
     llm:

@@ -8,7 +8,7 @@ EUNIS class (2012 classification, Eionet vocabulary
 ``exact`` → ``skos:exactMatch``, ``close`` → ``skos:closeMatch``,
 ``broad`` → ``skos:broadMatch`` — and a confidence. Codes are validated against
 ``data/eunis_habitats.csv`` (5,282 classes); accepted matches
-(confidence ≥ ``min_confidence``) are emitted on the habitat concept, the rest
+(confidence ≥ ``min_confidence``, default 0.7) are emitted on the habitat concept, the rest
 go to ``review/habitat_link_review.csv`` (status linked | review | no_match)
 where ``y`` / ``n`` decisions (``reviewed_csv``) override.
 
@@ -147,7 +147,7 @@ def link_habitats(result, cfg: dict, offline: bool) -> tuple[int, list[dict]]:
     …); returns (n_linked, review rows)."""
     cfg = cfg or {}
     vocab = EunisVocabulary(Path(cfg.get("vocabulary", EUNIS_CSV)))
-    min_conf = float(cfg.get("min_confidence", 0.8))
+    min_conf = float(cfg.get("min_confidence", 0.7))
     review_conf = float(cfg.get("review_confidence", 0.4))
     batch_size = int(cfg.get("batch_size", 40))
     limit = int(cfg.get("limit", 0) or 0)

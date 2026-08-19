@@ -59,7 +59,7 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
   most one `skos:exactMatch` / `skos:closeMatch` / `skos:broadMatch`; the EUNIS
   class is a `skos:Concept` with `skos:notation`, `skos:prefLabel`@en and its
   `skos:broader` chain up to the level-1 group, so "everything in woodland" is
-  `skos:broader* G`. Confidence ≥ 0.8 is applied, the rest waits in
+  `skos:broader* G`. Confidence ≥ 0.7 is applied, the rest waits in
   `review/habitat_link_review.csv` (`y`/`n` decisions → `reviewed_csv`). The
   DwC-A carries the class as an eMoF row (`habitat type (EUNIS 2012)`,
   `measurementValueID` = EUNIS URI); `dwc:habitat` stays verbatim.

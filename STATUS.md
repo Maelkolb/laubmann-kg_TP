@@ -114,7 +114,8 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
   live in `data/review/*_merges.csv` and are applied via `reviewed_csv`.
 - Ontology **0.4.1**: `skos:altLabel` for merged spellings,
   `dwc:verbatimIdentification` on merged observations; **0.4.2**: `dcterms:temporal`
-  (title-page span) on every `lkg:DiaryVolume`; no new `lkg:` terms.
+  (title-page span) on every `lkg:DiaryVolume`; **0.4.3**: EUNIS matches on habitat concepts, GeoNames/Wikidata
+  `owl:sameAs` + `dwc:coordinateUncertaintyInMeters` on places; no new `lkg:` terms.
 - **Coverage v2** (after review of the first 2026-08-19 export): the year repair applies to
   every entry kind; entries outside the diary period (1917-04 … 1965-12, the union of the
   volume spans) that cannot be repaired are dated by their position in the volume
@@ -128,8 +129,8 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
   `linking/places.py` georeferences places from a pre-warmed Nominatim cache
   (`tools/prewarm_nominatim.py`), the GeoNames country dumps and Wikidata — coordinates,
   `owl:sameAs` GeoNames feature + Wikidata item, `dwc:coordinateUncertaintyInMeters`,
-  `dwc:georeferenceSources`, DwC-A `locationID`; `review/place_link_review.csv`. %%LINK_SUMMARY%%
-- **Current export: Drive `kg_exports_2026-08-19/`** — 9,523 entries (4 excluded by QA + coverage), 74,584 observations, 15,297 vocalisations, 1,707,290 triples, SHACL 0 violations / 409 warnings (empty entries), 1,182 taxa (616 on GBIF), 4,259 persons (300 on Wikidata), 9,669 places (215 georeferenced), 1,481 habitat concepts; DwC-A valid (event 9,523 · occurrence 74,584 · eMoF 102,379 · multimedia 141); `review/` = qa_flags (2,281 rows) + link reviews + the four merge CSVs (3,723 rows); `html/` explorer v7 + workflow page; local run = notebook 07 C1+C3 (`export-all`) against the Drive caches (2 live Gemini calls for the truncated digest entries)
+  `dwc:georeferenceSources`, DwC-A `locationID`; `review/place_link_review.csv`. Result of the 2026-08-19 export: 2,872 of 9,669 places georeferenced (was 215), 2,067 with a GeoNames feature and 2,070 with a Wikidata item — 2694 of 8063 geocodable labels linked (OSM+GeoNames 1935, OSM 610, GeoNames 149), 1015 labels for review, 4354 without a gazetteer entry; 1,375 of 1,481 habitat concepts linked to a EUNIS class (10730 observations; exact 323, close 701, broad 351; 74 review, 32 no match).
+- **Current export: Drive `kg_exports_2026-08-19/`** — 9,523 entries (4 excluded by QA + coverage), 74,584 observations, 15,297 vocalisations, 1,735,142 triples, SHACL 0 violations / 409 warnings (empty entries), 1,182 taxa (616 on GBIF), 4,259 persons (300 on Wikidata), 9,669 places (2,872 georeferenced, 2,067 on GeoNames, 2,070 on Wikidata), 1,481 habitat concepts (1,375 linked to EUNIS classes); DwC-A valid (event 9,523 · occurrence 74,584 · eMoF 113,109 (incl. the EUNIS habitat rows) · multimedia 141); `review/` = qa_flags (2,281 rows) + link reviews (taxon, person, place 8,063 labels, habitat 1,481 labels) + the four merge CSVs (3,723 rows); `html/` explorer v7 + workflow page; local run = notebook 07 C1+C3 (`export-all`) against the Drive caches (2 live Gemini calls for the truncated digest entries; EUNIS classification and GBIF/Wikidata/Nominatim from the Drive caches)
 
 ## Previous state (2026-08-18)
 
