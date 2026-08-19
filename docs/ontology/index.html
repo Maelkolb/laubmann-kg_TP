@@ -392,7 +392,7 @@
     ],
     "https://schema.org/creator": [
       {
-        "@id": "_:ncdde62f8404e4505a162ad81f0661fc5b1"
+        "@id": "_:n07326d722db842d590581df58cb3bd69b1"
       }
     ],
     "https://schema.org/dateIssued": [
@@ -410,11 +410,11 @@
     "https://schema.org/description": [
       {
         "@language": "en",
-        "@value": "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."
+        "@value": "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat and mapped to the EUNIS habitat classification (2012) with skos:exactMatch / closeMatch / broadMatch (ontology 0.4.3); places carry owl:sameAs to their GeoNames feature and Wikidata item. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."
       },
       {
         "@language": "en",
-        "@value": "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy."
+        "@value": "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat), each mapped to a EUNIS habitat class (skos:exactMatch / closeMatch / broadMatch); places link to GeoNames and Wikidata (owl:sameAs)."
       }
     ],
     "https://schema.org/license": [
@@ -435,7 +435,7 @@
     ]
   },
   {
-    "@id": "_:ncdde62f8404e4505a162ad81f0661fc5b1",
+    "@id": "_:n07326d722db842d590581df58cb3bd69b1",
     "https://schema.org/name": [
       {
         "@value": "Laubmann KG Project"
@@ -557,8 +557,8 @@
             </dt>
             <dd>
               <ul class="pylodelitlist">
-                <li><p>Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL.</p></li>
-                <li><p>Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy.</p></li>
+                <li><p>Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat and mapped to the EUNIS habitat classification (2012) with skos:exactMatch / closeMatch / broadMatch (ontology 0.4.3); places carry owl:sameAs to their GeoNames feature and Wikidata item. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL.</p></li>
+                <li><p>Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat), each mapped to a EUNIS habitat class (skos:exactMatch / closeMatch / broadMatch); places link to GeoNames and Wikidata (owl:sameAs).</p></li>
               </ul>
             </dd>
           </div>
@@ -582,7 +582,7 @@
           </div>
           <div>
             <dt>
-              <a class="hover_property" href="http://purl.org/dc/terms/language" title="A language of the resource. Defined in None">Language</a>
+              <a class="hover_property" href="http://purl.org/dc/terms/language" title="Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [[IETF-BCP47](https://tools.ietf.org/html/bcp47)] language tag. Defined in None">Language</a>
             </dt>
             <dd>
               <ul class="pylodelitlist">

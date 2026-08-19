@@ -37,7 +37,7 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}
 <tr><td><code>lkg:entrykind_species_digest</code></td><td>species-digest</td><td>Artenzusammenstellung</td><td></td></tr>
 </table>
 <h2 id="habitatScheme">Habitats <span style="color:#5F6E64;font-size:.85rem">· Lebensräume · <code>lkg:habitatScheme</code></span></h2>
-<p class="meta">Open concept scheme collecting the habitat concepts emitted as data (skos:Concept nodes such as Auwald, Schilf, Moor, linked from observations via dwciri:habitat); not enumerated here.</p>
+<p class="meta">Open concept scheme collecting the habitat concepts emitted as data (skos:Concept nodes such as Auwald, Schilf, Moor, linked from observations via dwciri:habitat); not enumerated here. Since ontology 0.4.3 each concept carries at most one skos:exactMatch / skos:closeMatch / skos:broadMatch to a class of the EUNIS habitat classification (2012; Eionet vocabulary http://eunis.eea.europa.eu/eunishabitats/&lt;code&gt;, e.g. Auwald → G1.2, Schilf → C3.21, Garten → I2.2); the EUNIS classes are in the data graph as external skos:Concepts with skos:notation, skos:prefLabel and their skos:broader chain.</p>
 <p class="meta">Open scheme — concepts are minted in the data (no fixed list).</p>
 <h2 id="lifeStageScheme">Life stages <span style="color:#5F6E64;font-size:.85rem">· Altersstadien · <code>lkg:lifeStageScheme</code></span></h2>
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
