@@ -147,7 +147,7 @@ lkg:entrykind_other          a skos:Concept ; skos:inScheme lkg:entryKindScheme 
 # skos:prefLabel@de, not enumerated here.
 lkg:habitatScheme a skos:ConceptScheme ;
     skos:prefLabel "Habitats"@en , "Lebensräume"@de ;
-    skos:definition "Open concept scheme collecting the habitat concepts emitted as data (skos:Concept nodes such as Auwald, Schilf, Moor, linked from observations via dwciri:habitat); not enumerated here. Since ontology 0.4.3 each concept carries at most one skos:exactMatch / skos:closeMatch / skos:broadMatch to a class of the EUNIS habitat classification (2012; Eionet vocabulary http://eunis.eea.europa.eu/eunishabitats/<code>, e.g. Auwald → G1.2, Schilf → C3.21, Garten → I2.2); the EUNIS classes are in the data graph as external skos:Concepts with skos:notation, skos:prefLabel and their skos:broader chain."@en .
+    skos:definition "Open concept scheme collecting the habitat concepts emitted as data (skos:Concept nodes such as Auwald, Schilf, Moor, linked from observations via dwciri:habitat); not enumerated here. Since ontology 0.4.3 each concept carries at most one skos:exactMatch / skos:closeMatch / skos:broadMatch to a class of the EUNIS habitat classification (2012; Eionet vocabulary http://eunis.eea.europa.eu/eunishabitats/<code>, e.g. Auwald → G1.2, Schilf → C3.21, Garten → I2.2); the EUNIS classes are in the data graph as external skos:Concepts with skos:notation, skos:prefLabel, their skos:broader chain and rdfs:seeAlso links to the maintained pages (Eionet Data Dictionary, BISE 2012 hierarchical view — the eunis.eea.europa.eu application itself is retired)."@en .
 
 # --- Precipitation (WeatherReport.precipitation) -------------
 lkg:precipitationScheme a skos:ConceptScheme ;

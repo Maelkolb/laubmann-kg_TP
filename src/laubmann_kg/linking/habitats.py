@@ -4,7 +4,9 @@ The graph keeps one ``skos:Concept`` per habitat label as written (after
 spelling resolution) — that is the source level. This stage adds the external
 level: an LLM (Gemini, cached) reads each distinct label and names the best
 EUNIS class (2012 classification, Eionet vocabulary
-``http://eunis.eea.europa.eu/eunishabitats/<code>``) with the kind of match —
+``http://eunis.eea.europa.eu/eunishabitats/<code>`` — an identifier: the EUNIS
+web app is retired, the emitter adds rdfs:seeAlso to the Eionet DD concept
+page and the BISE 2012 hierarchical view) with the kind of match —
 ``exact`` → ``skos:exactMatch``, ``close`` → ``skos:closeMatch``,
 ``broad`` → ``skos:broadMatch`` — and a confidence. Codes are validated against
 ``data/eunis_habitats.csv`` (5,282 classes); accepted matches

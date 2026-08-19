@@ -235,11 +235,18 @@ def _add_habitat_concept(graph: Graph, habitat: Habitat) -> URIRef:
 
 _EUNIS_MATCH = {"exact": SKOS.exactMatch, "close": SKOS.closeMatch, "broad": SKOS.broadMatch}
 EUNIS_SCHEME = URIRef("http://eunis.eea.europa.eu/eunishabitats/")
+# The EUNIS web application is retired (the concept URIs are identifiers, not
+# pages); these two are maintained: the Eionet Data Dictionary concept view
+# (label, definition, hierarchy) and the BISE hierarchical view of the 2012
+# classification (searchable by code).
+EUNIS_DD_PAGE = "https://dd.eionet.europa.eu/vocabulary/biodiversity/eunishabitats/{code}"
+EUNIS_BISE_PAGE = "https://biodiversity.europa.eu/resources/search-habitat/eunis-habitat-types-hierarchical-view-2012?searchTerm={code}"
 
 
 def _add_eunis_concept(graph: Graph, code: str, label: str, uri: str) -> URIRef:
     """A EUNIS habitat class as an external skos:Concept (Eionet vocabulary
-    URI), with its label and notation cached in the graph."""
+    URI), with its label and notation cached in the graph and rdfs:seeAlso
+    links to the maintained pages."""
     node = URIRef(uri)
     if (node, RDF.type, SKOS.Concept) not in graph:
         graph.add((node, RDF.type, SKOS.Concept))
@@ -247,6 +254,8 @@ def _add_eunis_concept(graph: Graph, code: str, label: str, uri: str) -> URIRef:
         graph.add((node, RDFS.label, Literal(f"{code} {label}", lang="en")))
         graph.add((node, SKOS.notation, Literal(code)))
         graph.add((node, SKOS.inScheme, EUNIS_SCHEME))
+        graph.add((node, RDFS.seeAlso, URIRef(EUNIS_DD_PAGE.format(code=code))))
+        graph.add((node, RDFS.seeAlso, URIRef(EUNIS_BISE_PAGE.format(code=code))))
         graph.add((EUNIS_SCHEME, RDF.type, SKOS.ConceptScheme))
     return node
 

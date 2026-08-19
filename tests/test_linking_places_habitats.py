@@ -152,6 +152,11 @@ def test_link_habitats_with_fake_proposer_emits_skos_matches_and_emof(tmp_path, 
     hab = DATA[h.uid]; eunis = URIRef("http://eunis.eea.europa.eu/eunishabitats/G1.2")
     assert (hab, SKOS.exactMatch, eunis) in graph
     assert (eunis, SKOS.notation, Literal("G1.2")) in graph and (eunis, SKOS.broader, URIRef("http://eunis.eea.europa.eu/eunishabitats/G1")) in graph
+    # the retired EUNIS app is replaced by rdfs:seeAlso to the maintained pages
+    from rdflib.namespace import RDFS
+    see = {str(o) for o in graph.objects(eunis, RDFS.seeAlso)}
+    assert "https://dd.eionet.europa.eu/vocabulary/biodiversity/eunishabitats/G1.2" in see
+    assert any("biodiversity.europa.eu" in s and "searchTerm=G1.2" in s for s in see)
     assert (URIRef("http://eunis.eea.europa.eu/eunishabitats/G1"), SKOS.broader, URIRef("http://eunis.eea.europa.eu/eunishabitats/G")) in graph
     assert _shacl_ok(graph, tmp_path)
     mof = [r for r in build_measurements(result) if r["measurementType"].startswith("habitat type")]

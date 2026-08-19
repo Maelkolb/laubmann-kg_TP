@@ -107,6 +107,7 @@
     "georeferenceSources": "dwc:georeferenceSources",
     "notation": "skos:notation",
     "broader": {"@id": "skos:broader", "@type": "@id"},
+    "seeAlso": {"@id": "rdfs:seeAlso", "@type": "@id"},
     "decimalLongitude": {"@id": "dwc:decimalLongitude", "@type": "xsd:decimal"},
     "geodeticDatum": "dwc:geodeticDatum",
     "asWKT": {"@id": "gsp:asWKT", "@type": "gsp:wktLiteral"},
