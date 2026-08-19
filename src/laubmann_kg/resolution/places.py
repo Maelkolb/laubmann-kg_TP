@@ -142,7 +142,12 @@ def merge_places(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Mer
                     lat, long = objs[v].lat, objs[v].long
                     break
         kind = base.kind or next((objs[v].kind for v in variants if objs[v].kind), None)
-        canon[c] = replace(base, lat=lat, long=long, kind=kind, alt_names=tuple(sorted(set(variants))))
+        # the georeference identity (linking/places.py) travels with the coordinates
+        src = base if base.lat is not None else next((objs[v] for v in variants if objs[v].lat is not None), base)
+        canon[c] = replace(base, lat=lat, long=long, kind=kind, alt_names=tuple(sorted(set(variants))),
+                           geonames_id=base.geonames_id or src.geonames_id, wikidata_iri=base.wikidata_iri or src.wikidata_iri,
+                           coordinate_uncertainty_m=base.coordinate_uncertainty_m or src.coordinate_uncertainty_m,
+                           georef_source=base.georef_source or src.georef_source)
 
     def fix(p):
         if p is None:

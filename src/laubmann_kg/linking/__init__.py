@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Optional
 
 from laubmann_kg.linking.cache import JsonCache
 from laubmann_kg.linking.persons import PERSON_REVIEW_FIELDS, link_persons
+from laubmann_kg.linking.places import PLACE_REVIEW_FIELDS, link_places
 from laubmann_kg.linking.review import write_review_csv
 from laubmann_kg.linking.taxa import TAXON_REVIEW_FIELDS, link_taxa
 
@@ -40,9 +41,11 @@ def run_linking(result: "ExtractionResult", config: dict) -> dict:
     wikidata_cache = JsonCache(cache_dir / "wikidata_cache.json")
 
     summary = {"taxa_linked": 0, "taxa_review": 0,
-               "persons_linked": 0, "persons_review": 0}
+               "persons_linked": 0, "persons_review": 0,
+               "places_linked": 0, "places_review": 0}
     taxa_rows: list[dict] = []
     person_rows: list[dict] = []
+    place_rows: list[dict] = []
     try:
         taxa_cfg = dict(config.get("taxa") or {})
         if taxa_cfg.get("enabled", True):
@@ -64,6 +67,14 @@ def run_linking(result: "ExtractionResult", config: dict) -> dict:
                 logger.error("person linking failed: %s", exc)
             summary["persons_review"] = sum(
                 1 for r in person_rows if r.get("rule") not in ("linked", "reviewed"))
+        places_cfg = dict(config.get("places") or {})
+        if places_cfg.get("enabled", False):
+            places_cfg.setdefault("cache_dir", str(cache_dir))
+            try:
+                summary["places_linked"], place_rows = link_places(result, places_cfg, wikidata_cache, offline)
+            except Exception as exc:  # noqa: BLE001
+                logger.error("place linking failed: %s", exc)
+            summary["places_review"] = sum(1 for r in place_rows if r.get("status") == "review")
     finally:
         gbif_cache.flush()
         wikidata_cache.flush()
@@ -71,6 +82,31 @@ def run_linking(result: "ExtractionResult", config: dict) -> dict:
                          review_dir / "taxon_link_review.csv")
         write_review_csv(person_rows, PERSON_REVIEW_FIELDS,
                          review_dir / "person_link_review.csv")
+        if place_rows:
+            write_review_csv(place_rows, PLACE_REVIEW_FIELDS, review_dir / "place_link_review.csv")
+    return summary
+
+
+def run_habitat_linking(result: "ExtractionResult", config: dict) -> dict:
+    """EUNIS classification of the (resolved) habitat labels — a separate call
+    because it runs after entity resolution."""
+    from laubmann_kg.linking.habitats import HABITAT_REVIEW_FIELDS, link_habitats
+    config = config or {}
+    offline = bool(config.get("offline", False))
+    review_dir = Path(config.get("review_dir", "data/review"))
+    hab_cfg = dict(config.get("habitats") or {})
+    if not hab_cfg.get("enabled", False):
+        return {}
+    rows: list[dict] = []
+    summary = {"habitats_linked": 0, "habitats_review": 0}
+    try:
+        summary["habitats_linked"], rows = link_habitats(result, hab_cfg, offline)
+        summary["habitats_review"] = sum(1 for r in rows if r.get("status") == "review")
+    except Exception as exc:  # noqa: BLE001
+        logger.error("habitat linking failed: %s", exc)
+    finally:
+        if rows:
+            write_review_csv(rows, HABITAT_REVIEW_FIELDS, review_dir / "habitat_link_review.csv")
     return summary
 
 

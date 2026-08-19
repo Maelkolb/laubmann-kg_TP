@@ -58,6 +58,7 @@ def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
         "decimalLatitude", "decimalLongitude", "samplingProtocol",
         "fieldNumber", "fieldNotes"]
     assert EVENT_FIELDS[9:] == ["verbatimLocality", "geodeticDatum",
+                                "coordinateUncertaintyInMeters", "georeferenceSources", "georeferenceProtocol", "locationID",
                                 "eventRemarks", "dynamicProperties"]
     assert OCC_FIELDS == [
         "eventID", "occurrenceID", "basisOfRecord",
@@ -65,7 +66,7 @@ def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
         "individualCount", "organismQuantity", "organismQuantityType",
         "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
         "behavior", "identificationQualifier", "identificationRemarks", "verbatimIdentification",
-        "locality", "verbatimLocality", "eventDate", "eventTime", "habitat",
+        "locality", "locationID", "verbatimLocality", "eventDate", "eventTime", "habitat",
         "occurrenceRemarks", "recordedBy", "associatedMedia", "associatedReferences",
         "dynamicProperties"]
     assert MOF_FIELDS == [

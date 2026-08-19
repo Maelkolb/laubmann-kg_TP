@@ -78,6 +78,35 @@ linking:
     reviewed_csv: null
     sleep: 0.5
     language: de
+  places:                    # coordinates + GeoNames id + Wikidata item for the diary's places (review/place_link_review.csv)
+    enabled: true
+    reviewed_csv: data/review/place_link_review.csv   # y/n decisions of an earlier run (absent = none)
+    min_uses: 1              # link every geocodable label (singletons included) when the Nominatim cache knows it
+    max_km: 10               # a GeoNames record this close to the Nominatim point confirms the place
+    keep_gazetteer_coordinates: true   # built-in gazetteer points stay; ids/uncertainty are added
+    nominatim:
+      cache: data/cache/linking/nominatim_cache.json   # pre-warmed by tools/prewarm_nominatim.py (Drive linking_cache/)
+      live: false            # never hit Nominatim from the pipeline; set true for small ad-hoc runs (1 req / 1.1 s)
+      email: ""
+    geonames:
+      dir: data/cache/linking/geonames    # country dumps (DE, AT, CH, IT, FR, GR, …) + index pickle, downloaded once
+      download: true
+  habitats:                  # EUNIS class per (resolved) habitat label; runs after entity resolution (review/habitat_link_review.csv)
+    enabled: true
+    reviewed_csv: data/review/habitat_link_review.csv
+    vocabulary: data/eunis_habitats.csv      # tools/build_eunis_vocab.py (Eionet EUNIS habitats vocabulary)
+    min_confidence: 0.8      # LLM confidence at/above -> linked (skos:*Match emitted); below -> review
+    review_confidence: 0.4   # below -> no_match
+    batch_size: 40           # labels per LLM call (one cached call per batch)
+    llm:
+      enabled: true
+      provider: google
+      model: gemini-3.5-flash
+      api_key_env: GOOGLE_API_KEY
+      cache_dir: data/cache/linking_llm_habitats
+      prompt_dir: prompts    # prompts/habitat_eunis.md
+      thinking_level: low
+      max_output_tokens: 8192
 
 paths:
   ontology: ontologies/laubmann.ttl

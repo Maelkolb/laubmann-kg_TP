@@ -96,6 +96,11 @@ class Place:
     long: Optional[float] = None
     kind: Optional[str] = None                # vocab.PLACE_KINDS (settlement|locality|region|route|unknown)
     alt_names: tuple[str, ...] = ()           # merged spellings (entity resolution) -> skos:altLabel
+    # linking/places.py: gazetteer identity of the georeference
+    geonames_id: Optional[int] = None         # -> owl:sameAs https://sws.geonames.org/<id>/
+    wikidata_iri: Optional[str] = None        # -> owl:sameAs
+    coordinate_uncertainty_m: Optional[int] = None   # -> dwc:coordinateUncertaintyInMeters (centroid radius)
+    georef_source: Optional[str] = None       # gazetteer | osm | osm+geonames | geonames | reviewed -> dwc:georeferenceSources
 
     @property
     def name(self) -> str:
@@ -112,6 +117,12 @@ class Habitat:
     (one node per label, reached from observations via dwciri:habitat)."""
     label: str
     alt_labels: tuple[str, ...] = ()          # merged spellings (entity resolution) -> skos:altLabel
+    # linking/habitats.py: EUNIS class (2012) the label maps to
+    eunis_code: Optional[str] = None          # "G1.2"
+    eunis_label: Optional[str] = None         # "Mixed riparian floodplain and gallery woodland"
+    eunis_match: Optional[str] = None         # exact | close | broad -> skos:exactMatch/closeMatch/broadMatch
+    eunis_uri: Optional[str] = None           # http://eunis.eea.europa.eu/eunishabitats/G1.2
+    eunis_parents: tuple[tuple[str, str, str], ...] = ()   # ((code, label, uri), ...) up to the level-1 group
 
     @property
     def uid(self) -> str:

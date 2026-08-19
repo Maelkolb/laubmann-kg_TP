@@ -25,6 +25,7 @@ FIELDS = [
 ROW_TYPE = "http://rs.iobis.org/obis/terms/ExtendedMeasurementOrFact"
 
 DEFAULT_METHOD = "extraction from diary text"
+EUNIS_SCHEME = "http://eunis.eea.europa.eu/eunishabitats/"
 
 # measurementType -> (SKOS scheme local name, concept local-name prefix)
 SCHEMES = {
@@ -67,6 +68,18 @@ def build_measurements(result: "ExtractionResult") -> list[dict]:
             _add("countQualifier", obs.count_qualifier)
             _add("breedingEvidence", obs.breeding_evidence)
             _add("movementKind", obs.movement_kind)
+            h = obs.habitat
+            if h is not None and getattr(h, "eunis_code", None) and getattr(h, "eunis_uri", None):
+                # the EUNIS class the diarist's habitat label maps to (linking/habitats.py)
+                rows.append({
+                    "eventID": entry.entry_uid, "occurrenceID": obs.uid,
+                    "measurementID": f"{obs.uid}:habitatEUNIS:0",
+                    "measurementType": "habitat type (EUNIS 2012)",
+                    "measurementTypeID": EUNIS_SCHEME,
+                    "measurementValue": f"{h.eunis_code} {h.eunis_label or ''}".strip(),
+                    "measurementValueID": h.eunis_uri,
+                    "measurementMethod": f"{(h.eunis_match or 'close')} match of the diary habitat label '{h.label}' (LLM-assisted, reviewed)",
+                })
     return rows
 
 

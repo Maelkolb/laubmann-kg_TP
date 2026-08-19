@@ -179,7 +179,25 @@ def _add_place(graph: Graph, place: Place) -> URIRef:
             graph.add((node, DWC.decimalLongitude, _decimal(place.long)))
             graph.add((node, DWC.geodeticDatum, Literal("WGS84")))
             graph.add((node, GSP.asWKT, _wkt_point(place.lat, place.long)))
+            if place.coordinate_uncertainty_m:
+                graph.add((node, DWC.coordinateUncertaintyInMeters, Literal(int(place.coordinate_uncertainty_m), datatype=XSD.integer)))
+            if place.georef_source:
+                graph.add((node, DWC.georeferenceSources, Literal(_GEOREF_SOURCES.get(place.georef_source, place.georef_source))))
+        # gazetteer identity (linking/places.py): GeoNames feature, Wikidata item
+        if place.geonames_id:
+            graph.add((node, OWL.sameAs, URIRef(f"https://sws.geonames.org/{int(place.geonames_id)}/")))
+        if place.wikidata_iri:
+            graph.add((node, OWL.sameAs, URIRef(place.wikidata_iri)))
     return node
+
+
+_GEOREF_SOURCES = {
+    "gazetteer": "built-in gazetteer (normalization/places.py)",
+    "osm+geonames": "OpenStreetMap/Nominatim name match, confirmed by GeoNames (point = GeoNames feature)",
+    "osm": "OpenStreetMap/Nominatim name match",
+    "geonames": "GeoNames name match (unique in home region)",
+    "reviewed": "reviewed place_link_review.csv",
+}
 
 
 def _add_person(graph: Graph, person: Person) -> URIRef:
@@ -210,7 +228,39 @@ def _add_habitat_concept(graph: Graph, habitat: Habitat) -> URIRef:
         for alt in habitat.alt_labels:
             graph.add((node, SKOS.altLabel, Literal(alt, lang=DE)))
         graph.add((LKG.habitatScheme, RDF.type, SKOS.ConceptScheme))
+        if habitat.eunis_uri and habitat.eunis_code:
+            _add_eunis_link(graph, node, habitat)
     return node
+
+
+_EUNIS_MATCH = {"exact": SKOS.exactMatch, "close": SKOS.closeMatch, "broad": SKOS.broadMatch}
+EUNIS_SCHEME = URIRef("http://eunis.eea.europa.eu/eunishabitats/")
+
+
+def _add_eunis_concept(graph: Graph, code: str, label: str, uri: str) -> URIRef:
+    """A EUNIS habitat class as an external skos:Concept (Eionet vocabulary
+    URI), with its label and notation cached in the graph."""
+    node = URIRef(uri)
+    if (node, RDF.type, SKOS.Concept) not in graph:
+        graph.add((node, RDF.type, SKOS.Concept))
+        graph.add((node, SKOS.prefLabel, Literal(label, lang="en")))
+        graph.add((node, RDFS.label, Literal(f"{code} {label}", lang="en")))
+        graph.add((node, SKOS.notation, Literal(code)))
+        graph.add((node, SKOS.inScheme, EUNIS_SCHEME))
+        graph.add((EUNIS_SCHEME, RDF.type, SKOS.ConceptScheme))
+    return node
+
+
+def _add_eunis_link(graph: Graph, habitat_node: URIRef, habitat: Habitat) -> None:
+    """habitat concept -> skos:{exact,close,broad}Match -> EUNIS class, plus the
+    class's broader chain (so "all woodland" = skos:broader* G)."""
+    target = _add_eunis_concept(graph, habitat.eunis_code, habitat.eunis_label or habitat.eunis_code, habitat.eunis_uri)
+    graph.add((habitat_node, _EUNIS_MATCH.get(habitat.eunis_match or "close", SKOS.closeMatch), target))
+    child = target
+    for code, label, uri in habitat.eunis_parents:
+        parent = _add_eunis_concept(graph, code, label, uri)
+        graph.add((child, SKOS.broader, parent))
+        child = parent
 
 
 # --------------------------------------------------------------------------

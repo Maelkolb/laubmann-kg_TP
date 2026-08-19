@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HabitatEunisClassification",
+  "description": "LLM classification of diarist habitat labels into EUNIS habitat classes (2012). Tolerant envelope; the linking stage validates codes against data/eunis_habitats.csv and applies confidence thresholds.",
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {"type": ["string", "null"]},
+          "code": {"type": ["string", "null"]},
+          "match": {"type": ["string", "null"]},
+          "confidence": {"type": ["number", "string", "null"]},
+          "note": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 # =============================================================
 # HistOrniGraph / Laubmann Knowledge Graph
 # SHACL Validation Shapes  –  ontologies/shacl_shapes.ttl
-# Validates instance data against ontologies/laubmann.ttl (v0.4.2)
+# Validates instance data against ontologies/laubmann.ttl (v0.4.3)
 #
 # v0.4 – Ontologie 0.4.0: ObservationEvent -> lkg:Observation, BirdCall ->
 #        lkg:Vocalisation; ObservationEvidence-, BehaviourNote-, Habitat-,
@@ -51,10 +51,10 @@
 <https://w3id.org/laubmann-kg/shapes>
     a owl:Ontology , sh:ShapesGraph ;
     dcterms:title "Laubmann Knowledge Graph — SHACL shapes"@en ;
-    dcterms:description "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology 0.4.2). Run with inference=none: shapes target the concrete classes only (grouping superclasses are not materialised in the data). Every child node must carry dcterms:isPartOf (partonomy). Vocabulary/completeness checks are sh:Warning, datatype and cardinality checks sh:Violation."@en ;
+    dcterms:description "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology 0.4.3). Run with inference=none: shapes target the concrete classes only (grouping superclasses are not materialised in the data). Every child node must carry dcterms:isPartOf (partonomy). Vocabulary/completeness checks are sh:Warning, datatype and cardinality checks sh:Violation."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:modified "2026-08-19"^^xsd:date ;
-    owl:versionInfo "0.4.2" ;
+    owl:versionInfo "0.4.3" ;
     rdfs:seeAlso <https://w3id.org/laubmann-kg/ontology> .
 
 
@@ -727,6 +727,29 @@ lkg:PlaceShape
         sh:in ( "settlement" "locality" "region" "route" "unknown" ) ;
         sh:message "placeKind muss settlement, locality, region, route oder unknown sein." ;
         sh:severity sh:Warning ;
+    ] ;
+    # 0.4.3: georeference identity and precision (linking/places.py)
+    sh:property [
+        sh:path owl:sameAs ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^(https?://sws\\.geonames\\.org/[0-9]+/?|https?://www\\.wikidata\\.org/entity/Q[0-9]+)$" ;
+        sh:message "owl:sameAs eines Place zeigt auf ein GeoNames-Feature (https://sws.geonames.org/<id>/) oder ein Wikidata-Item." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path dwc:coordinateUncertaintyInMeters ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:message "dwc:coordinateUncertaintyInMeters ist höchstens eine positive ganze Zahl (Radius des Zentroids)." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path dwc:georeferenceSources ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "Höchstens eine dwc:georeferenceSources-Angabe pro Place." ;
+        sh:severity sh:Warning ;
     ] .
 
 # Habitat-Knoten sind skos:Concepts in lkg:habitatScheme (keine eigene Klasse):
@@ -749,8 +772,32 @@ lkg:HabitatConceptShape
         sh:message "Habitat-Konzept muss skos:inScheme lkg:habitatScheme tragen." ;
         sh:severity sh:Warning ;
     ] ;
+    # 0.4.3: at most one EUNIS class per habitat concept, as exact/close/broad match (linking/habitats.py)
+    sh:property [
+        sh:path [ sh:alternativePath ( skos:exactMatch skos:closeMatch skos:broadMatch ) ] ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^http://eunis\\.eea\\.europa\\.eu/eunishabitats/" ;
+        sh:message "Ein Habitat-Konzept trägt höchstens eine EUNIS-Klasse (skos:exactMatch/closeMatch/broadMatch auf http://eunis.eea.europa.eu/eunishabitats/<code>)." ;
+        sh:severity sh:Violation ;
+    ] ;
     sh:message "dwciri:habitat muss auf ein skos:Concept zeigen (kein lkg:Place)." ;
     sh:severity sh:Violation .
+
+# EUNIS classes referenced from habitat concepts: external skos:Concepts of the
+# Eionet vocabulary, cached with label + notation; the hierarchy is skos:broader.
+lkg:EunisConceptShape
+    a sh:NodeShape ;
+    sh:targetObjectsOf skos:exactMatch, skos:closeMatch, skos:broadMatch, skos:broader ;
+    sh:or ( [ sh:nodeKind sh:IRI ; sh:pattern "^http://eunis\\.eea\\.europa\\.eu/eunishabitats/" ;
+              sh:property [ sh:path skos:notation ; sh:minCount 1 ; sh:maxCount 1 ; sh:severity sh:Violation ;
+                            sh:message "EUNIS-Konzept benötigt genau eine skos:notation (Code)." ] ;
+              sh:property [ sh:path skos:prefLabel ; sh:minCount 1 ; sh:severity sh:Violation ;
+                            sh:message "EUNIS-Konzept benötigt ein skos:prefLabel." ] ]
+            [ sh:nodeKind sh:IRI ; sh:pattern "^https?://(www\\.)?(gbif\\.org|wikidata\\.org|sws\\.geonames\\.org)/" ]
+            [ sh:nodeKind sh:IRI ; sh:pattern "^https://w3id\\.org/laubmann-kg/" ] ) ;
+    sh:message "Ziel von skos:*Match/skos:broader ist eine EUNIS-Klasse mit Code und Label, ein GBIF/Wikidata/GeoNames-IRI oder ein Konzept des Projekts." ;
+    sh:severity sh:Warning .
 
 # =============================================================
 # 8. TAXON

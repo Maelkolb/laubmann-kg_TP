@@ -16,7 +16,7 @@ FIELDS = [
     "individualCount", "organismQuantity", "organismQuantityType",
     "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
     "behavior", "identificationQualifier", "identificationRemarks", "verbatimIdentification",
-    "locality", "verbatimLocality", "eventDate", "eventTime", "habitat",
+    "locality", "locationID", "verbatimLocality", "eventDate", "eventTime", "habitat",
     "occurrenceRemarks", "recordedBy", "associatedMedia", "associatedReferences",
     "dynamicProperties",
 ]
@@ -127,6 +127,7 @@ def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = 
                 "identificationRemarks": _identification_remarks(taxon),
                 "verbatimIdentification": obs.taxon_verbatim or "",
                 "locality": obs.place.name if obs.place is not None else "",
+                "locationID": f"https://sws.geonames.org/{obs.place.geonames_id}/" if obs.place is not None and getattr(obs.place, "geonames_id", None) else "",
                 "verbatimLocality": obs.locality.verbatim if obs.locality is not None else "",
                 # a record without its own date inherits the event's date (or
                 # multi-day interval)

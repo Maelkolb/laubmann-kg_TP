@@ -15,8 +15,31 @@ FIELDS = [
     "eventID", "eventDate", "verbatimEventDate", "locality",
     "decimalLatitude", "decimalLongitude", "samplingProtocol", "fieldNumber",
     "fieldNotes", "verbatimLocality", "geodeticDatum",
+    "coordinateUncertaintyInMeters", "georeferenceSources", "georeferenceProtocol", "locationID",
     "eventRemarks", "dynamicProperties",
 ]
+
+GEOREF_PROTOCOL = "gazetteer match on the diary's place name (GeoNames / OpenStreetMap); coordinates = feature centroid"
+
+
+def georef_columns(place) -> dict:
+    """The georeference columns of a place (empty strings when unknown)."""
+    has = place is not None and place.lat is not None and place.long is not None
+    return {
+        "coordinateUncertaintyInMeters": str(place.coordinate_uncertainty_m) if has and getattr(place, "coordinate_uncertainty_m", None) else "",
+        "georeferenceSources": _GEOREF_SOURCES.get(getattr(place, "georef_source", None), getattr(place, "georef_source", None) or "") if has else "",
+        "georeferenceProtocol": GEOREF_PROTOCOL if has and getattr(place, "georef_source", None) else "",
+        "locationID": f"https://sws.geonames.org/{place.geonames_id}/" if place is not None and getattr(place, "geonames_id", None) else "",
+    }
+
+
+_GEOREF_SOURCES = {
+    "gazetteer": "built-in gazetteer (normalization/places.py)",
+    "osm+geonames": "OpenStreetMap/Nominatim name match confirmed by GeoNames",
+    "osm": "OpenStreetMap/Nominatim name match",
+    "geonames": "GeoNames name match (unique in home region)",
+    "reviewed": "reviewed place_link_review.csv",
+}
 
 
 def event_date(entry) -> str:
@@ -47,6 +70,7 @@ def build_events(result: "ExtractionResult") -> list[dict]:
             "fieldNotes": (entry.text_clean or "").replace("\n", " ").replace("\t", " "),
             "verbatimLocality": entry.location_raw or "",
             "geodeticDatum": "WGS84" if has_coords else "",
+            **georef_columns(place),
             "eventRemarks": " ".join(entry.weather.verbatim.split()) if entry.weather else "",
             "dynamicProperties": _dynamic_properties(entry),
         })

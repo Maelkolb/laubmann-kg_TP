@@ -755,7 +755,8 @@ def test_run_linking_never_raises(tmp_path, monkeypatch) -> None:
     summary = run_linking(result, {"cache_dir": str(tmp_path / "cache"),
                                    "review_dir": str(tmp_path / "review")})
     assert summary == {"taxa_linked": 0, "taxa_review": 0,
-                       "persons_linked": 0, "persons_review": 0}
+                       "persons_linked": 0, "persons_review": 0,
+                       "places_linked": 0, "places_review": 0}
     assert (tmp_path / "review" / "taxon_link_review.csv").exists()
 
 

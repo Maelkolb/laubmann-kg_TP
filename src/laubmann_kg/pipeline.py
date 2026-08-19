@@ -264,6 +264,11 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
                 if obs.place is not None:
                     result.places.setdefault(obs.place.uid, obs.place)
 
+    # Habitat linking (EUNIS classes) works on the resolved, canonical labels
+    if (linking_cfg or {}).get("enabled", False) and (linking_cfg.get("habitats") or {}).get("enabled", False):
+        from laubmann_kg.linking import run_habitat_linking
+        logger.info("habitat linking: %s", run_habitat_linking(result, linking_cfg))
+
     if multimodal_path is not None:
         entry_uids = {e.entry_uid for e in result.entries}
         result.multimodal = [r for r in read_multimodal(multimodal_path)

@@ -121,6 +121,14 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
   (`date_from_position`; a pre-diary written date passes to the observations as their own
   eventDate); re-homed entries carry a `skos:note` naming the scan set. No entry is dated
   before April 1917 or after December 1965 any more.
+- **External linking of habitats and places (ontology 0.4.3)**: `linking/habitats.py`
+  maps every resolved habitat label to a EUNIS class via the LLM (cached, batched,
+  `skos:exactMatch/closeMatch/broadMatch` to the Eionet EUNIS vocabulary, class nodes
+  with notation/label/broader chain, eMoF row in the DwC-A, `review/habitat_link_review.csv`);
+  `linking/places.py` georeferences places from a pre-warmed Nominatim cache
+  (`tools/prewarm_nominatim.py`), the GeoNames country dumps and Wikidata — coordinates,
+  `owl:sameAs` GeoNames feature + Wikidata item, `dwc:coordinateUncertaintyInMeters`,
+  `dwc:georeferenceSources`, DwC-A `locationID`; `review/place_link_review.csv`. %%LINK_SUMMARY%%
 - **Current export: Drive `kg_exports_2026-08-19/`** — 9,523 entries (4 excluded by QA + coverage), 74,584 observations, 15,297 vocalisations, 1,707,290 triples, SHACL 0 violations / 409 warnings (empty entries), 1,182 taxa (616 on GBIF), 4,259 persons (300 on Wikidata), 9,669 places (215 georeferenced), 1,481 habitat concepts; DwC-A valid (event 9,523 · occurrence 74,584 · eMoF 102,379 · multimedia 141); `review/` = qa_flags (2,281 rows) + link reviews + the four merge CSVs (3,723 rows); `html/` explorer v7 + workflow page; local run = notebook 07 C1+C3 (`export-all`) against the Drive caches (2 live Gemini calls for the truncated digest entries)
 
 ## Previous state (2026-08-18)

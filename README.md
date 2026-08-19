@@ -38,7 +38,7 @@ Open `notebooks/07_full_workflow_colab.ipynb` in Colab. It mounts Drive and runs
 
 1. **Corpus build** — `HistOrniGraph_addons/build_corpus.py` over the `Laubmann_NN_gemini/` region JSONs
 2. **Dedup** — `dedup/detect_duplicates.py` → human review via `review.html` → `dedup/apply_dedup.py` writes `corpus_*_dedup/` (non-destructive, manifest of every dropped page)
-3. **Knowledge graph** — `laubmann-kg export-all --config configs/full_llm.yaml --input-dir <corpus_dedup> --output-dir <exports>` (Gemini extraction → volume-coverage date repair → QA → GBIF/Wikidata linking → entity resolution → RDF/JSON-LD + SHACL + Darwin Core Archive from one pipeline run; resumable via the on-Drive LLM cache; `export-jsonld` / `export-dwca` still produce one of the two)
+3. **Knowledge graph** — `laubmann-kg export-all --config configs/full_llm.yaml --input-dir <corpus_dedup> --output-dir <exports>` (Gemini extraction → volume-coverage date repair → QA → GBIF/Wikidata linking + georeferencing (Nominatim/GeoNames/Wikidata) → entity resolution → EUNIS habitat classes → RDF/JSON-LD + SHACL + Darwin Core Archive from one pipeline run; resumable via the on-Drive LLM cache; `export-jsonld` / `export-dwca` still produce one of the two)
 
 ## Pipeline stages
 

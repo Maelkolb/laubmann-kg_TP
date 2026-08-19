@@ -52,6 +52,30 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
   the name as written). Every merge is a row in `review/*_merges.csv`
   (`decision` column: `auto` rows apply unless rejected, `candidate` rows only
   when accepted).
+- **Habitats linked to EUNIS.** After resolution, `linking/habitats.py` asks
+  the LLM (cached, batched) for the EUNIS habitat class (2012 classification,
+  Eionet vocabulary `http://eunis.eea.europa.eu/eunishabitats/<code>`) of every
+  distinct habitat label and how it relates to it: the habitat concept gets at
+  most one `skos:exactMatch` / `skos:closeMatch` / `skos:broadMatch`; the EUNIS
+  class is a `skos:Concept` with `skos:notation`, `skos:prefLabel`@en and its
+  `skos:broader` chain up to the level-1 group, so "everything in woodland" is
+  `skos:broader* G`. Confidence ≥ 0.8 is applied, the rest waits in
+  `review/habitat_link_review.csv` (`y`/`n` decisions → `reviewed_csv`). The
+  DwC-A carries the class as an eMoF row (`habitat type (EUNIS 2012)`,
+  `measurementValueID` = EUNIS URI); `dwc:habitat` stays verbatim.
+- **Places georeferenced with an identity.** `linking/places.py` combines a
+  pre-warmed Nominatim cache (OSM: name-matched hit of an acceptable type),
+  the GeoNames country dumps (a record with the same name within 10 km of the
+  OSM point, or unique in Bavaria) and Wikidata (QID from the OSM tag or
+  GeoNames P1566): `geo:lat/long`, `gsp:asWKT`, `owl:sameAs
+  https://sws.geonames.org/<id>/` and `owl:sameAs wd:Q…`,
+  `dwc:coordinateUncertaintyInMeters` (centroid radius by feature type: town
+  2 km, lake 1 km, peak 300 m …) and `dwc:georeferenceSources`; DwC-A
+  `locationID` (GeoNames URI), `coordinateUncertaintyInMeters`,
+  `georeferenceSources/Protocol` on the event. Labels that cannot be gazetteer
+  entries (prepositional fragments, generic nouns, micro-localities) are never
+  tried; everything else lands in `review/place_link_review.csv`
+  (linked | review | no_match, decision column).
 - **Dates checked against the volume span.** `configs/volume_coverage.yaml`
   (title pages; each `lkg:DiaryVolume` states its span as `dcterms:temporal
   "YYYY-MM/YYYY-MM"`) drives `normalization/coverage.py`: misfiled scans go
