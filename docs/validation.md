@@ -47,12 +47,29 @@ same entity are one node. Merging is therefore never judged as a pair. Single
 mentions can be decided differently from their form, and misread text is
 corrected where it happened (the transcription), not in its consequences.
 
-Decisions per name form: *stimmt* (the assigned entity is right), *andere …*
-(another entity; for taxa any GBIF taxon), *eigene* (persons/places: keep
-apart), *falsch, offen* (taxa/habitats: assignment wrong, right one unknown),
-*kein(e) …* (no taxon/person/place at all, with a reason), *Belege einzeln*
-(the mentions differ), *unsicher*. Per mention: ✓, ↪ (reassign), ✗ (not a
-…), ✎ (correct the reading).
+The UI (version 3, "Laubmann-Abgleich") shows **one entity at a time**: its
+authority record on top, below it every name form the diary uses for it, and
+under each name its mentions with the line cut from the scan; the page itself
+stays open on the right. The same four actions apply on all three levels:
+✓ *stimmt*, ↪ *anders* (another entity; for taxa any GBIF taxon, plus
+"nicht bestimmbar"; for persons/places "eigene"), ✗ *kein(e) …* (no
+taxon/person/place at all, with a reason), ? *unsicher*; ✎ corrects the
+reading of a mention's entry. Confirming the entity also confirms its safe
+names (attested names, pure spelling variants), so a reviewer only decides the
+doubtful ones; relinking a species (↪ on the entity) carries all its
+undecided names along. A name whose mentions are decided one by one counts as
+decided. An entity is done when the entity and all its names are decided; the
+next open entity follows automatically.
+
+**Model second reading.** For doubtful species mentions (class C, rare L/B
+names) the line image was sent to Gemini (`tools/validation_ui/second_reading.py`):
+what is written there, and which bird is it? The answer appears next to the
+mention and is accepted with one key (it sets the reading correction and the
+species). On a pilot it found real misreadings (*Lärmkönig* → Zaunkönig,
+*Rothalswürger* → Rotkopfwürger, *Flusspieper* → Flußuferläufer), but it can
+also be confidently wrong (*Kameradeneingänge* read as "Karmingimpel" at 98 %,
+the scan shows *Hausrotschwänzchen*), so it is a suggestion for the reviewer,
+never applied automatically.
 
 ## 3. Evidence and priority
 

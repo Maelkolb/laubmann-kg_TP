@@ -44,6 +44,7 @@ ap.add_argument("--export-name", default=None)
 ap.add_argument("--built", default="")
 ap.add_argument("--sample", type=int, default=400, help="size of the random evaluation sample of taxon mentions")
 ap.add_argument("--seed", type=int, default=20260928)
+ap.add_argument("--second-reading", default=None, help="output of second_reading.py (model suggestions for doubtful taxon mentions)")
 ap.add_argument("--out", default="payload.b64")
 args = ap.parse_args()
 R = Path(args.review_dir)
@@ -598,9 +599,42 @@ def pack(sec: Section):
     return {"ent": sec.ent, "forms": sec.forms, "men": sec.men}
 
 
-payload = {"v": 2, "built": args.built, "export": args.export_name or R.resolve().parent.name,
+# model second reading (second_reading.py): mention index -> suggestion, the
+# named species resolved to a taxon of the graph where possible
+SUG = {}
+if args.second_reading and Path(args.second_reading).exists():
+    answers = json.loads(Path(args.second_reading).read_text(encoding="utf-8"))
+    by_sci, by_de = {}, {}
+    for i, ent in enumerate(TX.ent):
+        if ent[2]:
+            if ent[1]:
+                by_sci.setdefault(ent[1].lower(), i)
+            for n in [ent[0]] + list(ent[9]):
+                by_de.setdefault(n.lower(), i)
+    occ = collections.Counter()
+    for i, m in enumerate(TX.men):
+        k = E[m[1]][1] + "|" + TX.forms[m[0]][0].lower()
+        key = f"{k}|{occ[k]}"
+        occ[k] += 1
+        a = answers.get(key)
+        if not a or not a.get("reading"):
+            continue
+        t = None
+        if a.get("kind") == "bird":
+            t = by_sci.get((a.get("sci") or "").lower().strip())
+            if t is None:
+                t = by_de.get((a.get("species_de") or "").lower().strip())
+        try:
+            conf = round(float(a.get("confidence") or 0), 2)
+        except (TypeError, ValueError):
+            conf = 0.0
+        SUG[i] = [a["reading"], 1 if a.get("same") else 0, a.get("kind") or "", a.get("species_de") or "",
+                  a.get("sci") or "", conf, (a.get("note") or "")[:300], -1 if t is None else t]
+    print("second reading suggestions", len(SUG))
+
+payload = {"v": 3, "built": args.built, "export": args.export_name or R.resolve().parent.name,
            "E": E, "PG": PG, "taxon": pack(TX), "person": pack(PS), "place": pack(PL), "habitat": pack(HB),
-           "qa": QA, "sample": SAMPLE, "eunis": eunis}
+           "qa": QA, "sample": SAMPLE, "eunis": eunis, "sug": SUG}
 raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode()
 gz = gzip.compress(raw, 9, mtime=0)
 Path(args.out).write_text(base64.b64encode(gz).decode())

@@ -1,6 +1,6 @@
-"""Playwright smoke test of the Abgleich UI (not part of the pytest suite).
+"""Playwright smoke test of the Laubmann-Abgleich UI (not part of the pytest suite).
 
-    HOG_UI=HistOrniGraph_Abgleich.html [HOG_BROWSER=<chromium/edge exe>] [HOG_PAGES=<HistOrniGraph_output>] \
+    HOG_UI=Laubmann_Abgleich.html [HOG_BROWSER=<chromium/edge exe>] [HOG_PAGES=<HistOrniGraph_output>] \
         python tools/validation_ui/tests/smoke_abgleich.py
 
 HOG_PAGES (optional): the Drive folder with Laubmann_XX_gemini/pages/*.png; Drive
@@ -10,6 +10,7 @@ first UI version to import. The exported CSVs are fed through the pipeline's
 loaders (round trip).
 """
 import asyncio
+import csv
 import json
 import os
 import tempfile
@@ -18,7 +19,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 HERE = Path(__file__).resolve().parent
-URL = Path(os.environ.get("HOG_UI", "HistOrniGraph_Abgleich.html")).resolve().as_uri()
+URL = Path(os.environ.get("HOG_UI", "Laubmann_Abgleich.html")).resolve().as_uri()
 SHOTS = Path(os.environ.get("HOG_SHOTS", "shots"))
 PAGES = os.environ.get("HOG_PAGES")
 SHOTS.mkdir(parents=True, exist_ok=True)
@@ -45,72 +46,86 @@ async def main():
     async with async_playwright() as p:
         exe = os.environ.get("HOG_BROWSER")
         b = await p.chromium.launch(executable_path=exe) if exe else await p.chromium.launch()
-        pg = await (await b.new_context(viewport={"width": 1600, "height": 1000})).new_page()
+        pg = await (await b.new_context(viewport={"width": 1680, "height": 1000})).new_page()
         errs = []
         pg.on("pageerror", lambda e: errs.append(str(e)))
         pg.on("console", lambda m: m.type == "error" and "Failed to load resource" not in m.text and errs.append(m.text))
         if prefix:
             await pg.route("**/drive.google.com/thumbnail**", thumbnail)
+        for host in ("api.gbif.org", "www.wikidata.org", "lobid.org", "nominatim.openstreetmap.org", "server.arcgisonline.com"):
+            await pg.route(f"**://{host}/**", lambda r: r.abort())
         await pg.goto(URL)
         await pg.wait_for_selector("#loading", state="detached", timeout=120000)
         await pg.evaluate("localStorage.clear()")
         await pg.reload()
         await pg.wait_for_selector("#loading", state="detached", timeout=120000)
-        await pg.wait_for_timeout(800)
+        await pg.wait_for_timeout(900)
+        await pg.fill("#hwho", "Test")
         await pg.keyboard.press("Escape")
-        await pg.fill("#who", "Test")
+        H = pg.evaluate
 
-        async def open_form(task, name):
-            await pg.click(f'.task[data-t="{task}"]')
-            await pg.evaluate("t => { window.__hog.S.ui.chips[t] = ['A','B','C','L','V','K','W','E','R','N','G']; }", task)
-            await pg.click(f'.task[data-t="{task}"]')
-            await pg.select_option("#qshow", "all")
-            await pg.fill("#qsearch", name)
-            await pg.wait_for_timeout(500)
-            labels = await pg.eval_on_selector_all("#qlist .qi .l1", "els => els.map(e => e.textContent)")
-            await pg.click(f'#qlist .qi[data-p="{labels.index(name)}"]')
+        async def open_ent(t, label):
+            await H("""([t, label]) => { const h = window.__hog; const e = h.X[t].ents.find(x => x.label === label);
+                if (h.cur.tab !== t) h.openTab(t); h.selectItem(e); }""", [t, label])
+            await pg.wait_for_timeout(400)
 
-        # name form reassigned to another species
-        await open_form("taxon", "Kameradeneingang")
+        # entity ✓, then the focus moves to the first open name; N + 1 rejects it; Z undoes
+        await open_ent("taxon", "Gimpel")
+        await pg.keyboard.press("y")
+        assert await H("window.__hog.cur.focus.startsWith('n:')")
+        await pg.keyboard.press("n")
+        await pg.keyboard.press("1")
+        assert len(await H("Object.keys(window.__hog.S.id.taxon)")) == 1
+        await pg.keyboard.press("z")
+        assert len(await H("Object.keys(window.__hog.S.id.taxon)")) == 0
+        # a name reassigned by keyboard: A, type, Enter
+        await H("""() => { const h = window.__hog; const nm = h.X.taxon.names.find(n => n.name === 'Kameradeneingang'); h.setFocus('n:' + nm.fi); }""")
         await pg.keyboard.press("a")
-        await pg.fill("#detail .rpanel .rq", "Hausrot")
+        await pg.keyboard.type("Hausrot")
         await pg.wait_for_timeout(300)
-        await pg.click('#detail .rpanel .rres .r[data-k="0"]')
-        d = await pg.evaluate("window.__hog.S.id.taxon['kameradeneingang']")
+        await pg.keyboard.press("Enter")
+        d = await H("window.__hog.S.id.taxon['kameradeneingang']")
         assert d["d"] == "r" and d["target"]["sci"] == "Phoenicurus ochruros", d
-        # mentions decided one by one, one reading corrected
-        await open_form("taxon", "Tirol")
+        # reading editor opened with E: the key must not be typed into the text
+        await H("""() => { const h = window.__hog; const nm = h.X.taxon.names.find(n => n.name === 'Kameradeneingang'); h.setFocus('m:' + nm.men[0]); }""")
         await pg.keyboard.press("e")
-        await pg.click('#detail .psg >> nth=0 >> [data-md="r"]')
-        await pg.fill("#detail .psg >> nth=0 >> .rq", "Pirol")
-        await pg.wait_for_timeout(300)
-        await pg.click('#detail .psg >> nth=0 >> .rres .r[data-k="0"]')
-        await pg.click('#detail .psg >> nth=1 >> [data-md="n"]')
-        await pg.click('#detail .psg >> nth=1 >> [data-reason="misread"]')
-        await pg.click('#detail .psg >> nth=0 >> [data-md="text"]')
-        await pg.fill("#detail .psg >> nth=0 >> .c-new", "Pirol")
-        await pg.click("#detail .psg >> nth=0 >> .c-save")
-        await pg.screenshot(path=str(SHOTS / "tirol.png"))
-        assert len(await pg.evaluate("Object.keys(window.__hog.S.men.taxon)")) == 2
-        # scan viewer: the second page of a multi-page entry
-        mi = await pg.evaluate("""() => { const h = window.__hog; for (const it of h.M.taxon.items) for (const mi of it.men) {
-            const m = h.P.taxon.men[mi]; if (h.P.E[m[1]][8].length > 1) { h.openScan(m[1], h.P.E[m[1]][8][0], null); return mi; } } return -1; }""")
-        assert mi >= 0
+        await pg.wait_for_timeout(500)
+        sel = await H("() => { const ta = document.querySelector('#edtext'); return ta.value.slice(ta.selectionStart, ta.selectionEnd); }")
+        assert sel == "Kameradeneingänge", sel
+        await pg.keyboard.type("Hausrotschwänzchen")
+        await pg.keyboard.press("Control+Enter")
+        rd = await H("window.__hog.S.text.map(c => [c.old, c.new])")
+        assert rd == [["Kameradeneingänge", "Hausrotschwänzchen"]], rd
+        await pg.screenshot(path=str(SHOTS / "gimpel.png"))
+        # second reading accepted with G (a mention whose suggestion names another species of the graph)
+        acc = await H("""() => { const h = window.__hog; for (const e of h.X.taxon.ents) for (const nm of e.names) for (const mi of nm.men) { const s = h.SUG[mi];
+            if (s && s[2] === 'bird' && s[7] >= 0 && s[7] !== nm.ent) { h.selectItem(e); h.setFocus('m:' + mi); return mi; } } return -1; }""")
+        if acc >= 0:
+            await pg.keyboard.press("g")
+            assert await H(f"(() => {{ const h = window.__hog; return !!h.S.men.taxon[h.X.taxon.mkey[{acc}]]; }})()")
+        # scan: second page of a multi-page entry
+        await H("() => { const h = window.__hog; h.showScan(h.P.E.findIndex(e => e[8].length > 2)); }")
+        await pg.wait_for_timeout(600)
         await pg.click("#scanpages button:nth-child(2)")
-        await pg.wait_for_timeout(800)
-        assert "Seite 2 von" in await pg.text_content("#scantitle")
-        await pg.screenshot(path=str(SHOTS / "scan_page2.png"))
-        await pg.keyboard.press("Escape")
-        # other queues render
-        for task in ("person", "place", "habitat", "eval", "qa"):
-            await pg.click(f'.task[data-t="{task}"]')
-            await pg.wait_for_timeout(600)
-            await pg.screenshot(path=str(SHOTS / f"{task}.png"))
-        # v1 import
+        await pg.wait_for_timeout(600)
+        assert "Seite 2/" in await pg.text_content("#scantitle")
+        # person link, place coordinate, habitat, sample, hints, log
+        await open_ent("person", "Walter Wüst")
+        if await pg.query_selector('.cand[data-qid="Q2546836"]'):
+            await pg.click('.cand[data-qid="Q2546836"]')
+            assert (await H("window.__hog.S.ent.person['Walter Wüst']"))["qid"] == "Q2546836"
+        await open_ent("place", "Englischer Garten")
+        await pg.fill("#ll", "48.1642, 11.6056")
+        await pg.click("#llbtn")
+        assert (await H("window.__hog.S.ent.place['Englischer Garten']"))["fix"]["lat"] == "48.16420"
+        for tab in ("habitat", "eval", "qa", "log"):
+            await pg.click(f'.tab[data-tab="{tab}"]')
+            await pg.wait_for_timeout(500)
+            await pg.screenshot(path=str(SHOTS / f"{tab}.png"))
         if os.environ.get("HOG_V1"):
             await pg.set_input_files("#fileImport", os.environ["HOG_V1"])
             await pg.wait_for_timeout(800)
-        ex = await pg.evaluate("({ id: window.__hog.exportIdentities(), men: window.__hog.exportMentions(), text: window.__hog.exportText() })")
+        ex = await H("({ id: window.__hog.exportIdentities(), men: window.__hog.exportMentions(), text: window.__hog.exportText() })")
         await b.close()
 
     # round trip through the pipeline loaders
@@ -120,16 +135,14 @@ async def main():
     tmp = Path(tempfile.mkdtemp())
     for name, key in (("identities.csv", "id"), ("value_corrections.csv", "men"), ("text_corrections.csv", "text")):
         (tmp / name).write_text(ex[key], encoding="utf-8")
-    import csv as _csv
-    count = lambda name: sum(1 for _ in _csv.DictReader((tmp / name).open(encoding="utf-8")))   # noqa: E731 (notes may hold line breaks)
+    count = lambda name: sum(1 for _ in csv.DictReader((tmp / name).open(encoding="utf-8")))   # noqa: E731 (notes may hold line breaks)
     ids = Identities.load(tmp / "identities.csv")
-    n_rows = count("identities.csv")
     n_loaded = sum(len(v) for v in ids.forms.values()) + sum(len(v) for v in ids.links.values())
-    assert n_loaded == n_rows, (n_loaded, n_rows)
+    assert n_loaded == count("identities.csv"), (n_loaded, count("identities.csv"))
     assert len(load_corrections(tmp / "value_corrections.csv")) == count("value_corrections.csv")
     assert len(load_readings(tmp / "text_corrections.csv")) == count("text_corrections.csv")
     assert not errs, errs
-    print(f"ok: {n_rows} identities, round trip clean; screenshots in {SHOTS}")
+    print(f"ok: {n_loaded} identities, round trip clean; screenshots in {SHOTS}")
 
 
 asyncio.run(main())
