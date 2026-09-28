@@ -119,6 +119,9 @@ def merge_places(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Mer
         if variant in objs and canonical in objs and variant not in mapping and variant != canonical:
             rows.append(MergeRow("places", variant, canonical, "manual", "manual", usage[variant], usage[canonical]))
             mapping[variant] = mapping.get(canonical, canonical)
+    # reviewed identities (validation UI) override the rules
+    from laubmann_kg.review.identities import apply_mappings, identities_of
+    apply_mappings(mapping, objs, "places", identities_of(result))
     if not mapping:
         return 0, rows
     # resolve chains and build canonical objects
@@ -221,6 +224,8 @@ def merge_habitats(result, cfg: dict, decisions: Decisions) -> tuple[int, list[M
         if variant in usage and canonical in usage and variant not in mapping and variant != canonical:
             rows.append(MergeRow("habitats", variant, canonical, "manual", "manual", usage[variant], usage[canonical]))
             mapping[variant] = mapping.get(canonical, canonical)
+    from laubmann_kg.review.identities import apply_mappings, identities_of
+    apply_mappings(mapping, list(usage), "habitats", identities_of(result))
     if not mapping:
         return 0, rows
     def root(n):

@@ -243,12 +243,19 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                     key, (row.get("gbif_canonical_name") or "").strip() or None,
                     (row.get("gbif_match_type") or "").strip() or "EXACT")
 
+    # reviewed identities (validation UI, review/identities.csv) win over every rule
+    from laubmann_kg.review.identities import identities_of
+    ids = identities_of(result)
+
     llm_requested = bool(llm_cfg.get("enabled", True)) and not offline
     proposer = build_llm_proposer(llm_cfg) if llm_requested else None
     llm_unavailable = llm_requested and proposer is None
 
     rows: list[dict] = []
     links: dict[str, dict] = {}  # vernacular.lower() -> dataclasses.replace kwargs
+    # vernacular.lower() -> the matched scientific name, filled into every
+    # observation of that name the model left without one (one node per name)
+    fill_sci: dict[str, str] = {}
     uncached = 0
     for item in _collect_taxa(result):
         try:
@@ -263,6 +270,27 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                 "gbif_key": "", "gbif_canonical_name": "",
                 "status": "", "decision": "",
             }
+            ident = ids.form("taxa", item["vernacular_de"])
+            if ident is not None and ident.decision in ("same", "own"):
+                if ident.decision == "same" and ident.gbif_key:
+                    sci = ident.scientific_name or None
+                    kwargs = {"gbif_key": ident.gbif_key, "gbif_match_type": "EXACT",
+                              "gbif_canonical_name": sci, "scientific_name": sci,
+                              "match_method": "review", "confidence": 1.0}
+                    if ident.rank:
+                        kwargs["rank"] = ident.rank
+                    taxonomy = _cached_higher_taxonomy(cache, sci, item.get("is_bird"))
+                    kwargs["higher_taxonomy"] = taxonomy or ()
+                    row.update(gbif_key=ident.gbif_key, gbif_match_type="EXACT",
+                               gbif_canonical_name=sci or "", status="reviewed", decision="y")
+                else:
+                    # own entity / assignment rejected: no GBIF taxon, no scientific name
+                    kwargs = {"gbif_key": None, "gbif_match_type": None, "gbif_canonical_name": None,
+                              "scientific_name": None, "match_method": "review", "higher_taxonomy": ()}
+                    row.update(status="reviewed-unlinked", decision="n")
+                links[low] = kwargs
+                rows.append(row)
+                continue
             if low in reviewed:
                 key, canonical, match_type = reviewed[low]
                 kwargs = {"gbif_key": key, "gbif_match_type": match_type,
@@ -278,6 +306,8 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                 if (item["scientific_name"] is None and canonical
                         and match_type in ("EXACT", "FUZZY")):
                     kwargs["scientific_name"] = canonical
+                if canonical and match_type in ("EXACT", "FUZZY"):
+                    fill_sci[low] = item["scientific_name"] or canonical
                 links[low] = kwargs
                 row.update(gbif_key=key, gbif_match_type=match_type,
                            gbif_canonical_name=canonical or "", status="reviewed")
@@ -372,6 +402,8 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
                     # mints a name; resolver names are never overwritten
                     kwargs.update(scientific_name=canonical or candidate,
                                   match_method="llm+gbif", note=None)
+                else:
+                    fill_sci[low] = candidate
                 links[low] = kwargs
                 row["status"] = "linked"
             else:
@@ -385,7 +417,13 @@ def link_taxa(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[int, 
     # never forks node identity
     for entry in result.entries:
         for obs in entry.observations:
-            kwargs = links.get(obs.taxon.vernacular_de.lower())
+            low = obs.taxon.vernacular_de.lower()
+            kwargs = links.get(low)
             if kwargs:
                 obs.taxon = replace(obs.taxon, **kwargs)
-    return len(links), rows
+            # observations of a linked name without the model's scientific name
+            # used to keep None while carrying the GBIF key: the node then lost
+            # dwc:scientificName whenever such an observation was emitted first
+            if low in fill_sci and obs.taxon.scientific_name is None and obs.taxon.gbif_key:
+                obs.taxon = replace(obs.taxon, scientific_name=fill_sci[low])
+    return sum(1 for k in links.values() if k.get("gbif_key")), rows

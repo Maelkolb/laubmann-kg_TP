@@ -30,8 +30,12 @@ extraction:
 taxa:
   links_long_path: null       # set to the index linker's long table when available
 
-corrections:                  # reviewer fixes of misread species/place names (validation UI export), applied before QA
+corrections:                  # reviewer decisions on single mentions (validation UI export), applied before QA
   csv: data/review/value_corrections.csv   # absent file = no corrections
+
+review:                       # validation UI decisions (tools/validation_ui, "Abgleich"); absent files = none
+  identities: data/review/identities.csv              # name form -> entity (same/own/none) and entity links (link/nolink)
+  text_corrections: data/review/text_corrections.csv  # corrected readings, applied before extraction (re-reads those entries)
 
 qa:
   enabled: true

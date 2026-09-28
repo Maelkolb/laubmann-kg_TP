@@ -281,6 +281,7 @@ class DiaryEntry:
     date_plausible: Optional[bool] = None     # model: False = header date contradicted and not repairable
     date_note: Optional[str] = None           # model's German note on a corrected/doubted date
     header_date: Optional[str] = None         # upstream ISO date before any model correction
+    reading_notes: list[str] = field(default_factory=list)   # reviewer corrections of the transcription (skos:note)
 
     @property
     def uid(self) -> str:

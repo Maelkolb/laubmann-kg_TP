@@ -632,6 +632,24 @@ def link_places(result, cfg: dict, wikidata_cache: JsonCache, offline: bool) -> 
     near_km = float(cfg.get("context_near_km", 40.0))
     far_km = float(cfg.get("context_far_km", 150.0))
     usage, objs, where = _all_places(result)
+    # reviewed identities (validation UI): a link row fixes the georeference,
+    # a nolink row removes it (wrong or not determinable) and keeps the name unlinked
+    from laubmann_kg.review.identities import identities_of
+    ids = identities_of(result)
+    strip: set[str] = set()
+    for name in objs:
+        ident = ids.link("places", name)
+        if ident is None:
+            continue
+        if ident.decision == "nolink":
+            strip.add(name)
+            reviewed.pop(name, None)
+            continue
+        reviewed[name] = {"lat": "" if ident.lat is None else str(ident.lat), "lon": "" if ident.lon is None else str(ident.lon),
+                          "uncertainty_m": "" if ident.uncertainty_m is None else str(ident.uncertainty_m),
+                          "qid": ident.auth("wd") or "", "osm": ident.auth("osm") or "", "source": "reviewed",
+                          "geonames_id": str(ident.geonames_id or ""), "geonames_name": "", "feature": "", "country": "",
+                          "admin1": "", "note": ident.note}
     rows: list[dict] = []
     links: dict[str, PlaceLink] = {}
     candidates: list[str] = []
@@ -647,6 +665,10 @@ def link_places(result, cfg: dict, wikidata_cache: JsonCache, offline: bool) -> 
                 link.geonames = GeoRecord(int(r["geonames_id"]), r.get("geonames_name") or "", "", r.get("feature") or "",
                                           r.get("country") or "", r.get("admin1") or "", link.lat or 0.0, link.lon or 0.0, 0)
             links[name] = link
+            continue
+        if name in strip:
+            rows.append({k: "" for k in PLACE_REVIEW_FIELDS} | {"place_name": name, "n_uses": n, "kind": p.kind or "",
+                                                               "status": "reviewed-nolink", "decision": "n"})
             continue
         if n < min_uses or not geocodable(name):
             continue            # not even a candidate: no row
@@ -706,7 +728,7 @@ def link_places(result, cfg: dict, wikidata_cache: JsonCache, offline: bool) -> 
     canon: dict[str, Place] = {}
     for name, l in links.items():
         p = objs[name]
-        if keep_existing and p.lat is not None and l.source != "reviewed":
+        if (keep_existing and p.lat is not None and l.source != "reviewed") or (l.lat is None and p.lat is not None):
             lat, lon = p.lat, p.long            # the built-in gazetteer point stays; ids are added
         else:
             lat, lon = l.lat, l.lon
@@ -715,6 +737,9 @@ def link_places(result, cfg: dict, wikidata_cache: JsonCache, offline: bool) -> 
                               wikidata_iri=(WIKIDATA_ENTITY_NS + l.qid) if l.qid else p.wikidata_iri,
                               coordinate_uncertainty_m=l.uncertainty_m or p.coordinate_uncertainty_m,
                               georef_source=l.source or p.georef_source)
+    for name in strip:
+        canon[name] = replace(objs[name], lat=None, long=None, geonames_id=None, wikidata_iri=None,
+                              coordinate_uncertainty_m=None, georef_source=None)
     def fix(p):
         return canon.get(p.name, p) if p is not None else None
     n_ref = 0

@@ -31,6 +31,7 @@ def gnd_id(value: str) -> Optional[str]:
     """GND identifier from an id or a d-nb.info URI ("118540238", "https://d-nb.info/gnd/1012345-6")."""
     m = _GND_RE.search((value or "").strip())
     return m.group(1) if m else None
+_INITIALS_ONLY = re.compile(r"^(?:[A-ZÄÖÜ][a-zäöü]?\.\s*)+\S+$")
 _TITLE_RE = re.compile(
     r"^(dr|prof|frl|frau|herr|forstmeister|oberförster|förster|oberlehrer|"
     r"lehrer|pfarrer|freiherr|graf)\.?\s+", re.IGNORECASE)
@@ -168,6 +169,22 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
             if name and g:
                 gnd[name.lower()] = GND_NS + g
 
+    # reviewed identities (validation UI): link rows name an item, nolink rows forbid auto-links
+    from laubmann_kg.review.identities import identities_of
+    ids = identities_of(result)
+    nolink: set[str] = set()
+    for ident in ids.links["persons"].values():
+        low = ident.name.lower()
+        if ident.decision == "nolink":
+            nolink.add(low)
+            reviewed.pop(low, None)
+            gnd.pop(low, None)
+            continue
+        if ident.auth("wd"):
+            reviewed[low] = ident.auth("wd")
+        if ident.auth("gnd") and gnd_id(ident.auth("gnd")):
+            gnd[low] = GND_NS + gnd_id(ident.auth("gnd"))
+
     rows: list[dict] = []
     # name.lower() -> wikidata IRI: same identity as Person.uid (casefold
     # would collapse ß/ss and stamp one QID onto two distinct people)
@@ -188,10 +205,19 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
             if low in gnd:
                 rows.append({**base, "rule": "reviewed"})
                 continue
+            if low in nolink:
+                rows.append({**base, "rule": "reviewed-nolink", "decision": "n"})
+                continue
             query = strip_titles(item["name"])
             if len(query.split()) < 2:
                 # bare surnames ("Kiel") never auto-link
                 rows.append({**base, "rule": "single-token-name"})
+                continue
+            if _INITIALS_ONLY.match(query):
+                # "W. Wüst" matched the alias of Walther Wüst (the Indo-Europeanist)
+                # and the whole Walter Wüst cluster inherited it: an initial is
+                # no identity, so abbreviated names are only candidates
+                rows.append({**base, "rule": "initials-only"})
                 continue
             # limit caps UNCACHED work per run; skipped persons get no review
             # row and resume next run once earlier names are fully cached

@@ -169,6 +169,18 @@ def link_habitats(result, cfg: dict, offline: bool) -> tuple[int, list[dict]]:
                     if (row.get("decision") or "").strip().lower() in ("n", "no", "reject", "0"):
                         rejected.add((row.get("habitat_label") or "").strip())
 
+    # reviewed identities (validation UI): link rows set the EUNIS class, nolink rows reject any
+    from laubmann_kg.review.identities import identities_of
+    ids = identities_of(result)
+    for label in usage:
+        ident = ids.link("habitats", label)
+        if ident is None:
+            continue
+        if ident.decision == "nolink":
+            rejected.add(label)
+            reviewed.pop(label, None)
+        elif ident.auth("eunis"):
+            reviewed[label] = {"eunis_code": ident.auth("eunis"), "match": ident.eunis_match or "close"}
     proposer = build_habitat_proposer(dict(cfg.get("llm") or {}), vocab) if not offline else None
     labels = [l for l, _ in usage.most_common()]
     if limit:
