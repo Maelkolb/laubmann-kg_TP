@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HistOrniGraph Validierung</title>
+<title>HistOrniGraph Abgleich</title>
 <style>/*LEAFLET_CSS*/</style>
 <style>
 :root{
@@ -205,6 +205,45 @@ mark.b{background:var(--hl2)}
 .stat .n{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
 .stat .l{font-size:12.5px;color:var(--ink2)}
 .loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:5000;color:var(--ink2);font-size:15px}
+/* v2: Abgleich */
+.task .cov{font-size:11px;color:var(--ink3);margin-top:3px}
+.qi .dot.r{background:var(--navy2);border-color:var(--navy2)} .qi .dot.e{background:#8a5cc2;border-color:#8a5cc2}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;border:2px solid var(--line2);vertical-align:-1px;margin-right:4px}
+.dot.y{background:var(--ok);border-color:var(--ok)} .dot.n{background:var(--no);border-color:var(--no)} .dot.u{background:var(--unk);border-color:var(--unk)} .dot.r{background:var(--navy2);border-color:var(--navy2)} .dot.e{background:#8a5cc2;border-color:#8a5cc2}
+.cls{display:inline-block;font-size:11px;border-radius:4px;padding:0 5px;border:1px solid var(--line);color:var(--ink2);background:var(--panel2);white-space:nowrap}
+.clsC,.clsV{background:var(--no-soft);color:var(--no);border-color:transparent}
+.clsL,.clsR,.clsN{background:var(--unk-soft);color:var(--unk);border-color:transparent}
+.clsB,.clsK{background:var(--navy-soft);color:var(--navy2);border-color:transparent}
+.clsA,.clsW,.clsG,.clsE{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.q .sci{font-weight:500;color:var(--ink2)}
+.sibs{display:flex;flex-wrap:wrap;gap:6px}
+.sib{border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12.5px;cursor:pointer;background:var(--panel)}
+.sib:hover{border-color:var(--navy2)} .sib.me{border-color:var(--navy);background:var(--navy-soft);font-weight:600}
+.sib b{font-weight:600;color:var(--ink3);font-size:11.5px}
+.dbtn.r:hover,.dbtn.r.on,.dbtn.o:hover,.dbtn.o.on{border-color:var(--navy2);background:var(--navy-soft);color:var(--navy2)}
+.dbtn.x:hover,.dbtn.x.on{border-color:var(--no);background:var(--no-soft);color:var(--no)}
+.dbtn.e:hover,.dbtn.e.on{border-color:#8a5cc2;background:rgba(138,92,194,.12);color:#8a5cc2}
+.fixed.no{background:var(--no-soft);color:var(--no)}
+.pc.ok{background:var(--ok-soft)} .pc.no{background:var(--no-soft)} .pc.r{background:var(--navy-soft)}
+.macts{display:inline-flex;gap:3px;margin-left:4px}
+.mb{border:1px solid var(--line2);background:var(--panel);border-radius:5px;min-width:26px;padding:1px 6px;font-size:12.5px;cursor:pointer;color:var(--ink2)}
+.mb:hover{background:var(--navy-soft)} .mb.y.on{background:var(--ok);color:#fff;border-color:var(--ok)} .mb.r.on{background:var(--navy2);color:#fff;border-color:var(--navy2)} .mb.n.on{background:var(--no);color:#fff;border-color:var(--no)}
+.snip{position:relative;overflow:hidden;background:#e9e4d6;border-bottom:1px solid var(--line);cursor:zoom-in;min-height:30px}
+.snip img{position:absolute;max-width:none;display:block}
+.snip i{position:absolute;left:0;right:0;background:rgba(255,214,0,.16);border-top:1.5px solid rgba(224,84,46,.55);border-bottom:1.5px solid rgba(224,84,46,.55);pointer-events:none}
+.snip.fail{cursor:default;padding:6px 10px;font-size:12px;color:var(--ink3);background:var(--panel2)}
+.mslot:empty{display:none}
+.mslot .fixbox,.mslot .corrform{margin:8px 10px}
+.scanpane .sh{flex-wrap:wrap}
+.scanpane .spages{display:inline-flex;gap:3px}
+.scanpane .spages .on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.scanwrap{position:relative;display:inline-block;max-width:100%}
+.scanwrap img{max-width:100%;display:block;background:#fff}
+.scanwrap.z{max-width:none} .scanwrap.z img{max-width:none;width:1600px}
+.hlbox{position:absolute;border:2px solid #e0542e;background:rgba(255,214,0,.12);border-radius:3px;pointer-events:none}
+.evbig{font-size:26px;font-weight:650;margin:2px 0 4px}
+.tbl{border-collapse:collapse;width:100%;font-size:13px} .tbl th{text-align:left;color:var(--ink3);font-weight:600;border-bottom:1px solid var(--line);padding:4px 8px} .tbl td{border-bottom:1px solid var(--line);padding:5px 8px;vertical-align:top}
+.lbtn[disabled]{opacity:.45;cursor:not-allowed}
 @media (max-width:1100px){.main{grid-template-columns:200px 280px 1fr}.cols{grid-template-columns:1fr}}
 </style>
 </head>
@@ -212,7 +251,7 @@ mark.b{background:var(--hl2)}
 <div class="loading" id="loading">Daten werden geladen …</div>
 <div class="app">
 <header>
-  <div class="brand">HistOrniGraph Validierung<small id="exportname"></small></div>
+  <div class="brand">HistOrniGraph Abgleich<small id="exportname"></small></div>
   <div class="sp"></div>
   <div class="who">Bearbeiterin/Bearbeiter <input id="who" placeholder="Name oder Kürzel"></div>
   <span class="saved" id="saved"></span>
@@ -220,7 +259,7 @@ mark.b{background:var(--hl2)}
   <button class="hbtn" id="btnImport">Fortschritt laden</button>
   <button class="hbtn primary" id="btnExport">Exportieren</button>
   <button class="hbtn" id="btnTheme" title="Helles oder dunkles Design">Hell/Dunkel</button>
-  <input type="file" id="fileImport" accept=".json,application/json" hidden>
+  <input type="file" id="fileImport" accept=".json,.zip,application/json,application/zip" hidden>
 </header>
 <div class="main">
   <nav class="side" id="side"></nav>
@@ -231,14 +270,15 @@ mark.b{background:var(--hl2)}
       <input class="search" id="qsearch" placeholder="Suchen …  ( / )">
       <div class="chips" id="qchips"></div>
       <div class="qmeta"><span id="qcount"></span>
-        <span>Anzeigen <select id="qshow"><option value="open">offen</option><option value="all">alle</option><option value="done">entschieden</option><option value="u">unsicher</option></select></span></div>
+        <span><span id="qsortwrap"><select id="qsort" title="Reihenfolge"><option value="n">häufigste zuerst</option><option value="cls">nach Risiko</option><option value="ent">nach Zuordnung</option><option value="alpha">alphabetisch</option></select></span>
+        <select id="qshow"><option value="open">offen</option><option value="all">alle</option><option value="done">entschieden</option><option value="u">unsicher</option></select></span></div>
     </div>
     <div class="qlist" id="qlist"></div>
   </section>
   <section class="detail" id="detail"></section>
 </div>
 </div>
-<div class="scanpane" id="scanpane"><div class="sh"><span class="t" id="scantitle"></span><button class="lbtn" id="scanzoom">Zoom</button><a class="lbtn" id="scanopen" target="_blank" rel="noopener">In Drive öffnen</a><button class="lbtn" id="scanclose">Schließen ✕</button></div><div class="sb" id="scanbody"></div></div>
+<div class="scanpane" id="scanpane"><div class="sh"><span class="t" id="scantitle"></span><button class="lbtn" id="scanprev" title="vorherige Seite im Band (←)">‹</button><span class="spages" id="scanpages" title="Seiten dieses Eintrags"></span><button class="lbtn" id="scannext" title="nächste Seite im Band (→)">›</button><button class="lbtn" id="scanzoom">Zoom</button><a class="lbtn" id="scanopen" target="_blank" rel="noopener">In Drive öffnen</a><button class="lbtn" id="scanclose">Schließen ✕</button></div><div class="sb" id="scanbody"></div></div>
 <div class="ov" id="ovHelp"><div class="modal" id="helpBody"></div></div>
 <div class="ov" id="ovExport"><div class="modal" id="exportBody"></div></div>
 <div class="toast" id="toast"></div>
