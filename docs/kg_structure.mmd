@@ -15,6 +15,7 @@ classDiagram
     }
 
     class DiaryVolume {
+        dcterms:temporal YYYY-MM/YYYY-MM
     }
     class DiaryPage {
         dcterms:identifier
@@ -76,6 +77,8 @@ classDiagram
         rdfs:label · dwc:verbatimLocality
         placeKind
         geo:lat · geo:long · gsp:asWKT
+        dwc:coordinateUncertaintyInMeters
+        dwc:georeferenceSources
     }
     class Person {
         <<schema:Person>>
@@ -83,7 +86,12 @@ classDiagram
     }
     class HabitatConcept {
         <<skos:Concept · lkg:habitatScheme>>
-        skos:prefLabel
+        skos:prefLabel · skos:altLabel
+    }
+    class EunisClass {
+        <<skos:Concept · EUNIS 2012>>
+        skos:notation · skos:prefLabel
+        skos:broader chain
     }
     class EvidenceKind {
         <<skos:Concept · lkg:evidenceKindScheme>>
@@ -108,6 +116,12 @@ classDiagram
     }
     class Wikidata_Item {
         wikidata.org/entity/Q…
+    }
+    class GeoNames_Feature {
+        sws.geonames.org/ID/
+    }
+    class GND_Person {
+        d-nb.info/gnd/…
     }
 
     ArchivalUnit <|-- DiaryVolume
@@ -146,15 +160,19 @@ classDiagram
 
     Taxon --> "0..1" GBIF_Species : skos∶exactMatch · closeMatch · broadMatch
     Person --> "0..1" Wikidata_Item : owl∶sameAs
+    Person --> "0..1" GND_Person : owl∶sameAs
+    Place --> "0..1" GeoNames_Feature : owl∶sameAs
+    Place --> "0..1" Wikidata_Item : owl∶sameAs
+    HabitatConcept --> "0..1" EunisClass : skos∶exactMatch · closeMatch · broadMatch
 
     cssClass "ArchivalUnit,EntryRecord,RecordDetail" abstract
     cssClass "DiaryVolume,DiaryPage,SourceRegion" source
     cssClass "DiaryEntry,Observation" hub
     cssClass "Vocalisation,TravelEvent,TravelLeg,WeatherReport" detail
     cssClass "Taxon,Place,Person" entity
-    cssClass "HabitatConcept,EvidenceKind" concept
+    cssClass "HabitatConcept,EvidenceKind,EunisClass" concept
     cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
-    cssClass "GBIF_Species,Wikidata_Item" ext
+    cssClass "GBIF_Species,Wikidata_Item,GeoNames_Feature,GND_Person" ext
     classDef abstract fill:#FBFBF9,stroke:#7E8C82,stroke-width:1px,stroke-dasharray:3 3,color:#5F6E64,font-style:italic
     classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
     classDef entity fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A

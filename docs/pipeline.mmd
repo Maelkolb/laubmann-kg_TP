@@ -9,24 +9,25 @@ flowchart TB
         A --> B --> R1 --> B2
     end
 
-    subgraph S2["Stage C — laubmann-kg · one CLI run"]
+    subgraph S2["Stage C — laubmann-kg · export-all · ontology 0.5.0"]
         direction LR
-        C(["LLM reading<br/>gemini-3.5-flash · one call per entry<br/>date · place · kind · observations<br/>travel · persons · weather"])
+        C(["LLM reading<br/>gemini · one call per entry<br/>date · place · kind · observations<br/>travel · persons · weather<br/>+ Ziel-1 space/time fields"])
         D["Mapper<br/>vocabulary membership · dates<br/>SHACL-safe legs"]
+        Corr["Value corrections<br/>reviewer taxon/place fixes<br/>value_corrections.csv"]
         V["Volume coverage<br/>title-page spans · misfiled scans<br/>OCR-year repair from neighbours"]
         E["QA<br/>thresholds on model signals"]
-        F["Linking<br/>GBIF species/match · Wikidata<br/>places: Nominatim cache · GeoNames · Wikidata"]
+        F["Linking<br/>GBIF species/match · Wikidata · GND<br/>places: Nominatim · GeoNames · Wikidata"]
         X["Entity resolution<br/>same GBIF key · name rules<br/>orthographic variants · altLabels"]
         Y(["Habitat → EUNIS<br/>LLM per label · skos:*Match<br/>EUNIS classes + broader chain"])
-        G["RDF emit<br/>DwC-first · SKOS · PROV"]
+        G["RDF emit<br/>DwC-first · SKOS · PROV · Ziel 1"]
         H["SHACL gate<br/>0 violations"]
         I["DwC-A<br/>event · occurrence · eMoF · media"]
-        K1[("llm_cache_v2")]
+        K1[("llm_cache")]
         K2[("linking_cache")]
         K3[("volume_coverage.yaml")]
-        K4[("nominatim_cache · geonames dumps<br/>llm_habitats cache")]
-        R2{{"review CSVs<br/>qa_flags · taxon/person/place links<br/>taxon/person/place/habitat merges · habitat links"}}
-        C --> D --> V --> E --> F --> X --> Y --> G --> H
+        K4[("nominatim · geonames<br/>llm habitats cache")]
+        R2{{"review CSVs<br/>qa_flags · value_corrections<br/>taxon/person/place links<br/>merges · habitat links"}}
+        C --> D --> Corr --> V --> E --> F --> X --> Y --> G --> H
         Y --> I
         K4 <-.-> F
         K4 <-.-> Y
@@ -34,40 +35,35 @@ flowchart TB
         C <-.-> K1
         F <-.-> K2
         K3 -.-> V
+        Corr -.-> R2
         V -.-> R2
         E -.-> R2
         F -.-> R2
         X -.-> R2
+        R2 -. reviewed_csv .-> Corr
         R2 -. reviewed_csv .-> F
         R2 -. reviewed_csv .-> X
     end
 
     subgraph S3["Outputs"]
         direction LR
-        O1[/"laubmann.ttl · .jsonld"/]
+        O1[/"RDF Turtle · JSON-LD"/]
         O2[/"dwca.zip"/]
-    end
-
-    subgraph S4["Post-hoc · kg_enrich (Fuseki)"]
-        direction LR
-        J["dedup_entities · georef_places<br/>apply_enrichment · update_dwca"]
+        O3[/"html/ explorer + workflow"/]
     end
 
     B2 --> C
     H --> O1
     I --> O2
-    O1 -.-> J
-    O2 -.-> J
+    H --> O3
 
     classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
     classDef step fill:#F7F8F4,stroke:#7E8C82,stroke-width:1px,color:#1D2A21
     classDef human fill:#F5EBDD,stroke:#8A5A1E,stroke-width:2px,color:#3A2A12
     classDef cache fill:#EEEFEC,stroke:#8A8F8B,stroke-width:1px,color:#3B413D
     classDef out fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A
-    classDef post fill:#FFFFFF,stroke:#8A8F8B,stroke-width:1px,stroke-dasharray:6 4,color:#3B413D
-    class C hub
-    class A,B,B2,D,E,F,G,H,I step
+    class C,Y hub
+    class A,B,B2,D,Corr,V,E,F,X,G,H,I step
     class R1,R2 human
-    class K1,K2 cache
-    class O1,O2 out
-    class J post
+    class K1,K2,K3,K4 cache
+    class O1,O2,O3 out

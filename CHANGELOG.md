@@ -7,6 +7,10 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Workflow-Seite aktualisiert** (`output/html/Laubmann-KG_Workflow.html`, Quellen `docs/pipeline.mmd` / `docs/kg_structure.mmd`): Ontologie **0.5.0**, Pipeline-Stufen inkl. Wertkorrekturen, Place-/Habitat-Linking und Ziel-1-Felder; Diagramme werden live mit Mermaid gerendert (statt eingebetteter SVG-Snapshots). Export-Zahlen bleiben der letzte Voll-Lauf `kg_exports_2026-08-19` (0.4.3), mit Hinweis auf den nächsten 0.5.0-Re-Export.
+
 ### Added
 
 - **GBIF-Goldstandard, 14 Nachweise.** `evaluation/gold/gbif_gold.csv`: je der erste neue Nachweis der 13 Validierungsseiten, auf `0046_R` zusätzlich das Tafelenten-Paar. Fünf Zeilen nicht publizieren (Beleg ohne Katalog, fehlendes Tagesdatum, Literatur, zwei Streckenbeobachtungen). `g008` (Teichhuhn, Horlach) hat keine `occurrenceID`, weil `L03-e0021` nicht im Sample-Lauf lag.

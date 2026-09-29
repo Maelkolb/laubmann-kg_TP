@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laubmann KG · Workflow</title>
+<style>
+:root { --bg:#F5F7F3; --surface:#FFFFFF; --ink:#1D2A21; --muted:#5F6E64; --line:#D9E0D8; --accent:#3B6E4A; --accent-soft:#E3EEE5;
+  --ext:#35608A; --ext-soft:#E4ECF5; --warn:#8A5A1E; --warn-soft:#F5EBDD; --code-bg:#EEF2EC; }
+@media (prefers-color-scheme: dark) { :root { --bg:#131915; --surface:#1A221C; --ink:#E4EAE3; --muted:#9AAA9E; --line:#2C382F;
+  --accent:#7FB88F; --accent-soft:#223328; --ext:#8FB6DE; --ext-soft:#1F2C3A; --warn:#D9A85E; --warn-soft:#3A2E1C; --code-bg:#202A23; } }
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--ink); margin: 0; }
+body { font: 16px/1.55 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 44px 28px 80px; }
+h1, h2 { font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif; font-weight: 500; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+h1 { font-size: 2.2rem; line-height: 1.15; }
+h2 { font-size: 1.35rem; margin-top: 52px; padding-top: 16px; border-top: 1px solid var(--line); }
+p { max-width: 68ch; }
+.eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+.lede { color: var(--muted); font-size: 1.05rem; margin-top: 10px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 22px; }
+.fact { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+.fact b { display: block; font-size: 1.3rem; font-family: Georgia, serif; font-weight: 500; font-variant-numeric: tabular-nums; }
+.fact span { color: var(--muted); font-size: .8rem; }
+.note { color: var(--muted); font-size: .85rem; margin-top: 10px; max-width: 72ch; }
+.dbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: .78rem; color: var(--muted); }
+.chip { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 13px; height: 13px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.diagram { background: #F5F7F3; border: 1px solid var(--line); border-radius: 8px; padding: 14px; overflow-x: auto; margin-top: 10px; }
+.diagram .mermaid { display: flex; justify-content: center; }
+.diagram svg { display: block; height: auto; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; margin-top: 12px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+td:first-child { white-space: nowrap; }
+.tablewrap { overflow-x: auto; }
+code { font-family: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace; background: var(--code-bg); border-radius: 3px; padding: 1px 5px; font-size: .86em; }
+ol, ul { padding-left: 20px; max-width: 72ch; } li { margin: 4px 0; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px 40px; }
+.k { color: var(--accent); font-weight: 600; }
+.pill { display:inline-block; border-radius:999px; padding:1px 9px; font-size:.74rem; font-weight:600; }
+.pill.a { background: var(--accent-soft); color: var(--accent); } .pill.b { background: var(--ext-soft); color: var(--ext); }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; max-width: 80ch; font-size: .92rem; }
+dt { font-weight: 600; } dd { margin: 0; color: var(--muted); }
+footer { margin-top: 56px; color: var(--muted); font-size: .8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">laubmann-kg · workflow · ontology 0.5.0 · last full export 2026-08-19</div>
+  <h1>Laubmann KG — how the workflow works</h1>
+  <p class="lede">Alfred Laubmann's ornithological field diaries (34 volumes, 1917–1965) → a knowledge graph and a Darwin Core Archive.
+    An LLM reads each diary entry; the code only checks form, applies reviewer corrections, links to authorities, resolves entities, and serialises to standards (ontology <code>0.5.0</code>).</p>
+  <div class="facts">
+    <div class="fact"><b>9,523</b><span>diary entries</span></div>
+    <div class="fact"><b>74,584</b><span>observations · 15,297 vocalisations</span></div>
+    <div class="fact"><b>1,182</b><span>taxa · 616 on GBIF · 1,064 spellings merged</span></div>
+    <div class="fact"><b>9,669</b><span>places · 2,872 georeferenced · 1,481 habitats (1,375 EUNIS)</span></div>
+    <div class="fact"><b>4,259</b><span>persons · 300 on Wikidata · 880 names merged</span></div>
+    <div class="fact"><b>1.74 M</b><span>triples · SHACL passed (0 violations)</span></div>
+  </div>
+  <p class="note">Headline counts from Drive <code>kg_exports_2026-08-19/</code> (graph built under ontology 0.4.3). The live ontology / SHACL / emitter in the repo are <strong>0.5.0</strong> (Ziel&nbsp;1: spatial &amp; temporal qualification on observations). A full re-export under 0.5.0 is the next production run.</p>
+
+  <h2>1 · Pipeline</h2>
+  <div class="dbar">
+    <div class="chips">
+      <span class="chip"><i class="sw" style="background:#DDEBDF;border-color:#2F6B45;border-width:2.5px;border-radius:999px"></i>reading step — content is decided here</span>
+      <span class="chip"><i class="sw" style="background:#F5EBDD;border-color:#8A5A1E"></i>human in the loop</span>
+      <span class="chip"><i class="sw" style="background:#EEEFEC;border-color:#8A8F8B;border-radius:999px"></i>Drive cache</span>
+      <span class="chip"><i class="sw" style="background:#E2EBF5;border-color:#35608A"></i>deliverable</span>
+    </div>
+  </div>
+  <div class="diagram" id="pipe"><pre class="mermaid">%%{init: {"theme": "base", "flowchart": {"curve": "basis", "nodeSpacing": 40, "rankSpacing": 60, "padding": 12, "wrappingWidth": 260}, "themeVariables": {"primaryColor": "#F7F8F4", "primaryBorderColor": "#7E8C82", "primaryTextColor": "#1D2A21", "lineColor": "#5F6E64", "clusterBkg": "#EEF1EA", "clusterBorder": "#C9D2C7", "edgeLabelBackground": "#F5F7F3", "fontFamily": "Segoe UI, system-ui, sans-serif", "fontSize": "14px"}}}%%
+flowchart TB
+    subgraph S1["Stage A · B — corpus on Drive"]
+        direction LR
+        A["build_corpus.py&lt;br/&gt;region JSONs → entries.csv"]
+        B["detect_duplicates.py&lt;br/&gt;970 clusters"]
+        R1{{"review.html&lt;br/&gt;human adjudication"}}
+        B2["apply_dedup.py&lt;br/&gt;6,750 pages · 9,527 entries"]
+        A --&gt; B --&gt; R1 --&gt; B2
+    end
+
+    subgraph S2["Stage C — laubmann-kg · export-all · ontology 0.5.0"]
+        direction LR
+        C(["LLM reading&lt;br/&gt;gemini · one call per entry&lt;br/&gt;date · place · kind · observations&lt;br/&gt;travel · persons · weather&lt;br/&gt;+ Ziel-1 space/time fields"])
+        D["Mapper&lt;br/&gt;vocabulary membership · dates&lt;br/&gt;SHACL-safe legs"]
+        Corr["Value corrections&lt;br/&gt;reviewer taxon/place fixes&lt;br/&gt;value_corrections.csv"]
+        V["Volume coverage&lt;br/&gt;title-page spans · misfiled scans&lt;br/&gt;OCR-year repair from neighbours"]
+        E["QA&lt;br/&gt;thresholds on model signals"]
+        F["Linking&lt;br/&gt;GBIF species/match · Wikidata · GND&lt;br/&gt;places: Nominatim · GeoNames · Wikidata"]
+        X["Entity resolution&lt;br/&gt;same GBIF key · name rules&lt;br/&gt;orthographic variants · altLabels"]
+        Y(["Habitat → EUNIS&lt;br/&gt;LLM per label · skos:*Match&lt;br/&gt;EUNIS classes + broader chain"])
+        G["RDF emit&lt;br/&gt;DwC-first · SKOS · PROV · Ziel 1"]
+        H["SHACL gate&lt;br/&gt;0 violations"]
+        I["DwC-A&lt;br/&gt;event · occurrence · eMoF · media"]
+        K1[("llm_cache")]
+        K2[("linking_cache")]
+        K3[("volume_coverage.yaml")]
+        K4[("nominatim · geonames&lt;br/&gt;llm habitats cache")]
+        R2{{"review CSVs&lt;br/&gt;qa_flags · value_corrections&lt;br/&gt;taxon/person/place links&lt;br/&gt;merges · habitat links"}}
+        C --&gt; D --&gt; Corr --&gt; V --&gt; E --&gt; F --&gt; X --&gt; Y --&gt; G --&gt; H
+        Y --&gt; I
+        K4 &lt;-.-&gt; F
+        K4 &lt;-.-&gt; Y
+        Y -.-&gt; R2
+        C &lt;-.-&gt; K1
+        F &lt;-.-&gt; K2
+        K3 -.-&gt; V
+        Corr -.-&gt; R2
+        V -.-&gt; R2
+        E -.-&gt; R2
+        F -.-&gt; R2
+        X -.-&gt; R2
+        R2 -. reviewed_csv .-&gt; Corr
+        R2 -. reviewed_csv .-&gt; F
+        R2 -. reviewed_csv .-&gt; X
+    end
+
+    subgraph S3["Outputs"]
+        direction LR
+        O1[/"RDF Turtle · JSON-LD"/]
+        O2[/"dwca.zip"/]
+        O3[/"html/ explorer + workflow"/]
+    end
+
+    B2 --&gt; C
+    H --&gt; O1
+    I --&gt; O2
+    H --&gt; O3
+
+    classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
+    classDef step fill:#F7F8F4,stroke:#7E8C82,stroke-width:1px,color:#1D2A21
+    classDef human fill:#F5EBDD,stroke:#8A5A1E,stroke-width:2px,color:#3A2A12
+    classDef cache fill:#EEEFEC,stroke:#8A8F8B,stroke-width:1px,color:#3B413D
+    classDef out fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A
+    class C,Y hub
+    class A,B,B2,D,Corr,V,E,F,X,G,H,I step
+    class R1,R2 human
+    class K1,K2,K3,K4 cache
+    class O1,O2,O3 out
+</pre></div>
+  <div class="tablewrap"><table>
+    <tr><th>Stage</th><th>Does</th><th>In → out</th><th>Where</th></tr>
+    <tr><td>A · corpus</td><td>segments HistOrniGraph region JSONs into dated entries</td><td>Drive <code>Laubmann_NN_gemini/</code> → <code>corpus_&lt;date&gt;/entries.csv</code> + <code>multimodal.md</code> (cleaned: <code>multimodal_clean.md</code>)</td><td><code>HistOrniGraph_addons/build_corpus.py</code></td></tr>
+    <tr><td>B · dedup</td><td>finds duplicate pages, human adjudicates, applies decisions</td><td>corpus → <code>corpus_&lt;date&gt;_dedup/</code> (6,750 pages · 9,527 entries)</td><td><code>dedup/detect_duplicates.py</code> · <code>review.html</code> · <code>apply_dedup.py</code></td></tr>
+    <tr><td>C · reading</td><td>one Gemini call per entry: entry date · place · kind, observations (incl. Ziel-1 space/time), travel, persons, weather</td><td>entry text → JSON (cached <code>llm_cache/</code>)</td><td><code>prompts/observation_extraction.md</code> · <code>extraction/llm_observations.py</code></td></tr>
+    <tr><td>C · mapping</td><td>vocabulary membership, dates/times, SHACL-safe legs; nothing inferred from prose</td><td>JSON → <code>kg/model.py</code> objects</td><td><code>extraction/llm_observations.py</code> · <code>normalization/vocabularies.py</code></td></tr>
+    <tr><td>C · corrections</td><td>reviewer fixes for misread taxon/place names (<code>value_corrections.csv</code>), applied before coverage/QA</td><td>→ QA flags <code>value_corrected · correction_unmatched</code></td><td><code>normalization/corrections.py</code></td></tr>
+    <tr><td>C · coverage</td><td>each volume's title-page span (<code>configs/volume_coverage.yaml</code>): misfiled scans re-homed, OCR years repaired from neighbours, off-span / out-of-period handling; span on each volume as <code>dcterms:temporal</code></td><td>→ QA flags <code>volume_reassigned · date_year_corrected · date_from_position · date_out_of_coverage · date_out_of_span · duplicate_entry</code></td><td><code>normalization/coverage.py</code></td></tr>
+    <tr><td>C · QA</td><td>thresholds on model signals; flags everything, excludes non-birds / low-confidence taxa / implausible dates</td><td>→ <code>review/qa_flags.csv</code></td><td><code>qa.py</code></td></tr>
+    <tr><td>C · linking</td><td>GBIF <code>species/match</code> (rank-aware), Wikidata (+ optional GND) for persons, places via Nominatim cache · GeoNames · Wikidata</td><td>→ <code>review/taxon_link_review.csv</code> · <code>person_link_review.csv</code> · <code>place_link_review.csv</code></td><td><code>linking/</code></td></tr>
+    <tr><td>C · resolution</td><td>one node per entity: same GBIF species key / scientific name, person name variants, orthographic place/habitat variants; similar strings only after review</td><td>→ <code>review/{taxon,person,place,habitat}_merges.csv</code></td><td><code>resolution/</code></td></tr>
+    <tr><td>C · habitats</td><td>canonical habitat labels → EUNIS 2012 class (<code>skos:exactMatch / closeMatch / broadMatch</code>)</td><td>→ <code>review/habitat_link_review.csv</code> · eMoF habitat rows</td><td><code>linking/habitats.py</code></td></tr>
+    <tr><td>C · RDF</td><td>Turtle + JSON-LD, Darwin Core / DCTERMS / PROV / SKOS / GeoSPARQL first, <code>lkg:</code> for the rest (incl. Ziel-1 terms); SHACL gate</td><td>→ <code>rdf/*.ttl</code> · <code>jsonld/*.jsonld</code></td><td><code>kg/rdf.py</code> · <code>ontologies/laubmann.ttl</code> 0.5.0</td></tr>
+    <tr><td>C · DwC-A</td><td>event core + occurrence (+ <code>samplingProtocol</code> · <code>coordinateUncertaintyInMeters</code>) + OBIS eMoF + multimedia, EML</td><td>→ <code>dwca/*.zip</code></td><td><code>dwca/</code></td></tr>
+  </table></div>
+
+  <h2>2 · Principle</h2>
+  <div class="two">
+    <ul>
+      <li><span class="k">The model decides content.</span> Which bird, where, how many, sex, breeding evidence, absence, who observed, the entry's own date and place, and (0.5.0) vantage / microhabitat / time-of-day / viewing radius.</li>
+      <li><span class="k">The code checks form.</span> Enum membership, integers, dates, endpoints for travel legs, SHACL safety, authority links.</li>
+      <li><span class="k">Nothing is fabricated.</span> No default evidence, no placeholder call transcription, no injected behaviour; what the text does not say stays absent.</li>
+    </ul>
+    <ul>
+      <li><span class="k">Reproducible.</span> Temperature 0, responses cached by <code>sha256(model, prompt)</code>; a prompt change is a full live run (~2–3 h).</li>
+      <li><span class="k">Reviewable.</span> Every exclusion, correction and uncertain link lands in a CSV with a <code>decision</code> column that feeds back on the next run.</li>
+      <li><span class="k">Standards first.</span> Ontology <strong>0.5.0</strong> remains Darwin-Core-first (as of 0.4.0): <code>dwc:</code>/<code>dwciri:</code>/<code>dcterms:</code>/<code>prov:</code>/<code>skos:</code>/<code>gsp:</code> wherever they exist, <code>lkg:</code> only for project-specific meaning; <code>tests/test_ontology_alignment.py</code> guards ontology ↔ emitter ↔ SHACL ↔ JSON-LD in both directions.</li>
+    </ul>
+  </div>
+
+  <h2>3 · Data model (ontology 0.5.0)</h2>
+  <div class="dbar">
+    <div class="chips">
+      <span class="chip"><i class="sw" style="background:#FBFBF9;border-color:#7E8C82;border-style:dashed"></i>grouping class (not in the data)</span>
+      <span class="chip"><i class="sw" style="background:#DDEBDF;border-color:#2F6B45;border-width:2.5px"></i>hub</span>
+      <span class="chip"><i class="sw" style="background:#E2EBF5;border-color:#35608A"></i>shared entity</span>
+      <span class="chip"><i class="sw" style="background:#F7F8F4;border-color:#7E8C82"></i>per-record detail</span>
+      <span class="chip"><i class="sw" style="background:#F1ECE0;border-color:#8A7A5A"></i>archival source</span>
+      <span class="chip"><i class="sw" style="background:#F3EEF7;border-color:#6E5A8A"></i>SKOS concept</span>
+      <span class="chip"><i class="sw" style="background:#EEEFEC;border-color:#8A8F8B;border-style:dashed"></i>provenance</span>
+      <span class="chip"><i class="sw" style="background:#FFFFFF;border-color:#35608A;border-style:dashed"></i>external authority</span>
+      <span class="chip">unprefixed = <span class="pill a">lkg:</span></span>
+    </div>
+  </div>
+  <div class="diagram" id="kg"><pre class="mermaid">%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#F7F8F4", "primaryBorderColor": "#7E8C82", "primaryTextColor": "#1D2A21", "lineColor": "#5F6E64", "clusterBkg": "#EEF1EA", "clusterBorder": "#C9D2C7", "fontFamily": "Segoe UI, system-ui, sans-serif", "fontSize": "14px"}}}%%
+classDiagram
+    direction TB
+
+    class ArchivalUnit {
+        &lt;&lt;abstract · rico:Record&gt;&gt;
+    }
+    class EntryRecord {
+        &lt;&lt;abstract · prov:Entity&gt;&gt;
+        dcterms:isPartOf · prov:wasDerivedFrom → entry
+    }
+    class RecordDetail {
+        &lt;&lt;abstract&gt;&gt;
+        dcterms:isPartOf → record
+    }
+
+    class DiaryVolume {
+        dcterms:temporal YYYY-MM/YYYY-MM
+    }
+    class DiaryPage {
+        dcterms:identifier
+    }
+    class DiaryEntry {
+        &lt;&lt;dwc:Event&gt;&gt;
+        dwc:eventDate · dwc:verbatimEventDate
+        dwc:fieldNotes
+        entryKind · datePlausible · skos:note
+    }
+    class SourceRegion {
+    }
+
+    class Observation {
+        &lt;&lt;dwc:Occurrence&gt;&gt;
+        verbatimNotes
+        recordType field | third-party | literature
+        dwc:occurrenceStatus present | absent
+        dwc:individualCount ≥0 · individualCountMin · Max
+        countQualifier
+        dwc:sex · dwc:lifeStage · dwc:vitality
+        breedingEvidence · dwc:reproductiveCondition
+        movementKind · flightDirection
+        dwc:behavior · dwc:habitat
+        dwc:identificationQualifier
+        dwc:eventDate · dwc:eventTime · timeOfDay · daylightPhase
+        spatialContext · microhabitat · relativeElevation
+        observationRadiusMeters · dwc:coordinateUncertaintyInMeters
+        spatialConfidence · dwc:samplingProtocol
+        dwc:basisOfRecord
+    }
+    class Vocalisation {
+        callType
+        callTranscription
+    }
+    class TravelEvent {
+        &lt;&lt;dwc:Event&gt;&gt;
+    }
+    class TravelLeg {
+        transportMode
+        departureTime · arrivalTime
+    }
+    class WeatherReport {
+        weatherVerbatim
+        temperatureValue · temperatureUnit
+        precipitation · skyCondition · wind
+    }
+
+    class Taxon {
+        &lt;&lt;dwc:Taxon&gt;&gt;
+        dwc:vernacularName · dwc:scientificName
+        dwc:taxonRank · isBird
+        dwc:kingdom … dwc:genus
+        matchMethod · matchConfidence · gbifMatchType
+        dwc:taxonID
+    }
+    class Place {
+        &lt;&lt;geo:SpatialThing · dcterms:Location&gt;&gt;
+        rdfs:label · dwc:verbatimLocality
+        placeKind
+        geo:lat · geo:long · gsp:asWKT
+        dwc:coordinateUncertaintyInMeters
+        dwc:georeferenceSources
+    }
+    class Person {
+        &lt;&lt;schema:Person&gt;&gt;
+        schema:name
+    }
+    class HabitatConcept {
+        &lt;&lt;skos:Concept · lkg:habitatScheme&gt;&gt;
+        skos:prefLabel · skos:altLabel
+    }
+    class EunisClass {
+        &lt;&lt;skos:Concept · EUNIS 2012&gt;&gt;
+        skos:notation · skos:prefLabel
+        skos:broader chain
+    }
+    class EvidenceKind {
+        &lt;&lt;skos:Concept · lkg:evidenceKindScheme&gt;&gt;
+        visual | auditory | nest | specimen
+    }
+
+    class ExtractionRun {
+        &lt;&lt;prov:Activity&gt;&gt;
+        prov:startedAtTime
+    }
+    class SoftwareAgent {
+        &lt;&lt;prov:SoftwareAgent&gt;&gt;
+        model · backend
+    }
+    class Prompt {
+        &lt;&lt;prov:Entity&gt;&gt;
+        sha256
+    }
+
+    class GBIF_Species {
+        gbif.org/species/KEY
+    }
+    class Wikidata_Item {
+        wikidata.org/entity/Q…
+    }
+    class GeoNames_Feature {
+        sws.geonames.org/ID/
+    }
+    class GND_Person {
+        d-nb.info/gnd/…
+    }
+
+    ArchivalUnit &lt;|-- DiaryVolume
+    ArchivalUnit &lt;|-- DiaryPage
+    ArchivalUnit &lt;|-- DiaryEntry
+    ArchivalUnit &lt;|-- SourceRegion
+    EntryRecord &lt;|-- Observation
+    EntryRecord &lt;|-- TravelEvent
+    EntryRecord &lt;|-- WeatherReport
+    RecordDetail &lt;|-- Vocalisation
+    RecordDetail &lt;|-- TravelLeg
+
+    DiaryPage --&gt; "1" DiaryVolume : dcterms∶isPartOf
+    DiaryEntry --&gt; "1" DiaryPage : dcterms∶isPartOf
+    SourceRegion --&gt; "0..1" DiaryPage : dcterms∶isPartOf
+    DiaryEntry --&gt; "0..1" SourceRegion : hasSourceRegion
+    DiaryEntry --&gt; "0..1" Place : entryPlace
+    DiaryEntry --&gt; "*" Observation : containsObservation ⊑ dcterms∶hasPart
+    DiaryEntry --&gt; "*" TravelEvent : containsTravelEvent ⊑ dcterms∶hasPart
+    DiaryEntry --&gt; "*" WeatherReport : hasWeather ⊑ dcterms∶hasPart
+    DiaryEntry --&gt; "*" Person : mentionsPerson · mentionsCompanion | Source | Collector | CitedAuthor | Other
+
+    Observation --&gt; "1" Taxon : observedTaxon ⊑ dwciri∶toTaxon
+    Observation --&gt; "0..1" Place : observedAt
+    Observation --&gt; "0..1" Place : hasLocality (own place)
+    Observation --&gt; "0..1" Person : dwciri∶recordedBy
+    Observation --&gt; "0..4" EvidenceKind : evidenceKind
+    Observation --&gt; "*" Vocalisation : hasVocalisation ⊑ dcterms∶hasPart
+    Observation --&gt; "0..1" HabitatConcept : dwciri∶habitat
+    Observation --&gt; "1" ExtractionRun : prov∶wasGeneratedBy
+
+    TravelEvent --&gt; "1..*" TravelLeg : hasLeg ⊑ dcterms∶hasPart
+    TravelLeg --&gt; "1..*" Place : departurePlace · arrivalPlace · viaPlace
+    ExtractionRun --&gt; "1" SoftwareAgent : prov∶wasAssociatedWith
+    ExtractionRun --&gt; "1" Prompt : prov∶used
+
+    Taxon --&gt; "0..1" GBIF_Species : skos∶exactMatch · closeMatch · broadMatch
+    Person --&gt; "0..1" Wikidata_Item : owl∶sameAs
+    Person --&gt; "0..1" GND_Person : owl∶sameAs
+    Place --&gt; "0..1" GeoNames_Feature : owl∶sameAs
+    Place --&gt; "0..1" Wikidata_Item : owl∶sameAs
+    HabitatConcept --&gt; "0..1" EunisClass : skos∶exactMatch · closeMatch · broadMatch
+
+    cssClass "ArchivalUnit,EntryRecord,RecordDetail" abstract
+    cssClass "DiaryVolume,DiaryPage,SourceRegion" source
+    cssClass "DiaryEntry,Observation" hub
+    cssClass "Vocalisation,TravelEvent,TravelLeg,WeatherReport" detail
+    cssClass "Taxon,Place,Person" entity
+    cssClass "HabitatConcept,EvidenceKind,EunisClass" concept
+    cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
+    cssClass "GBIF_Species,Wikidata_Item,GeoNames_Feature,GND_Person" ext
+    classDef abstract fill:#FBFBF9,stroke:#7E8C82,stroke-width:1px,stroke-dasharray:3 3,color:#5F6E64,font-style:italic
+    classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
+    classDef entity fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A
+    classDef detail fill:#F7F8F4,stroke:#7E8C82,stroke-width:1px,color:#1D2A21
+    classDef concept fill:#F3EEF7,stroke:#6E5A8A,stroke-width:1px,color:#2E2340
+    classDef source fill:#F1ECE0,stroke:#8A7A5A,stroke-width:1px,color:#3A3020
+    classDef prov fill:#EEEFEC,stroke:#8A8F8B,stroke-width:1px,stroke-dasharray:5 4,color:#3B413D
+    classDef ext fill:#FFFFFF,stroke:#35608A,stroke-width:1px,stroke-dasharray:6 4,color:#14263A
+</pre></div>
+  <ul style="margin-top:14px">
+    <li>Three grouping superclasses (<code>ArchivalUnit</code>, <code>EntryRecord</code>, <code>RecordDetail</code>) carry the hierarchy; every child node is <code>dcterms:isPartOf</code> its parent.</li>
+    <li><code>DiaryEntry</code> is the DwC event; <code>Observation</code> is the DwC occurrence. Behaviour = <code>dwc:behavior</code> literals, evidence kinds = <code>lkg:evidenceKind</code> concepts, calls = <code>Vocalisation</code> nodes.</li>
+    <li><strong>Ziel 1 (0.5.0):</strong> on the observation — <code>lkg:spatialContext</code>, <code>lkg:microhabitat</code>, <code>lkg:relativeElevation</code>, <code>lkg:timeOfDay</code> / <code>lkg:daylightPhase</code>, <code>lkg:observationRadiusMeters</code> (mirrored as <code>dwc:coordinateUncertaintyInMeters</code>), <code>dwc:samplingProtocol</code>, <code>lkg:spatialConfidence</code>. Named sites stay <code>lkg:Place</code> via <code>hasLocality</code> when they differ from <code>entryPlace</code>.</li>
+    <li>Merged spellings sit on the node as <code>skos:altLabel</code>; a merged observation keeps the written taxon name as <code>dwc:verbatimIdentification</code>.</li>
+    <li>Habitats → EUNIS 2012 (<code>skos:*Match</code>); places → GeoNames + Wikidata (<code>owl:sameAs</code>); persons → Wikidata and/or GND; taxa → GBIF (<code>skos:*Match</code>).</li>
+    <li>Every observation, journey and weather report <code>prov:wasGeneratedBy</code> the run (model, prompt hash, time).</li>
+  </ul>
+
+  <h2>4 · Exports (last full run · Drive <code>HistOrniGraph_output/kg_exports_2026-08-19/</code>)</h2>
+  <div class="tablewrap"><table>
+    <tr><th>File</th><th>What</th><th>Size / rows</th></tr>
+    <tr><td><code>rdf/laubmann_sample.ttl</code></td><td>the graph, Turtle (export ontology 0.4.3; repo now 0.5.0)</td><td>~89 MB · 1,735,142 triples</td></tr>
+    <tr><td><code>jsonld/laubmann_sample.jsonld</code></td><td>same graph, JSON-LD 1.1</td><td>~115 MB</td></tr>
+    <tr><td><code>dwca/laubmann_sample_dwca.zip</code></td><td>Darwin Core Archive: event · occurrence · eMoF · multimedia · meta.xml · eml.xml</td><td>9,523 · 74,584 · 113,109 · 141</td></tr>
+    <tr><td><code>review/taxon_link_review.csv</code></td><td>GBIF link per taxon</td><td>linked / linked-broad / review / no_match</td></tr>
+    <tr><td><code>review/person_link_review.csv</code></td><td>Wikidata (+ GND column) per person</td><td>decision column feeds next run</td></tr>
+    <tr><td><code>review/place_link_review.csv</code></td><td>Nominatim / GeoNames / Wikidata georeference</td><td>8,063 geocodable labels</td></tr>
+    <tr><td><code>review/habitat_link_review.csv</code></td><td>EUNIS class per habitat concept</td><td>1,481 labels · 1,375 linked</td></tr>
+    <tr><td><code>review/qa_flags.csv</code></td><td>QA + coverage + correction flags</td><td>2,281 rows</td></tr>
+    <tr><td><code>review/{taxon,person,place,habitat}_merges.csv</code></td><td>entity merges (auto) and candidates</td><td>3,723 rows</td></tr>
+    <tr><td><code>review/value_corrections.csv</code></td><td>per-entry taxon/place value fixes (pipeline stage since 0.5.0 work)</td><td>applied before coverage/QA</td></tr>
+    <tr><td><code>llm_cache/</code> · <code>linking_cache/</code></td><td>Drive caches — a rerun replays in minutes</td><td>extraction + GBIF/Wikidata/Nominatim/EUNIS</td></tr>
+  </table></div>
+
+  <h2>5 · Rerun (Colab notebook <code>07_full_workflow_colab.ipynb</code>)</h2>
+  <ol>
+    <li>Cells 0–1: mount Drive, clone <code>main</code>, install; set <code>RUN_TAG</code> (fresh <code>kg_exports_&lt;tag&gt;</code>), Gemini key from the secret / <code>.env</code> (<code>GOOGLE_API_KEY</code>).</li>
+    <li>Stages A/B skip themselves when their outputs exist.</li>
+    <li>Cell 16 pulls the newest pipeline; <span class="k">C1</span> points caches and review CSVs at Drive (run again after every pull).</li>
+    <li><span class="k">C2</span> smoke test — 25 entries live, read the table.</li>
+    <li><span class="k">C3</span> <code>export-all</code> — extraction → corrections → coverage → QA → linking → resolution → habitat→EUNIS → RDF/JSON-LD → SHACL → DwC-A from <em>one</em> pipeline run → <span class="k">C5</span> review CSVs. <span class="k">C4</span> <code>export-dwca</code> alone is optional.</li>
+    <li>Adjudicate: write <code>y</code> / <code>n</code> into the <code>decision</code> column (link reviews and the four merge CSVs), add rows to <code>value_corrections.csv</code> where needed, point <code>reviewed_csv</code> at the files, rerun C3.</li>
+  </ol>
+  <p style="color:var(--muted)">A disconnected browser tab does not stop the runtime; every stage resumes from the Drive caches.</p>
+
+  <h2>6 · Terms</h2>
+  <dl>
+    <dt>SHACL</dt><dd>shape constraints over RDF; the export is rejected on any violation, warnings are advisory (e.g. empty entries).</dd>
+    <dt>DwC-A</dt><dd>Darwin Core Archive — zipped TSV star schema (event core + extensions) with <code>meta.xml</code>/<code>eml.xml</code>, GBIF's exchange format.</dd>
+    <dt>eMoF</dt><dd>OBIS ExtendedMeasurementOrFact — measurements keyed to the occurrence (evidence, call type, count qualifier, breeding evidence, EUNIS habitat type, …).</dd>
+    <dt>PROV</dt><dd>W3C provenance: the extraction run as an activity with its software agent (model) and prompt entity.</dd>
+    <dt>SKOS</dt><dd>controlled vocabularies (concept schemes) and graded matches to GBIF / EUNIS.</dd>
+    <dt>Ziel 1</dt><dd>ontology 0.5.0 extension: fine-grained space and time on the observation (vantage, microhabitat, elevation, time-of-day, radius, sampling protocol).</dd>
+    <dt>GBIF match</dt><dd><code>species/match</code> API; EXACT ≥ 90 → exactMatch, FUZZY ≥ 95 → closeMatch, higher rank → broadMatch.</dd>
+  </dl>
+
+  <footer>laubmann-kg · commit 42d06d4 · ontology 0.5.0 · diagrams from <code>docs/kg_structure.mmd</code>, <code>docs/pipeline.mmd</code> (rendered live with Mermaid)</footer>
+</div>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    securityLevel: 'loose',
+    flowchart: { curve: 'basis', wrappingWidth: 260 },
+  });
+</script>
+</body>
+</html>
