@@ -126,11 +126,14 @@ for (const t of TYPES) {
 }
 const ENT = (t, i) => X[t].ents[i];
 const isLabel = (t, nm) => nm.key === lc(ENT(t, nm.ent).label);
+const TITLES = /\b(dr|prof|herr|hr|frau|fr|frl|fraeulein|lehrer|oberlehrer|pfarrer|oberfoerster|foerster|forstmeister|cand|phil|med|rer|nat|stud|ing)\b\.?/g;
+const pkey = n => fold(n).replace(/\?/g, '').replace(TITLES, ' ').replace(/[^a-z]/g, '');
 function safeName(t, nm) {
   if (isLabel(t, nm)) return true;
   if (t === 'taxon') return nm.cls === 'A';
-  const rule = nm.f[4] || '';
-  return (t === 'person' && rule === 'same-key') || ((t === 'place' || t === 'habitat') && rule === 'orthographic');
+  // persons: only the same name without titles ("Dr. Walter Wüst" = "Walter Wüst"); rule chains are not safe
+  if (t === 'person') return pkey(nm.name) === pkey(ENT(t, nm.ent).label);
+  return (nm.f[4] || '') === 'orthographic';
 }
 // model second reading: does it contradict the current assignment?
 function lev(a, b) {
@@ -214,9 +217,11 @@ function entState(t, e) {
   let open = 0, changed = !!(ed && (ed.d === 'r' || (t === 'taxon' && ed.d === 'n') || (ed.fix && ed.d === 'y') || (t === 'person' && ed.d === 'y' && ed.qid && ed.qid !== e.e[1]))), any = !!(ed && ed.d);
   for (const nm of e.names) { const s = nameState(t, nm); if (!s) open++; else { any = true; if (['r', 'o', 'x', 'n', 'm'].includes(s)) changed = true; } if (s === 'u') return 'u'; }
   if (ed && ed.d && !open) return changed ? 'r' : 'y';
+  if (!open && e.names.length && e.names.every(nm => ['r', 'o', 'x', 'n'].includes(nameState(t, nm)))) return 'r';
   return any ? 'p' : '';
 }
 const DONE = s => s === 'y' || s === 'r';
+const linked = (t, e) => t === 'taxon' ? !!e.e[2] : t === 'person' ? !!(e.e[1] || e.e[2]) : t === 'place' ? e.e[1] != null : !!e.e[1];
 const STATE_DE = { y: 'bestätigt', r: 'korrigiert', n: 'abgelehnt', u: 'unsicher', p: 'begonnen', '': 'offen' };
 const NSTATE = { y: ['✓ stimmt', 'ok'], r: ['↪ neu zugeordnet', 'info'], o: ['↪ eigene', 'info'], x: ['↪ nicht bestimmbar', 'info'], n: ['✗ kein Eintrag', 'risk'], u: ['? unsicher', 'warn'], m: ['Belege einzeln entschieden', 'mix'], f: ['folgt dem Eintrag', 'info'] };
 
@@ -225,7 +230,7 @@ let cur = { tab: S.ui.tab && TAB[S.ui.tab] ? S.ui.tab : 'taxon', list: [], shown
 const ui = { open: new Set(), all: new Set(), panel: null, full: new Set(), mapView: null };
 const qaKey = r => r[0] + '|' + r[2] + '|' + r[4];
 function tabCount(tab) {
-  if (TYPES.includes(tab)) return X[tab].ents.filter(e => e.review && !DONE(entState(tab, e))).length;
+  if (TYPES.includes(tab)) return X[tab].ents.filter(e => e.names.length && linked(tab, e) && !DONE(entState(tab, e))).length;
   if (tab === 'eval') return P.sample.filter(mi => !(S.ev[X.taxon.mkey[mi]] || {}).d).length;
   if (tab === 'qa') return P.qa.rows.filter(r => QA_DEFAULT.includes(r[2]) && !(S.qa[qaKey(r)] || {}).d).length;
   return '';
@@ -254,7 +259,7 @@ function openTab(tab, keepSel) {
   $('#main').classList.toggle('noscan', kind === 'log' || S.ui.noscan === true);
   if (kind === 'log') { $('#qtitle').textContent = 'Änderungen'; $('#qcount').textContent = ''; $('#pbar').innerHTML = ''; $('#pnote').textContent = ''; $('.qctl').style.display = 'none'; $('#qsearch').style.display = 'none'; $('#qchips').innerHTML = ''; $('#qlist').innerHTML = '<div class="qmore">Alle Entscheidungen stehen rechts.</div>'; cur.sel = null; renderLog(); return; }
   $('.qctl').style.display = ''; $('#qsearch').style.display = '';
-  const shows = kind === 'ent' ? [['todo', 'Zu prüfen (offen)'], ['open', 'Alle offenen'], ['done', 'Erledigt'], ['u', 'Unsicher'], ['all', 'Alle']] : [['open', 'Offen'], ['done', 'Erledigt'], ['u', 'Unsicher'], ['all', 'Alle']];
+  const shows = kind === 'ent' ? [['check', '1 · Prüfen: schon verknüpft'], ['link', '2 · Verknüpfen: ohne Normdaten'], ['open', 'Alle offenen'], ['done', 'Erledigt'], ['u', 'Unsicher'], ['all', 'Alle']] : [['open', 'Offen'], ['done', 'Erledigt'], ['u', 'Unsicher'], ['all', 'Alle']];
   $('#qshow').innerHTML = shows.map(([v, l]) => '<option value="' + v + '">' + l + '</option>').join('');
   $('#qshow').value = S.ui.show[tab] && shows.some(s => s[0] === S.ui.show[tab]) ? S.ui.show[tab] : shows[0][0];
   const sorts = kind === 'ent' ? [['prio', 'Wichtigste zuerst'], ['n', 'Häufigste zuerst'], ['alpha', 'Alphabetisch']] : [['order', 'Reihenfolge']];
@@ -292,6 +297,8 @@ function buildList() {
       if (!e.names.length) return false;
       const st = entState(tab, e);
       if (show === 'todo' && (!e.review || DONE(st))) return false;
+      if (show === 'check' && (!linked(tab, e) || DONE(st))) return false;
+      if (show === 'link' && (linked(tab, e) || DONE(st))) return false;
       if (show === 'open' && DONE(st)) return false;
       if (show === 'done' && !DONE(st)) return false;
       if (show === 'u' && st !== 'u') return false;
@@ -300,7 +307,8 @@ function buildList() {
       return true;
     });
     const sort = $('#qsort').value;
-    if (sort === 'prio') list = list.slice().sort((a, b) => b.risk - a.risk || b.n - a.n);
+    if (show === 'link' && sort === 'prio') list = list.slice().sort((a, b) => b.n - a.n);
+    else if (sort === 'prio') list = list.slice().sort((a, b) => b.risk - a.risk || b.n - a.n);
     else if (sort === 'n') list = list.slice().sort((a, b) => b.n - a.n);
     else list = list.slice().sort((a, b) => a.label.localeCompare(b.label, 'de'));
   } else {
@@ -325,7 +333,8 @@ function renderProgress() {
   if (TYPES.includes(tab)) {
     let cov = 0; const all = X[tab].ents.reduce((a, e) => a + e.n, 0);
     for (const e of X[tab].ents) { const st = entState(tab, e); if (DONE(st)) cov += e.n; if (!e.review) continue; tot++; if (st === 'y') y++; else if (st === 'r') n++; else if (st === 'u') u++; }
-    note = fmt(y + n) + ' von ' + fmt(tot) + ' zu prüfenden erledigt · ' + pct(cov / Math.max(1, all)) + ' der ' + TT[tab].unit + ' geprüft';
+    let lk = 0, lkd = 0, ul = 0, uld = 0; for (const e of X[tab].ents) { if (!e.names.length) continue; const d = DONE(entState(tab, e)); if (linked(tab, e)) { lk++; if (d) lkd++; } else { ul++; if (d) uld++; } }
+    note = 'Verknüpfte geprüft ' + fmt(lkd) + '/' + fmt(lk) + ' · ohne Normdaten bearbeitet ' + fmt(uld) + '/' + fmt(ul) + ' · ' + pct(cov / Math.max(1, all)) + ' der ' + TT[tab].unit + ' geprüft';
     $('#qtitle').textContent = TT[tab].tab;
   } else {
     for (const it of tabItems(tab)) { if (tab === 'qa' && !QA_DEFAULT.includes(it.r[2])) continue; tot++; const st = itemState(tab, it); if (st === 'y') y++; else if (st === 'r') n++; else if (st === 'u') u++; }
@@ -748,7 +757,7 @@ function entStateText(t, e, cd) {
 }
 function namesBlock(t, e) {
   const open = e.names.filter(nm => !nameState(t, nm)).length;
-  let h = '<div class="sec"><h3>Namen im Tagebuch · ' + e.names.length + '</h3><span class="sp"></span>' + (open > 1 ? '<button class="lbtn" id="bulk">alle ' + open + ' offenen Namen ✓</button>' : '') + '</div>';
+  let h = '<div class="sec"><h3>' + (e.names.length > 1 ? 'Zusammengeführte Namen · ' + e.names.length + ' (gehört jeder dazu?)' : 'Name im Tagebuch') + '</h3><span class="sp"></span>' + (open > 1 ? '<button class="lbtn" id="bulk">alle ' + open + ' offenen Namen ✓</button>' : '') + '</div>';
   for (const nm of e.names) h += nameRow(t, e, nm);
   return h;
 }
@@ -763,7 +772,7 @@ function nameRow(t, e, nm) {
   const b = (k, sym, title) => '<button class="mb ' + k + (d && d.d === k ? ' on' : '') + '" data-na="' + k + '" title="' + title + '">' + sym + '</button>';
   let why = '';
   if (t === 'taxon') why = nm.cls === 'A' ? (nm.f[4] && lc(nm.f[4]) !== nm.key ? 'wie „' + esc(nm.f[4]) + '“' : '') : nm.cls === 'B' ? 'Variante von „' + esc(nm.f[4]) + '“' : nm.cls === 'C' ? (nm.f[4] ? 'ähnlich: „' + esc(nm.f[4]) + '“' : '') : '';
-  else if (nm.f[4] && !isLabel(t, nm)) why = 'Regel: ' + esc(nm.f[4]);
+  else if (nm.f[4] && !isLabel(t, nm)) why = 'zusammengeführt: ' + esc(RULE_DE[nm.f[4]] || nm.f[4]);
   const others = (X[t].byKey.get(nm.key) || []).filter(x => x.ent !== nm.ent);
   const ns = NSTATE[st];
   const stTxt = st ? '<span class="bd ' + (ns ? ns[1] : 'plain') + '">' + (ns ? ns[0] : st) + (d && d.target ? ': ' + esc(d.target.label || d.target.code || '') : '') + (d && d.reason ? ' (' + esc(reasonLabel(t, d.reason)) + ')' : '') + '</span>' : '<span class="bd plain">offen</span>';
@@ -787,8 +796,59 @@ function nameRow(t, e, nm) {
   return '<div class="nm" data-fi="' + nm.fi + '"><div class="nh" data-f="n:' + nm.fi + '"><span class="tw">' + (isOpen ? '▾' : '▸') + '</span><span class="nn">' + esc(nm.name) + '</span><span class="ct">' + fmt(nm.n) + '×</span>'
     + '<span class="bd ' + cls[1] + '" title="' + esc(cls[2]) + '">' + esc(cls[0]) + '</span>' + (isLabel(t, nm) && e.names.length > 1 ? '<span class="bd plain">Hauptname</span>' : '') + '<span class="why">' + why + '</span>'
     + (others.length ? '<span class="bd warn" title="Derselbe Name ist auch anderen Einträgen zugeordnet; eine Entscheidung hier gilt für den Namen überall">auch bei ' + others.slice(0, 3).map(x => esc(ENT(t, x.ent).label)).join(', ') + '</span>' : '')
-    + '<span class="sp"></span>' + stTxt + '<span class="mini">' + b('y', '✓', 'Name gehört hierher (Y)') + b('r', '↪', 'Name meint etwas anderes (A)') + b('n', '✗', 'Kein(e) ' + TT[t].one + ' (N)') + b('u', '?', 'Unsicher (U)') + '</span></div>'
+    + '<span class="sp"></span>' + stTxt + '<span class="mini">' + b('y', '✓', 'Name gehört zu diesem Eintrag (Y)') + b('r', '↪', 'Name gehört zu einem anderen Eintrag (A)') + b('n', '✗', 'Kein(e) ' + TT[t].one + ' (N)') + b('u', '?', 'Unsicher (U)') + '</span></div>'
     + sugAgg + (ui.panel && ui.panel.scope === 'n:' + nm.fi ? '<div style="padding:0 10px 8px">' + panelHtml(t, ui.panel) + '</div>' : '') + body + '</div>';
+}
+const RULE_DE = { 'same-key': 'gleicher Name ohne Titel/Umlaut', 'initial-unique': 'Initiale passt nur zu dieser Person', 'initial-ambiguous': 'Initiale passt zu mehreren', 'surname-unique': 'gleicher Nachname', 'surname-ambiguous': 'gleicher Nachname, mehrdeutig', dominant: 'häufigste passende Person', manual: 'von Hand zusammengeführt', wikidata: 'gleiches Wikidata-Objekt', orthographic: 'gleiche Schreibung (ü/ue, ß/ss …)', similar: 'ähnliche Schreibung' };
+const surname = n => { const w = fold(n).split(/[^a-z]+/).filter(x => x.length > 2); return w[w.length - 1] || ''; };
+function suggestions(t, e) {
+  const out = []; const seen = new Set([e.i]);
+  const add = (ent, why, kind) => { if (!ent || seen.has(ent.i)) return; seen.add(ent.i); out.push({ ent, why, kind }); };
+  if (t === 'taxon') {
+    const llm = e.names.map(nm => nm.f[5]).find(Boolean);
+    if (llm) add(X.taxon.ents.find(x => x.e[2] && lc(x.e[1]) === lc(llm)), 'Vorschlag des Sprachmodells', 'llm');
+    const votes = new Map(); for (const nm of e.names) for (const mi of nm.men) { const sg = SUG[mi]; if (sg && sg[2] === 'bird' && sg[7] >= 0 && sg[7] !== e.i) votes.set(sg[7], (votes.get(sg[7]) || 0) + 1); }
+    for (const [i, n] of [...votes.entries()].sort((a, b) => b[1] - a[1]).slice(0, 2)) add(X.taxon.ents[i], 'Zweitlesung (' + n + '×)', 'sug');
+    const keys = e.names.map(nm => letters(nm.name)).filter(k => k.length >= 4);
+    const sim = [];
+    for (const x of X.taxon.ents) { if (!x.e[2] || x.i === e.i) continue; const labs = [x.label, ...x.e[9]].map(letters);
+      let best = 0; for (const k of keys) for (const l of labs) { if (l.length < 4) continue; const sc = k === l ? 3 : (k.endsWith(l) && l.length >= 5) ? 2 : sameWord(k, l) ? 1.5 : 0; if (sc > best) best = sc; }
+      if (best) sim.push([best, x.n, x]); }
+    sim.sort((a, b) => b[0] - a[0] || b[1] - a[1]).slice(0, 4).forEach(([sc, , x]) => add(x, sc === 3 ? 'gleicher deutscher Name' : sc === 2 ? 'Grundwort passt' : 'ähnlicher Name', 'name'));
+  } else {
+    const keys = new Set(e.names.map(nm => t === 'person' ? surname(nm.name) : letters(nm.name)).filter(k => k.length >= 3));
+    const inits = ent => { const out = new Set(); for (const nm of ent.names) { const w = fold(nm.name).replace(TITLES, ' ').split(/[^a-z]+/).filter(Boolean); w.pop(); for (const x of w) out.add(x[0]); } return out; };
+    const mine = t === 'person' ? inits(e) : null;
+    const sim = [];
+    for (const x of X[t].ents) { if (x.i === e.i || !x.names.length) continue;
+      let hit = false; for (const nm of x.names) { const k = t === 'person' ? surname(nm.name) : letters(nm.name); if (!k) continue;
+        if (t === 'person' ? keys.has(k) : [...keys].some(q => sameWord(q, k) || (q.length >= 6 && k.length >= 6 && (q.includes(k) || k.includes(q))))) { hit = true; break; } }
+      if (hit && t === 'person') { const theirs = inits(x); if (mine.size && theirs.size && ![...mine].some(c => theirs.has(c))) hit = false; }
+      if (hit) sim.push([linked(t, x) ? 1 : 0, x.n, x]); }
+    sim.sort((a, b) => b[0] - a[0] || b[1] - a[1]).slice(0, 5).forEach(([, , x]) => add(x, t === 'person' ? 'gleicher Nachname' : 'ähnlicher Name', 'name'));
+  }
+  return out;
+}
+function sugBlock(t, e) {
+  const sg = suggestions(t, e); const x = e.e;
+  let extra = '';
+  if (t === 'taxon' && !x[2]) { const llm = e.names.map(nm => nm.f[5]).find(Boolean); if (llm && !X.taxon.ents.some(y => y.e[2] && lc(y.e[1]) === lc(llm))) extra = '<button class="btn sm" data-gbifq="' + esc(llm) + '">in GBIF suchen: <i>' + esc(llm) + '</i></button>'; }
+  if (t === 'place' && x[1] == null) { const lr = (e.names.find(nm => isLabel(t, nm)) || e.names[0]).f[5] || []; if (lr[4] && lr[5]) extra += '<button class="btn sm" data-setll="' + esc(lr[4]) + ',' + esc(lr[5]) + '">Gazetteer-Vorschlag übernehmen: ' + esc(lr[7] || '') + ' ' + esc(lr[4]) + ', ' + esc(lr[5]) + '</button>'; }
+  if (!sg.length && !extra) return '';
+  const what = { taxon: 'dieselbe Art wie', person: 'dieselbe Person wie', place: 'derselbe Ort wie', habitat: 'derselbe Lebensraum wie' }[t];
+  return '<div class="panel"><h5>Vorschläge · Zusammenführen heißt: alle Namen hier gehören zu dem gewählten Eintrag</h5><div class="cands">'
+    + sg.map((c, k) => { const y = c.ent; const auth = t === 'taxon' ? '<i>' + esc(y.e[1] || '') + '</i>' : t === 'person' ? esc([y.e[1], y.e[2] ? 'GND ' + y.e[2] : ''].filter(Boolean).join(' · ') || 'ohne Normdaten') : t === 'place' ? (y.e[1] != null ? esc(y.e[1] + ', ' + y.e[2]) : 'ohne Lage') : esc(y.e[1] || 'ohne Klasse');
+      return '<div class="cand" data-merge="' + y.i + '"><span class="k" title="Umschalt+' + String.fromCharCode(65 + k) + '">⇧' + String.fromCharCode(65 + k) + '</span><div><div class="cl">' + esc(what) + ' „' + esc(y.label) + '“ ' + auth + '</div><div class="cd">' + esc(c.why) + ' · ' + fmt(y.n) + ' ' + TT[t].unit + (y.names.length > 1 ? ' · ' + y.names.length + ' Namen' : '') + '</div></div><span class="bd ' + (linked(t, y) ? 'ok' : 'plain') + '">' + (linked(t, y) ? 'verknüpft' : 'ohne Normdaten') + '</span></div>'; }).join('')
+    + '</div>' + (extra ? '<div class="row" style="margin-top:8px">' + extra + '</div>' : '') + '</div>';
+}
+function mergeInto(t, e, y) {
+  if (t === 'taxon' || t === 'habitat') {
+    const target = t === 'taxon' ? { label: y.label, sci: y.e[1], key: y.e[2], rank: y.e[3] } : { code: y.e[1], label: y.e[1] + ' ' + ((EUNIS.get(y.e[1]) || [])[1] || ''), match: y.e[2] || 'close' };
+    if (t === 'habitat' && !y.e[1]) { commit('zusammengeführt', () => { for (const nm of e.names) setName(t, nm, { d: 'r', target: { label: y.label } }); }); return afterDecision('e'); }
+    commit('zusammengeführt mit ' + y.label, () => setEnt(t, e, { d: 'r', target })); return afterDecision('e');
+  }
+  commit('zusammengeführt mit ' + y.label, () => { for (const nm of e.names) if (!nameDec(t, nm)) setName(t, nm, { d: 'r', target: { label: y.label } }); });
+  afterDecision('e');
 }
 function entityView(t, e) {
   const x = e.e;
@@ -807,14 +867,14 @@ function entityView(t, e) {
     head = '<h1 class="t">' + esc(e.label) + '</h1><div class="sub">' + fmt(e.n) + ' Beobachtungen</div><dl class="facts"><dt>EUNIS</dt><dd>' + (x[1] ? '<b>' + esc(x[1]) + '</b> ' + esc((ex || [])[1] || lr[4] || '') + ' <span class="muted small">(' + esc(x[2]) + (lr[1] ? ', Konfidenz ' + esc(lr[1]) : '') + ')</span> · <a href="https://biodiversity.europa.eu/resources/search-habitat/eunis-habitat-types-hierarchical-view-2012?searchTerm=' + encodeURIComponent(x[1]) + '" target="_blank" rel="noopener">BISE ↗</a>' : '<span class="bd warn">keine Klasse</span>') + '</dd>'
       + (ex && ex[3] ? '<dt>übergeordnet</dt><dd>' + esc(ex[3]) + ' ' + esc((EUNIS.get(ex[3]) || [])[1] || '') + '</dd>' : '') + (lr[2] ? '<dt>Begründung Modell</dt><dd class="small">' + esc(lr[2]) + '</dd>' : '') + '</dl>';
   }
-  return crumb() + '<div class="card"><div class="cb">' + head + entActs(t, e) + '</div></div>' + namesBlock(t, e);
+  return crumb() + '<div class="card"><div class="cb">' + (linked(t, e) ? '<span class="bd ok">verknüpft · prüfen</span>' : '<span class="bd warn">ohne Normdaten · verknüpfen oder zusammenführen</span>') + head + entActs(t, e) + sugBlock(t, e) + '</div></div>' + namesBlock(t, e);
 }
 function personHead(e) {
   const t = 'person', x = e.e, lab = e.label, a = entDec(t, e) || {};
   const cands = new Map(); for (const nm of e.names) for (const c of nm.f[5] || []) if (!cands.has(c[0])) cands.set(c[0], c);
   if (x[1] && !cands.has(x[1])) cands.set(x[1], [x[1], 'im Graph verknüpft', '']);
   const chosen = a.d === 'y' ? a.qid : (a.d ? null : x[1]);
-  let list = [...cands.values()].map((c, k) => '<div class="cand' + (chosen === c[0] ? ' on' : '') + '" data-qid="' + esc(c[0]) + '"><span class="k">' + (k < 9 ? k + 1 : '') + '</span><div><div class="cl">' + esc(c[1]) + (c[0] === x[1] && !a.d ? ' <span class="bd info">automatisch, ungeprüft</span>' : '') + '</div><div class="cd">' + esc(c[2] || 'keine Beschreibung') + '</div></div><a class="ci" href="https://www.wikidata.org/wiki/' + esc(c[0]) + '" target="_blank" rel="noopener">' + esc(c[0]) + ' ↗</a></div>').join('');
+  let list = [...cands.values()].map((c, k) => '<div class="cand' + (chosen === c[0] ? ' on' : '') + '" data-qid="' + esc(c[0]) + '"><span class="k">' + (k < 9 ? k + 1 : '') + '</span><div><div class="cl">' + esc(c[1]) + (c[0] === x[1] && !a.d ? ' <span class="bd info">automatisch, ungeprüft</span>' : '') + '</div><div class="cd">' + esc(c[2] || 'keine Beschreibung') + '<span data-wdx="' + esc(c[0]) + '"></span></div></div><a class="ci" href="https://www.wikidata.org/wiki/' + esc(c[0]) + '" target="_blank" rel="noopener">' + esc(c[0]) + ' ↗</a></div>').join('');
   if (a.qid && !cands.has(a.qid)) list += '<div class="cand on"><span class="k">+</span><div><div class="cl">' + esc(a.wd_label || a.qid) + '</div><div class="cd">' + esc(a.wd_description || 'selbst gesucht') + '</div></div><a class="ci" href="https://www.wikidata.org/wiki/' + esc(a.qid) + '" target="_blank" rel="noopener">' + esc(a.qid) + ' ↗</a></div>';
   const gnd = a.gnd || (!a.d && x[2]) || '';
   const roles = {}; for (const nm of e.names) for (const mi of nm.men) { const r = P.person.men[mi][5]; if (r) for (const p of r.split('/')) roles[p] = (roles[p] || 0) + 1; }
@@ -880,12 +940,33 @@ async function wikidataSearch(e, q) {
   } catch (err) { box.innerHTML = '<div class="r muted">Wikidata nicht erreichbar (' + esc(err.message) + ').</div>'; }
 }
 async function gndSearch(e, q) {
-  const box = $('#wres'); box.innerHTML = '<div class="r muted">suche …</div>';
-  try { const j = await getJSON('https://lobid.org/gnd/search?format=json&size=12&filter=type:Person&q=' + encodeURIComponent(q));
-    const res = (j.member || []).map(x => ({ id: x.gndIdentifier, name: x.preferredName, info: [[(x.dateOfBirth || [])[0], (x.dateOfDeath || [])[0]].filter(Boolean).join('–'), (x.professionOrOccupation || []).map(p => p.label).slice(0, 3).join(', '), (x.placeOfActivity || []).map(p => p.label).slice(0, 2).join(', ')].filter(Boolean).join(' · ') }));
-    box.innerHTML = res.length ? res.map((x, k) => '<div class="r" data-k="' + k + '"><b>' + esc(x.name) + '</b> <small>GND ' + esc(x.id) + '</small><br><small>' + esc(x.info) + '</small></div>').join('') : '<div class="r muted">Keine Treffer.</div>';
-    $$('.r[data-k]', box).forEach(el => el.onclick = () => { const x = res[+el.dataset.k]; commit('GND gewählt', () => setEnt('person', e, Object.assign({}, entDec('person', e) || {}, { d: 'y', gnd: x.id, gnd_label: x.name, gnd_info: x.info }))); });
-  } catch (err) { box.innerHTML = '<div class="r muted">GND-Suche nicht erreichbar (' + esc(err.message) + ').</div>'; }
+  const box = $('#wres'); box.innerHTML = '<div class="r muted">suche in der GND …</div>';
+  let res = [], via = 'GND (lobid)';
+  try {
+    const j = await getJSON('https://lobid.org/gnd/search?q=' + encodeURIComponent(q) + '&filter=type:Person&format=json&size=10');
+    res = (j.member || []).map(x => ({ id: x.gndIdentifier, name: x.preferredName, info: [[(x.dateOfBirth || [])[0], (x.dateOfDeath || [])[0]].filter(Boolean).join('–'), (x.professionOrOccupation || []).map(p => p.label).slice(0, 3).join(', '), (x.placeOfActivity || []).map(p => p.label).slice(0, 2).join(', ')].filter(Boolean).join(' · ') }));
+  } catch (err) {
+    // lobid is not reachable from a page opened as a file: GND numbers of Wikidata persons (P227)
+    via = 'GND über Wikidata';
+    try {
+      const sr = await getJSON('https://www.wikidata.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=12&srsearch=' + encodeURIComponent(q + ' haswbstatement:P227'));
+      const ids = ((sr.query || {}).search || []).map(x => x.title);
+      if (ids.length) { const ents = (await getJSON('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=claims|labels|descriptions&languages=de|en&ids=' + ids.join('|'))).entities || {};
+        res = ids.map(id => { const en = ents[id] || {}; const yr = pp => { const v = claimValue(en, pp); return v && v.time ? v.time.slice(1, 5) : ''; };
+          return { id: claimValue(en, 'P227'), qid: id, name: ((en.labels || {}).de || (en.labels || {}).en || {}).value || id, info: [[yr('P569'), yr('P570')].filter(Boolean).join('–'), ((en.descriptions || {}).de || (en.descriptions || {}).en || {}).value || '', 'Wikidata ' + id].filter(Boolean).join(' · ') }; }).filter(x => x.id); }
+    } catch (e2) { box.innerHTML = '<div class="r muted">GND und Wikidata nicht erreichbar (' + esc(e2.message) + ').</div>'; return; }
+  }
+  const manual = '<div class="r muted">Nicht dabei? <a href="https://lobid.org/gnd/search?q=' + encodeURIComponent(q) + '&filter=type:Person" target="_blank" rel="noopener">in der GND suchen ↗</a> und die GND-Nummer oben bei „GND-ID“ eintragen.</div>';
+  box.innerHTML = (res.length ? res.map((x, k) => '<div class="r" data-k="' + k + '"><b>' + esc(x.name) + '</b> <small>GND ' + esc(x.id) + ' · ' + via + '</small><br><small>' + esc(x.info) + '</small></div>').join('') : '<div class="r muted">Keine Treffer (' + via + ').</div>') + manual;
+  $$('.r[data-k]', box).forEach(el => el.onclick = () => { const x = res[+el.dataset.k]; commit('GND gewählt', () => { const prev = entDec('person', e) || {}; setEnt('person', e, Object.assign({}, prev, { d: 'y', gnd: x.id, gnd_label: x.name, gnd_info: x.info }, x.qid && !prev.qid ? { qid: x.qid, wd_label: x.name, wd_description: x.info } : {})); }); afterDecision('e'); });
+}
+// Wikidata candidates: life dates and GND number next to each candidate
+const WDX = new Map();
+async function enrichCands() {
+  const els = $$('#work [data-wdx]'); const need = [...new Set(els.map(el => el.dataset.wdx))].filter(q => !WDX.has(q));
+  if (need.length) { try { const ents = (await getJSON('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=claims&ids=' + need.slice(0, 40).join('|'))).entities || {};
+    for (const q of need) { const en = ents[q] || {}; const yr = pp => { const v = claimValue(en, pp); return v && v.time ? v.time.slice(1, 5) : ''; }; WDX.set(q, [[yr('P569'), yr('P570')].filter(Boolean).join('–'), claimValue(en, 'P227') || ''].filter(Boolean)); } } catch (err) { return; } }
+  for (const el of $$('#work [data-wdx]')) { const v = WDX.get(el.dataset.wdx); if (v && v.length) el.textContent = ' · ' + v.map((x, i) => i === 1 || /^[0-9X-]{6,}$/.test(x) && x.length > 5 && !/–/.test(x) ? 'GND ' + x : x).join(' · '); }
 }
 async function osmSearch(e, q) {
   const box = $('#nres'); box.innerHTML = '<div class="r muted">suche …</div>';
@@ -1044,6 +1125,7 @@ function wireWork() {
     $('#gndbtn').onclick = () => gndSearch(e, $('#wq').value);
     $('#wqidbtn').onclick = () => { const q = ($('#wqid').value.match(/Q\d+/i) || [''])[0].toUpperCase(); if (!q) return toast('Ungültige QID'); pickPerson(e, q, { wd_label: q, wd_description: 'von Hand eingetragen' }); };
     $('#gndidbtn').onclick = () => { const g = gndId($('#gndid').value); if (!g) return toast('Ungültige GND-ID'); commit('GND', () => setEnt('person', e, Object.assign({}, entDec('person', e) || {}, { d: 'y', gnd: g, gnd_label: g, gnd_info: 'von Hand eingetragen' }))); };
+    enrichCands();
     const gc = $('#gndclear'); if (gc) gc.onclick = () => commit('GND entfernt', () => { const d = Object.assign({}, entDec('person', e) || {}); d.gnd = null; d.gnd_label = null; d.gnd_info = null; if (!d.d) d.d = d.qid || e.e[1] ? 'y' : 'n'; if (!d.qid && d.d === 'y') d.qid = e.e[1] || null; setEnt('person', e, d); });
   }
   if (cur.tab === 'place') {
@@ -1066,6 +1148,9 @@ $('#work').addEventListener('click', ev => {
   const sp = t0.closest('[data-special]'); if (sp) { const root = sp.closest('.rpanel'); return special(root.dataset.kind, root.dataset.scope, sp.dataset.special); }
   const rs = t0.closest('[data-reason]'); if (rs) { const root = rs.closest('[data-scope]'); return reason(cur.tab, root.dataset.scope, rs.dataset.reason); }
   const sg = t0.closest('[data-sug]'); if (sg) return acceptSug(+sg.dataset.sug);
+  const mg = t0.closest('[data-merge]'); if (mg && TYPES.includes(cur.tab)) return mergeInto(cur.tab, cur.sel, X[cur.tab].ents[+mg.dataset.merge]);
+  const gq = t0.closest('[data-gbifq]'); if (gq) { openPanel('e', 'r', gq.dataset.gbifq, 'GBIF-Art zuordnen'); const root = $('#work .rpanel[data-scope="e"]'); if (root) gbifSearch(root); return; }
+  const sll = t0.closest('[data-setll]'); if (sll) { const [la, lo] = sll.dataset.setll.split(','); return setPlaceFix(cur.sel, +la, +lo, { note: 'Gazetteer-Vorschlag', uncertainty_m: 2000 }); }
   const sgall = t0.closest('[data-sugall]'); if (sgall) { const nm = X.taxon.names[+sgall.dataset.sugall]; const { top } = sugGroups(nm); commit('Zweitlesung für ' + top.length + ' Belege', () => top.forEach(mi => acceptSug(mi, true))); afterDecision('n:' + nm.fi); return; }
   const am = t0.closest('[data-allmen]'); if (am) { ui.all.add(+am.dataset.allmen); return renderWork(false); }
   const fu = t0.closest('[data-full]'); if (fu) { const k = fu.closest('.men').dataset.t + fu.dataset.full; ui.full.has(k) ? ui.full.delete(k) : ui.full.add(k); return renderWork(false); }
@@ -1094,6 +1179,7 @@ document.addEventListener('keydown', ev => {
   if (kl === 'k' || k === 'ArrowUp') { ev.preventDefault(); return moveFocus(-1); }
   if (k === 'Enter') { ev.preventDefault(); return nextItem(ev.shiftKey ? -1 : 1); }
   if (k === ' ') { ev.preventDefault(); if (!TYPES.includes(cur.tab)) return; const f = cur.focus || ''; const fi = f.startsWith('n:') ? +f.slice(2) : f.startsWith('m:') ? P[cur.tab].men[+f.slice(2)][0] : null; if (fi != null) { ui.open.has(fi) ? ui.open.delete(fi) : ui.open.add(fi); cur.focus = 'n:' + fi; renderWork(false); } return; }
+  if (ev.shiftKey && /^[A-E]$/.test(k) && TYPES.includes(cur.tab)) { const c = $$('#work .cand[data-merge]')[k.charCodeAt(0) - 65]; if (c) { ev.preventDefault(); c.click(); } return; }
   if (['y', 'a', 'n', 'u', 'e', 'g', 'z', 'b'].includes(kl)) ev.preventDefault();
   if (kl === 'y') return act('y'); if (kl === 'a') return act('r'); if (kl === 'n') return act('n'); if (kl === 'u') return act('u');
   if (kl === 'e') { const f = cur.focus || ''; if (f.startsWith('m:')) { const el = $('#work [data-f="' + f + '"]'); const t = el.dataset.t; const mi = +f.slice(2); const m = P[t].men[mi]; return openEditor(m[1], m[2], m[3], t, mi); } const q = $('#work [data-edit], #work .men [data-ma="e"]'); if (q) q.click(); return; }
@@ -1103,6 +1189,7 @@ document.addEventListener('keydown', ev => {
   if (k === '/') { ev.preventDefault(); return $('#qsearch').focus(); }
   if (k === '?') return showHelp();
   if (/^[1-9]$/.test(k) && cur.tab === 'person') { const c = $$('#work .cand[data-qid]')[+k - 1]; if (c) c.click(); }
+  if (ev.shiftKey && /^[A-E]$/.test(k) && TYPES.includes(cur.tab)) { const c = $$('#work .cand[data-merge]')[k.charCodeAt(0) - 65]; if (c) c.click(); }
 });
 
 // ---------------------------------------------------------------- global search
@@ -1183,11 +1270,27 @@ function exportIdentities() {
     }
     if (!ed || !ed.d || ed.d === 'u') continue;
     const r = base(t, e.label, ed);
-    if (t === 'person') rows.push(Object.assign(r, ed.d === 'y' && (ed.qid || ed.gnd) ? { decision: 'link', target: e.label, authority: [ed.qid ? 'wd:' + ed.qid : '', ed.gnd ? 'gnd:' + ed.gnd : ''].filter(Boolean).join(' ') } : { decision: 'nolink', target: e.label }));
+    // the authority goes on every name that stays with the entity, so it survives a new run whose canonical label differs
+    const stays = e.names.filter(nm => nameState(t, nm) === 'y');   // only names confirmed as belonging here carry the authority
+    const linkRows = extra => { const out = [r]; for (const nm of stays) if (lc(nm.name) !== lc(e.label)) out.push(Object.assign(base(t, nm.name, ed), extra, { target: e.label })); return out; };
+    if (t === 'person') { const ex = ed.d === 'y' && (ed.qid || ed.gnd) ? { decision: 'link', authority: [ed.qid ? 'wd:' + ed.qid : '', ed.gnd ? 'gnd:' + ed.gnd : ''].filter(Boolean).join(' ') } : { decision: 'nolink' };
+      Object.assign(r, ex, { target: e.label }); rows.push(...linkRows(ex)); }
     if (t === 'place') { const f = ed.fix || {}; const x = e.e;
-      rows.push(Object.assign(r, ed.d === 'y' ? { decision: 'link', target: e.label, authority: [(f.geonames_id || (!f.lat && x[4])) ? 'gn:' + (f.geonames_id || x[4]) : '', (f.qid || (!f.lat && x[5])) ? 'wd:' + (f.qid || x[5]) : '', f.osm ? 'osm:' + f.osm : ''].filter(Boolean).join(' '),
-        lat: f.lat || (x[1] != null ? x[1] : ''), lon: f.lon || (x[2] != null ? x[2] : ''), uncertainty_m: f.uncertainty_m || x[3] || '', note: [ed.note, f.note].filter(Boolean).join(' · ') } : { decision: 'nolink', target: e.label })); }
-    if (t === 'habitat') rows.push(Object.assign(r, ed.d === 'y' && e.e[1] ? { decision: 'link', target: e.label, authority: 'eunis:' + e.e[1], eunis_match: e.e[2] } : ed.d === 'r' ? { decision: 'link', target: e.label, authority: 'eunis:' + ed.target.code, eunis_match: ed.target.match || 'close' } : { decision: 'nolink', target: e.label }));
+      const ex = ed.d === 'y' ? { decision: 'link', authority: [(f.geonames_id || (!f.lat && x[4])) ? 'gn:' + (f.geonames_id || x[4]) : '', (f.qid || (!f.lat && x[5])) ? 'wd:' + (f.qid || x[5]) : '', f.osm ? 'osm:' + f.osm : ''].filter(Boolean).join(' '),
+        lat: f.lat || (x[1] != null ? x[1] : ''), lon: f.lon || (x[2] != null ? x[2] : ''), uncertainty_m: f.uncertainty_m || x[3] || '' } : { decision: 'nolink' };
+      Object.assign(r, ex, { target: e.label, note: [ed.note, f.note].filter(Boolean).join(' · ') }); rows.push(...linkRows(ex)); }
+    if (t === 'habitat') { const ex = ed.d === 'y' && e.e[1] ? { decision: 'link', authority: 'eunis:' + e.e[1], eunis_match: e.e[2] } : ed.d === 'r' ? { decision: 'link', authority: 'eunis:' + ed.target.code, eunis_match: ed.target.match || 'close' } : { decision: 'nolink' };
+      Object.assign(r, ex, { target: e.label }); rows.push(...linkRows(ex)); }
+  }
+  // two separate entities given the same authority record are one entity: merge them explicitly
+  for (const t of ['person', 'place']) {
+    const groups = new Map();
+    for (const e of X[t].ents) { const ed = entDec(t, e); if (!ed || ed.d !== 'y') continue; const f = ed.fix || {};
+      const k = t === 'person' ? (ed.qid || e.e[1] ? 'wd:' + (ed.qid || e.e[1]) : ed.gnd || e.e[2] ? 'gnd:' + (ed.gnd || e.e[2]) : '') : (f.geonames_id || (!f.lat && e.e[4]) ? 'gn:' + (f.geonames_id || e.e[4]) : f.qid || (!f.lat && e.e[5]) ? 'wd:' + (f.qid || e.e[5]) : '');
+      if (!k) continue; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(e); }
+    for (const [k, es] of groups) { if (es.length < 2) continue; es.sort((a, b) => b.n - a.n); const main = es[0];
+      for (const e of es.slice(1)) for (const nm of e.names) { if (['r', 'o', 'x', 'n'].includes(nameState(t, nm))) continue;
+        rows.push(Object.assign(base(t, nm.name, entDec(t, e)), { decision: 'same', target: main.label, authority: k, note: 'gleiche Normdaten wie „' + main.label + '“' })); } }
   }
   return toCSV(ID_HEAD, rows);
 }
@@ -1343,7 +1446,8 @@ $('#fileImport').addEventListener('change', async e => {
 function showHelp(first) {
   $('#modal').innerHTML = '<button class="lbtn x" data-close>Schließen ✕</button><h2>' + (first ? 'Willkommen beim Laubmann-Abgleich' : 'Anleitung') + '</h2>'
     + (first ? '<div class="row" style="margin-bottom:10px"><span>Dein Name oder Kürzel:</span><input type="text" class="ftext" id="hwho" value="' + esc(S.who) + '" placeholder="z. B. AB"><button class="btn" id="himport">Fortschritt laden …</button></div>' : '')
-    + '<p>Links die Liste, in der Mitte eine Art (bzw. Person, Ort, Lebensraum) mit allen Namen, unter denen sie im Tagebuch vorkommt, rechts der Scan. Die wichtigsten Fälle stehen oben in der Liste.</p>'
+    + '<p>Ziel: Jede Art, Person, jeder Ort und Lebensraum soll mit dem richtigen Normdatensatz verknüpft sein (GBIF, Wikidata/GND, GeoNames/Wikidata/Koordinaten, EUNIS). Namen, die mit demselben Datensatz verknüpft sind, werden im Graph <b>ein</b> Knoten – so entsteht das Zusammenführen.</p>'
+    + '<p>Jede Liste hat zwei Stufen (Auswahl oben links): <b>1 · Prüfen</b> – schon verknüpfte Einträge bestätigen oder korrigieren; <b>2 · Verknüpfen</b> – Einträge ohne Normdaten verknüpfen oder mit einem vorhandenen Eintrag zusammenführen („Vorschläge“, Umschalt+A…E). Häufige Einträge stehen oben. Die Entscheidungen gelten auch für den künftigen Graphen mit der neuen Ontologie: sie hängen am geschriebenen Namen und an der Tagebuchstelle, nicht am alten Graphen.</p>'
     + '<h3>So geht es</h3><ol><li><b>Oben: der Eintrag selbst.</b> Stimmt die Art (GBIF), die Person (Wikidata/GND), die Lage auf der Karte, die EUNIS-Klasse? <kbd>Y</kbd> stimmt, <kbd>A</kbd> anders, <kbd>N</kbd> nicht bestimmbar/keine, <kbd>U</kbd> unsicher. „Stimmt“ bestätigt auch die sicheren Namen (belegte Namen, reine Schreibvarianten).</li>'
     + '<li><b>Darunter: die Namen.</b> Für jeden offenen Namen: gehört er hierher (✓), meint er etwas anderes (↪, z. B. eine andere Art, „nicht bestimmbar“, „eigene Person“), ist er gar kein(e) Art/Person/Ort (✗, mit Grund)?</li>'
     + '<li><b>Belege</b> (Klick auf den Namen oder <kbd>Leertaste</kbd>): Zeilenbild aus dem Scan und Text. Einzelne Belege können abweichend entschieden werden. Rechts erscheint die ganze Seite mit der markierten Zeile; <kbd>←</kbd> <kbd>→</kbd> blättern, auch über Seitenwechsel.</li>'
