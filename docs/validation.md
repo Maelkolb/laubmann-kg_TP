@@ -104,6 +104,35 @@ box from the PAGE-XML, line index from the transcription; 95.6 % of taxon
 mentions are located) and the entry text around it; the scan viewer pages
 through all pages the entry spans and its neighbours.
 
+## 3a. The four tasks of the UI (v4, 2026-09-29)
+
+The review unit is the **entity** (one authority record) with its written
+names and passages; decisions are still stored on the written name and the
+passage, so they survive a re-extraction with the final ontology. The page
+has one tab per task, each with a stable list (no automatic advancing unless
+switched on) and fixed-width counters:
+
+| task | items | decision |
+|---|---|---|
+| **Prüfen** | entities that already carry an authority record | is the record right (`Y`/`A`/`N`/`U`); below it every written name with a checkbox – unticking asks where the name belongs instead |
+| **Verknüpfen** | entities without a record | GBIF/Wikidata/GND/OSM/GeoNames/EUNIS search, map click, or "ist dasselbe wie …" an existing entity (all names move there) |
+| **Namen** | entities with unsafe names or likely missing ones | tick incoming candidates (`merge_candidates.py`: same German name, compound stem, surname + initials, containment, edit ratio; candidates ruled out by authority records – attested names of another linked species, persons with another Wikidata item, places > 25 km apart – are not offered), search any name of the graph, confirm the group |
+| **Lesefehler** | mentions where the model readings disagree with the transcription | transcription right (`Y`), accept a model reading (`1`/`2`: word + species), type the word (`E`), other species (`A`), not a bird (`N`) |
+
+**Model readings.** Gemini 3.5 Flash read the line image of every doubtful
+species mention (2,587); the 1,176 mentions where it disagrees with the
+transcription were read again from contact sheets by Claude Opus 5.5
+subagents (`third_reading_sheets.py`, `model_answers_merge.py`). The page shows
+both readings with an agreement badge; the reviewer decides at the image, and
+nothing is applied automatically. In the pilots the second model caught
+readings both the transcription and Gemini had wrong (*Trauerseeschwalbe*,
+*Seeregenpfeifer*, *Rothalsgans*) and marked misaligned or illegible crops.
+For persons, Opus subagents matched the 313 persons with Wikidata candidates
+and ≥ 2 mentions against the candidates enriched with dates, GND and
+occupation (`person_batches.py`): a conservative decision (candidate / none /
+unclear) with a reason, shown above the candidates; 312 answers, most of them
+"none" for the short forms.
+
 ## 4. Decision files and how the pipeline uses them
 
 The UI exports a ZIP whose `review/` files go to `data/review/`:
@@ -173,9 +202,10 @@ unreviewed forms.
 * Contextual geocoding (query micro-toponyms with the entry's settlement:
   "Süddamm, Ismaning") and a parent-place relation for localities would link
   most of the frequent unlinked places automatically.
-* A multimodal second reading (the line image of each class-C mention sent to
-  the model: "what is written, which bird?") would pre-fill corrections for the
-  ~1,900 unattested mentions; estimated cost below 5 USD.
+* Line boxes come from the region box divided by the line count, which goes
+  wrong on two-column species lists: the model readings then describe another
+  line. The UI flags those ("Zeilenbild verrutscht?", the word the model read
+  stands elsewhere in the entry); PAGE-XML line coordinates would fix it.
 * The register volume (Vol. 35) could serve as Laubmann's own nomenclature, but
   its transcription is too garbled for that today (headwords like
   "Reichsrückungsrecht").

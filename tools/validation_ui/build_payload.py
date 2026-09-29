@@ -45,6 +45,8 @@ ap.add_argument("--built", default="")
 ap.add_argument("--sample", type=int, default=400, help="size of the random evaluation sample of taxon mentions")
 ap.add_argument("--seed", type=int, default=20260928)
 ap.add_argument("--second-reading", default=None, help="output of second_reading.py (model suggestions for doubtful taxon mentions)")
+ap.add_argument("--third-reading", default=None, help="third_reading.json of model_answers_merge.py (second model)")
+ap.add_argument("--person-matches", default=None, help="person_matches.json of model_answers_merge.py")
 ap.add_argument("--out", default="payload.b64")
 args = ap.parse_args()
 R = Path(args.review_dir)
@@ -602,15 +604,15 @@ def pack(sec: Section):
 # model second reading (second_reading.py): mention index -> suggestion, the
 # named species resolved to a taxon of the graph where possible
 SUG = {}
+by_sci, by_de = {}, {}
+for i, ent in enumerate(TX.ent):
+    if ent[2]:
+        if ent[1]:
+            by_sci.setdefault(ent[1].lower(), i)
+        for n in [ent[0]] + list(ent[9]):
+            by_de.setdefault(n.lower(), i)
 if args.second_reading and Path(args.second_reading).exists():
     answers = json.loads(Path(args.second_reading).read_text(encoding="utf-8"))
-    by_sci, by_de = {}, {}
-    for i, ent in enumerate(TX.ent):
-        if ent[2]:
-            if ent[1]:
-                by_sci.setdefault(ent[1].lower(), i)
-            for n in [ent[0]] + list(ent[9]):
-                by_de.setdefault(n.lower(), i)
     occ = collections.Counter()
     for i, m in enumerate(TX.men):
         k = E[m[1]][1] + "|" + TX.forms[m[0]][0].lower()
@@ -632,9 +634,54 @@ if args.second_reading and Path(args.second_reading).exists():
                   a.get("sci") or "", conf, (a.get("note") or "")[:300], -1 if t is None else t]
     print("second reading suggestions", len(SUG))
 
-payload = {"v": 3, "built": args.built, "export": args.export_name or R.resolve().parent.name,
+# merge candidates (which other entity could a name belong to; which foreign names could belong here)
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+import merge_candidates as MC
+CAND = {"taxon": MC.taxa(TX), "person": MC.persons(PS), "place": MC.places(PL), "habitat": MC.habitats(HB)}
+for k, v in CAND.items():
+    print(k, "candidates: names with suggestions", len(v["nc"]), "entities with suggestions", len(v["ec"]))
+
+# third reading (another model) per mention key, person matches per entity label
+SUG3 = {}
+if args.third_reading and Path(args.third_reading).exists():
+    third = json.loads(Path(args.third_reading).read_text(encoding="utf-8"))
+    occ = collections.Counter()
+    for i, m in enumerate(TX.men):
+        k = E[m[1]][1] + "|" + TX.forms[m[0]][0].lower()
+        key = f"{k}|{occ[k]}"
+        occ[k] += 1
+        a = third.get(key)
+        if not a or not a.get("reading"):
+            continue
+        t = None
+        if a.get("kind") == "bird":
+            t = by_sci.get((a.get("sci") or "").lower().strip())
+            if t is None:
+                t = by_de.get((a.get("species_de") or "").lower().strip())
+        try:
+            conf = round(float(a.get("confidence") or 0), 2)
+        except (TypeError, ValueError):
+            conf = 0.0
+        SUG3[i] = [a["reading"], 1 if a.get("legible", True) else 0, a.get("kind") or "", a.get("species_de") or "",
+                   a.get("sci") or "", conf, (a.get("note") or "")[:300], -1 if t is None else t]
+    print("third reading answers", len(SUG3))
+PM = {}
+if args.person_matches and Path(args.person_matches).exists():
+    pm = json.loads(Path(args.person_matches).read_text(encoding="utf-8"))
+    for i, ent in enumerate(PS.ent):
+        a = pm.get(ent[0])
+        if a and a.get("decision"):
+            try:
+                conf = round(float(a.get("confidence") or 0), 2)
+            except (TypeError, ValueError):
+                conf = 0.0
+            PM[i] = [a["decision"], conf, (a.get("reason") or "")[:400]]
+    print("person matches", len(PM))
+
+payload = {"v": 4, "built": args.built, "export": args.export_name or R.resolve().parent.name,
            "E": E, "PG": PG, "taxon": pack(TX), "person": pack(PS), "place": pack(PL), "habitat": pack(HB),
-           "qa": QA, "sample": SAMPLE, "eunis": eunis, "sug": SUG}
+           "qa": QA, "sample": SAMPLE, "eunis": eunis, "sug": SUG, "sug3": SUG3, "pm": PM, "cand": CAND}
 raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode()
 gz = gzip.compress(raw, 9, mtime=0)
 Path(args.out).write_text(base64.b64encode(gz).decode())

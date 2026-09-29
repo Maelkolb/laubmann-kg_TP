@@ -4,47 +4,59 @@ Standalone HTML page (German) for reviewing and correcting the graph's main
 entities: species, persons, places, habitats. Background and rationale:
 [`docs/validation.md`](../../docs/validation.md).
 
-## How it works
+## Four tasks
 
-* **One entity at a time.** Left: a work list per tab (Arten, Personen, Orte,
-  Lebensräume), most important first (unattested names, missing links,
-  contradicting second readings, frequent entities). Middle: the entity with
-  its authority record (GBIF with German names; Wikidata/GND candidates; map
-  with GeoNames/Wikidata; EUNIS class) and every name the diary uses for it.
-  Right: the scan, following the selected mention, with the line highlighted
-  and every page of the entry (‹ › and page buttons).
-* **The same four actions everywhere**, on the entity, a name or a single
-  mention: ✓ stimmt (`Y`) · ↪ anders (`A`, search panel) · ✗ kein(e)
-  Art/Person/Ort (`N`, with a reason) · ? unsicher (`U`). "Stimmt" on the
-  entity also confirms its safe names (attested names, pure spelling
-  variants); a relinked or undeterminable species carries its undecided names
-  along. `J`/`K` move between entity, names and mentions; the next open entity
-  follows automatically once everything is decided.
-* **Readings.** ✎ (`E`) opens the full entry text next to a large line image;
-  the edit is stored as minimal, unique text replacements
-  (`text_corrections.csv`) and the pipeline re-reads that entry.
-* **Second reading.** `second_reading.py` sent the line image of every doubtful
-  species mention to Gemini ("what is written here, which bird?"). The page
-  shows the answer next to the mention; `G` accepts it (reading + species).
-  It is a suggestion only: the model can be wrong with high confidence.
-* **Stichprobe**: a stratified random sample of 403 species mentions with a live
-  accuracy estimate (95 % Wilson interval). **Hinweise**: QA flags.
-  **Änderungen**: every decision with time and reviewer, removable one by one.
-* **Undo** (`Z`), global search (`Ctrl+K`), dark mode, resizable scan panel.
-* **Saving.** Decisions live in the browser (localStorage). "Sichern &
-  Export" can connect a backup file (File System Access API, Chrome/Edge): every
-  decision is then written to that file at once. The ZIP export contains:
+The review unit is the **entity** (one authority record) with the written names
+and diary passages behind it. Decisions are stored on the written name and the
+diary passage, so they survive a re-extraction with the final ontology.
+
+| tab | what | question |
+|---|---|---|
+| **Prüfen** | entities that already have an authority link | Is the GBIF species / Wikidata–GND record / location / EUNIS class right? `Y` stimmt · `A` anders … · `N` keine / nicht bestimmbar · `U` unsicher. Below it the written names with a checkbox each: unticking a name asks "zu welchem Eintrag?" or "kein(e) …". |
+| **Verknüpfen** | entities without a link | Search GBIF (`A`, ⏎ searches GBIF), pick a Wikidata candidate (digits `1`–`9`), search OSM/Wikidata or click the map, pick an EUNIS class — or **"ist dasselbe wie …"** an existing entity (`⇧A`–`⇧E`): all names move there. Persons carry a suggestion from Claude Opus 5.5 (see below). |
+| **Namen** | entities with unsafe names or likely missing ones | Tick = belongs here. Candidates from similar names of other entities (`merge_candidates.py`), plus a search box for any name of the graph. "Namensgruppe stimmt so" (`Y`) confirms all. |
+| **Lesefehler** | mentions where the models read the line differently than the transcription | Line image on top, the page on the right, one table with transcription / Gemini / Opus readings and an agreement badge. `Y` transcription right · `1`/`2` accept a model reading (sets word + species) · `E` type the word · `A` other species · `N` not a bird · `U`. |
+
+Plus **Stichprobe** (stratified random sample of 403 species mentions, live
+accuracy with 95 % Wilson interval), **Hinweise** (QA flags) and **Protokoll**
+(progress per task, every decision, removable one by one). Undo (`Z`), global
+search (`Ctrl+K`), no automatic advancing unless "automatisch weiter" is ticked,
+stable list order, fixed-width tab counters.
+
+## Model readings
+
+* **Second reading** (`second_reading.py`): the line image of every doubtful
+  species mention goes to Gemini 3.5 Flash ("what is written, which bird?").
+* **Third reading** (`third_reading_sheets.py` → contact sheets of 10 line crops
+  → one Claude Opus 5.5 subagent per sheet → `model_answers_merge.py`): the
+  mentions where Gemini disagrees with the transcription are read a second time
+  by another model. The page shows both readings; "beide Modelle lesen dasselbe"
+  is usually right, but the reviewer decides at the image. The third readers
+  mark misaligned or illegible crops as not legible (rotated pages, wrong line).
+* **Person matching** (`person_batches.py` → batches of 15 persons with all
+  written names, mention years, roles, passages and the Wikidata candidates
+  enriched with dates/GND/occupation → Opus subagents → `model_answers_merge.py`):
+  a conservative decision per person (candidate / none / unclear) with a reason,
+  shown as a box above the candidates; `Y` confirms the model's candidate.
+
+Nothing from the models is applied automatically.
+
+## Export
+
+Decisions live in the browser (localStorage). "Sichern & Export" can connect a
+backup file (File System Access API, Chrome/Edge): every decision is then
+written to that file at once. The ZIP export contains:
 
 | file in the ZIP | goes to | read by |
 |---|---|---|
-| `review/identities.csv` | `data/review/` | `review.identities` (linking + resolution) |
+| `review/identities.csv` | `data/review/` | `review.identities` (linking + resolution): `same`/`own`/`none`/`unsure` per written name, `link`/`nolink` per entity with `gbif:`/`wd:`/`gnd:`/`gn:`/`osm:`/`eunis:` |
 | `review/value_corrections.csv` | `data/review/` | `corrections.csv` (after extraction) |
 | `review/text_corrections.csv` | `data/review/` | `review.text_corrections` (before extraction; those entries are re-read) |
 | `review/evaluation_taxa.csv` | — | evaluation (taxon identification accuracy) |
 | `review/qa_flags.csv` | — | not read by the pipeline yet |
+| `model_readings.csv` | — | both model readings with the decision state (information) |
 
-Backups of the earlier UI versions (pair review, v2) can be loaded; pair
-decisions become name decisions.
+Backups of the earlier UI versions (v1 pair review, v2, v3) can be loaded.
 
 ## Build
 
@@ -59,14 +71,26 @@ python tools/validation_ui/drive_ids.py tools/validation_ui/drive_pages.json    
 python tools/validation_ui/build_payload.py <export>/review --triples triples.pkl --corpus <corpus_dir> \
     --geometry pages_geometry.json --vernaculars vernaculars.json --built 2026-09-29 --out payload.b64   # ~1.5 min
 python tools/validation_ui/second_reading.py payload.b64 --pages "<HistOrniGraph_output>" --out second_reading.json   # Gemini, resumable
-python tools/validation_ui/build_payload.py … --second-reading second_reading.json --out payload.b64                  # again, with suggestions
+python tools/validation_ui/third_reading_sheets.py payload.b64 second_reading.json --pages "<HistOrniGraph_output>" --out third/sheets
+python tools/validation_ui/person_batches.py payload.b64 <export>/review --out persons/batches    # + Wikidata enrichment (cached)
+#   … one subagent per sheet / batch (instructions in the scratch folder), answers next to the inputs …
+python tools/validation_ui/model_answers_merge.py --sheets third/sheets --sheet-answers third/answers \
+    --batches persons/batches --batch-answers persons/answers --out-third third_reading.json --out-persons person_matches.json
+python tools/validation_ui/build_payload.py … --second-reading second_reading.json --third-reading third_reading.json \
+    --person-matches person_matches.json --out payload.b64                                   # again, with all readings
 python tools/validation_ui/assemble.py payload.b64 Laubmann_Abgleich.html
 ```
 
 `second_reading.py` reads the C-class mentions and rare (≤ 3) unlinked or
 variant names: 2,586 mentions for the 2026-08-19 export, about 3.9 M input and
-2.1 M output tokens with `gemini-3.5-flash` at thinking level low (minimal
-thinking was clearly worse). Answers are cached by mention key.
+2.1 M output tokens with `gemini-3.5-flash` at thinking level low. The third
+reading covers the 1,176 mentions where Gemini disagrees (118 sheets); person
+matching the 313 persons with Wikidata candidates and ≥ 2 mentions (21 batches).
+
+The app script is kept in five parts (`app_core.js` data/state/model,
+`app_ui.js` tabs/queue/scan, `app_views.js` task views, `app_actions.js`
+decisions/panels/searches/editor/keys, `app_io.js` export/import/help/start);
+`assemble.py` concatenates them inside one async IIFE.
 
 `drive_pages.json` maps page ids to the Drive file ids of
 `HistOrniGraph_output/Laubmann_XX_gemini/pages/<page id>.png` (6,742 of 6,750
@@ -75,7 +99,8 @@ to that folder. The built page contains the full entry texts; it is not
 committed.
 
 Live lookups (GBIF, Wikidata, lobid GND, Nominatim) and the Esri basemap need
-network access; everything else works offline.
+network access; everything else works offline. lobid.org refuses requests from
+a page opened as a file, so the GND search then goes through Wikidata (P227).
 
 ## Smoke test
 
@@ -84,5 +109,6 @@ HOG_UI=Laubmann_Abgleich.html HOG_BROWSER="C:/Program Files (x86)/Microsoft/Edge
 HOG_PAGES="G:/My Drive/HistOrniGraph_output" python tools/validation_ui/tests/smoke_abgleich.py
 ```
 
-Playwright (Python) drives the page, serves the scans from the local Drive
-folder, and feeds the exported CSVs through the pipeline's loaders.
+Playwright (Python) drives every task, serves the scans from the local Drive
+folder, takes a screenshot per task and feeds the exported CSVs through the
+pipeline's loaders.
