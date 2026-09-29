@@ -96,7 +96,7 @@ const QA_DE = {
 const QA_DEFAULT = Object.keys(QA_DE).filter(k => !['no_observations', 'empty', 'date_corrected'].includes(k));
 const TABS = [
   { id: 'check', label: 'Prüfen', kind: 'ent', typed: true }, { id: 'link', label: 'Verknüpfen', kind: 'ent', typed: true }, { id: 'names', label: 'Namen', kind: 'ent', typed: true },
-  { id: 'read', label: 'Lesefehler', kind: 'read' }, { id: 'eval', label: 'Stichprobe', kind: 'eval' }, { id: 'qa', label: 'Hinweise', kind: 'qa' }, { id: 'log', label: 'Protokoll', kind: 'log' },
+  { id: 'read', label: 'Zweitlesung', kind: 'read' }, { id: 'eval', label: 'Stichprobe', kind: 'eval' }, { id: 'qa', label: 'Hinweise', kind: 'qa' }, { id: 'log', label: 'Protokoll', kind: 'log' },
 ];
 const TAB = Object.fromEntries(TABS.map(t => [t.id, t]));
 const MODEL_DE = { g: 'Gemini 3.5 Flash', o: 'Claude Opus 5.5' };
@@ -178,9 +178,12 @@ function buildReadItems() {
   const all = new Set([...Object.keys(SUG), ...Object.keys(SUG3)].map(Number));
   for (const mi of all) { const rs = readingsOf(mi); const diff = rs.filter(r => r.differs); if (!diff.length) continue; const ag = agreement(rs);
     const mis = diff.every(r => r.kind === 'bird' && !r.same && wordElsewhere(r.word, mi));
-    READ.push({ mi, rs, ag, mis, key: X.taxon.mkey[mi], ei: P.taxon.men[mi][1], n: P.taxon.forms[P.taxon.men[mi][0]][1] }); }
+    // what is disputed: the word itself, only the species behind an agreed word, or whether it is a bird at all
+    const nb = diff.some(r => r.kind && r.kind !== 'bird'); const wd = diff.some(r => r.kind === 'bird' && !r.same && !sameWord(r.word, writtenOf(mi)) && !wordInText(r.word, mi));
+    READ.push({ mi, rs, ag, mis, kind: nb ? 'nonbird' : wd ? 'word' : 'species', key: X.taxon.mkey[mi], ei: P.taxon.men[mi][1], n: P.taxon.forms[P.taxon.men[mi][0]][1] }); }
   READ.sort((a, b) => a.mis - b.mis || b.ag - a.ag || b.n - a.n);
 }
+const READ_KIND = { word: ['Wort anders gelesen', 'warn'], species: ['Wort stimmt, Art anders', 'info'], nonbird: ['kein Vogel?', 'risk'] };
 // entity issues (names task) and person model suggestion
 function nameIssues(t, e) {
   let risky = 0; for (const nm of e.names) if (!safeName(t, nm)) risky++;

@@ -117,7 +117,7 @@ switched on) and fixed-width counters:
 | **Prüfen** | entities that already carry an authority record | is the record right (`Y`/`A`/`N`/`U`); below it every written name with a checkbox – unticking asks where the name belongs instead |
 | **Verknüpfen** | entities without a record | GBIF/Wikidata/GND/OSM/GeoNames/EUNIS search, map click, or "ist dasselbe wie …" an existing entity (all names move there) |
 | **Namen** | entities with unsafe names or likely missing ones | tick incoming candidates (`merge_candidates.py`: same German name, compound stem, surname + initials, containment, edit ratio; candidates ruled out by authority records – attested names of another linked species, persons with another Wikidata item, places > 25 km apart – are not offered), search any name of the graph, confirm the group |
-| **Lesefehler** | mentions where the model readings disagree with the transcription | transcription right (`Y`), accept a model reading (`1`/`2`: word + species), type the word (`E`), other species (`A`), not a bird (`N`) |
+| **Zweitlesung** | mentions where the model readings differ from transcription or graph: *Wort anders gelesen* (a reading question), *Wort stimmt, Art anders* (the models identify another species than the graph — a name-assignment question, decided for the whole name), *kein Vogel?* | transcription right (`Y`), accept a model reading (`1`/`2`: word + species), type the word (`E`), other species (`A`), not a bird (`N`) |
 
 **One decision, everywhere.** A relinked or rejected entity settles the read
 items of its names; an explicit decision on a written name (checkbox, "Name →

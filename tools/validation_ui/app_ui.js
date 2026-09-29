@@ -42,7 +42,7 @@ const TASK_TEXT = {
   check: ['Verknüpfungen prüfen', 'Ist der Normdatensatz richtig? Gehören alle Namen dazu?'],
   link: ['Verknüpfen', 'Welcher Normdatensatz gehört zu diesem Eintrag? Oder ist es dasselbe wie ein schon verknüpfter?'],
   names: ['Namen zusammenführen', 'Welche geschriebenen Namen gehören zu diesem Eintrag?'],
-  read: ['Lesefehler', 'Was steht wirklich im Scan? Modelle haben die Zeile noch einmal gelesen.'],
+  read: ['Zweitlesung', 'Zwei Modelle haben die Zeile im Scan gelesen und die Art bestimmt. Wo sie von Transkription oder Graph abweichen: Was stimmt?'],
   eval: ['Stichprobe', 'Zufällige Belege: Ist die Art richtig bestimmt?'], qa: ['Hinweise', 'Automatische Prüfungen bestätigen oder widerlegen.'], log: ['Protokoll', ''],
 };
 function openTab(tab, keepSel) {
@@ -57,7 +57,7 @@ function openTab(tab, keepSel) {
   const shows = [['open', 'Offen'], ['done', 'Erledigt'], ['u', 'Unsicher'], ['all', 'Alle']];
   $('#qshow').innerHTML = shows.map(([v, l]) => '<option value="' + v + '">' + l + '</option>').join('');
   $('#qshow').value = S.ui.show[tab] || 'open';
-  const sorts = T.typed ? [['n', 'Häufigste zuerst'], ['alpha', 'Alphabetisch']] : tab === 'read' ? [['ag', 'Sicherste Lesung zuerst'], ['n', 'Häufigste Namen zuerst']] : [['order', 'Reihenfolge']];
+  const sorts = T.typed ? [['n', 'Häufigste zuerst'], ['alpha', 'Alphabetisch']] : tab === 'read' ? [['ag', 'Sicherste Lesung zuerst'], ['kind', 'Nach Art der Abweichung'], ['n', 'Häufigste Namen zuerst']] : [['order', 'Reihenfolge']];
   $('#qsort').innerHTML = sorts.map(([v, l]) => '<option value="' + v + '">' + l + '</option>').join('');
   $('#qsort').value = S.ui.sort[tab] && sorts.some(s => s[0] === S.ui.sort[tab]) ? S.ui.sort[tab] : sorts[0][0];
   $('#qsearch').value = '';
@@ -85,11 +85,12 @@ function buildList() {
   const sort = $('#qsort').value;
   if (TAB[tab].typed) list = list.slice().sort(sort === 'alpha' ? (a, b) => a.label.localeCompare(b.label, 'de') : (a, b) => b.n - a.n);
   else if (tab === 'read' && sort === 'n') list = list.slice().sort((a, b) => b.n - a.n || b.ag - a.ag);
+  else if (tab === 'read' && sort === 'kind') { const o = { species: 0, word: 1, nonbird: 2 }; list = list.slice().sort((a, b) => o[a.kind] - o[b.kind] || a.mis - b.mis || b.ag - a.ag || b.n - a.n); }
   cur.list = list; cur.shown = 0; $('#qlist').innerHTML = ''; $('#qlist').scrollTop = 0; renderMore(); renderProgress();
 }
 function itemText(tab, t, it) {
   if (TAB[tab].typed) return it.label + ' ' + (t === 'taxon' ? it.e[1] : '') + ' ' + it.names.map(x => x.name).join(' ');
-  if (tab === 'read') { const m = P.taxon.men[it.mi]; return writtenOf(it.mi) + ' ' + P.taxon.ent[P.taxon.forms[m[0]][2]][0] + ' ' + E[m[1]][0] + ' ' + it.rs.map(r => r.word + ' ' + (r.species || '')).join(' '); }
+  if (tab === 'read') { const m = P.taxon.men[it.mi]; return writtenOf(it.mi) + ' ' + P.taxon.ent[P.taxon.forms[m[0]][2]][0] + ' ' + E[m[1]][0] + ' ' + READ_KIND[it.kind][0] + ' ' + it.rs.map(r => r.word + ' ' + (r.species || '')).join(' '); }
   if (tab === 'eval') { const m = P.taxon.men[it.mi]; const f = P.taxon.forms[m[0]]; return f[0] + ' ' + P.taxon.ent[f[2]][0] + ' ' + E[m[1]][0]; }
   if (tab === 'qa') return it.r.join(' ');
   return '';
@@ -114,7 +115,7 @@ function qiHtml(pos) {
     const m = P.taxon.men[it.mi]; const ce = P.taxon.ent[P.taxon.forms[m[0]][2]];
     l1 = '„' + esc(writtenOf(it.mi)) + '“ <span class="muted small">→ ' + esc(ce[0]) + '</span>';
     const best = it.rs.find(r => r.differs) || it.rs[0];
-    l2 = '<span class="bd ' + (it.ag === 3 ? 'ok' : it.ag === 1 ? 'warn' : 'tip') + '">' + (it.ag === 3 ? 'beide Modelle: „' + esc(best.word) + '“' : it.ag === 1 ? 'Modelle uneins' : MODEL_DE[best.src] + ': „' + esc(best.word) + '“') + '</span>' + (it.mis ? '<span class="bd warn" title="Das gelesene Wort steht an anderer Stelle des Eintrags: das Zeilenbild zeigt wohl eine andere Zeile">Zeilenbild verrutscht?</span>' : '') + esc(E[m[1]][3] || E[m[1]][2] || '') + ' · ' + esc(E[m[1]][0]);
+    l2 = '<span class="bd ' + READ_KIND[it.kind][1] + '">' + READ_KIND[it.kind][0] + '</span><span class="bd ' + (it.ag === 3 ? 'ok' : it.ag === 1 ? 'warn' : 'tip') + '">' + (it.ag === 3 ? 'beide Modelle: „' + esc(it.kind === 'species' ? best.species || best.word : best.word) + '“' : it.ag === 1 ? 'Modelle uneins' : MODEL_DE[best.src] + ': „' + esc(it.kind === 'species' ? best.species || best.word : best.word) + '“') + '</span>' + (it.mis ? '<span class="bd warn" title="Das gelesene Wort steht an anderer Stelle des Eintrags: das Zeilenbild zeigt wohl eine andere Zeile">Zeilenbild verrutscht?</span>' : '') + esc(E[m[1]][3] || E[m[1]][2] || '') + ' · ' + esc(E[m[1]][0]);
     num = sameWord(writtenOf(it.mi), P.taxon.forms[m[0]][0]) ? '<span title="so oft steht dieser Name im Tagebuch">' + fmt(it.n) + '×</span>' : '<span class="muted" title="im Graph unter dem Namen „' + esc(P.taxon.forms[m[0]][0]) + '“">≠ Name</span>';
   } else if (tab === 'eval') { const m = P.taxon.men[it.mi]; const f = P.taxon.forms[m[0]]; l1 = (it.k + 1) + '. ' + esc(f[0]); l2 = esc(E[m[1]][0]) + ' · ' + esc(P.taxon.ent[f[2]][0]); }
   else { const showVal = ['non_bird', 'low_confidence_taxon', 'nonplace'].includes(it.r[2]); l1 = esc((QA_DE[it.r[2]] || [it.r[2]])[0]) + (showVal && it.r[4] ? ': ' + esc(it.r[4]) : ''); l2 = esc(it.r[0]) + ' · ' + (it.r[3] === 'excluded' ? 'entfernt' : 'markiert') + (!showVal && it.r[5] ? ' · ' + esc(it.r[5].slice(0, 70)) : ''); }
