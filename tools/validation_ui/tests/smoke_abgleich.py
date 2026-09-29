@@ -140,6 +140,10 @@ async def main():
         await shot("read")
         key = await H("window.__hog.cur.sel && window.__hog.cur.sel.key")
         assert key
+        # line boxes with word position: the big line image carries the word marker
+        loc = await H("() => { const h = window.__hog; return h.P.taxon.men[h.cur.sel.mi][4]; }")
+        if isinstance(loc, list) and len(loc) == 8:
+            assert await H("() => { const s = document.querySelector('#work .snip.big'); return s && s.dataset.fx.includes(','); }"), "word marker expected"
         n_text = await H("window.__hog.S.text.length")
         await pg.keyboard.press("1")
         d = await H(f"window.__hog.S.men.taxon[{json.dumps(key)}]")
@@ -158,6 +162,45 @@ async def main():
         assert await H("window.__hog.S.text.length") == n_text + 1
         await pg.keyboard.press("y")   # Y after a correction: transcription right again -> hunk removed
         await pg.wait_for_timeout(200)
+        # name-level decisions from the read view settle every read item of that written name
+        # (offered only where the text really shows the graph's name form, not a mention-specific misreading)
+        ok = await H("""() => { const h = window.__hog; const it = h.READ.find(x => { const nm = h.X.taxon.names[h.P.taxon.men[x.mi][0]]; return nm.n >= 2 && h.sameWord(h.writtenOf(x.mi), nm.name) && !h.readState(x); });
+            if (!it) return false; h.openTab('read', it.key); return h.cur.sel === it; }""")
+        assert ok, "no read item with a matching name form"
+        await pg.wait_for_timeout(300)
+        fkey = await H("() => { const h = window.__hog; const it = h.cur.sel; return h.X.taxon.names[h.P.taxon.men[it.mi][0]].key; }")
+        if await pg.query_selector("[data-nameto]"):
+            await pg.click("[data-nameto]")
+            d = await H(f"window.__hog.S.id.taxon[{json.dumps(fkey)}]")
+            assert d and d["d"] == "r" and d["target"]["key"], d
+            # the item is settled by the name decision (its own mention decision from above may still say 'y')
+            assert await H("() => { const h = window.__hog; return h.itemState('read', 'taxon', h.cur.sel); }") in ("r", "y")
+            other = await H("() => { const h = window.__hog; const f = h.P.taxon.men[h.cur.sel.mi][0]; const o = h.READ.find(x => x !== h.cur.sel && h.P.taxon.men[x.mi][0] === f && !h.S.men.taxon[x.key]); return o ? h.itemState('read', 'taxon', o) : 'r'; }")
+            assert other == "r", other
+            await pg.click("[data-nclear]")
+            assert not await H(f"window.__hog.S.id.taxon[{json.dumps(fkey)}]")
+        n_text = await H("window.__hog.S.text.length")
+        await pg.click("#work [data-nread]")
+        await pg.wait_for_timeout(200)
+        await pg.fill("#nwordfix", "Prüfwort")
+        await pg.keyboard.press("Enter")
+        await pg.wait_for_timeout(300)
+        assert await H("window.__hog.S.text.length") > n_text
+        assert await pg.query_selector('.rpanel[data-scope^="n:"]'), "unknown word: the reassignment panel must open"
+        await pg.keyboard.press("Escape")
+        await pg.keyboard.press("z")
+        assert await H("window.__hog.S.text.length") == n_text
+        # light theme by default; the Namen task hides the scan until B
+        assert await H("document.documentElement.dataset.theme") == "light"
+        await pg.click('.tab[data-tab="names"]')
+        await pg.wait_for_timeout(300)
+        assert await H("document.querySelector('#main').classList.contains('noscan')")
+        await pg.keyboard.press("b")
+        assert not await H("document.querySelector('#main').classList.contains('noscan')")
+        await pg.keyboard.press("b")
+        await pg.click('.tab[data-tab="read"]')
+        await pg.wait_for_timeout(300)
+        assert not await H("document.querySelector('#main').classList.contains('noscan')")
 
         # --- scan: second page of a multi-page entry
         await H("() => { const h = window.__hog; h.showScan(h.P.E.findIndex(e => e[8].length > 2)); }")

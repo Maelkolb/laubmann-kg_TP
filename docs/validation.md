@@ -119,6 +119,15 @@ switched on) and fixed-width counters:
 | **Namen** | entities with unsafe names or likely missing ones | tick incoming candidates (`merge_candidates.py`: same German name, compound stem, surname + initials, containment, edit ratio; candidates ruled out by authority records – attested names of another linked species, persons with another Wikidata item, places > 25 km apart – are not offered), search any name of the graph, confirm the group |
 | **Lesefehler** | mentions where the model readings disagree with the transcription | transcription right (`Y`), accept a model reading (`1`/`2`: word + species), type the word (`E`), other species (`A`), not a bird (`N`) |
 
+**One decision, everywhere.** A relinked or rejected entity settles the read
+items of its names; an explicit decision on a written name (checkbox, "Name →
+Art", "überall lesen als …" = a text correction for every mention) settles every
+read item of that name; a mention decided in *Lesefehler* is shown on its card
+in the other tasks; names reassigned to an entity appear in its name group in
+every task; an entity decided with its candidates on screen counts as reviewed
+for *Namen*. The name group (own names, names moved here, candidates, search)
+is the same block in *Prüfen*, *Verknüpfen* and *Namen*.
+
 **Model readings.** Gemini 3.5 Flash read the line image of every doubtful
 species mention (2,587); the 1,176 mentions where it disagrees with the
 transcription were read again from contact sheets by Claude Opus 5.5
@@ -202,10 +211,16 @@ unreviewed forms.
 * Contextual geocoding (query micro-toponyms with the entry's settlement:
   "Süddamm, Ismaning") and a parent-place relation for localities would link
   most of the frequent unlinked places automatically.
-* Line boxes come from the region box divided by the line count, which goes
-  wrong on two-column species lists: the model readings then describe another
-  line. The UI flags those ("Zeilenbild verrutscht?", the word the model read
-  stands elsewhere in the entry); PAGE-XML line coordinates would fix it.
+* Line boxes: the PAGE-XML has no line coordinates, so `line_profiles.py`
+  finds the physical lines by an ink profile of the scan (with the ink mass
+  of each line) and the transcription lines are aligned to them by a monotone
+  match of line length against ink mass, so extra bands (sketch labels, rules)
+  and extra transcription lines no longer shift the whole region; unmatched
+  lines are flagged "ungefähre Zeile" (the counts agree within ±1 for 57 % of
+  the regions, within 25 % for another 15 %). Two-column species lists
+  still go wrong: the model readings then describe another line, which the UI
+  flags ("Zeilenbild verrutscht?", the word the model read stands elsewhere in
+  the entry). Real line segmentation (PAGE-XML `TextLine`) would fix both.
 * The register volume (Vol. 35) could serve as Laubmann's own nomenclature, but
   its transcription is too garbled for that today (headwords like
   "Reichsrückungsrecht").

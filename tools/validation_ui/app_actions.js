@@ -193,23 +193,37 @@ function simpleDecide(a) {
 }
 
 // ---------------------------------------------------------------- readings task
-function setWord(mi, word, note) {   // replace the written word of a mention in the entry text (a text correction hunk)
-  const m = P.taxon.men[mi]; const ei = m[1]; const text = E[ei][7]; if (m[2] < 0) return false;
+function setWord(t, mi, word, note) {   // replace the written word of a mention in the entry text (a text correction hunk)
+  const m = P[t].men[mi]; const ei = m[1]; const text = E[ei][7]; if (m[2] < 0) return false;
   const old = text.slice(m[2], m[3]); let rd = String(word).trim(); if (!/[.,;:]$/.test(old)) rd = rd.replace(/[.,;:]+$/, '');
-  if (!rd || letters(rd) === letters(old) || wordInText(rd, mi)) return false;
+  if (!rd || letters(rd) === letters(old) || (t === 'taxon' && wordInText(rd, mi))) return false;
   const hs = readingFor(ei).map(h => ({ old: h.old, new: h.new, note: h.note, men: h.men }));
   const edited = applyReadings(text, hs);
   let pos = m[2];
   if (hs.length) { const shift = applyReadings(text.slice(0, m[2]), hs.filter(h => text.indexOf(h.old) + h.old.length <= m[2])).length - m[2]; pos = m[2] + shift; if (edited.slice(pos, pos + old.length) !== old) pos = edited.indexOf(old); }
   if (pos < 0) return false;
   const next = edited.slice(0, pos) + rd + edited.slice(pos + old.length);
-  const nh = diffHunks(text, next).map(h => { const prev = hs.find(x => x.old === h.old); return Object.assign(h, { note: (prev || {}).note || note, men: prev ? prev.men : X.taxon.mkey[mi] }); });
+  const nh = diffHunks(text, next).map(h => { const prev = hs.find(x => x.old === h.old); return Object.assign(h, { note: (prev || {}).note || note, men: prev ? prev.men : X[t].mkey[mi] }); });
   setReadings(ei, nh, note, 'reading'); return true;
+}
+// the written name is a transcription error everywhere: re-read every located mention, then follow the corrected word
+function saveNameWord(t, fi) {
+  const nm = X[t].names[fi]; const w = $('#nwordfix'); if (!w) return; const word = w.value.trim(); if (!word) return toast('Bitte das Wort eintragen, wie es im Scan steht');
+  if (letters(word) === letters(nm.name)) return toast('Das ist dieselbe Schreibung');
+  const known = t === 'taxon' ? (X.taxon.byKey.get(lc(word)) || []).map(n => ENT('taxon', n.ent)).find(e => e.e[2]) : (X[t].byKey.get(lc(word)) || []).map(n => ENT(t, n.ent))[0];
+  let n = 0;
+  commit('Name überall gelesen als „' + word + '“', () => {
+    for (const mi of nm.men) if (setWord(t, mi, word, 'Name „' + nm.name + '“ überall gelesen als „' + word + '“')) n++;
+    if (known) setName(t, nm, known.i === nm.ent ? { d: 'y', note: 'Lesung korrigiert: ' + word } : { d: 'r', target: targetOf(t, known), note: 'Lesung korrigiert: ' + word });
+  });
+  ui.nword = null;
+  toast(n + ' Belege werden als „' + word + '“ gelesen' + (known ? ' → ' + known.label : ' — Eintrag noch zuordnen'));
+  if (!known) openPanel('n:' + fi, 'r', word, 'Wozu gehört „' + word + '“?'); else afterDecision();
 }
 function applyReading(mi, r) {
   const m = P.taxon.men[mi]; const curEnt = P.taxon.forms[m[0]][2]; const note = MODEL_DE[r.src] + ' gelesen, am Scan geprüft';
   commit('Lesung übernommen', () => {
-    if (!r.same && r.word) setWord(mi, r.word, note);
+    if (!r.same && r.word) setWord('taxon', mi, r.word, note);
     if (r.kind === 'bird') {
       if (r.target >= 0) { const te = P.taxon.ent[r.target]; setMen('taxon', mi, r.target === curEnt ? { d: 'y', note } : { d: 'r', target: { label: te[0], sci: te[1], key: te[2], rank: te[3] }, note }); }
       else if (r.sci || r.species) setMen('taxon', mi, { d: 'r', target: { label: r.species || r.word, sci: r.sci || '' }, note: note + ' (Art nicht im Graph)' });
@@ -231,7 +245,7 @@ function saveWord() {
   const it = cur.sel; const mi = it.mi; const w = $('#wordfix'); if (!w) return; const word = w.value.trim(); if (!word) return toast('Bitte das Wort eintragen, wie es im Scan steht');
   const m = P.taxon.men[mi]; const curEnt = P.taxon.forms[m[0]][2];
   const known = (X.taxon.byKey.get(lc(word)) || []).map(nm => ENT('taxon', nm.ent)).find(e => e.e[2]);
-  commit('Lesung: ' + word, () => { setWord(mi, word, 'von Hand gelesen'); if (known) setMen('taxon', mi, known.i === curEnt ? { d: 'y', note: 'Lesung korrigiert' } : { d: 'r', target: targetOf('taxon', known), note: 'Lesung korrigiert' }); });
+  commit('Lesung: ' + word, () => { setWord('taxon', mi, word, 'von Hand gelesen'); if (known) setMen('taxon', mi, known.i === curEnt ? { d: 'y', note: 'Lesung korrigiert' } : { d: 'r', target: targetOf('taxon', known), note: 'Lesung korrigiert' }); });
   ui.word = null;
   if (known) { toast('„' + word + '“ ist im Graph ' + known.label); afterDecision(); } else openPanel('m:' + mi, 'r', word, 'Welche Art ist „' + word + '“?');
 }
@@ -407,6 +421,7 @@ function wireWork() {
   const bulk = $('#bulk'); if (bulk) bulk.onclick = () => bulkNames(cur.type, e);
   const wf = $('#wordfix'); if (wf) wf.onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); saveWord(); } if (ev.key === 'Escape') { ui.word = null; renderWork(false); } };
   const ws = $('#wordsave'); if (ws) ws.onclick = saveWord;
+  const nwf = $('#nwordfix'); if (nwf) { const t2 = nwf.dataset.t, fi = +nwf.dataset.fi; nwf.onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); saveNameWord(t2, fi); } if (ev.key === 'Escape') { ui.nword = null; renderWork(false); } }; $('#nwordsave').onclick = () => saveNameWord(t2, fi); }
   if ($('#wq')) {
     $$('.cand[data-qid]', W).forEach(c => c.onclick = ev => { if (ev.target.closest('a')) return; pickPerson(e, c.dataset.qid); });
     $('#wbtn').onclick = () => wikidataSearch(e, $('#wq').value); $('#wq').onkeydown = ev => { if (ev.key === 'Enter') wikidataSearch(e, $('#wq').value); };
@@ -447,7 +462,10 @@ $('#work').addEventListener('click', ev => {
   const sll = t0.closest('[data-setll]'); if (sll) { const [la, lo, g, q] = sll.dataset.setll.split(','); return setPlaceFix(cur.sel, +la, +lo, { note: 'Gazetteer-Vorschlag', uncertainty_m: 2000, geonames_id: g || '', qid: q || '' }); }
   const rd = t0.closest('[data-read]'); if (rd) return openTab('read', X.taxon.mkey[+rd.dataset.read]);
   const tg = t0.closest('[data-toggle]'); if (tg) { const fi = +tg.dataset.toggle; ui.open.has(fi) ? ui.open.delete(fi) : ui.open.add(fi); return renderWork(false); }
-  const nr = t0.closest('[data-nreassign]'); if (nr) return openPanel('n:' + nr.dataset.nreassign, 'r', '', 'Zu welchem Eintrag gehört „' + X[t].names[+nr.dataset.nreassign].name + '“?');
+  const nt = t0.closest('[data-nameto]'); if (nt) { const nm = X.taxon.names[+nt.dataset.fi]; const y = ENT('taxon', +nt.dataset.nameto); commit('Name „' + nm.name + '“ → ' + y.label, () => setName('taxon', nm, { d: 'r', target: targetOf('taxon', y), note: 'Lesung der Modelle' })); return afterDecision(); }
+  const nc = t0.closest('[data-nclear]'); if (nc) { const nm = X.taxon.names[+nc.dataset.nclear]; return commit('zurückgesetzt', () => setName('taxon', nm, null)); }
+  const nw = t0.closest('[data-nread]'); if (nw) { ui.nword = +nw.dataset.nread; ui.panel = null; renderWork(false); const w = $('#nwordfix'); if (w) { w.focus(); w.select(); } return; }
+  const nr = t0.closest('[data-nreassign]'); if (nr) { const tt = nr.dataset.t || t; return openPanel('n:' + nr.dataset.nreassign, 'r', '', 'Zu welchem Eintrag gehört „' + X[tt].names[+nr.dataset.nreassign].name + '“?'); }
   const nn = t0.closest('[data-nnot]'); if (nn) return openPanel('n:' + nn.dataset.nnot, 'not');
   const am = t0.closest('[data-allmen]'); if (am) { ui.all.add(+am.dataset.allmen); return renderWork(false); }
   const fu = t0.closest('[data-full]'); if (fu) { const card = fu.closest('.men'); const k = (card ? card.dataset.t : 'taxon') + fu.dataset.full; ui.full.has(k) ? ui.full.delete(k) : ui.full.add(k); return renderWork(false); }
@@ -461,7 +479,7 @@ $('#work').addEventListener('click', ev => {
 document.addEventListener('keydown', ev => {
   if (panelKeys(ev)) return;
   const tag = (ev.target.tagName || '').toLowerCase();
-  if (ev.key === 'Escape') { if ($('#ovModal').classList.contains('show')) return closeModal(); if (ui.panel) { ui.panel = null; renderWork(false); if (cur.tab === 'eval') afterDecision(); return; } if (ui.word != null) { ui.word = null; renderWork(false); return; } if (tag === 'input' || tag === 'textarea') ev.target.blur(); return; }
+  if (ev.key === 'Escape') { if ($('#ovModal').classList.contains('show')) return closeModal(); if (ui.panel) { ui.panel = null; renderWork(false); if (cur.tab === 'eval') afterDecision(); return; } if (ui.word != null || ui.nword != null) { ui.word = null; ui.nword = null; renderWork(false); return; } if (tag === 'input' || tag === 'textarea') ev.target.blur(); return; }
   if ((ev.ctrlKey || ev.metaKey) && lc(ev.key) === 'k') { ev.preventDefault(); return openSearch(); }
   if ((ev.ctrlKey || ev.metaKey) && lc(ev.key) === 'z' && tag !== 'input' && tag !== 'textarea') { ev.preventDefault(); return undo(); }
   if (tag === 'input' || tag === 'textarea' || tag === 'select' || ev.ctrlKey || ev.metaKey || ev.altKey) return;
@@ -474,7 +492,7 @@ document.addEventListener('keydown', ev => {
   if (ev.shiftKey && /^[A-E]$/.test(k) && typed) { const c = $$('#work .cand[data-merge]')[k.charCodeAt(0) - 65]; if (c) { ev.preventDefault(); c.click(); } return; }
   if (['y', 'a', 'n', 'u', 'e', 'z', 'b'].includes(kl)) ev.preventDefault();
   if (kl === 'z') return undo();
-  if (kl === 'b') { S.ui.noscan = !$('#main').classList.contains('noscan'); $('#main').classList.toggle('noscan', S.ui.noscan); save(); return; }
+  if (kl === 'b') { const hide = !$('#main').classList.contains('noscan'); if (cur.tab === 'names') S.ui.scanNames = !hide; else S.ui.noscan = hide; $('#main').classList.toggle('noscan', hide); save(); return; }
   if (k === '/') { ev.preventDefault(); return $('#qsearch').focus(); }
   if (k === '?') return showHelp();
   if (!cur.sel) return;

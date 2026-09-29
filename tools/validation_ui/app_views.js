@@ -100,11 +100,13 @@ function nameRow(t, e, nm, incoming) {
   const cand = incoming ? (CAND[t].ec[e.i] || []).find(c => c[0] === nm.fi) : null;
   const readMen = t === 'taxon' ? nm.men.filter(mi => readingsOf(mi).some(r => r.differs)) : []; const readings = readMen.length;
   const open = ui.open.has(nm.fi);
-  const stTxt = d && d.d ? '<span class="bd ' + (d.d === 'y' ? 'ok' : d.d === 'u' ? 'warn' : d.d === 'n' ? 'risk' : 'info') + '">' + decLine(t, d).replace(/<[^>]+>/g, '') + '</span>' : st === 'y' ? '<span class="bd ok">✓ bestätigt</span>' : st === 'f' ? '<span class="bd info">folgt dem Eintrag</span>' : '';
+  const stTxt = d && d.d ? '<span class="bd ' + (d.d === 'y' ? 'ok' : d.d === 'u' ? 'warn' : d.d === 'n' ? 'risk' : 'info') + '">' + decLine(t, d).replace(/<[^>]+>/g, '') + '</span>' : st === 'y' ? '<span class="bd ok">✓ bestätigt</span>' : st === 'f' ? '<span class="bd info">folgt dem Eintrag</span>' : st === 'm' ? '<span class="bd info" title="Jeder Beleg dieses Namens wurde einzeln entschieden oder neu gelesen">alle Belege einzeln entschieden</span>' : '';
   const gone = d && nameGone(d.d) && !d.target;
-  return '<div class="nm' + (checked ? '' : ' off') + '" data-fi="' + nm.fi + '" data-inc="' + (incoming ? 1 : 0) + '"><div class="nh"><input type="checkbox" class="cb" ' + (checked ? 'checked' : '') + ' title="' + (incoming ? 'gehört auch hierher' : 'gehört zu diesem Eintrag') + '"><div><span class="nn">' + esc(nm.name) + '</span><span class="ct">' + fmt(nm.n) + '×</span> <span class="bd ' + cls[1] + '" title="' + esc(cls[2]) + '">' + esc(cls[0]) + '</span>' + (isLabel(t, nm) && !incoming ? '<span class="bd plain">Hauptname</span>' : '') + (readings ? '<span class="bd tip" data-read="' + readMen[0] + '" style="cursor:pointer" title="Modelle lesen bei diesen Belegen etwas anderes — Klick öffnet die Aufgabe Lesefehler">' + readings + ' Lesefehler? ↗</span>' : '') + '<span class="why">' + why + (incoming ? 'derzeit bei „' + esc(home.label) + '“ (' + authText(t, home).replace(/<[^>]+>/g, '') + ') · ' + esc(cand ? cand[2] : '') : '') + '</span> ' + stTxt + '</div>'
-    + '<span class="tools"><button class="lbtn" data-toggle="' + nm.fi + '">' + (open ? 'Belege ▴' : 'Belege ▾') + '</button></span></div>'
+  const located = nm.men.some(mi => P[t].men[mi][2] >= 0);
+  return '<div class="nm' + (checked ? '' : ' off') + '" data-fi="' + nm.fi + '" data-inc="' + (incoming ? 1 : 0) + '"><div class="nh"><input type="checkbox" class="cb" ' + (checked ? 'checked' : '') + ' title="' + (incoming ? 'gehört auch hierher' : 'gehört zu diesem Eintrag') + '"><div><span class="nn">' + esc(nm.name) + '</span><span class="ct">' + fmt(nm.n) + '×</span> <span class="bd ' + cls[1] + '" title="' + esc(cls[2]) + '">' + esc(cls[0]) + '</span>' + (isLabel(t, nm) && !incoming ? '<span class="bd plain">Hauptname</span>' : '') + (readings ? '<span class="bd tip" data-read="' + readMen[0] + '" style="cursor:pointer" title="Modelle lesen bei diesen Belegen etwas anderes — Klick öffnet die Aufgabe Lesefehler">' + readings + ' Lesefehler? ↗</span>' : '') + '<span class="why">' + why + (incoming ? (cand ? 'derzeit bei „' + esc(home.label) + '“ (' + authText(t, home).replace(/<[^>]+>/g, '') + ') · ' + esc(cand[2]) : 'aus „' + esc(home.label) + '“ hierher zugeordnet') : '') + '</span> ' + stTxt + '</div>'
+    + '<span class="tools">' + (!incoming && located ? '<button class="lbtn" data-nread="' + nm.fi + '" title="Der Name ist überall falsch transkribiert: alle Belege neu lesen als …">✎</button>' : '') + '<button class="lbtn" data-toggle="' + nm.fi + '">' + (open ? 'Belege ▴' : 'Belege ▾') + '</button></span></div>'
     + (gone ? '<div class="sub2"><span class="muted">gehört nicht hierher —</span><button class="lbtn" data-nreassign="' + nm.fi + '">↪ zu welchem Eintrag?</button><button class="lbtn" data-nnot="' + nm.fi + '">✗ kein(e) ' + esc(TT[t].one) + ' …</button></div>' : '')
+    + (ui.nword === nm.fi ? '<div style="padding:0 10px 8px">' + nwordRow(t, nm) + '</div>' : '')
     + (ui.panel && ui.panel.scope === 'n:' + nm.fi ? '<div style="padding:0 10px 8px">' + panelHtml(t, ui.panel) + '</div>' : '')
     + (open ? '<div class="body">' + mentionsOf(t, nm).map(mi => menHtml(t, mi)).join('') + (nm.men.length > 6 && !ui.all.has(nm.fi) ? '<div class="row" style="margin-top:8px"><button class="lbtn" data-allmen="' + nm.fi + '">alle ' + fmt(nm.men.length) + ' Belege zeigen</button></div>' : '') + '</div>' : '') + '</div>';
 }
@@ -114,13 +116,20 @@ function mentionsOf(t, nm) {
   for (const x of all) if (!shown.some(y => y[0] === x[0]) && (S.men[t][X[t].mkey[x[0]]] || (t === 'taxon' && readingsOf(x[0]).some(r => r.differs)))) shown.push(x);
   return shown.map(x => x[0]);
 }
-function namesBlock(t, e, withIncoming) {
-  const inc = withIncoming ? (CAND[t].ec[e.i] || []).map(([fi]) => X[t].names[fi]).filter(nm => nm.ent !== e.i) : [];
+function nwordRow(t, nm) {
+  const n = nm.men.filter(mi => P[t].men[mi][2] >= 0).length;
+  return '<div class="wordfix"><span class="small muted">„' + esc(nm.name) + '“ überall lesen als</span><input type="text" id="nwordfix" data-t="' + t + '" data-fi="' + nm.fi + '" value="' + esc(nm.name) + '" placeholder="so steht es im Scan"><button class="btn sm y" id="nwordsave">für ' + fmt(n) + ' Belege speichern <kbd>⏎</kbd></button><span class="small muted">jeder Beleg erhält eine Lesungskorrektur; die Einträge werden neu ausgewertet</span></div>';
+}
+// the names of an entity: its own, the ones reassigned here from elsewhere, and candidates from similar names (same block in every task)
+function namesBlock(t, e) {
+  const cands = (CAND[t].ec[e.i] || []).map(([fi]) => X[t].names[fi]).filter(nm => nm.ent !== e.i);
+  const here = X[t].names.filter(nm => nm.ent !== e.i && !cands.includes(nm) && (nameDec(t, nm) || {}).d === 'r' && ((nameDec(t, nm) || {}).target || {}).label === e.label);
+  const inc = here.concat(cands);
   const open = e.names.filter(nm => !nameState(t, nm)).length;
   let h = '<div class="q">' + (e.names.length > 1 ? 'Gehören diese ' + e.names.length + ' Namen zu diesem Eintrag?' : 'Der Name im Tagebuch') + '<small>Haken weg = gehört nicht hierher</small>' + (open > 1 ? ' <button class="lbtn" id="bulk" style="margin-left:8px">alle ' + open + ' offenen bestätigen</button>' : '') + '</div>';
   for (const nm of e.names) h += nameRow(t, e, nm, false);
-  if (inc.length) { h += '<div class="q">Gehören diese Namen auch hierher?<small>Vorschläge aus ähnlichen Namen anderer Einträge — Haken setzen = zusammenführen</small></div>'; for (const nm of inc) h += nameRow(t, e, nm, true); }
-  if (withIncoming) h += '<div class="panel rpanel" data-scope="add" data-kind="' + t + '"><h5>Weiteren Namen hinzufügen</h5><div class="row"><input type="text" class="grow rq" placeholder="geschriebenen Namen suchen …" autocomplete="off"></div><div class="res rres"></div></div>';
+  if (inc.length) { h += '<div class="q">Gehören diese Namen auch hierher?<small>' + (cands.length ? 'Vorschläge aus ähnlichen Namen anderer Einträge — Haken setzen = zusammenführen' : 'aus anderen Einträgen hierher zugeordnet') + '</small></div>'; for (const nm of inc) h += nameRow(t, e, nm, true); }
+  h += '<div class="panel rpanel" data-scope="add" data-kind="' + t + '"><h5>Weiteren Namen hinzufügen</h5><div class="row"><input type="text" class="grow rq" placeholder="geschriebenen Namen aus dem ganzen Graphen suchen …" autocomplete="off"></div><div class="res rres"></div></div>';
   return h;
 }
 
@@ -148,12 +157,12 @@ function entStateText(t, e, cd) {
 function entityView(t, e, tab) {
   const x = e.e;
   const head = '<span class="bd ' + (linked(t, e) ? 'ok' : 'warn') + '">' + esc(TT[t].one) + ' · ' + (linked(t, e) ? 'verknüpft' : 'ohne Normdaten') + '</span><h1 class="t">' + esc(e.label) + (t === 'taxon' && x[1] ? ' <i>' + esc(x[1]) + '</i>' : '') + '</h1><div class="sub">' + fmt(e.n) + ' ' + TT[t].unit + ' · ' + e.names.length + (e.names.length === 1 ? ' Name' : ' Namen') + (t === 'place' && x[6] ? ' · ' + esc(x[6]) : '') + '</div>';
-  return crumb() + '<div class="card"><div class="cb">' + head + authBlock(t, e, tab) + entActs(t, e, tab) + (tab === 'link' ? mergeBlock(t, e) : '') + '</div><div class="cb">' + namesBlock(t, e, false) + '</div></div>';
+  return crumb() + '<div class="card"><div class="cb">' + head + authBlock(t, e, tab) + entActs(t, e, tab) + (tab === 'link' ? mergeBlock(t, e) : '') + '</div><div class="cb">' + namesBlock(t, e) + '</div></div>';
 }
 function namesView(t, e) {
   const head = '<span class="bd ' + (linked(t, e) ? 'ok' : 'warn') + '">' + esc(TT[t].one) + ' · ' + authText(t, e) + '</span><h1 class="t">' + esc(e.label) + (t === 'taxon' && e.e[1] ? ' <i>' + esc(e.e[1]) + '</i>' : '') + '</h1><div class="sub">' + fmt(e.n) + ' ' + TT[t].unit + (t === 'taxon' && e.e[9].length ? ' · deutsche Namen laut GBIF/Wikidata: ' + e.e[9].slice(0, 10).map(esc).join(', ') : '') + '</div>';
   const gd = grpDec(t, e);
-  return crumb() + '<div class="card"><div class="cb">' + head + '<div class="acts" style="margin-top:10px"><button class="btn y' + (gd ? ' on' : '') + '" data-grp="y">Namensgruppe stimmt so <kbd>Y</kbd></button>' + (gd ? '<button class="lbtn" data-grp="">zurücksetzen</button>' : '') + '</div>' + stateLine(gd, '✓ Namensgruppe bestätigt') + '</div><div class="cb">' + namesBlock(t, e, true) + '</div></div>';
+  return crumb() + '<div class="card"><div class="cb">' + head + '<div class="acts" style="margin-top:10px"><button class="btn y' + (gd ? ' on' : '') + '" data-grp="y">Namensgruppe stimmt so <kbd>Y</kbd></button>' + (gd ? '<button class="lbtn" data-grp="">zurücksetzen</button>' : '') + '</div>' + stateLine(gd, '✓ Namensgruppe bestätigt') + '</div><div class="cb">' + namesBlock(t, e) + '</div></div>';
 }
 
 // ---------------------------------------------------------------- read view (misreadings)
@@ -167,10 +176,26 @@ function readView(it) {
   return crumb() + '<div class="card"><div class="cb"><span class="bd plain">Beleg</span> ' + ag + '<h1 class="t">„' + esc(written) + '“ <span class="muted">→</span> ' + esc(ce[0]) + (ce[1] ? ' <i>' + esc(ce[1]) + '</i>' : '') + '</h1><div class="sub">' + entryHead(m[1]) + '</div>'
     + misHint + '<div style="margin-top:10px">' + snipHtml(m[4], 1.4, 'big') + '</div><div class="kw" style="padding:8px 0;font:14px/1.55 Georgia,serif">' + kwic(e[7], m[2], m[3], ui.full.has('taxon' + mi)) + '<button class="more" data-full="' + mi + '" style="border:0;background:none;color:var(--navy2);cursor:pointer;font:12px system-ui">' + (ui.full.has('taxon' + mi) ? 'weniger' : 'ganzer Eintrag') + '</button></div>'
     + '<table class="readings"><tr><th>Lesung</th><th>Wort</th><th>bezeichnet</th><th>sicher</th><th>Anmerkung</th><th></th></tr><tr><td>Transkription</td><td class="rd">„' + esc(written) + '“</td><td>' + esc(ce[0]) + (ce[1] ? ' <i>' + esc(ce[1]) + '</i>' : '') + '</td><td></td><td class="small muted">so steht es im Graph</td><td>' + b('y', 'stimmt', 'Y') + '</td></tr>' + rows + '</table>'
+    + nameLevelBox(it, m)
     + '<div class="q">Was steht im Scan?<small>Zeilenbild oben, ganze Seite rechts</small></div><div class="acts">' + b('e', 'Selbst korrigieren …', 'E') + b('r', 'Wort stimmt, andere Art …', 'A') + b('n', 'Kein Vogel …', 'N') + b('u', 'Unsicher', 'U') + (d.d || rd ? '<button class="lbtn" data-ra="">zurücksetzen</button>' : '') + '</div>'
     + (ui.word != null ? '<div class="wordfix"><span class="small muted">gelesen</span><span class="rd">„' + esc(written) + '“</span><span>→</span><input type="text" id="wordfix" value="' + esc(ui.word) + '" placeholder="so steht es im Scan"><button class="btn sm y" id="wordsave">Lesung speichern <kbd>⏎</kbd></button><span class="small muted">Art danach über „andere Art“ oder eine Modell-Lesung</span></div>' : '')
     + (ui.panel && (ui.panel.scope === 'm:' + mi) ? panelHtml('taxon', ui.panel) : '')
     + (rd ? '<div class="state y">✎ Lesung: „' + esc(rd.old) + '“ → „<b>' + esc(rd.new) + '</b>“' + (rd.note ? ' <span class="muted small">(' + esc(rd.note) + ')</span>' : '') + '</div>' : '') + stateLine(d, 'Beleg: ' + decLine('taxon', d)) + '</div></div>';
+}
+
+// the written name behind a read item: decide it once for every mention instead of mention by mention
+function nameLevelBox(it, m) {
+  const nm = X.taxon.names[m[0]]; if (nm.n < 2) return '';
+  // the graph files this mention under a name form; if the text says something else, the question is about this mention only
+  if (!sameWord(writtenOf(it.mi), nm.name)) return '<div class="hint" style="margin-top:8px">Im Text steht „' + esc(writtenOf(it.mi)) + '“, im Graph läuft der Beleg unter dem Namen „' + esc(nm.name) + '“ (' + fmt(nm.n) + '×). Hier nur diesen Beleg entscheiden; der Name selbst steht in „Prüfen“.</div>';
+  const cur = P.taxon.forms[m[0]][2]; const inList = READ.filter(x => P.taxon.men[x.mi][0] === m[0] && sameWord(writtenOf(x.mi), nm.name)).length;
+  const bt = it.rs.filter(r => r.differs && r.kind === 'bird' && r.target >= 0 && r.target !== cur); const tgt = bt.length && bt.every(r => r.target === bt[0].target) ? P.taxon.ent[bt[0].target] : null;
+  const nd = nameDec('taxon', nm);
+  return '<div class="q">Für alle ' + fmt(nm.n) + ' Belege des Namens „' + esc(nm.name) + '“<small>' + inList + ' davon in dieser Liste — gilt die Entscheidung für den Namen überall, nicht nur hier?</small></div><div class="acts">'
+    + (tgt ? '<button class="btn r" data-nameto="' + bt[0].target + '" data-fi="' + nm.fi + '" title="Der Name meint überall diese Art (die Schreibung bleibt als Name erhalten)">Name → ' + esc(tgt[0]) + ' <i>' + esc(tgt[1]) + '</i></button>' : '')
+    + '<button class="btn" data-nreassign="' + nm.fi + '" data-t="taxon">Name → andere Art …</button><button class="btn" data-nread="' + nm.fi + '">✎ Name überall lesen als …</button></div>'
+    + (nd && nd.d ? '<div class="state ' + (nd.d === 'y' ? 'y' : nd.d === 'u' ? 'u' : nd.d === 'n' ? 'n' : 'r') + '">Name „' + esc(nm.name) + '“: ' + decLine('taxon', nd) + ' <button class="lbtn" data-nclear="' + nm.fi + '">zurücksetzen</button></div>' : '')
+    + (ui.nword === nm.fi ? nwordRow('taxon', nm) : '') + (ui.panel && ui.panel.scope === 'n:' + nm.fi ? panelHtml('taxon', ui.panel) : '');
 }
 
 // ---------------------------------------------------------------- sample and hints

@@ -201,9 +201,18 @@ function nameState(t, nm) {
   const e = ENT(t, nm.ent); const ed = entDec(t, e);
   if (grpDec(t, e)) return 'y';
   if (ed && ed.d) { if (ed.d === 'y' && safeName(t, nm)) return 'y'; if ((t === 'taxon' || t === 'habitat') && (ed.d === 'r' || ed.d === 'n')) return 'f'; }
+  if (nm.n <= 60 && nm.men.length && nm.men.every(mi => menState(t, mi))) return 'm';   // every mention decided or re-read on its own
   return '';
 }
 const nameGone = st => ['r', 'o', 'x', 'n'].includes(st);
+// a read item is settled by its own mention decision, by an explicit decision on the written name, or by a relinked entity
+function readState(it) {
+  const d = S.men.taxon[it.key]; if (d && d.d) return d.d === 'y' ? 'y' : d.d === 'u' ? 'u' : 'r';
+  const nm = X.taxon.names[P.taxon.men[it.mi][0]]; const nd = nameDec('taxon', nm);
+  if (nd && nd.d) return nd.d === 'y' ? 'y' : nd.d === 'u' ? 'u' : 'r';
+  const ed = entDec('taxon', ENT('taxon', nm.ent)); if (ed && (ed.d === 'r' || ed.d === 'n')) return 'r';
+  return menReading('taxon', it.mi) ? 'r' : '';
+}
 function entState(t, e) {   // link decision state of the entity
   const ed = entDec(t, e); if (!ed || !ed.d) { if (e.names.length && e.names.every(nm => nameGone(nameState(t, nm)))) return 'r'; return ''; }
   if (ed.d === 'u') return 'u'; if (ed.d === 'n') return 'n';
@@ -213,9 +222,12 @@ function entState(t, e) {   // link decision state of the entity
 function namesState(t, e) {
   let open = 0, changed = false, unsure = false;
   for (const nm of e.names) { const st = nameState(t, nm); if (!st) open++; else if (nameGone(st)) changed = true; else if (st === 'u') unsure = true; }
-  const inc = (CAND[t].ec[e.i] || []).some(([fi]) => { const st = nameDec(t, X[t].names[fi]); return st && st.d === 'r' && st.target && st.target.label === e.label; });
+  const cands = (CAND[t].ec[e.i] || []).map(([fi]) => X[t].names[fi]).filter(nm => nm.ent !== e.i);
+  const inc = cands.some(nm => { const st = nameDec(t, nm); return st && st.d === 'r' && st.target && st.target.label === e.label; });
+  // candidates count as reviewed once the group is confirmed or the entity itself was decided with them on screen
+  const pending = !grpDec(t, e) && !(entDec(t, e) || {}).d && cands.some(nm => !nameDec(t, nm));
   if (unsure) return 'u';
-  if (open) return e.names.length - open ? 'p' : '';
+  if (open || pending) return (e.names.length - open) || inc ? 'p' : '';
   return changed || inc ? 'r' : 'y';
 }
 const DONE = s => s === 'y' || s === 'r' || s === 'n';

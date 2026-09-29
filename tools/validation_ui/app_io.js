@@ -297,9 +297,9 @@ for (const t of TYPES) CAND[t] = CAND[t] || { nc: {}, ec: {} };
 $('#exportname').textContent = P.export;
 try { const raw = localStorage.getItem(LS); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) { }
 normalizeState();
-if (S.ui.theme) document.documentElement.dataset.theme = S.ui.theme;
+document.documentElement.dataset.theme = S.ui.theme || 'light';   // light unless the reviewer switched
 buildModel(); buildReadItems(); migrate();
-window.__hog = { P, S, X, READ, SUG, SUG3, PM, CAND, cur, ui, openTab, selectItem, showScan, entAct, readAct, applyReading, nameCheck, mergeInto, setName, setEnt, setMen, setGrp, commit, diffHunks, applyReadings, exportIdentities, exportMentions, exportText, exportEval, exportReadings, importV1, entState, nameState, namesState, itemState, undo };
+window.__hog = { P, S, X, READ, SUG, SUG3, PM, CAND, cur, ui, openTab, selectItem, showScan, scanFor, entAct, readAct, applyReading, nameCheck, mergeInto, setName, setEnt, setMen, setGrp, commit, diffHunks, applyReadings, exportIdentities, exportMentions, exportText, exportEval, exportReadings, importV1, entState, nameState, namesState, readState, itemState, sameWord, writtenOf, undo };
 $('#loading').remove();
 if (S.ui.noscan) $('#main').classList.add('noscan');
 savedLabel(); initGrip();

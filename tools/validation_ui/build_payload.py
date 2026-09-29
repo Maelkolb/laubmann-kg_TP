@@ -154,9 +154,9 @@ def entry_lines(uid):
 
 
 def joined(lines):
-    """Lower-cased text of the lines with hyphenated line breaks joined, and the
-    line index of every character."""
-    buf, owner = [], []
+    """Lower-cased text of the lines with hyphenated line breaks joined, the
+    line index of every character, and (start, length) of every line in it."""
+    buf, owner, pos, at = [], [], 0, {}
     for k, (_, _, _, _, t) in enumerate(lines):
         t = t.strip()
         if not t:
@@ -165,7 +165,9 @@ def joined(lines):
         seg = t[:-1] if hyph else t + " "
         buf.append(seg)
         owner.extend([k] * len(seg))
-    return "".join(buf).lower(), owner
+        at[k] = (pos, max(1, len(t)))
+        pos += len(seg)
+    return "".join(buf).lower(), owner, at
 
 
 # ---------------------------------------------------------------- name matching
@@ -211,6 +213,71 @@ def find_all(text_low: str, name: str, fuzzy: bool = True) -> list[tuple[int, in
     return [where] if where and best >= 0.8 else []
 
 
+def dp_align(L, M):
+    """Monotone alignment of transcription line lengths L to band ink masses M
+    (both normalised by their mean): line i -> (band index, matched 1 / carried 0).
+    Bands may be skipped (a sketch label, a ruled line), lines may share a band."""
+    n, m = len(L), len(M)
+    ml = sum(L) / n
+    mm = (sum(M) / m) or 1.0
+    Ln = [x / ml for x in L]
+    Mn = [x / mm for x in M]
+    INF = float("inf")
+    SKIP, EXTRA = 0.7, 0.7
+    cost = [[INF] * (m + 1) for _ in range(n + 1)]
+    back = [[0] * (m + 1) for _ in range(n + 1)]
+    cost[0][0] = 0.0
+    for j in range(1, m + 1):
+        cost[0][j] = cost[0][j - 1] + SKIP
+        back[0][j] = 1
+    for i in range(1, n + 1):
+        ci, li = cost[i], Ln[i - 1]
+        cp = cost[i - 1]
+        for j in range(1, m + 1):
+            c = abs(li - Mn[j - 1])
+            a = cp[j - 1] + c
+            b = ci[j - 1] + SKIP
+            d = cp[j] + EXTRA + c
+            if a <= b and a <= d:
+                ci[j], back[i][j] = a, 0
+            elif b <= d:
+                ci[j], back[i][j] = b, 1
+            else:
+                ci[j], back[i][j] = d, 2
+    i, j, out = n, m, {}
+    while i > 0 and j > 0:
+        k = back[i][j]
+        if k == 0:
+            out[i - 1] = (j - 1, 1)
+            i -= 1
+            j -= 1
+        elif k == 1:
+            j -= 1
+        else:
+            out[i - 1] = (j - 1, 0)
+            i -= 1
+    while i > 0:
+        out[i - 1] = (0, 0)
+        i -= 1
+    return out
+
+
+ALIGN = {}   # (page index, region id) -> line index -> (band index, matched) or None
+
+
+def align_region(pidx, rid):
+    key = (pidx, rid)
+    if key not in ALIGN:
+        bands = geo.get(PG[pidx][0], {}).get("l", {}).get(rid)
+        res = None
+        if bands and len(bands) >= 2 and all(len(b) >= 3 for b in bands):
+            lines = region_text[(pidx, rid)].split("\n")
+            L = [max(1, len(TAG.sub("", t).strip())) for t in lines]
+            res = dp_align(L, [b[2] for b in bands])
+        ALIGN[key] = res
+    return ALIGN[key]
+
+
 class Locator:
     """Per entry: find the k-th occurrence of a name in the entry text (for the
     highlight) and on the scan (page, region box, line range)."""
@@ -221,12 +288,16 @@ class Locator:
     def entry(self, uid):
         if uid not in self.cache:
             lines = entry_lines(uid)
-            low, owner = joined(lines)
-            self.cache = {uid: (lines, low, owner)}   # keep one entry (callers go entry by entry)
+            low, owner, at = joined(lines)
+            self.cache = {uid: (lines, low, owner, at)}   # keep one entry (callers go entry by entry)
         return self.cache[uid]
 
     def scan(self, uid, name, k=0, fuzzy=True):
-        lines, low, owner = self.entry(uid)
+        """[page, x0, y0, x1, y1, approximate, word start, word end]: the line box of the
+        k-th hit. With the ink profile of the region (line_profiles.py) the i-th
+        transcription line maps to a physical line; otherwise the box is divided evenly
+        (approximate = 1). Word start/end are fractions of the line width."""
+        lines, low, owner, at = self.entry(uid)
         if not lines:
             return None
         hits = find_all(low, name, fuzzy)
@@ -236,12 +307,29 @@ class Locator:
         la, lb = owner[s], owner[max(s, e - 1)]
         pidx, rid, i, n, _ = lines[la]
         j = lines[lb][2] if lines[lb][:2] == (pidx, rid) else i
-        box = geo.get(PG[pidx][0], {}).get("r", {}).get(rid)
+        g = geo.get(PG[pidx][0], {})
+        box = g.get("r", {}).get(rid)
         if not box or n == 0:
             return [pidx]
         x0, y0, x1, y1 = box
+        start, length = at.get(la, (s, 1))
+        fx0 = max(0.0, min(1.0, (s - start) / length))
+        fx1 = max(fx0, min(1.0, (e - start) / length))
+        bands = g.get("l", {}).get(rid)
+        if bands and len(bands) >= 2:
+            m = len(bands)
+            al = align_region(pidx, rid)
+            if al and i in al:
+                bi, hit = al[i]
+                bj = max(bi, al.get(j, (bi, 0))[0])
+                approx = 0 if hit and abs(m - n) <= 0.25 * n else 1
+            else:
+                bi = min(m - 1, int((i + 0.5) * m / n))
+                bj = min(m - 1, max(bi, int((j + 0.5) * m / n)))
+                approx = 0 if abs(m - n) <= max(1, 0.06 * n) else 1
+            return [pidx, x0, bands[bi][0], x1, bands[bj][1], approx, round(fx0, 3), round(fx1, 3)]
         lh = (y1 - y0) / n
-        return [pidx, x0, round(y0 + i * lh), x1, round(y0 + (j + 1) * lh)]
+        return [pidx, x0, round(y0 + i * lh), x1, round(y0 + (j + 1) * lh), 1, round(fx0, 3), round(fx1, 3)]
 
 
 LOC = Locator()
@@ -685,6 +773,7 @@ payload = {"v": 4, "built": args.built, "export": args.export_name or R.resolve(
 raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode()
 gz = gzip.compress(raw, 9, mtime=0)
 Path(args.out).write_text(base64.b64encode(gz).decode())
-located = sum(1 for m in TX.men if isinstance(m[4], list) and len(m[4]) == 5)
-print(f"taxon mentions with a line box: {located}/{len(TX.men)}; text position: {sum(1 for m in TX.men if m[2] >= 0)}")
+boxes = [m[4] for m in TX.men if isinstance(m[4], list) and len(m[4]) >= 5]
+exact = sum(1 for b in boxes if len(b) > 5 and b[5] == 0)
+print(f"taxon mentions with a line box: {len(boxes)}/{len(TX.men)} ({exact} on a profiled line, {len(boxes) - exact} estimated); text position: {sum(1 for m in TX.men if m[2] >= 0)}")
 print(f"raw {len(raw) / 1e6:.1f} MB, gz {len(gz) / 1e6:.1f} MB -> {args.out}")

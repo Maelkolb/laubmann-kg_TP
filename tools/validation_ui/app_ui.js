@@ -1,6 +1,6 @@
 // Laubmann-Abgleich v4 — part 2: tabs, queue, scan panel, line images, mention cards.
 const cur = { tab: 'check', type: 'taxon', list: [], shown: 0, sel: null, pos: -1, focus: 'e' };
-const ui = { open: new Set(), all: new Set(), panel: null, full: new Set(), mapView: null, word: null };
+const ui = { open: new Set(), all: new Set(), panel: null, full: new Set(), mapView: null, word: null, nword: null };
 
 // ---------------------------------------------------------------- items per task
 function checkItems(t) { return X[t].ents.filter(e => e.names.length && linked(t, e)); }
@@ -19,7 +19,7 @@ function tabItems(tab, t) {
 function itemState(tab, t, it) {
   if (tab === 'check' || tab === 'link') return entState(t, it);
   if (tab === 'names') return namesState(t, it);
-  if (tab === 'read') { const d = S.men.taxon[it.key]; if (d && d.d) return d.d === 'y' ? 'y' : d.d === 'u' ? 'u' : 'r'; return menReading('taxon', it.mi) ? 'r' : ''; }
+  if (tab === 'read') return readState(it);
   if (tab === 'eval') { const d = S.ev[it.key]; return d && d.d ? ({ y: 'y', n: 'r', u: 'u' }[d.d]) : ''; }
   if (tab === 'qa') { const d = S.qa[it.key]; return d && d.d ? ({ y: 'y', n: 'r', u: 'u' }[d.d]) : ''; }
   return '';
@@ -48,7 +48,7 @@ const TASK_TEXT = {
 function openTab(tab, keepSel) {
   cur.tab = tab; S.ui.tab = tab; ui.panel = null; renderTabs();
   const T = TAB[tab];
-  $('#main').classList.toggle('noscan', T.kind === 'log' || S.ui.noscan === true);
+  $('#main').classList.toggle('noscan', T.kind === 'log' || (tab === 'names' ? S.ui.scanNames !== true : S.ui.noscan === true));   // Namen: checkboxes only, the scan stays away unless asked (B)
   $('#qtitle').textContent = TASK_TEXT[tab][0];
   if (T.kind === 'log') { $('#qtypes').style.display = 'none'; $('#qcount').textContent = ''; $('#pbar').innerHTML = ''; $('#pnote').textContent = ''; $('.qctl').style.display = 'none'; $('#qsearch').style.display = 'none'; $('#qlist').innerHTML = '<div class="qmore">Alle Entscheidungen stehen rechts.</div>'; cur.sel = null; renderLog(); return; }
   $('.qctl').style.display = ''; $('#qsearch').style.display = '';
@@ -115,7 +115,7 @@ function qiHtml(pos) {
     l1 = '„' + esc(writtenOf(it.mi)) + '“ <span class="muted small">→ ' + esc(ce[0]) + '</span>';
     const best = it.rs.find(r => r.differs) || it.rs[0];
     l2 = '<span class="bd ' + (it.ag === 3 ? 'ok' : it.ag === 1 ? 'warn' : 'tip') + '">' + (it.ag === 3 ? 'beide Modelle: „' + esc(best.word) + '“' : it.ag === 1 ? 'Modelle uneins' : MODEL_DE[best.src] + ': „' + esc(best.word) + '“') + '</span>' + (it.mis ? '<span class="bd warn" title="Das gelesene Wort steht an anderer Stelle des Eintrags: das Zeilenbild zeigt wohl eine andere Zeile">Zeilenbild verrutscht?</span>' : '') + esc(E[m[1]][3] || E[m[1]][2] || '') + ' · ' + esc(E[m[1]][0]);
-    num = '<span title="so oft steht dieser Name im Tagebuch">' + fmt(it.n) + '×</span>';
+    num = sameWord(writtenOf(it.mi), P.taxon.forms[m[0]][0]) ? '<span title="so oft steht dieser Name im Tagebuch">' + fmt(it.n) + '×</span>' : '<span class="muted" title="im Graph unter dem Namen „' + esc(P.taxon.forms[m[0]][0]) + '“">≠ Name</span>';
   } else if (tab === 'eval') { const m = P.taxon.men[it.mi]; const f = P.taxon.forms[m[0]]; l1 = (it.k + 1) + '. ' + esc(f[0]); l2 = esc(E[m[1]][0]) + ' · ' + esc(P.taxon.ent[f[2]][0]); }
   else { const showVal = ['non_bird', 'low_confidence_taxon', 'nonplace'].includes(it.r[2]); l1 = esc((QA_DE[it.r[2]] || [it.r[2]])[0]) + (showVal && it.r[4] ? ': ' + esc(it.r[4]) : ''); l2 = esc(it.r[0]) + ' · ' + (it.r[3] === 'excluded' ? 'entfernt' : 'markiert') + (!showVal && it.r[5] ? ' · ' + esc(it.r[5].slice(0, 70)) : ''); }
   return '<div class="qi' + (pos === cur.pos ? ' on' : '') + '" data-p="' + pos + '"><span class="dot ' + st + '" title="' + esc(STATE_DE[st] || '') + '"></span><div><div class="l1">' + l1 + '</div><div class="l2">' + l2 + '</div></div><div class="num">' + num + '</div></div>';
@@ -144,7 +144,7 @@ function selectPos(pos) {
 function selectItem(it, fromQueue) {
   if (!fromQueue) { const p = cur.list.indexOf(it); cur.pos = p; $$('#qlist .qi.on').forEach(el => el.classList.remove('on')); if (p >= 0) { while (p >= cur.shown && cur.shown < cur.list.length) renderMore(); const el = $('#qlist .qi[data-p="' + p + '"]'); if (el) { el.classList.add('on'); el.scrollIntoView({ block: 'nearest' }); } } }
   cur.sel = it; S.ui.sel[cur.tab + ':' + cur.type] = selKey(it); save();
-  ui.open = new Set(); ui.all = new Set(); ui.panel = null; ui.mapView = null; ui.word = null; cur.focus = 'e';
+  ui.open = new Set(); ui.all = new Set(); ui.panel = null; ui.mapView = null; ui.word = null; ui.nword = null; cur.focus = 'e';
   renderWork(true);
 }
 function nextItem(dir) {
@@ -167,12 +167,14 @@ function kwic(text, s, e, full) {
 }
 const thumb = id => 'https://drive.google.com/thumbnail?id=' + id + '&sz=w2000';
 function pageLabel(p) { const g = PG[p]; return 'Band ' + g[1] + ', Scan ' + g[2] + (g[3] === 'L' ? ' links' : g[3] === 'R' ? ' rechts' : '') + (g[4] ? ' (S. ' + g[4].replace(/\.$/, '') + ')' : ''); }
+// loc = [page, x0, y0, x1, y1, approximate?, word start, word end (fractions of the line)]
 function snipHtml(loc, ctx, cls) {
   if (!Array.isArray(loc) || loc.length < 5) return '';
-  const [p, x0, y0, x1, y1] = loc; const g = PG[p]; if (!DRIVE[g[0]] || !g[5]) return '';
-  const lh = Math.max(24, (y1 - y0) / Math.max(1, Math.round((y1 - y0) / 60))); const c = ctx || 0.9;
+  const [p, x0, y0, x1, y1] = loc; const u = loc.length > 5 ? loc[5] : 1; const g = PG[p]; if (!DRIVE[g[0]] || !g[5]) return '';
+  const lh = Math.max(24, (y1 - y0) / Math.max(1, Math.round((y1 - y0) / 60))); const c = (ctx || 0.9) * (u ? 2.4 : 1);   // an estimated line gets more context
   const top = Math.max(0, Math.round(y0 - lh * c)), bot = Math.min(g[6], Math.round(y1 + lh * c));
-  return '<div class="snip' + (cls ? ' ' + cls : '') + '" data-p="' + p + '" data-b="' + x0 + ',' + top + ',' + x1 + ',' + bot + '" data-hl="' + y0 + ',' + y1 + '" title="Seite rechts anzeigen"></div>';
+  const fx = loc.length > 7 ? loc[6] + ',' + loc[7] : '';
+  return '<div class="snip' + (cls ? ' ' + cls : '') + (u ? ' approx' : '') + '" data-p="' + p + '" data-b="' + x0 + ',' + top + ',' + x1 + ',' + bot + '" data-hl="' + y0 + ',' + y1 + '" data-fx="' + fx + '" title="' + (u ? 'ungefähre Zeile (aus der Regionsbox geschätzt) — Seite rechts anzeigen' : 'Seite rechts anzeigen') + '"></div>';
 }
 const snipObs = 'IntersectionObserver' in window ? new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) { fillSnip(e.target); snipObs.unobserve(e.target); } }, { rootMargin: '400px' }) : null;
 function fillSnip(el) {
@@ -185,6 +187,8 @@ function fillSnip(el) {
   img.src = thumb(DRIVE[g[0]]);
   const band = document.createElement('i'); band.style.top = Math.round((h0 - top) * s) + 'px'; band.style.height = Math.round((h1 - h0) * s) + 'px';
   el.appendChild(img); el.appendChild(band);
+  if (el.dataset.fx) { const [f0, f1] = el.dataset.fx.split(',').map(Number); const seg = document.createElement('i'); seg.className = 'seg'; seg.style.top = band.style.top; seg.style.height = band.style.height; seg.style.left = Math.round(f0 * (x1 - x0) * s) + 'px'; seg.style.width = Math.max(8, Math.round((f1 - f0) * (x1 - x0) * s)) + 'px'; el.appendChild(seg); }
+  if (el.classList.contains('approx')) { const lab = document.createElement('span'); lab.className = 'approxlab'; lab.textContent = 'ungefähre Zeile'; el.appendChild(lab); }
 }
 function wireSnips(root) { $$('.snip:not([data-done])', root).forEach(el => snipObs ? snipObs.observe(el) : fillSnip(el)); }
 const scan = { ei: -1, p: -1, hl: null, zoom: 0 };
@@ -209,8 +213,9 @@ function renderScan() {
     if (scan.p !== p) return;
     body.innerHTML = ''; wrap.appendChild(img); body.appendChild(wrap);
     const hl = scan.hl && scan.hl[0] === p ? scan.hl : null;
-    if (hl && g[5]) { const s = img.clientWidth / g[5]; const b = document.createElement('i'); b.className = 'hlbox';
+    if (hl && g[5]) { const s = img.clientWidth / g[5]; const b = document.createElement('i'); b.className = 'hlbox' + (hl.length > 5 && hl[5] ? ' approx' : '');
       Object.assign(b.style, { left: (hl[1] * s - 3) + 'px', top: (hl[2] * s - 5) + 'px', width: ((hl[3] - hl[1]) * s + 6) + 'px', height: ((hl[4] - hl[2]) * s + 10) + 'px' }); wrap.appendChild(b);
+      if (hl.length > 7) { const seg = document.createElement('i'); seg.className = 'hlseg'; Object.assign(seg.style, { left: ((hl[1] + hl[6] * (hl[3] - hl[1])) * s - 2) + 'px', top: (hl[2] * s - 5) + 'px', width: Math.max(10, (hl[7] - hl[6]) * (hl[3] - hl[1]) * s + 4) + 'px', height: ((hl[4] - hl[2]) * s + 10) + 'px' }); wrap.appendChild(seg); }
       body.scrollTop = Math.max(0, hl[2] * s - body.clientHeight / 3); body.scrollLeft = Math.max(0, hl[1] * s - 20); }
   };
   img.onerror = () => { body.innerHTML = '<div class="msg">Das Bild konnte nicht geladen werden. Bitte im Browser bei Google angemeldet sein (Konto mit Zugriff auf HistOrniGraph_output) oder „Drive ↗“.</div>'; };

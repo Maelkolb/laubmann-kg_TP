@@ -66,6 +66,7 @@ deduplicated corpus (`corpus.json`, `entries.jsonl`):
 ```bash
 python tools/validation_ui/load.py <export>/rdf/laubmann_sample.ttl triples.pkl            # ~45 s
 python tools/validation_ui/page_geometry.py <corpus_dir> "<HistOrniGraph_output>" pages_geometry.json   # PAGE-XML region boxes, ~1.5 min from Drive
+python tools/validation_ui/line_profiles.py <corpus_dir> pages_geometry.json "<HistOrniGraph_output>" --procs 8   # physical lines per region from the scans (ink profile), ~10 min
 python tools/validation_ui/vernaculars.py triples.pkl vernaculars.json                    # GBIF + Wikidata German names, ~3 min, resumable
 python tools/validation_ui/drive_ids.py tools/validation_ui/drive_pages.json               # page scan ids (Drive for desktop)
 python tools/validation_ui/build_payload.py <export>/review --triples triples.pkl --corpus <corpus_dir> \
@@ -91,6 +92,29 @@ The app script is kept in five parts (`app_core.js` data/state/model,
 `app_ui.js` tabs/queue/scan, `app_views.js` task views, `app_actions.js`
 decisions/panels/searches/editor/keys, `app_io.js` export/import/help/start);
 `assemble.py` concatenates them inside one async IIFE.
+
+**Line images.** The PAGE-XML carries region boxes only (no `TextLine`
+coordinates). `line_profiles.py` finds the physical text lines of every region
+by a horizontal ink profile of the scan and stores each band with its ink
+mass; `build_payload.py` aligns the transcription lines to the bands by a
+monotone dynamic-programming match of line length against ink mass (bands
+without a line — sketch labels, rules — are skipped, lines without a band share
+their neighbour's and are flagged "ungefähre Zeile", shown with more context),
+and adds the word's horizontal position from its character offset. Without
+profiles the region box is divided evenly. On the 2026-08-19 corpus 45,462 of the 71,324
+located species mentions (64 %) sit on a matched physical line; the ink profile finds the
+transcription's line count (±1) in 57 % of the 15,378 text regions and is within
+25 % in another 15 %; the rest (dense handwriting with touching lines, sketches,
+rotated pages) stays an estimate. Two-column species lists still defeat both.
+
+**Decisions propagate.** One decision settles the same question everywhere:
+a relinked or rejected entity closes its read items; an explicit decision on a
+written name (checkbox, "Name → Art", "überall lesen als") closes every read
+item of that name; a mention decided in *Lesefehler* shows up on its card in
+the other tasks; names reassigned to an entity appear in its name group in
+every task; an entity decided with its candidates on screen counts as reviewed
+for *Namen*. Candidates and the name search are part of every task's name
+group, so nothing has to be repeated in another tab.
 
 `drive_pages.json` maps page ids to the Drive file ids of
 `HistOrniGraph_output/Laubmann_XX_gemini/pages/<page id>.png` (6,742 of 6,750
