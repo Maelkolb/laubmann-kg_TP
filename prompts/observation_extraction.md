@@ -31,7 +31,7 @@ missing date or place; never take records, travel, persons or weather from
 One compact JSON object on a single line (no indentation, no line breaks),
 nothing else:
 
-{"entry_date":{...},"entry_place":{...},"entry_kind":"...","observations":[...],"travel_events":[...],"persons":[...],"weather":{...}}
+{"entry_date":{...},"entry_place":{...},"entry_kind":"...","entry_observer":"...","observations":[...],"travel_events":[...],"persons":[...],"weather":{...}}
 
 `entry_date`, `entry_place` (null when no place) and `entry_kind` are always
 given. Omit every other key whose value would be null, empty, or the default
@@ -78,15 +78,23 @@ named below.
 - The diarist ("ich", "wir", unattributed field notes, "(Lbm.)", OCR variants
   like "(Lben.)") is the default observer and is never named.
 - A name tag in parentheses after a record ("(Kiefer)", "(Dbm.)", "(A. Müller)")
-  names its observer. A tag in `location_header` applies to the whole entry.
+  names its observer.
+- `entry_observer`: when one person other than the diarist observed the
+  records of the whole entry — the author of a report or letter, or the
+  person of a tag in `location_header` ("Feldwies (Kiefer)") — give that name
+  once here (spelled as in `persons`, role `source`). The records then need
+  no `record_type` or `observer` of their own, except a record that names
+  someone else or is the diarist's own addition (`record_type`
+  `field-observation`).
 - Digests repeat the value above with dashes: in "Star: 3. I. Immering (Bezzel)
   - 11. III. - (Wüst) - 16. III. Harlaching - -" the second record is at
   Immering by Wüst, the third at Harlaching by the diarist. A digest line
   without a name tag (and without a dash repeating one) is the diarist's own.
-- A report or letter by another person (`correspondence`): every record is
-  `third-party-report` with `observer` = its author (signature, heading or
-  `context_before`) unless a record names someone else; "ich"/"wir" in it is the
-  author, never the diarist; the author's journeys are not travel events.
+- A report or letter by another person (`correspondence`): its author is the
+  `entry_observer` — always give it when the author is named anywhere (a
+  signature at the end, the heading, or `context_before`: "A. Müller
+  berichtet …"); "ich"/"wir" in it is the author, never the diarist; the
+  author's journeys are not travel events.
 - In the diarist's own text, a record someone else made or reported ("Kiel
   meldet", "nach Mitteilung von", "schreibt mir", "Wie F. Müller an G. Engel
   schreibt" — F. Müller, not the recipient) is `third-party-report` with that
@@ -211,7 +219,8 @@ own. Movements of birds are never travel.
 
 ### persons — people the entry mentions
 
-`name` (required, as written: "Dr. Stresemann") and `role` when inferable:
+`name` (required, as written: "Dr. Stresemann"; the diarist's relatives by
+name, not by relation: "meine Frau" → "Frau Laubmann") and `role` when inferable:
 `companion`, `source` (observed or reported for the diarist), `collector`,
 `cited-author` or `other`. Every `observer` and `observed_with` name is also a
 person. The diarist himself is never a person here.

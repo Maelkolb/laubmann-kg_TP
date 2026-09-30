@@ -641,3 +641,64 @@ def test_literature_without_citation_is_flagged_for_qa() -> None:
     _, flags = run_qa([entry], {"misdate": False})
     assert [(f.reason, f.value) for f in flags if f.reason == "literature_without_citation"] == \
         [("literature_without_citation", "Uhu")]
+
+
+def test_entry_observer_is_the_default_observer_of_the_entry_records():
+    """prompt v4: the author of a pasted report is named once (entry_observer);
+    records without their own observer are theirs, a record marked as the
+    diarist's own stays his, a record naming someone else keeps that name."""
+    import json as _json
+
+    from laubmann_kg.extraction.llm_observations import extract_observations_llm, load_entry_schema
+    from laubmann_kg.kg.model import DiaryEntry
+    from laubmann_kg.llm.prompts import PromptLibrary
+    from laubmann_kg.normalization.taxa import SeedTaxonResolver
+
+    class Canned:
+        model = "m"
+
+        def complete(self, prompt):
+            return _json.dumps({
+                "entry_date": {"iso": "1942-04-01"}, "entry_place": {"name": "Berlin", "kind": "settlement"},
+                "entry_kind": "correspondence", "entry_observer": "A. Müller",
+                "persons": [{"name": "A. Müller", "role": "source"}],
+                "observations": [
+                    {"vernacular_de": "Kernbeißer", "verbatim_notes": "3 Kernbeißer"},
+                    {"vernacular_de": "Amsel", "verbatim_notes": "(Kiefer)", "observer": "Kiefer"},
+                    {"vernacular_de": "Star", "verbatim_notes": "ich selbst", "record_type": "field-observation"},
+                ]})
+
+    entry = DiaryEntry("e1", "L17-e0242a", 17, "p", "pid", "r", None, "1942-04-01", "1. April 1942",
+                       "Berlin", "3 Kernbeißer …")
+    obs = extract_observations_llm(entry, Canned(), SeedTaxonResolver(), None,
+                                   PromptLibrary(), load_entry_schema())
+    by = {o.taxon.vernacular_de: o for o in obs}
+    assert by["Kernbeißer"].observer.name == "A. Müller"
+    assert by["Kernbeißer"].record_type == "third-party-report"
+    assert by["Amsel"].observer.name == "Kiefer"
+    assert by["Star"].observer is None and by["Star"].record_type == "field-observation"
+    assert [p.name for p in by["Kernbeißer"].recorders] == ["A. Müller"]
+
+
+def test_correspondence_records_without_record_type_are_never_the_diarists():
+    """A copied report whose author the model did not name: its records are
+    unattributed third-party reports (no recordedBy), not the diarist's."""
+    import json as _json
+
+    from laubmann_kg.extraction.llm_observations import extract_observations_llm, load_entry_schema
+    from laubmann_kg.kg.model import DiaryEntry
+    from laubmann_kg.llm.prompts import PromptLibrary
+    from laubmann_kg.normalization.taxa import SeedTaxonResolver
+
+    class Canned:
+        model = "m"
+
+        def complete(self, prompt):
+            return _json.dumps({"entry_date": {"iso": "1942-03-22"}, "entry_place": None,
+                                "entry_kind": "correspondence",
+                                "observations": [{"vernacular_de": "Elster", "verbatim_notes": "2 Paare"}]})
+
+    entry = DiaryEntry("e2", "L17-e0242a", 17, "p", "pid", "r", None, "1942-03-22", None, None, "Elstern: 2 Paare")
+    [obs] = extract_observations_llm(entry, Canned(), SeedTaxonResolver(), None, PromptLibrary(), load_entry_schema())
+    assert obs.record_type == "third-party-report" and obs.observer is None
+    assert obs.recorders == []

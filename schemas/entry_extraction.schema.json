@@ -131,6 +131,13 @@
         "null"
       ]
     },
+    "entry_observer": {
+      "type": [
+        "string",
+        "object",
+        "null"
+      ]
+    },
     "observations": {
       "type": [
         "array",

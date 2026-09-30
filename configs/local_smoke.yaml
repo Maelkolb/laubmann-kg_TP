@@ -1,0 +1,144 @@
+corpus:
+  entries: data/corpus_patched/entries.csv
+  multimodal: data/corpus_patched/multimodal_regions.jsonl
+multimodal:
+  image_base_url: null
+sample:
+  volume: null
+  entry_ids:
+  - L01-e0196
+  - L02-e0113
+  - L06-e0020
+  - L01-e0140
+  - L01-e0140a
+  - L01-e0140b
+  - L05-e0216
+  - L14-e0035
+  - L14-e0035a
+  - L07-e0008
+  - L07-e0008a
+  - L04-e0057
+  - L25-e0072
+  - L25-e0072a
+  - L17-e0242
+  - L17-e0242a
+extraction:
+  backend: llm
+  provider: google
+  model: gemini-3.8-flash
+  api_key_env: GOOGLE_API_KEY
+  temperature: 0.0
+  max_output_tokens: 32768
+  timeout: 600
+  thinking_level: low
+  concurrency: 8
+  context_cache: true
+  retry_backoff: 2.0
+  cache_dir: data/cache/llm_v4
+taxa:
+  links_long_path: null
+corrections:
+  csv: data/review/value_corrections.csv
+review:
+  identities: data/review/identities.csv
+  text_corrections: data/review/text_corrections.csv
+  machine:
+    enabled: true
+    identities: data/review/machine/identities_machine.csv
+    min_confidence: 0.9
+    min_agreement: 2
+    value_corrections: data/review/machine/value_corrections_machine.csv
+    min_correction_confidence: 0.9
+qa:
+  enabled: true
+  exclude: true
+  coverage:
+    enabled: true
+    path: configs/volume_coverage.yaml
+    tolerance_months: 1
+    neighbours: 2
+    max_digit_changes: 2
+resolution:
+  enabled: true
+  taxa:
+    enabled: true
+    merge_on_scientific_name: true
+    reviewed_csv: data/review/taxon_merges.csv
+  persons:
+    enabled: true
+    merge_bare_surname: true
+    reviewed_csv: data/review/person_merges.csv
+  places:
+    enabled: true
+    similarity: 0.9
+    reviewed_csv: data/review/place_merges.csv
+  habitats:
+    enabled: true
+    similarity: 0.85
+    reviewed_csv: data/review/habitat_merges.csv
+linking:
+  enabled: true
+  offline: false
+  cache_dir: data/cache/linking
+  limit: 0
+  taxa:
+    enabled: true
+    reviewed_csv: null
+    sleep: 0.2
+    gbif:
+      min_confidence: 90
+      fuzzy_min_confidence: 95
+    llm:
+      enabled: true
+      provider: google
+      model: gemini-3.5-flash
+      api_key_env: GOOGLE_API_KEY
+      cache_dir: data/cache/linking/llm
+      prompt_dir: prompts
+      min_confidence: 0.7
+      thinking_level: low
+      max_output_tokens: 1024
+  persons:
+    enabled: true
+    reviewed_csv: null
+    sleep: 0.5
+    language: de
+  places:
+    enabled: true
+    reviewed_csv: data/review/place_link_review.csv
+    min_uses: 1
+    max_km: 10
+    keep_gazetteer_coordinates: true
+    nominatim:
+      cache: data/cache/linking/nominatim_cache.json
+      live: false
+      email: ''
+    geonames:
+      dir: data/cache/linking/geonames
+      download: true
+  habitats:
+    enabled: true
+    reviewed_csv: data/review/habitat_link_review.csv
+    vocabulary: data/eunis_habitats.csv
+    min_confidence: 0.7
+    review_confidence: 0.4
+    batch_size: 40
+    llm:
+      enabled: true
+      provider: google
+      model: gemini-3.5-flash
+      api_key_env: GOOGLE_API_KEY
+      cache_dir: data/cache/linking/llm_habitats
+      prompt_dir: prompts
+      thinking_level: low
+      max_output_tokens: 8192
+paths:
+  ontology: ontologies/laubmann.ttl
+  shapes: ontologies/shacl_shapes.ttl
+  jsonld_context: schemas/jsonld_context.json
+dwca:
+  publisher: Laubmann KG Project
+  license: CC-BY-4.0
+  title: Laubmann ornithological field diaries 1917–1965 — observations
+  package_id: laubmann-kg-full
+validate: true

@@ -38,8 +38,8 @@ extraction:
   context_cache: true       # the prompt's instructions (up to "## Entry") are a Gemini CachedContent,
                             #   billed at the cached-input price (~4k of ~4.3k prompt tokens per call)
   retry_backoff: 2.0        # seconds, exponential — rides out transient 429s
-  # cache_dir: /content/drive/MyDrive/HistOrniGraph_output/llm_cache  # put the
-  #   cache on Drive in Colab so interrupted runs resume across sessions
+  cache_dir: data/cache/llm_v4   # prompt v4 answers (copy to Drive llm_cache_v4 after the run;
+                                 #   in Colab point it at Drive so interrupted runs resume)
 
 taxa:
   links_long_path: null       # set to the index linker's long table when available
@@ -97,7 +97,7 @@ linking:
       provider: google
       model: gemini-3.5-flash    # stays 3.5: its Drive cache (linking_cache/llm) answers the known names
       api_key_env: GOOGLE_API_KEY
-      cache_dir: data/cache/linking_llm
+      cache_dir: data/cache/linking/llm            # Drive linking_cache/llm
       prompt_dir: prompts        # uses prompts/taxon_normalization.md (revived)
       min_confidence: 0.7        # LLM proposals below this go straight to review
       thinking_level: low        # minimal | low | medium | high
@@ -132,7 +132,7 @@ linking:
       provider: google
       model: gemini-3.5-flash    # stays 3.5: its Drive cache (linking_cache/llm_habitats) answers the known labels
       api_key_env: GOOGLE_API_KEY
-      cache_dir: data/cache/linking_llm_habitats
+      cache_dir: data/cache/linking/llm_habitats   # Drive linking_cache/llm_habitats
       prompt_dir: prompts    # prompts/habitat_eunis.md
       thinking_level: low
       max_output_tokens: 8192

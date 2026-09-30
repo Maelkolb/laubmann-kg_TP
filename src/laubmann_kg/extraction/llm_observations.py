@@ -362,7 +362,10 @@ def map_entry_date(raw, header_iso: Optional[str]) -> dict:
 # --------------------------------------------------------------------------
 
 def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
-              place: Optional[Place]) -> list[Observation]:
+              place: Optional[Place], entry_observer: Optional[Person] = None) -> list[Observation]:
+    """``entry_observer``: the person the model read as the observer of the
+    whole entry (author of a pasted report, header tag); records without an
+    observer of their own and not marked as the diarist's are theirs."""
     observations: list[Observation] = []
     for index, item in enumerate(items):
         if not isinstance(item, dict):
@@ -404,6 +407,9 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             observer = _resolve_observer(observer_name, entry.persons)
             if observer not in entry.persons:
                 entry.persons.append(observer)   # the entry mentions its observers
+        elif entry_observer is not None and vocab.normalize_record_type(
+                item.get("record_type")) in (None, "third-party-report"):
+            observer = entry_observer
         co_observers: list[Person] = []
         for raw_name in _as_list(item.get("observed_with")):
             name = _sanitize_observer(raw_name)
@@ -420,8 +426,11 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
         # not the diary text, is what gets mapped here
         record_type = vocab.normalize_record_type(item.get("record_type"))
         if record_type is None:
+            # the model's own reading of the entry decides the default: the
+            # records of a copied report or letter are never the diarist's
             record_type = ("literature-record" if citation
                            else "third-party-report" if observer is not None
+                           or entry.entry_kind == "correspondence"
                            else "field-observation")
         elif record_type == "field-observation" and (observer is not None or citation):
             # keep the model's reading, but surface the tension for review
@@ -670,7 +679,13 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
     entry.travel_events = map_travel(entry, data.get("travel_events"), entry.place)
     entry.persons = map_persons(data.get("persons"))
     entry.weather = map_weather(data.get("weather"))
+    entry_observer = None
+    name = _sanitize_observer(data.get("entry_observer"))
+    if name:
+        entry_observer = _resolve_observer(name, entry.persons)
+        if entry_observer not in entry.persons:
+            entry.persons.append(entry_observer)
     items = data.get("observations") or []
     if not isinstance(items, list):
         items = [items]
-    return map_items(entry, items, resolver, entry.place)
+    return map_items(entry, items, resolver, entry.place, entry_observer)
