@@ -184,3 +184,35 @@ def test_cache_record_carries_generation_params_but_key_ignores_them(tmp_path) -
             raise AssertionError("must be served from cache")
 
     assert CachedClient(Other(), cache=cache).complete("hello") == "[]"
+
+
+def test_usage_ledger_records_live_calls_including_truncated(tmp_path):
+    """Every live call (cached or truncated) lands in usage.jsonl with the
+    provider's token counts; cache hits cost nothing and add no line."""
+    import json
+
+    class Metered:
+        model = "m"
+
+        def __init__(self):
+            self.n = 0
+
+        def last_usage(self):
+            return {"prompt_token_count": 100, "candidates_token_count": 10 * self.n}
+
+        def complete(self, prompt):
+            self.n += 1
+            if prompt == "long":
+                raise TruncatedOutput('{"partial": ')
+            return "{}"
+
+    cache = LLMCache(tmp_path)
+    client = CachedClient(Metered(), cache=cache, attempts=1, backoff=0.0)
+    client.complete("a")
+    client.complete("a")          # cache hit: no second ledger line
+    client.complete("long")       # truncated: not cached, but paid for
+    lines = [json.loads(l) for l in (tmp_path / "usage.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert [l["truncated"] for l in lines] == [False, True]
+    assert lines[0]["usage"]["prompt_token_count"] == 100
+    record = json.loads(next(p for p in tmp_path.glob("*.json")).read_text(encoding="utf-8"))
+    assert record["usage"]["candidates_token_count"] == 10

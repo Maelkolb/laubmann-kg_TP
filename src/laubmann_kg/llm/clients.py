@@ -90,9 +90,18 @@ class CachedClient:
         except TruncatedOutput as exc:
             logger.warning("truncated output for prompt %s (%d chars): returned "
                            "to caller, NOT cached", key[:12], len(exc.text))
+            self.cache.log_usage(key, self.model, _last_usage(self.client), truncated=True)
             return exc.text
-        self.cache.set(key, self._request(prompt), response)
+        usage = _last_usage(self.client)
+        self.cache.log_usage(key, self.model, usage)
+        self.cache.set(key, self._request(prompt), response, usage=usage)
         return response
+
+
+def _last_usage(client) -> Optional[dict]:
+    """Token counts of the client's last call on this thread (GeminiClient), else None."""
+    getter = getattr(client, "last_usage", None)
+    return getter() if callable(getter) else None
 
 
 def build_client(config: Optional[dict] = None, cache: Optional[LLMCache] = None) -> LLMClient:
@@ -151,6 +160,10 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
         self._timeout_ms = int(timeout_s * 1000)
         self._impl: Optional[tuple[str, object]] = None
         self._lock = threading.Lock()
+        self._local = threading.local()      # per-thread usage of the last call
+
+    def last_usage(self) -> Optional[dict]:
+        return getattr(self._local, "usage", None)
 
     def _ensure(self) -> None:
         if self._impl is not None:
@@ -219,7 +232,23 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
                                    "max_output_tokens": self.max_output_tokens},
                 request_options={"timeout": self._timeout_ms / 1000.0},
             )
+        self._local.usage = usage_of(resp)
         return check_response(resp, self.model)
+
+
+_USAGE_FIELDS = ("prompt_token_count", "cached_content_token_count", "candidates_token_count",
+                 "thoughts_token_count", "total_token_count")
+
+
+def usage_of(resp) -> dict:
+    """Token counts from a Gemini response's usage_metadata (absent fields omitted)."""
+    meta = getattr(resp, "usage_metadata", None)
+    out: dict = {}
+    for name in _USAGE_FIELDS:
+        value = getattr(meta, name, None) if meta is not None else None
+        if isinstance(value, int):
+            out[name] = value
+    return out
 
 
 def _finish_reason(resp) -> str:

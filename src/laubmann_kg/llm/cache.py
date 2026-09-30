@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import datetime as _dt
 import hashlib
 import json
 import logging
+import threading
 from pathlib import Path
 from typing import Any, Optional
 
@@ -40,12 +42,25 @@ class LLMCache:
             return None
         return json.loads(path.read_text(encoding="utf-8"))["response"]
 
-    def set(self, key: str, request: Any, response: Any) -> None:
-        self._path(key).write_text(
-            json.dumps({"request": request, "response": response},
-                       ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
+    def set(self, key: str, request: Any, response: Any, usage: Optional[dict] = None) -> None:
+        record = {"request": request, "response": response}
+        if usage:
+            record["usage"] = usage
+        self._path(key).write_text(json.dumps(record, ensure_ascii=False, indent=2),
+                                   encoding="utf-8")
+
+    _ledger_lock = threading.Lock()
+
+    def log_usage(self, key: str, model: str, usage: Optional[dict], truncated: bool = False) -> None:
+        """Append one line per LIVE call to ``usage.jsonl`` (token counts as the
+        provider reported them). Truncated answers are not cached but were paid
+        for, so the ledger - not the cache - is the cost record of a run
+        (tools/llm_cost.py sums it)."""
+        line = json.dumps({"ts": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+                           "key": key, "model": model, "truncated": truncated, "usage": usage or {}},
+                          ensure_ascii=False)
+        with self._ledger_lock, (self.cache_dir / "usage.jsonl").open("a", encoding="utf-8") as handle:
+            handle.write(line + "\n")
 
     def get_or_set(self, key: str, request: Any, producer) -> Any:
         hit = self.get(key)
