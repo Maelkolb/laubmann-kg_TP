@@ -193,7 +193,7 @@ def test_nothing_fabricated_no_evidence_no_transcription_no_behaviour_injection(
     ]})
     assert obs[0].evidence == [] and obs[1].evidence == []
     call = obs[2].evidence[0]
-    assert call.is_call and call.call_type == "unknown" and call.call_transcription is None
+    assert call.is_call and call.call_type is None and call.call_transcription is None   # no "unknown" placeholder
     assert obs[3].behaviour == []                       # no "Brüten" injected from a nest
     assert obs[3].breeding_evidence is None
 

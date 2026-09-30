@@ -28,19 +28,46 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
   `lkg:` carries only project-specific meaning (record type, count qualifier and
   ranges, breeding evidence, movement, evidence kind, entry kind, weather,
   travel, mention roles). No `lkg:` twin of a standard term is emitted.
-- **Three grouping superclasses** structure the hierarchy (declared, never
+- **Two grouping superclasses** structure the hierarchy (declared, never
   asserted as `rdf:type` in the data):
-  `lkg:ArchivalUnit` ⊑ rico:Record — DiaryVolume, DiaryPage, DiaryEntry, SourceRegion;
-  `lkg:EntryRecord` ⊑ prov:Entity — Observation, TravelEvent, WeatherReport (what the
-  model reads out of one entry); `lkg:RecordDetail` — Vocalisation, TravelLeg.
+  `lkg:ArchivalUnit` ⊑ rico:Record — DiaryVolume, DiaryPage, DiaryEntry,
+  SourceRegion (and its subclass MultimodalRegion);
+  `lkg:EntryRecord` ⊑ prov:Entity — Observation, TravelEvent, TravelLeg,
+  WeatherReport (what the model reads out of one entry; each is
+  `prov:wasDerivedFrom` its entry). `lkg:RecordDetail` was dropped in 0.6.0.
   Taxon, Place and Person are shared referents; habitats are `skos:Concept`s.
 - **Explicit partonomy.** Containment properties (`lkg:containsObservation`,
-  `lkg:containsTravelEvent`, `lkg:hasWeather`, `lkg:hasLeg`, `lkg:hasVocalisation`)
+  `lkg:containsTravelEvent`, `lkg:hasWeather`, `lkg:hasLeg`)
   are sub-properties of `dcterms:hasPart`; every child node carries
   `dcterms:isPartOf`.
 - **Flat where a node adds nothing.** Behaviour = `dwc:behavior` literals;
-  evidence kinds = `lkg:evidenceKind` concept links on the observation;
-  only vocalisations, weather reports and travel legs stay nodes.
+  evidence kinds = `lkg:evidenceKind` concept links on the observation; what
+  was heard = `lkg:callType` (song | call | alarm | drumming, no "unknown"
+  placeholder) and `lkg:callTranscription` literals on the observation (0.6.0 —
+  the former `lkg:Vocalisation` node and the `dwc:behavior` copies such as
+  "singend" are gone; the extraction mapper folds purely vocal behaviour
+  phrases into the call type). Only weather reports and travel events/legs
+  stay nodes.
+- **One link pattern for every authority (0.6.0).** Taxa → GBIF, habitat
+  concepts → EUNIS, places → GeoNames and Wikidata, persons → Wikidata and
+  GND: always `skos:exactMatch` (same referent, strong evidence),
+  `skos:closeMatch` (same referent, weaker evidence) or `skos:broadMatch` (the
+  target is broader) from the project node to the authority IRI; the IRI is a
+  `skos:Concept` with `skos:inScheme lkg:authority_gbif | _eunis | _geonames
+  | _wikidata | _gnd`, `skos:notation` (the authority's id) and
+  `skos:prefLabel` when known (`kg/authority.py` derives the grade from what
+  linking recorded: GBIF match type, EUNIS judgement, OSM+GeoNames agreement,
+  reviewed vs. automatic person match). No `owl:sameAs`: it cannot grade a
+  match and would merge the external records into the graph under OWL
+  reasoning. Query: `?x skos:exactMatch|skos:closeMatch|skos:broadMatch ?a .
+  ?a skos:inScheme lkg:authority_gnd ; skos:notation ?id`.
+- **Regions (0.6.0).** An entry links every body-text region its text runs
+  through (`lkg:hasSourceRegion`; the continuation pages of a long entry are
+  in the graph as `lkg:DiaryPage`s) and its multimodal regions
+  (`lkg:hasMultimodalRegion` ⊑ `lkg:hasSourceRegion` → `lkg:MultimodalRegion`:
+  drawings, maps, photographs, prints, mounted objects, inserted texts, with
+  `lkg:regionKind`, `dcterms:type` (DCMI), `dcterms:description`,
+  `lkg:visibleText`, `dcterms:identifier` = crop file).
 - **Ziel 1 (0.5.0) — time and space on the observation.** The named site stays
   a `lkg:Place` (`lkg:hasLocality` when it differs from `lkg:entryPlace`);
   vantage wording, microhabitat and relative height are literals
@@ -80,8 +107,9 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
   pre-warmed Nominatim cache (OSM: name-matched hit of an acceptable type),
   the GeoNames country dumps (a record with the same name within 10 km of the
   OSM point, or unique in Bavaria) and Wikidata (QID from the OSM tag or
-  GeoNames P1566): `geo:lat/long`, `gsp:asWKT`, `owl:sameAs
-  https://sws.geonames.org/<id>/` and `owl:sameAs wd:Q…`,
+  GeoNames P1566): `geo:lat/long`, `gsp:asWKT`, `skos:exactMatch` (OSM and
+  GeoNames agree, or reviewed) / `skos:closeMatch` (single-source match)
+  `https://sws.geonames.org/<id>/` and `wd:Q…` (0.6.0; `owl:sameAs` before),
   `dwc:coordinateUncertaintyInMeters` (centroid radius by feature type: town
   2 km, lake 1 km, peak 300 m …) and `dwc:georeferenceSources`; DwC-A
   `locationID` (GeoNames URI), `coordinateUncertaintyInMeters`,
@@ -114,11 +142,12 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
 | `lkg:DiaryVolume` (⊑ ArchivalUnit; `dcterms:temporal` title-page span) | `data:volume_NN` | corpus |
 | `lkg:DiaryPage` (⊑ ArchivalUnit; `dcterms:isPartOf` volume) | `data:page_<page_uid>` | corpus |
 | `lkg:DiaryEntry` (⊑ ArchivalUnit, dwc:Event; `dcterms:isPartOf` page or volume) | `data:entry_<entry_uid>` | corpus `entry_uid` |
-| `lkg:SourceRegion` (⊑ ArchivalUnit; `dcterms:isPartOf` page) | `data:region_<region_uid>` | corpus |
+| `lkg:SourceRegion` (⊑ ArchivalUnit; `dcterms:isPartOf` page) | `data:region_<region_uid>` | corpus (every body-text region the entry spans) |
+| `lkg:MultimodalRegion` (⊑ SourceRegion; `dcterms:isPartOf` page) | `data:region_<region_uid>` | `multimodal_regions.jsonl` (catalogue v2 + selected text inserts) |
 | `lkg:Observation` (⊑ EntryRecord, dwc:Occurrence) | `data:obs_<sha1(entry_uid|vernacular|index)>` | derived |
-| `lkg:TravelEvent` (⊑ EntryRecord, dwc:Event) / `lkg:TravelLeg` (⊑ RecordDetail) | `data:travel_<entry>_<i>` / `data:leg_…` | per entry |
+| `lkg:TravelEvent` (⊑ EntryRecord, dwc:Event) / `lkg:TravelLeg` (⊑ EntryRecord) | `data:travel_<entry>_<i>` / `data:leg_…` | per entry |
 | `lkg:WeatherReport` (⊑ EntryRecord) | `data:weather_<entry_uid>` | one per entry today (several allowed) |
-| `lkg:Vocalisation` (⊑ RecordDetail; `dcterms:isPartOf` observation) | `data:vocalisation_<obs>_<i>` | per call |
+| authority record (`skos:Concept`, `skos:inScheme lkg:authority_*`) | the authority's IRI (gbif.org/species/…, eunis…/eunishabitats/…, sws.geonames.org/…/, wikidata.org/entity/Q…, d-nb.info/gnd/…) | external id (`skos:notation`) |
 | `lkg:Taxon` (⊑ dwc:Taxon) | `data:taxon_<sha1(vernacular lower)>` | German vernacular as written |
 | `lkg:Place` (⊑ geo:SpatialThing, dcterms:Location) | `data:place_<sha1(canonical or verbatim)>` | place name |
 | habitat `skos:Concept` in `lkg:habitatScheme` (**not** a class, **not** a Place) | `data:habitat_<sha1(label)>` | habitat label, shared across observations |
@@ -131,18 +160,19 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
 Observation  (dwc:Occurrence)
   ├─ dcterms:isPartOf + prov:wasDerivedFrom → DiaryEntry   (dwc:Event; lkg:containsObservation back)
   │     ├─ dcterms:isPartOf → DiaryPage ─ dcterms:isPartOf → DiaryVolume   (page unknown: entry → volume)
-  │     ├─ lkg:hasSourceRegion → SourceRegion ─ dcterms:isPartOf → DiaryPage
+  │     ├─ lkg:hasSourceRegion → SourceRegion ─ dcterms:isPartOf → DiaryPage   (one per page the entry spans)
+  │     ├─ lkg:hasMultimodalRegion → MultimodalRegion ─ dcterms:isPartOf → DiaryPage
   │     ├─ lkg:entryPlace → Place            (entry's main locality)
   │     ├─ dwc:eventDate (xsd:date | "start/end"), dwc:verbatimEventDate, dwc:fieldNotes (entry text)
   │     ├─ lkg:entryKind, lkg:datePlausible, skos:note (date note), dcterms:identifier
   │     ├─ lkg:mentionsPerson → Person  + role edge lkg:mentionsCompanion|Source|Collector|CitedAuthor|Other
   │     ├─ lkg:hasWeather → WeatherReport   (dcterms:isPartOf + prov:wasDerivedFrom the entry)
-  │     └─ lkg:containsTravelEvent → TravelEvent ─ lkg:hasLeg → TravelLeg (dcterms:isPartOf the event)
+  │     └─ lkg:containsTravelEvent → TravelEvent ─ lkg:hasLeg → TravelLeg (dcterms:isPartOf the event, prov:wasDerivedFrom the entry)
   ├─ lkg:observedTaxon (⊑ dwciri:toTaxon) → Taxon
   ├─ lkg:observedAt → Place                  (EFFECTIVE place: own locality, else entry place)
   ├─ lkg:hasLocality → Place                 (only when the record states its OWN locality; + dwc:verbatimLocality)
   ├─ lkg:evidenceKind → lkg:evidence_visual|auditory|nest|specimen   (0–4 concepts)
-  ├─ lkg:hasVocalisation → Vocalisation      (lkg:callType, lkg:callTranscription; dcterms:isPartOf back)
+  ├─ lkg:callType "song"|"call"|"alarm"|"drumming", lkg:callTranscription "…"   (literals; 0.6.0)
   ├─ dwc:behavior "…"@de                     (literals, no node)
   ├─ dwciri:habitat → habitat concept        (+ dwc:habitat literal)
   ├─ dwciri:recordedBy → Person              (diarist by default; never fabricated for 3rd-party records)
@@ -167,7 +197,7 @@ and no `wasGeneratedBy` are emitted.
 | `identification_qualifier` | `dwc:identificationQualifier` | the diarist's hedge as written |
 | `event_date`, `event_time` | `dwc:eventDate` (xsd:date; falls back to the entry date), `dwc:eventTime` "HH:MM" | |
 | `record_type`, `observer`, `literature_citation` | `lkg:recordType`, derived `dwc:basisOfRecord`, `dwciri:recordedBy`, `dwc:associatedReferences` | see ontology comment on recordType |
-| `evidence[]` | `lkg:evidenceKind` concept per kind; calls additionally a `lkg:Vocalisation` node (`lkg:callType` always, `lkg:callTranscription` only when written) | no placeholder |
+| `evidence[]` | `lkg:evidenceKind` concept per kind; calls additionally `lkg:callType` (only when the type is stated) and `lkg:callTranscription` (only when written) on the observation | no placeholder; purely vocal behaviour phrases are folded in here |
 | `taxon_verbatim` | `dwc:verbatimIdentification` | the name as written, when resolution merged it into a canonical taxon |
 | `behaviour[]` | `dwc:behavior`@de literals | |
 | `habitat` | `dwciri:habitat` → shared concept + `dwc:habitat` literal | |
@@ -179,15 +209,17 @@ Taxon: `rdfs:label` + `dwc:vernacularName`@de (+ `skos:altLabel` for merged spel
 response, `Taxon.higher_taxonomy`), match provenance (`lkg:matchMethod`,
 `lkg:matchConfidence`, `lkg:gbifMatchType`) and the GBIF link as
 `skos:exactMatch` / `closeMatch` (fuzzy or LLM-mediated) / `broadMatch`
-(HIGHERRANK) plus `dwc:taxonID` (not for broad matches).
+(HIGHERRANK) to the authority record (`lkg:authority_gbif`) plus `dwc:taxonID`
+(not for broad matches).
 
 Place: `rdfs:label`@de (canonical; merged spellings as `skos:altLabel`), `dwc:verbatimLocality`, `lkg:placeKind`,
 `geo:lat`/`geo:long` co-emitted as `dwc:decimalLatitude`/`Longitude` +
 `dwc:geodeticDatum "WGS84"` + `gsp:asWKT "POINT(lon lat)"^^gsp:wktLiteral`.
 
 Person: `rdfs:label`, `schema:name`, `skos:altLabel` (merged name variants),
-`owl:sameAs` (Wikidata). The role is on the mention edge of each entry, not on
-the shared node.
+`skos:exactMatch` (reviewed) / `skos:closeMatch` (automatic unique-label match)
+to the Wikidata item and `skos:exactMatch` to the GND record. The role is on
+the mention edge of each entry, not on the shared node.
 
 ## Corpus → ontology mapping
 
@@ -196,12 +228,14 @@ the shared node.
 | `entry_uid`, `entry_id` | `data:entry_<uid>`, `dcterms:identifier` |
 | `date_norm` / `date_raw` | `dwc:eventDate` (`xsd:date`, model-corrected; multi-day → `"start/end"`), `dwc:verbatimEventDate` |
 | `volume`, `page_uid`, `page_id`, `scan`, `region_uid` | `dcterms:isPartOf` page → volume (+ `dcterms:identifier` on the page), `lkg:hasSourceRegion` |
+| `source_regions` (patched corpus, JSON) | one `lkg:hasSourceRegion` per body-text region the entry spans (continuation pages become `lkg:DiaryPage`s) |
 | `location_raw` | fallback for `lkg:entryPlace` (LLM backend replaces it with the model's reading) |
 | `text_clean` | `dwc:fieldNotes`; extraction input |
 
-Linked images join by `entry_uid`: a `multimodal` region with
-`entry_uid == observation's entry` becomes a DwC-A multimedia record for that
-entry's event.
+Multimodal regions join by `entry_uid` (`multimodal_regions.jsonl`, relinked to
+the patched corpus by `HistOrniGraph_addons/build_multimodal_regions.py`): each
+becomes a `lkg:MultimodalRegion` of that entry and a DwC-A multimedia record
+for the entry's event.
 
 ## Ontology → Darwin Core Archive mapping
 

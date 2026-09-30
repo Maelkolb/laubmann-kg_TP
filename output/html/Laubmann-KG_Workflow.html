@@ -49,10 +49,10 @@ footer { margin-top: 56px; color: var(--muted); font-size: .8rem; }
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">laubmann-kg · workflow · ontology 0.5.0 · last full export 2026-08-19</div>
+  <div class="eyebrow">laubmann-kg · workflow · ontology 0.6.0 · last full export 2026-08-19</div>
   <h1>Laubmann KG — how the workflow works</h1>
   <p class="lede">Alfred Laubmann's ornithological field diaries (34 volumes, 1917–1965) → a knowledge graph and a Darwin Core Archive.
-    An LLM reads each diary entry; the code only checks form, applies reviewer corrections, links to authorities, resolves entities, and serialises to standards (ontology <code>0.5.0</code>).</p>
+    An LLM reads each diary entry; the code only checks form, applies reviewer corrections, links to authorities, resolves entities, and serialises to standards (ontology <code>0.6.0</code>).</p>
   <div class="facts">
     <div class="fact"><b>9,523</b><span>diary entries</span></div>
     <div class="fact"><b>74,584</b><span>observations · 15,297 vocalisations</span></div>
@@ -61,7 +61,7 @@ footer { margin-top: 56px; color: var(--muted); font-size: .8rem; }
     <div class="fact"><b>4,259</b><span>persons · 300 on Wikidata · 880 names merged</span></div>
     <div class="fact"><b>1.74 M</b><span>triples · SHACL passed (0 violations)</span></div>
   </div>
-  <p class="note">Headline counts from Drive <code>kg_exports_2026-08-19/</code> (graph built under ontology 0.4.3). The live ontology / SHACL / emitter in the repo are <strong>0.5.0</strong> (Ziel&nbsp;1: spatial &amp; temporal qualification on observations). A full re-export under 0.5.0 is the next production run.</p>
+  <p class="note">Headline counts from Drive <code>kg_exports_2026-08-19/</code> (graph built under ontology 0.4.3). The live ontology / SHACL / emitter in the repo are <strong>0.6.0</strong> (0.5.0 Ziel&nbsp;1: spatial &amp; temporal qualification on observations; 0.6.0: one authority-link pattern, flat vocalisations, multimodal regions, patched corpus: 338 recovered entries, volume registers cut off, 549 unreliable or irrelevant regions masked). A full re-export under 0.6.0 is the next production run.</p>
 
   <h2>1 · Pipeline</h2>
   <div class="dbar">
@@ -83,7 +83,7 @@ flowchart TB
         A --&gt; B --&gt; R1 --&gt; B2
     end
 
-    subgraph S2["Stage C — laubmann-kg · export-all · ontology 0.5.0"]
+    subgraph S2["Stage C — laubmann-kg · export-all · ontology 0.6.0"]
         direction LR
         C(["LLM reading&lt;br/&gt;gemini · one call per entry&lt;br/&gt;date · place · kind · observations&lt;br/&gt;travel · persons · weather&lt;br/&gt;+ Ziel-1 space/time fields"])
         D["Mapper&lt;br/&gt;vocabulary membership · dates&lt;br/&gt;SHACL-safe legs"]
@@ -168,11 +168,11 @@ flowchart TB
     <ul>
       <li><span class="k">Reproducible.</span> Temperature 0, responses cached by <code>sha256(model, prompt)</code>; a prompt change is a full live run (~2–3 h).</li>
       <li><span class="k">Reviewable.</span> Every exclusion, correction and uncertain link lands in a CSV with a <code>decision</code> column that feeds back on the next run.</li>
-      <li><span class="k">Standards first.</span> Ontology <strong>0.5.0</strong> remains Darwin-Core-first (as of 0.4.0): <code>dwc:</code>/<code>dwciri:</code>/<code>dcterms:</code>/<code>prov:</code>/<code>skos:</code>/<code>gsp:</code> wherever they exist, <code>lkg:</code> only for project-specific meaning; <code>tests/test_ontology_alignment.py</code> guards ontology ↔ emitter ↔ SHACL ↔ JSON-LD in both directions.</li>
+      <li><span class="k">Standards first.</span> Ontology <strong>0.6.0</strong> remains Darwin-Core-first (as of 0.4.0): <code>dwc:</code>/<code>dwciri:</code>/<code>dcterms:</code>/<code>prov:</code>/<code>skos:</code>/<code>gsp:</code> wherever they exist, <code>lkg:</code> only for project-specific meaning; <code>tests/test_ontology_alignment.py</code> guards ontology ↔ emitter ↔ SHACL ↔ JSON-LD in both directions.</li>
     </ul>
   </div>
 
-  <h2>3 · Data model (ontology 0.5.0)</h2>
+  <h2>3 · Data model (ontology 0.6.0)</h2>
   <div class="dbar">
     <div class="chips">
       <span class="chip"><i class="sw" style="background:#FBFBF9;border-color:#7E8C82;border-style:dashed"></i>grouping class (not in the data)</span>
@@ -195,11 +195,8 @@ classDiagram
     }
     class EntryRecord {
         &lt;&lt;abstract · prov:Entity&gt;&gt;
-        dcterms:isPartOf · prov:wasDerivedFrom → entry
-    }
-    class RecordDetail {
-        &lt;&lt;abstract&gt;&gt;
-        dcterms:isPartOf → record
+        prov:wasDerivedFrom → entry
+        dcterms:isPartOf → entry (leg → travel event)
     }
 
     class DiaryVolume {
@@ -215,6 +212,12 @@ classDiagram
         entryKind · datePlausible · skos:note
     }
     class SourceRegion {
+        body-text region(s) of the entry
+    }
+    class MultimodalRegion {
+        regionKind drawing | photograph | map | print | object | text-insert | list
+        dcterms:type · dcterms:description
+        visibleText · dcterms:identifier (crop)
     }
 
     class Observation {
@@ -227,6 +230,7 @@ classDiagram
         dwc:sex · dwc:lifeStage · dwc:vitality
         breedingEvidence · dwc:reproductiveCondition
         movementKind · flightDirection
+        callType song | call | alarm | drumming · callTranscription
         dwc:behavior · dwc:habitat
         dwc:identificationQualifier
         dwc:eventDate · dwc:eventTime · timeOfDay · daylightPhase
@@ -234,10 +238,6 @@ classDiagram
         observationRadiusMeters · dwc:coordinateUncertaintyInMeters
         spatialConfidence · dwc:samplingProtocol
         dwc:basisOfRecord
-    }
-    class Vocalisation {
-        callType
-        callTranscription
     }
     class TravelEvent {
         &lt;&lt;dwc:Event&gt;&gt;
@@ -276,10 +276,11 @@ classDiagram
         &lt;&lt;skos:Concept · lkg:habitatScheme&gt;&gt;
         skos:prefLabel · skos:altLabel
     }
-    class EunisClass {
-        &lt;&lt;skos:Concept · EUNIS 2012&gt;&gt;
+    class AuthorityRecord {
+        &lt;&lt;skos:Concept · lkg:authority_*&gt;&gt;
+        skos:inScheme GBIF | EUNIS | GeoNames | Wikidata | GND
         skos:notation · skos:prefLabel
-        skos:broader chain
+        skos:broader chain (EUNIS)
     }
     class EvidenceKind {
         &lt;&lt;skos:Concept · lkg:evidenceKindScheme&gt;&gt;
@@ -299,33 +300,21 @@ classDiagram
         sha256
     }
 
-    class GBIF_Species {
-        gbif.org/species/KEY
-    }
-    class Wikidata_Item {
-        wikidata.org/entity/Q…
-    }
-    class GeoNames_Feature {
-        sws.geonames.org/ID/
-    }
-    class GND_Person {
-        d-nb.info/gnd/…
-    }
-
     ArchivalUnit &lt;|-- DiaryVolume
     ArchivalUnit &lt;|-- DiaryPage
     ArchivalUnit &lt;|-- DiaryEntry
     ArchivalUnit &lt;|-- SourceRegion
+    SourceRegion &lt;|-- MultimodalRegion
     EntryRecord &lt;|-- Observation
     EntryRecord &lt;|-- TravelEvent
+    EntryRecord &lt;|-- TravelLeg
     EntryRecord &lt;|-- WeatherReport
-    RecordDetail &lt;|-- Vocalisation
-    RecordDetail &lt;|-- TravelLeg
 
     DiaryPage --&gt; "1" DiaryVolume : dcterms∶isPartOf
     DiaryEntry --&gt; "1" DiaryPage : dcterms∶isPartOf
     SourceRegion --&gt; "0..1" DiaryPage : dcterms∶isPartOf
-    DiaryEntry --&gt; "0..1" SourceRegion : hasSourceRegion
+    DiaryEntry --&gt; "*" SourceRegion : hasSourceRegion
+    DiaryEntry --&gt; "*" MultimodalRegion : hasMultimodalRegion ⊑ hasSourceRegion
     DiaryEntry --&gt; "0..1" Place : entryPlace
     DiaryEntry --&gt; "*" Observation : containsObservation ⊑ dcterms∶hasPart
     DiaryEntry --&gt; "*" TravelEvent : containsTravelEvent ⊑ dcterms∶hasPart
@@ -337,7 +326,6 @@ classDiagram
     Observation --&gt; "0..1" Place : hasLocality (own place)
     Observation --&gt; "0..1" Person : dwciri∶recordedBy
     Observation --&gt; "0..4" EvidenceKind : evidenceKind
-    Observation --&gt; "*" Vocalisation : hasVocalisation ⊑ dcterms∶hasPart
     Observation --&gt; "0..1" HabitatConcept : dwciri∶habitat
     Observation --&gt; "1" ExtractionRun : prov∶wasGeneratedBy
 
@@ -346,21 +334,19 @@ classDiagram
     ExtractionRun --&gt; "1" SoftwareAgent : prov∶wasAssociatedWith
     ExtractionRun --&gt; "1" Prompt : prov∶used
 
-    Taxon --&gt; "0..1" GBIF_Species : skos∶exactMatch · closeMatch · broadMatch
-    Person --&gt; "0..1" Wikidata_Item : owl∶sameAs
-    Person --&gt; "0..1" GND_Person : owl∶sameAs
-    Place --&gt; "0..1" GeoNames_Feature : owl∶sameAs
-    Place --&gt; "0..1" Wikidata_Item : owl∶sameAs
-    HabitatConcept --&gt; "0..1" EunisClass : skos∶exactMatch · closeMatch · broadMatch
+    Taxon --&gt; "0..1" AuthorityRecord : skos∶exactMatch | closeMatch | broadMatch (GBIF)
+    HabitatConcept --&gt; "0..1" AuthorityRecord : skos∶exactMatch | closeMatch | broadMatch (EUNIS)
+    Place --&gt; "0..2" AuthorityRecord : skos∶exactMatch | closeMatch (GeoNames, Wikidata)
+    Person --&gt; "0..2" AuthorityRecord : skos∶exactMatch | closeMatch (Wikidata, GND)
 
-    cssClass "ArchivalUnit,EntryRecord,RecordDetail" abstract
-    cssClass "DiaryVolume,DiaryPage,SourceRegion" source
+    cssClass "ArchivalUnit,EntryRecord" abstract
+    cssClass "DiaryVolume,DiaryPage,SourceRegion,MultimodalRegion" source
     cssClass "DiaryEntry,Observation" hub
-    cssClass "Vocalisation,TravelEvent,TravelLeg,WeatherReport" detail
+    cssClass "TravelEvent,TravelLeg,WeatherReport" detail
     cssClass "Taxon,Place,Person" entity
-    cssClass "HabitatConcept,EvidenceKind,EunisClass" concept
+    cssClass "HabitatConcept,EvidenceKind" concept
     cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
-    cssClass "GBIF_Species,Wikidata_Item,GeoNames_Feature,GND_Person" ext
+    cssClass "AuthorityRecord" ext
     classDef abstract fill:#FBFBF9,stroke:#7E8C82,stroke-width:1px,stroke-dasharray:3 3,color:#5F6E64,font-style:italic
     classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
     classDef entity fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A
@@ -368,14 +354,14 @@ classDiagram
     classDef concept fill:#F3EEF7,stroke:#6E5A8A,stroke-width:1px,color:#2E2340
     classDef source fill:#F1ECE0,stroke:#8A7A5A,stroke-width:1px,color:#3A3020
     classDef prov fill:#EEEFEC,stroke:#8A8F8B,stroke-width:1px,stroke-dasharray:5 4,color:#3B413D
-    classDef ext fill:#FFFFFF,stroke:#35608A,stroke-width:1px,stroke-dasharray:6 4,color:#14263A
-</pre></div>
+    classDef ext fill:#FFFFFF,stroke:#35608A,stroke-width:1px,stroke-dasharray:6 4,color:#14263A</pre></div>
   <ul style="margin-top:14px">
-    <li>Three grouping superclasses (<code>ArchivalUnit</code>, <code>EntryRecord</code>, <code>RecordDetail</code>) carry the hierarchy; every child node is <code>dcterms:isPartOf</code> its parent.</li>
-    <li><code>DiaryEntry</code> is the DwC event; <code>Observation</code> is the DwC occurrence. Behaviour = <code>dwc:behavior</code> literals, evidence kinds = <code>lkg:evidenceKind</code> concepts, calls = <code>Vocalisation</code> nodes.</li>
+    <li>Two grouping superclasses (<code>ArchivalUnit</code>, <code>EntryRecord</code>) carry the hierarchy; every child node is <code>dcterms:isPartOf</code> its parent, every extracted record (travel legs included) <code>prov:wasDerivedFrom</code> its entry.</li>
+    <li><code>DiaryEntry</code> is the DwC event; <code>Observation</code> is the DwC occurrence. Behaviour = <code>dwc:behavior</code> literals, evidence kinds = <code>lkg:evidenceKind</code> concepts, what was heard = <code>lkg:callType</code> / <code>lkg:callTranscription</code> on the observation (0.6.0; no separate vocalisation node).</li>
+    <li><strong>Regions (0.6.0):</strong> an entry links every body-text region it runs through (<code>lkg:hasSourceRegion</code>) and its drawings, maps, photographs, mounted objects and inserted texts (<code>lkg:hasMultimodalRegion</code> → <code>lkg:MultimodalRegion</code> ⊑ <code>SourceRegion</code>).</li>
     <li><strong>Ziel 1 (0.5.0):</strong> on the observation — <code>lkg:spatialContext</code>, <code>lkg:microhabitat</code>, <code>lkg:relativeElevation</code>, <code>lkg:timeOfDay</code> / <code>lkg:daylightPhase</code>, <code>lkg:observationRadiusMeters</code> (mirrored as <code>dwc:coordinateUncertaintyInMeters</code>), <code>dwc:samplingProtocol</code>, <code>lkg:spatialConfidence</code>. Named sites stay <code>lkg:Place</code> via <code>hasLocality</code> when they differ from <code>entryPlace</code>.</li>
     <li>Merged spellings sit on the node as <code>skos:altLabel</code>; a merged observation keeps the written taxon name as <code>dwc:verbatimIdentification</code>.</li>
-    <li>Habitats → EUNIS 2012 (<code>skos:*Match</code>); places → GeoNames + Wikidata (<code>owl:sameAs</code>); persons → Wikidata and/or GND; taxa → GBIF (<code>skos:*Match</code>).</li>
+    <li>One link pattern for every authority (0.6.0): taxa → GBIF, habitats → EUNIS 2012, places → GeoNames + Wikidata, persons → Wikidata + GND, all as <code>skos:exactMatch</code> / <code>closeMatch</code> / <code>broadMatch</code> to an authority record (<code>skos:inScheme lkg:authority_*</code>, <code>skos:notation</code>); no <code>owl:sameAs</code>.</li>
     <li>Every observation, journey and weather report <code>prov:wasGeneratedBy</code> the run (model, prompt hash, time).</li>
   </ul>
 
@@ -417,7 +403,7 @@ classDiagram
     <dt>GBIF match</dt><dd><code>species/match</code> API; EXACT ≥ 90 → exactMatch, FUZZY ≥ 95 → closeMatch, higher rank → broadMatch.</dd>
   </dl>
 
-  <footer>laubmann-kg · commit 42d06d4 · ontology 0.5.0 · diagrams from <code>docs/kg_structure.mmd</code>, <code>docs/pipeline.mmd</code> (rendered live with Mermaid)</footer>
+  <footer>laubmann-kg · ontology 0.6.0 · diagrams from <code>docs/kg_structure.mmd</code>, <code>docs/pipeline.mmd</code> (rendered live with Mermaid)</footer>
 </div>
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';

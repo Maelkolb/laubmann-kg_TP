@@ -3,6 +3,34 @@
 # Project Ontology  /  ontologies/laubmann.ttl
 # Namespace: https://w3id.org/laubmann-kg/ontology#   (w3id folder prepared in w3id/laubmann-kg/, PR pending)
 #
+# v0.6.0 (2026-09-30) — one link pattern, flat vocalisations, multimodal regions
+#   - External authority links are represented the same way for all five
+#     authorities (GBIF, EUNIS, GeoNames, Wikidata, GND): a SKOS mapping
+#     property from the project node (Taxon, Place, Person, habitat concept) to
+#     the authority's IRI — skos:exactMatch (same referent, strong evidence:
+#     exact GBIF match, OSM and GeoNames agree, reviewer decision), skos:closeMatch
+#     (same referent, weaker evidence: fuzzy / LLM-mediated / single-source name
+#     match) or skos:broadMatch (the target is broader: GBIF genus anchor, a
+#     broader EUNIS class). The target is described uniformly as a skos:Concept
+#     with skos:inScheme <one of lkg:authority_gbif … lkg:authority_gnd>,
+#     skos:notation (the authority's own id) and, when known, skos:prefLabel.
+#     owl:sameAs is no longer emitted (places and persons used it before): it
+#     cannot express a graded match and would merge the external records'
+#     statements into the graph under OWL reasoning.
+#   - lkg:Vocalisation and lkg:hasVocalisation removed: the sound is recorded on
+#     the Observation itself (lkg:callType, lkg:callTranscription, next to
+#     lkg:evidenceKind lkg:evidence_auditory). No "unknown" call type
+#     placeholder; singing/calling is no longer repeated as dwc:behavior.
+#   - lkg:RecordDetail removed: TravelLeg (its only remaining member) is an
+#     lkg:EntryRecord (dcterms:isPartOf its TravelEvent, prov:wasDerivedFrom the
+#     entry, like every other extracted record).
+#   - New lkg:MultimodalRegion ⊑ lkg:SourceRegion (drawings, sketch maps,
+#     photographs, postcards, prints, mounted objects and inserted texts, from
+#     the cleaned multimodal catalogue), linked from its entry with
+#     lkg:hasMultimodalRegion ⊑ lkg:hasSourceRegion; new lkg:regionKind,
+#     lkg:visibleText. An entry now links every body-text region its text was
+#     read from (lkg:hasSourceRegion, several), so continuation pages are part
+#     of the graph.
 # v0.5.0 (2026-09-15) — Ziel 1 (spatial & temporal qualification):
 #     lkg:spatialContext, lkg:microhabitat, lkg:relativeElevation, lkg:altitudeM,
 #     lkg:observationRadiusMeters, lkg:spatialConfidence, lkg:timeOfDay,
@@ -26,7 +54,7 @@
 #   - Three grouping superclasses carry the class hierarchy: lkg:ArchivalUnit
 #     (volume/page/entry/region), lkg:EntryRecord (what the model extracts from
 #     an entry: Observation, TravelEvent, WeatherReport) and lkg:RecordDetail
-#     (Vocalisation, TravelLeg). Grouping classes are NOT materialised as
+#     (Vocalisation, TravelLeg; removed in 0.6.0). Grouping classes are NOT materialised as
 #     rdf:type in the data; the partonomy is explicit via dcterms:isPartOf /
 #     dcterms:hasPart (all containment properties are sub-properties of hasPart).
 #   - Renamed: ObservationEvent -> lkg:Observation (one taxon record, a
@@ -73,11 +101,11 @@
     a owl:Ontology ;
     dcterms:title "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
     rdfs:label "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
-    dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat and mapped to the EUNIS habitat classification (2012) with skos:exactMatch / closeMatch / broadMatch (ontology 0.4.3); places carry owl:sameAs to their GeoNames feature and Wikidata item. Version 0.5.0 adds fine-grained spatial and temporal qualifications on Observation (Ziel 1: vantage-point context, microhabitat, relative elevation, qualitative time of day / daylight phase, estimated observation radius mirrored as dwc:coordinateUncertaintyInMeters, dwc:samplingProtocol) for GBIF-grade Darwin Core archives. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles, spatial/temporal qualification). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."@en ;
-    rdfs:comment "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat), each mapped to a EUNIS habitat class (skos:exactMatch / closeMatch / broadMatch); places link to GeoNames and Wikidata (owl:sameAs)."@en ;
-    owl:versionInfo "0.5.0" ;
-    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.5.0> ;
-    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.4.3> ;
+    dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Two grouping classes structure the model: archival units (volume, page, entry, layout region — body-text regions and multimodal regions such as drawings, photographs, mounted objects and inserted texts) and entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events and their legs, weather reports); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat. Every link to an external authority — GBIF (taxa), EUNIS (habitats), GeoNames and Wikidata (places), Wikidata and GND (persons) — uses the same pattern (ontology 0.6.0): skos:exactMatch / skos:closeMatch / skos:broadMatch to the authority's IRI, which is described as a skos:Concept with skos:inScheme lkg:authority_<name>, skos:notation and skos:prefLabel. Version 0.5.0 adds fine-grained spatial and temporal qualifications on Observation (Ziel 1: vantage-point context, microhabitat, relative elevation, qualitative time of day / daylight phase, estimated observation radius mirrored as dwc:coordinateUncertaintyInMeters, dwc:samplingProtocol) for GBIF-grade Darwin Core archives. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, call type, entry kind, weather, travel, mention roles, spatial/temporal qualification, region kind). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."@en ;
+    rdfs:comment "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat). External links (GBIF, EUNIS, GeoNames, Wikidata, GND) all use skos:exactMatch / closeMatch / broadMatch to an authority record in one of the lkg:authority_* schemes."@en ;
+    owl:versionInfo "0.6.0" ;
+    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.6.0> ;
+    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.5.0> ;
     vann:preferredNamespacePrefix "lkg" ;
     vann:preferredNamespaceUri "https://w3id.org/laubmann-kg/ontology#" ;
     dcterms:creator [ a foaf:Agent ; foaf:name "Laubmann KG Project" ; foaf:homepage <https://github.com/Maelkolb/laubmann-kg_TP> ] ;   # TODO: replace with the author's name/ORCID before publication
@@ -85,7 +113,7 @@
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:rights "Creative Commons Attribution 4.0 International (CC BY 4.0)"@en ;
     dcterms:issued "2026-07-22"^^xsd:date ;
-    dcterms:modified "2026-09-15"^^xsd:date ;
+    dcterms:modified "2026-09-30"^^xsd:date ;
     dcterms:source <https://github.com/Maelkolb/laubmann-kg_TP> ;
     rdfs:seeAlso <https://github.com/Maelkolb/laubmann-kg_TP> , <https://w3id.org/laubmann-kg/vocabularies> , <https://w3id.org/laubmann-kg/shapes> ;
     dcterms:subject "ornithology"@en , "field diaries"@en , "biodiversity data"@en , "Darwin Core"@en ;
@@ -100,19 +128,14 @@
 lkg:ArchivalUnit
     a owl:Class ;
     rdfs:label "Archival Unit"@en , "Archivalische Einheit"@de ;
-    rdfs:comment "A unit of the digitised source: a diary volume, a scanned page, a dated entry or a layout region on a page. Grouping class only (not asserted as rdf:type in the data); the units are connected by dcterms:isPartOf (region → page → volume, entry → page)."@en ;
+    rdfs:comment "A unit of the digitised source: a diary volume, a scanned page, a dated entry or a layout region on a page (body text or multimodal). Grouping class only (not asserted as rdf:type in the data); the units are connected by dcterms:isPartOf (region → page → volume, entry → page)."@en ;
     rdfs:subClassOf rico:Record .
 
 lkg:EntryRecord
     a owl:Class ;
     rdfs:label "Entry Record"@en , "Eintragsdatensatz"@de ;
-    rdfs:comment "Anything the extraction model reads out of one diary entry: an Observation, a TravelEvent or a WeatherReport. Every entry record is dcterms:isPartOf and prov:wasDerivedFrom exactly one DiaryEntry and prov:wasGeneratedBy the extraction run. Grouping class only (not asserted as rdf:type in the data)."@en ;
+    rdfs:comment "Anything the extraction model reads out of one diary entry: an Observation, a TravelEvent, a TravelLeg or a WeatherReport. Every entry record is prov:wasDerivedFrom exactly one DiaryEntry and prov:wasGeneratedBy the extraction run; it is dcterms:isPartOf that entry (a TravelLeg: of its TravelEvent). Grouping class only (not asserted as rdf:type in the data). Since 0.6.0 there is no separate 'record detail' level: vocalisations are properties of the Observation, travel legs are entry records."@en ;
     rdfs:subClassOf prov:Entity .
-
-lkg:RecordDetail
-    a owl:Class ;
-    rdfs:label "Record Detail"@en , "Datensatzdetail"@de ;
-    rdfs:comment "A structured detail of an entry record that cannot be a single literal: a Vocalisation of an Observation, a TravelLeg of a TravelEvent. dcterms:isPartOf its record. Grouping class only (not asserted as rdf:type in the data)."@en .
 
 # --- Archival units ---------------------------------------------------------
 
@@ -137,8 +160,14 @@ lkg:DiaryEntry
 lkg:SourceRegion
     a owl:Class ;
     rdfs:label "Source Region"@en , "Quellregion"@de ;
-    rdfs:comment "A detected layout region on a scanned page (HistOrniGraph layout stage) whose text became a diary entry; dcterms:isPartOf its DiaryPage. Hook for linking the multimodal (image) corpus."@en ;
+    rdfs:comment "A detected layout region on a scanned page (HistOrniGraph layout stage) that belongs to a diary entry; dcterms:isPartOf its DiaryPage. Asserted as lkg:SourceRegion for the body-text regions an entry's text was read from (an entry that runs over several pages has several), as lkg:MultimodalRegion for the pictorial, physical and inserted-text regions placed with the entry."@en ;
     rdfs:subClassOf lkg:ArchivalUnit .
+
+lkg:MultimodalRegion
+    a owl:Class ;
+    rdfs:label "Multimodal Region"@en , "multimodale Region"@de ;
+    rdfs:comment "A non-body-text region of a page that belongs to a diary entry: a drawing or sketch map, a photograph or postcard, a printed illustration, a mounted object (feathers, pressed leaves, labels) or an inserted text (newspaper clipping, typed report, letter, caption, list). Taken from the cleaned multimodal catalogue v2 (images and objects linked to a dated entry; duplicate scans of the same page removed) and from the text-inserts catalogue (paragraphs and lists judged relevant; marginal notes excluded). Carries dcterms:type (DCMI type), lkg:regionKind, dcterms:description (the layout model's description of an image, English) and lkg:visibleText (text on the region as transcribed); dcterms:isPartOf its DiaryPage, reached from its entry via lkg:hasMultimodalRegion. It is the entry it sits in, not the observations, that the region belongs to: the diarist placed it with the day's notes."@en ;
+    rdfs:subClassOf lkg:SourceRegion .
 
 # --- Entry records ----------------------------------------------------------
 
@@ -160,38 +189,30 @@ lkg:WeatherReport
     rdfs:comment "Weather as recorded in the diary entry. The verbatim wording (lkg:weatherVerbatim) is primary; structured values are optional normalisations and never unit-converted (historical entries may use Réaumur). An entry may carry several reports (e.g. morning and evening, distinguished by dwc:eventTime)."@en ;
     rdfs:subClassOf lkg:EntryRecord .
 
-# --- Record details ---------------------------------------------------------
-
-lkg:Vocalisation
-    a owl:Class ;
-    rdfs:label "Vocalisation"@en , "Lautäußerung"@de ;
-    rdfs:comment "A vocalisation noted for an Observation: call type and, when the diarist wrote one, the phonetic transcription. dcterms:isPartOf its Observation, which also carries lkg:evidenceKind lkg:evidence_auditory."@en ;
-    rdfs:subClassOf lkg:RecordDetail .
-
 lkg:TravelLeg
     a owl:Class ;
     rdfs:label "Travel Leg"@en , "Reiseabschnitt"@de ;
-    rdfs:comment "A single segment of a journey (one train leg, one walking leg …); dcterms:isPartOf its TravelEvent."@en ;
-    rdfs:subClassOf lkg:RecordDetail .
+    rdfs:comment "A single segment of a journey (one train leg, one walking leg …); dcterms:isPartOf its TravelEvent, prov:wasDerivedFrom the entry."@en ;
+    rdfs:subClassOf lkg:EntryRecord .
 
 # --- Shared referents -------------------------------------------------------
 
 lkg:Taxon
     a owl:Class ;
     rdfs:label "Taxon"@en , "Taxon"@de ;
-    rdfs:comment "A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName; further spellings merged by entity resolution as skos:altLabel). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch, dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus)."@en ;
+    rdfs:comment "A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName; further spellings merged by entity resolution as skos:altLabel). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch to an authority record in lkg:authority_gbif; mirrored as the Darwin Core literal dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus)."@en ;
     rdfs:subClassOf dwc:Taxon .
 
 lkg:Place
     a owl:Class ;
     rdfs:label "Place"@en , "Ort"@de ;
-    rdfs:comment "A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned, merged spellings as skos:altLabel). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme."@en ;
+    rdfs:comment "A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned, merged spellings as skos:altLabel). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT, and link to their GeoNames feature and Wikidata item (skos:exactMatch / closeMatch, authority schemes lkg:authority_geonames, lkg:authority_wikidata). Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme."@en ;
     rdfs:subClassOf geo:SpatialThing , dcterms:Location .
 
 lkg:Person
     a owl:Class ;
     rdfs:label "Person"@en , "Person"@de ;
-    rdfs:comment "A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node. Name variants merged by entity resolution (\"W. Wüst\", \"Wüst\" → \"Walter Wüst\") are skos:altLabels."@en ;
+    rdfs:comment "A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node. Name variants merged by entity resolution (\"W. Wüst\", \"Wüst\" → \"Walter Wüst\") are skos:altLabels. Linked persons carry skos:exactMatch / closeMatch to their Wikidata item and GND record (lkg:authority_wikidata, lkg:authority_gnd)."@en ;
     rdfs:subClassOf schema:Person .
 
 # lkg:habitatScheme and all other skos:ConceptSchemes are declared in
@@ -202,7 +223,7 @@ lkg:Person
 # PROPERTIES
 # =============================================================
 
-# --- Partonomy: entry → records → details (all ⊑ dcterms:hasPart) ---------
+# --- Partonomy: entry → records (all ⊑ dcterms:hasPart) ---------------------
 # The inverse dcterms:isPartOf is asserted on every child in the data.
 
 lkg:containsObservation
@@ -235,20 +256,40 @@ lkg:hasLeg
     rdfs:range lkg:TravelLeg ;
     rdfs:subPropertyOf dcterms:hasPart .
 
-lkg:hasVocalisation
-    a owl:ObjectProperty ;
-    rdfs:label "has vocalisation"@en , "hat Lautäußerung"@de ;
-    rdfs:comment "Observation → a vocalisation noted for it (auditory evidence with call type / transcription)."@en ;
-    rdfs:domain lkg:Observation ;
-    rdfs:range lkg:Vocalisation ;
-    rdfs:subPropertyOf dcterms:hasPart .
-
 lkg:hasSourceRegion
     a owl:ObjectProperty ;
     rdfs:label "has source region"@en , "hat Quellregion"@de ;
-    rdfs:comment "Entry → the layout region on the scanned page its text was read from (the region is dcterms:isPartOf the page)."@en ;
+    rdfs:comment "Entry → a layout region on a scanned page that belongs to it (the region is dcterms:isPartOf its page). Asserted for every body-text region the entry's text was read from — an entry that continues over several pages has one per page — and, via the sub-property lkg:hasMultimodalRegion, for its multimodal regions."@en ;
     rdfs:domain lkg:DiaryEntry ;
     rdfs:range lkg:SourceRegion .
+
+lkg:hasMultimodalRegion
+    a owl:ObjectProperty ;
+    rdfs:label "has multimodal region"@en , "hat multimodale Region"@de ;
+    rdfs:comment "Entry → a drawing, map, photograph, postcard, mounted object or inserted text placed with it (the nearest preceding entry header in the page's reading order)."@en ;
+    rdfs:domain lkg:DiaryEntry ;
+    rdfs:range lkg:MultimodalRegion ;
+    rdfs:subPropertyOf lkg:hasSourceRegion .
+
+# --- Multimodal region ------------------------------------------------------
+# Standard terms used on the region: dcterms:type (DCMI type: StillImage,
+# PhysicalObject, Text), dcterms:description (the layout model's description,
+# English), dcterms:identifier (the crop file: regions/<page_id>/<file>.png in
+# the volume's HistOrniGraph output folder), rdfs:label, dcterms:isPartOf.
+
+lkg:regionKind
+    a owl:DatatypeProperty ;
+    rdfs:label "region kind"@en , "Regionsart"@de ;
+    rdfs:comment "What a multimodal region shows: drawing, photograph, map, print, object, text-insert, list (lkg:regionKindScheme)."@en ;
+    rdfs:domain lkg:MultimodalRegion ;
+    rdfs:range xsd:string .
+
+lkg:visibleText
+    a owl:DatatypeProperty ;
+    rdfs:label "visible text"@en , "sichtbarer Text"@de ;
+    rdfs:comment "Text on a multimodal region as transcribed (caption, label, the text of a clipping or letter). Not part of any entry's dwc:fieldNotes and not read by the extraction model."@en ;
+    rdfs:domain lkg:MultimodalRegion ;
+    rdfs:range rdf:langString .
 
 # --- Entry-level reading ----------------------------------------------------
 # Standard terms used on the entry (not redeclared here): dwc:eventDate
@@ -358,7 +399,7 @@ lkg:recordType
 lkg:evidenceKind
     a owl:ObjectProperty ;
     rdfs:label "evidence kind"@en , "Belegart"@de ;
-    rdfs:comment "How the organism was detected, as concept(s) of lkg:evidenceKindScheme: lkg:evidence_visual, lkg:evidence_auditory, lkg:evidence_nest, lkg:evidence_specimen. Only emitted when the text says how; an observation may have none or several. Auditory evidence with call detail additionally gets a lkg:Vocalisation node."@en ;
+    rdfs:comment "How the organism was detected, as concept(s) of lkg:evidenceKindScheme: lkg:evidence_visual, lkg:evidence_auditory, lkg:evidence_nest, lkg:evidence_specimen. Only emitted when the text says how; an observation may have none or several. What was heard is on the same observation: lkg:callType and lkg:callTranscription."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range skos:Concept .
 
@@ -476,20 +517,20 @@ lkg:verbatimNotes
     rdfs:domain lkg:Observation ;
     rdfs:range rdf:langString .
 
-# --- Vocalisation -----------------------------------------------------------
+# --- Vocalisation (on the Observation, since 0.6.0) ------------------------
 
 lkg:callType
     a owl:DatatypeProperty ;
     rdfs:label "call type"@en , "Lautäußerungstyp"@de ;
-    rdfs:comment "Type of vocalisation: song, call, alarm, drumming, unknown (lkg:callTypeScheme)."@en ;
-    rdfs:domain lkg:Vocalisation ;
+    rdfs:comment "Type of vocalisation heard: song, call, alarm, drumming (lkg:callTypeScheme). Only when the text says which; an observation heard singing and calling has two values. Implies lkg:evidenceKind lkg:evidence_auditory, which is always asserted alongside (an auditory record without a stated type has the evidence kind only). Replaces the lkg:Vocalisation node of 0.4–0.5 and the dwc:behavior copies (\"singend\", \"ruft\")."@en ;
+    rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
 lkg:callTranscription
     a owl:DatatypeProperty ;
     rdfs:label "call transcription"@en , "Lautschrift"@de ;
-    rdfs:comment "Phonetic transcription of the call as written in the diary. Only present when the diarist wrote one (no placeholder)."@en ;
-    rdfs:domain lkg:Vocalisation ;
+    rdfs:comment "Phonetic rendering of the call as written in the diary (\"zich zich\", \"Tlü-hit\"). Only when the diarist wrote one (no placeholder); several values when he wrote several."@en ;
+    rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
 # --- Travel -----------------------------------------------------------------
@@ -537,7 +578,9 @@ lkg:transportMode
 # Standard terms used on the place: rdfs:label (cleaned name), dwc:verbatimLocality
 # (as written), geo:lat / geo:long, dwc:decimalLatitude / dwc:decimalLongitude,
 # dwc:geodeticDatum, gsp:asWKT ("POINT(lon lat)"^^gsp:wktLiteral, asserted
-# directly on the Place — the flat GeoSPARQL idiom, no separate Geometry node).
+# directly on the Place — the flat GeoSPARQL idiom, no separate Geometry node),
+# dwc:coordinateUncertaintyInMeters, dwc:georeferenceSources, and the authority
+# links (skos:exactMatch / closeMatch → GeoNames feature, Wikidata item).
 
 lkg:placeKind
     a owl:DatatypeProperty ;
@@ -551,7 +594,7 @@ lkg:placeKind
 # written), dwc:scientificName, dwc:taxonRank, dwc:taxonID, dwc:kingdom,
 # dwc:phylum, dwc:class, dwc:order, dwc:family, dwc:genus (GBIF backbone
 # classification of the linked taxon), skos:exactMatch / closeMatch /
-# broadMatch (GBIF), owl:sameAs, skos:note (unresolved names).
+# broadMatch (GBIF authority record), skos:note (unresolved names).
 
 lkg:isBird
     a owl:DatatypeProperty ;
@@ -580,6 +623,30 @@ lkg:gbifMatchType
     rdfs:comment "GBIF backbone match type: EXACT, FUZZY, HIGHERRANK. Determines the SKOS mapping predicate (exactMatch / closeMatch / broadMatch)."@en ;
     rdfs:domain lkg:Taxon ;
     rdfs:range xsd:string .
+
+# --- External authority links (0.6.0) --------------------------------------
+# One pattern for every authority, no lkg: property needed:
+#
+#   <project node>  skos:exactMatch | skos:closeMatch | skos:broadMatch  <authority IRI> .
+#   <authority IRI> a skos:Concept ;
+#                   skos:inScheme  lkg:authority_gbif | _eunis | _geonames | _wikidata | _gnd ;
+#                   skos:notation  "<the authority's own id>" ;
+#                   skos:prefLabel "<its label, when known>" .
+#
+#   project node        authority   IRI form                                          grades used
+#   lkg:Taxon           GBIF        https://www.gbif.org/species/<usageKey>            exact (EXACT match) · close (FUZZY or LLM-proposed) · broad (HIGHERRANK genus anchor)
+#   habitat concept     EUNIS       http://eunis.eea.europa.eu/eunishabitats/<code>    exact · close · broad (model/reviewer judgement)
+#   lkg:Place           GeoNames    https://sws.geonames.org/<id>/                     exact (OSM + GeoNames agree, or reviewed) · close (single-source name match)
+#   lkg:Place           Wikidata    http://www.wikidata.org/entity/Q<n>                same grade as the place's georeference
+#   lkg:Person          Wikidata    http://www.wikidata.org/entity/Q<n>                exact (reviewed) · close (unique exact-label match of a human)
+#   lkg:Person          GND         https://d-nb.info/gnd/<id>                         exact (reviewer-researched)
+#
+# The authority schemes are declared in controlled_vocabularies.ttl. EUNIS
+# classes additionally carry their skos:broader chain and rdfs:seeAlso pages.
+# The SKOS mapping properties formally relate skos:Concepts: the project's
+# Taxon, Place and Person nodes are read as the project's own authority
+# records (index entries), as gazetteers and name authorities do; validation
+# runs without RDFS inference.
 
 # --- Weather ----------------------------------------------------------------
 

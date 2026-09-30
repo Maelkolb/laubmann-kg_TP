@@ -7,9 +7,12 @@
 # value emitted in the data graph (e.g. lkg:movementKind "passing-over").
 # =============================================================
 
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix lkg:  <https://w3id.org/laubmann-kg/ontology#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix lkg:     <https://w3id.org/laubmann-kg/ontology#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix void:    <http://rdfs.org/ns/void#> .
 
 # --- Transport modes (TravelLeg.transportMode) ---------------
 lkg:transportModeScheme a skos:ConceptScheme ;
@@ -23,7 +26,9 @@ lkg:transport_carriage a skos:Concept ; skos:inScheme lkg:transportModeScheme ; 
 lkg:transport_bicycle a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "bicycle"@en, "Fahrrad"@de .
 lkg:transport_unknown a skos:Concept ; skos:inScheme lkg:transportModeScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
 
-# --- Call types (Vocalisation.callType) --------------------------
+# --- Call types (Observation.callType, since 0.6.0) --------------
+# No "unknown" value: an auditory record whose call type the text does not
+# state carries lkg:evidence_auditory only.
 lkg:callTypeScheme a skos:ConceptScheme ;
     skos:prefLabel "Bird call types"@en , "Lautäußerungstypen"@de .
 
@@ -31,7 +36,6 @@ lkg:call_song     a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefL
 lkg:call_call     a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "call"@en, "Ruf"@de .
 lkg:call_alarm    a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "alarm"@en, "Warnruf"@de .
 lkg:call_drumming a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "drumming"@en, "Trommeln"@de .
-lkg:call_unknown  a skos:Concept ; skos:inScheme lkg:callTypeScheme ; skos:prefLabel "unknown"@en, "unbekannt"@de .
 
 # --- Count qualifiers (Observation.countQualifier) ------
 lkg:countQualifierScheme a skos:ConceptScheme ;
@@ -142,12 +146,68 @@ lkg:entrykind_retrospective  a skos:Concept ; skos:inScheme lkg:entryKindScheme 
 lkg:entrykind_correspondence a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "correspondence"@en, "Korrespondenz"@de .
 lkg:entrykind_other          a skos:Concept ; skos:inScheme lkg:entryKindScheme ; skos:prefLabel "other"@en, "sonstiges"@de .
 
+# --- Region kinds (MultimodalRegion.regionKind, since 0.6.0) -------------
+lkg:regionKindScheme a skos:ConceptScheme ;
+    skos:prefLabel "Multimodal region kinds"@en , "Arten multimodaler Regionen"@de .
+
+lkg:region_drawing    a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "drawing"@en, "Zeichnung / Bild"@de ;
+    skos:definition "Drawing, sketch, watercolour or other image the layout model did not specify further."@en .
+lkg:region_photograph a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "photograph"@en, "Fotografie / Postkarte"@de .
+lkg:region_map        a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "map"@en, "Karte / Panorama"@de .
+lkg:region_print      a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "print"@en, "Druck / Gemälde"@de .
+lkg:region_object     a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "object"@en, "Objekt (Feder, Blatt, Etikett …)"@de .
+lkg:region_text_insert a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "text-insert"@en, "Texteinlage (Zeitungsausschnitt, Bericht, Brief, Beschriftung)"@de .
+lkg:region_list       a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "list"@en, "Liste / Tabelle (Einlage)"@de .
+
+# --- External authorities (targets of skos:exactMatch / closeMatch / broadMatch, since 0.6.0) --
+# Every external link of the graph points at a record of one of these
+# schemes; the record is described with skos:inScheme, skos:notation (the
+# authority's id) and skos:prefLabel when known. void:uriSpace gives the IRI
+# form of the records.
+lkg:authority_gbif a skos:ConceptScheme ;
+    skos:prefLabel "GBIF Backbone Taxonomy"@en ;
+    skos:notation "GBIF" ;
+    dcterms:publisher "Global Biodiversity Information Facility" ;
+    foaf:homepage <https://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c> ;
+    void:uriSpace "https://www.gbif.org/species/" ;
+    rdfs:comment "Taxa (lkg:Taxon). Grade: exactMatch = GBIF EXACT match at or above the configured confidence; closeMatch = FUZZY match or a name proposed by the LLM and verified in GBIF; broadMatch = HIGHERRANK (the name is anchored at genus level). Mirrored as dwc:taxonID (except broadMatch)."@en .
+
+lkg:authority_eunis a skos:ConceptScheme ;
+    skos:prefLabel "EUNIS habitat classification (2012)"@en ;
+    skos:notation "EUNIS" ;
+    dcterms:publisher "European Environment Agency (Eionet vocabulary)" ;
+    foaf:homepage <https://dd.eionet.europa.eu/vocabulary/biodiversity/eunishabitats/> ;
+    void:uriSpace "http://eunis.eea.europa.eu/eunishabitats/" ;
+    rdfs:comment "Habitat concepts (lkg:habitatScheme). Grade from the model/reviewer judgement (exact, close, broad). EUNIS records also carry their skos:broader chain up to the level-1 group and rdfs:seeAlso to the Eionet Data Dictionary and BISE pages."@en .
+
+lkg:authority_geonames a skos:ConceptScheme ;
+    skos:prefLabel "GeoNames"@en ;
+    skos:notation "GeoNames" ;
+    foaf:homepage <https://www.geonames.org/> ;
+    void:uriSpace "https://sws.geonames.org/" ;
+    rdfs:comment "Places (lkg:Place). Grade: exactMatch = the OpenStreetMap hit and the GeoNames record agree, or a reviewer confirmed the link; closeMatch = single-source name match (GeoNames alone, unique in the home region)."@en .
+
+lkg:authority_wikidata a skos:ConceptScheme ;
+    skos:prefLabel "Wikidata"@en ;
+    skos:notation "Wikidata" ;
+    foaf:homepage <https://www.wikidata.org/> ;
+    void:uriSpace "http://www.wikidata.org/entity/" ;
+    rdfs:comment "Places (same grade as the place's georeference; the item comes from the OSM object's wikidata tag or from GeoNames id P1566) and persons (exactMatch = reviewed; closeMatch = the only Wikidata human whose label or alias equals the name)."@en .
+
+lkg:authority_gnd a skos:ConceptScheme ;
+    skos:prefLabel "Gemeinsame Normdatei (GND)"@de , "Integrated Authority File (GND)"@en ;
+    skos:notation "GND" ;
+    dcterms:publisher "Deutsche Nationalbibliothek" ;
+    foaf:homepage <https://www.dnb.de/gnd> ;
+    void:uriSpace "https://d-nb.info/gnd/" ;
+    rdfs:comment "Persons (lkg:Person); researched by the reviewer (validation UI, person_link_review.csv gnd column) → exactMatch."@en .
+
 # --- Habitats (habitat nodes in the data are skos:Concepts of this scheme, reached via dwciri:habitat) --
 # Open list: the concepts are emitted as DATA (data:habitat_<sha1>) with
 # skos:prefLabel@de, not enumerated here.
 lkg:habitatScheme a skos:ConceptScheme ;
     skos:prefLabel "Habitats"@en , "Lebensräume"@de ;
-    skos:definition "Open concept scheme collecting the habitat concepts emitted as data (skos:Concept nodes such as Auwald, Schilf, Moor, linked from observations via dwciri:habitat); not enumerated here. Since ontology 0.4.3 each concept carries at most one skos:exactMatch / skos:closeMatch / skos:broadMatch to a class of the EUNIS habitat classification (2012; Eionet vocabulary http://eunis.eea.europa.eu/eunishabitats/<code>, e.g. Auwald → G1.2, Schilf → C3.21, Garten → I2.2); the EUNIS classes are in the data graph as external skos:Concepts with skos:notation, skos:prefLabel, their skos:broader chain and rdfs:seeAlso links to the maintained pages (Eionet Data Dictionary, BISE 2012 hierarchical view — the eunis.eea.europa.eu application itself is retired)."@en .
+    skos:definition "Open concept scheme collecting the habitat concepts emitted as data (skos:Concept nodes such as Auwald, Schilf, Moor, linked from observations via dwciri:habitat); not enumerated here. Since ontology 0.4.3 each concept carries at most one skos:exactMatch / skos:closeMatch / skos:broadMatch to a class of the EUNIS habitat classification (2012; Eionet vocabulary http://eunis.eea.europa.eu/eunishabitats/<code>, e.g. Auwald → G1.2, Schilf → C3.21, Garten → I2.2); the EUNIS classes are in the data graph as authority records of lkg:authority_eunis (skos:notation, skos:prefLabel, their skos:broader chain and rdfs:seeAlso links to the maintained pages — Eionet Data Dictionary, BISE 2012 hierarchical view; the eunis.eea.europa.eu application itself is retired)."@en .
 
 # --- Precipitation (WeatherReport.precipitation) -------------
 lkg:precipitationScheme a skos:ConceptScheme ;

@@ -1,4 +1,5 @@
 @prefix data:     <https://w3id.org/laubmann-kg/data/> .
+@prefix dcmitype: <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix dwc:      <http://rs.tdwg.org/dwc/terms/> .
 @prefix dwciri:   <http://rs.tdwg.org/dwc/iri/> .
@@ -7,17 +8,19 @@
 @prefix geonames: <https://sws.geonames.org/> .
 @prefix gsp:      <http://www.opengis.net/ont/geosparql#> .
 @prefix lkg:      <https://w3id.org/laubmann-kg/ontology#> .
-@prefix owl:      <http://www.w3.org/2002/07/owl#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
-@prefix wd:       <https://www.wikidata.org/entity/> .
+@prefix wd:       <http://www.wikidata.org/entity/> .
+@prefix gnd:      <https://d-nb.info/gnd/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 # =============================================================
-# Hand-written illustration of the 0.4.0 data shape (one entry):
-# archival units -> entry -> records (observations, travel, weather)
-# -> details (vocalisations, legs); shared taxa/places/persons/habitat.
+# Hand-written illustration of the 0.6.0 data shape (one entry):
+# archival units (volume, pages, text regions, a multimodal region)
+# -> entry -> records (observations, travel event + legs, weather);
+# shared taxa/places/persons/habitat, each linked to its authority
+# (GBIF, GeoNames, Wikidata, GND) with the one SKOS link pattern.
 # =============================================================
 
 # --- ARCHIVAL UNITS ------------------------------------------
@@ -30,9 +33,29 @@ data:page_19250529 a lkg:DiaryPage ;
     dcterms:identifier "p_19250529" ;
     dcterms:isPartOf data:volume_unknown .
 
+data:page_19250530 a lkg:DiaryPage ;
+    rdfs:label "Vol. ?? (p_19250530)" ;
+    dcterms:identifier "p_19250530" ;
+    dcterms:isPartOf data:volume_unknown .
+
 data:region_19250529 a lkg:SourceRegion ;
     rdfs:label "Region r_19250529" ;
     dcterms:isPartOf data:page_19250529 .
+
+# the entry continues on the next page: a second body-text region
+data:region_19250530 a lkg:SourceRegion ;
+    rdfs:label "Region r_19250530" ;
+    dcterms:isPartOf data:page_19250530 .
+
+# a sketch map pasted next to the entry (multimodal catalogue)
+data:region_map_19250530 a lkg:MultimodalRegion ;
+    rdfs:label "Karte · Bd. ??, Scan 0031"@de ;
+    lkg:regionKind "map" ;
+    dcterms:type dcmitype:StillImage ;
+    dcterms:description "A hand-drawn map of the Aach valley between Zwiefaltendorf and Gossenzugen with the route in red."@en ;
+    lkg:visibleText "Zwiefaltendorf – Baach – Gossenzugen"@de ;
+    dcterms:identifier "regions/p_19250530/r04_ImageRegion.png" ;
+    dcterms:isPartOf data:page_19250530 .
 
 # --- DIARY ENTRY (the event) ---------------------------------
 
@@ -45,7 +68,8 @@ data:entry_19250529 a lkg:DiaryEntry ;
     lkg:entryPlace data:place_Munich ;
     lkg:datePlausible true ;
     dcterms:isPartOf data:page_19250529 ;
-    lkg:hasSourceRegion data:region_19250529 ;
+    lkg:hasSourceRegion data:region_19250529 , data:region_19250530 , data:region_map_19250530 ;
+    lkg:hasMultimodalRegion data:region_map_19250530 ;
     lkg:mentionsPerson data:person_Kiefer ;
     lkg:mentionsCompanion data:person_Kiefer ;
     lkg:hasWeather data:weather_19250529 ;
@@ -79,6 +103,7 @@ data:journey_19250529 a lkg:TravelEvent ;
 data:leg_train_Munich_Zwiefaltendorf a lkg:TravelLeg ;
     rdfs:label "Zugfahrt München – Zwiefaltendorf"@de ;
     dcterms:isPartOf data:journey_19250529 ;
+    prov:wasDerivedFrom data:entry_19250529 ;
     lkg:transportMode "train" ;
     lkg:departurePlace data:place_Munich ;
     lkg:arrivalPlace   data:place_Zwiefaltendorf ;
@@ -89,6 +114,7 @@ data:leg_train_Munich_Zwiefaltendorf a lkg:TravelLeg ;
 data:leg_walk_Zwiefaltendorf_Gossenzugen a lkg:TravelLeg ;
     rdfs:label "Fußmarsch Zwiefaltendorf – Gossenzugen"@de ;
     dcterms:isPartOf data:journey_19250529 ;
+    prov:wasDerivedFrom data:entry_19250529 ;
     lkg:transportMode "foot" ;
     lkg:departurePlace data:place_Zwiefaltendorf ;
     lkg:arrivalPlace   data:place_Gossenzugen ;
@@ -109,8 +135,7 @@ data:taxon_Kiebitz a lkg:Taxon ;
     lkg:matchMethod "gazetteer" ;
     lkg:gbifMatchType "EXACT" ;
     skos:exactMatch gbif:2480242 ;
-    dwc:taxonID "https://www.gbif.org/species/2480242" ;
-    owl:sameAs wd:Q25401 .
+    dwc:taxonID "https://www.gbif.org/species/2480242" .
 
 data:taxon_Moewe a lkg:Taxon ;
     rdfs:label "möwenartiger Vogel"@de ;
@@ -129,7 +154,7 @@ data:taxon_Heuschreckensaenger a lkg:Taxon ;
     lkg:isBird true ;
     lkg:matchMethod "gazetteer" ;
     skos:exactMatch gbif:2493135 ;
-    owl:sameAs wd:Q25402 .
+    dwc:taxonID "https://www.gbif.org/species/2493135" .
 
 data:taxon_Wachtelkoenig a lkg:Taxon ;
     rdfs:label "Wachtelkönig"@de ;
@@ -140,7 +165,7 @@ data:taxon_Wachtelkoenig a lkg:Taxon ;
     lkg:isBird true ;
     lkg:matchMethod "gazetteer" ;
     skos:exactMatch gbif:2474543 ;
-    owl:sameAs wd:Q25403 .
+    dwc:taxonID "https://www.gbif.org/species/2474543" .
 
 data:taxon_Waldohreule a lkg:Taxon ;
     rdfs:label "Waldohreule"@de ;
@@ -151,7 +176,7 @@ data:taxon_Waldohreule a lkg:Taxon ;
     lkg:isBird true ;
     lkg:matchMethod "gazetteer" ;
     skos:exactMatch gbif:2497961 ;
-    owl:sameAs wd:Q25404 .
+    dwc:taxonID "https://www.gbif.org/species/2497961" .
 
 data:taxon_Storch a lkg:Taxon ;
     rdfs:label "Storch"@de ;
@@ -162,7 +187,7 @@ data:taxon_Storch a lkg:Taxon ;
     lkg:isBird true ;
     lkg:matchMethod "gazetteer" ;
     skos:exactMatch gbif:2480962 ;
-    owl:sameAs wd:Q25405 .
+    dwc:taxonID "https://www.gbif.org/species/2480962" .
 
 # --- PLACES (shared referents) -------------------------------
 
@@ -170,7 +195,7 @@ data:place_Munich a lkg:Place ;
     rdfs:label "München"@de ;
     dwc:verbatimLocality "München" ;
     lkg:placeKind "settlement" ;
-    owl:sameAs geonames:2867714, wd:Q1726 ;
+    skos:exactMatch geonames:2867714\/ , wd:Q1726 ;
     geo:lat 48.1374 ; geo:long 11.5755 ;
     dwc:decimalLatitude 48.1374 ; dwc:decimalLongitude 11.5755 ; dwc:geodeticDatum "WGS84" ;
     gsp:asWKT "POINT(11.5755 48.1374)"^^gsp:wktLiteral .
@@ -179,7 +204,7 @@ data:place_Augsburg a lkg:Place ;
     rdfs:label "Augsburg"@de ;
     dwc:verbatimLocality "Augsburg" ;
     lkg:placeKind "settlement" ;
-    owl:sameAs geonames:2954172, wd:Q2749 ;
+    skos:exactMatch geonames:2954172\/ , wd:Q2749 ;
     geo:lat 48.3717 ; geo:long 10.8983 ;
     gsp:asWKT "POINT(10.8983 48.3717)"^^gsp:wktLiteral .
 
@@ -187,7 +212,7 @@ data:place_Ulm a lkg:Place ;
     rdfs:label "Ulm"@de ;
     dwc:verbatimLocality "Ulm" ;
     lkg:placeKind "settlement" ;
-    owl:sameAs geonames:2820860, wd:Q6810 ;
+    skos:exactMatch geonames:2820860\/ , wd:Q6810 ;
     geo:lat 48.3984 ; geo:long 9.9908 ;
     gsp:asWKT "POINT(9.9908 48.3984)"^^gsp:wktLiteral .
 
@@ -195,7 +220,7 @@ data:place_Zwiefaltendorf a lkg:Place ;
     rdfs:label "Zwiefaltendorf"@de ;
     dwc:verbatimLocality "Zwiefaltendorf" ;
     lkg:placeKind "settlement" ;
-    owl:sameAs geonames:2803993, wd:Q1533 ;
+    skos:exactMatch geonames:2803993\/ , wd:Q1533 ;
     geo:lat 48.2167 ; geo:long 9.4333 ;
     gsp:asWKT "POINT(9.4333 48.2167)"^^gsp:wktLiteral .
 
@@ -246,6 +271,24 @@ data:place_Baach a lkg:Place ;
     dwc:verbatimLocality "Baach" ;
     lkg:placeKind "settlement" .
 
+# --- AUTHORITY RECORDS (targets of every skos:*Match, 0.6.0) ------
+
+gbif:2480242 a skos:Concept ; skos:inScheme lkg:authority_gbif ; skos:notation "2480242" ; skos:prefLabel "Vanellus vanellus" .
+gbif:2493135 a skos:Concept ; skos:inScheme lkg:authority_gbif ; skos:notation "2493135" ; skos:prefLabel "Locustella naevia" .
+gbif:2474543 a skos:Concept ; skos:inScheme lkg:authority_gbif ; skos:notation "2474543" ; skos:prefLabel "Crex crex" .
+gbif:2497961 a skos:Concept ; skos:inScheme lkg:authority_gbif ; skos:notation "2497961" ; skos:prefLabel "Asio otus" .
+gbif:2480962 a skos:Concept ; skos:inScheme lkg:authority_gbif ; skos:notation "2480962" ; skos:prefLabel "Ciconia ciconia" .
+geonames:2867714\/ a skos:Concept ; skos:inScheme lkg:authority_geonames ; skos:notation "2867714" .
+geonames:2954172\/ a skos:Concept ; skos:inScheme lkg:authority_geonames ; skos:notation "2954172" .
+geonames:2820860\/ a skos:Concept ; skos:inScheme lkg:authority_geonames ; skos:notation "2820860" .
+geonames:2803993\/ a skos:Concept ; skos:inScheme lkg:authority_geonames ; skos:notation "2803993" .
+wd:Q1726 a skos:Concept ; skos:inScheme lkg:authority_wikidata ; skos:notation "Q1726" .
+wd:Q2749 a skos:Concept ; skos:inScheme lkg:authority_wikidata ; skos:notation "Q2749" .
+wd:Q6810 a skos:Concept ; skos:inScheme lkg:authority_wikidata ; skos:notation "Q6810" .
+wd:Q1533 a skos:Concept ; skos:inScheme lkg:authority_wikidata ; skos:notation "Q1533" .
+wd:Q11850829 a skos:Concept ; skos:inScheme lkg:authority_wikidata ; skos:notation "Q11850829" .
+gnd:1012394506 a skos:Concept ; skos:inScheme lkg:authority_gnd ; skos:notation "1012394506" .
+
 # --- HABITAT CONCEPT (shared skos:Concept, no class of its own) --
 
 data:habitat_Wiesenland a skos:Concept ;
@@ -256,7 +299,8 @@ data:habitat_Wiesenland a skos:Concept ;
 # --- PERSONS -------------------------------------------------
 
 data:person_c6b2ff6250e5 a lkg:Person ;
-    rdfs:label "Alfred Laubmann" .
+    rdfs:label "Alfred Laubmann" ;
+    skos:exactMatch wd:Q11850829 , gnd:1012394506 .
 
 data:person_Kiefer a lkg:Person ;
     rdfs:label "Kiefer" .
@@ -313,15 +357,11 @@ data:obs_Heuschreckensaenger a lkg:Observation ;
     dwc:individualCount  1 ;
     lkg:verbatimNotes    "rechts der Straße schwirrt ein Heuschreckensänger"@de ;
     lkg:evidenceKind     lkg:evidence_auditory ;
-    lkg:hasVocalisation  data:vocalisation_Heuschreckensaenger_0 ;
+    lkg:callType         "song" ;
+    lkg:callTranscription "schwirrt" ;
     lkg:recordType       "field-observation" ;
     dwc:basisOfRecord    "HumanObservation" ;
     dwciri:recordedBy    data:person_c6b2ff6250e5 .
-
-data:vocalisation_Heuschreckensaenger_0 a lkg:Vocalisation ;
-    dcterms:isPartOf      data:obs_Heuschreckensaenger ;
-    lkg:callType          "song" ;
-    lkg:callTranscription "schwirrt" .
 
 # --- OBS 4: Wachtelkönig (walk, auditory/call, habitat: grassland) ---
 data:obs_Wachtelkoenig a lkg:Observation ;
@@ -337,15 +377,11 @@ data:obs_Wachtelkoenig a lkg:Observation ;
     lkg:countQualifier   "plural-unspecified" ;
     lkg:verbatimNotes    "das Schnarren mehrerer Wachtelkönige"@de ;
     lkg:evidenceKind     lkg:evidence_auditory ;
-    lkg:hasVocalisation  data:vocalisation_Wachtelkoenig_0 ;
+    lkg:callType         "call" ;
+    lkg:callTranscription "Schnarren" ;
     lkg:recordType       "field-observation" ;
     dwc:basisOfRecord    "HumanObservation" ;
     dwciri:recordedBy    data:person_c6b2ff6250e5 .
-
-data:vocalisation_Wachtelkoenig_0 a lkg:Vocalisation ;
-    dcterms:isPartOf      data:obs_Wachtelkoenig ;
-    lkg:callType          "call" ;
-    lkg:callTranscription "Schnarren" .
 
 # --- OBS 5: Waldohreule (walk, auditory/call 'pich pich') ---
 data:obs_Waldohreule a lkg:Observation ;
@@ -359,15 +395,11 @@ data:obs_Waldohreule a lkg:Observation ;
     dwc:individualCount  1 ;
     lkg:verbatimNotes    "Eine Waldohreule ruft ihr pich pich"@de ;
     lkg:evidenceKind     lkg:evidence_auditory ;
-    lkg:hasVocalisation  data:vocalisation_Waldohreule_0 ;
+    lkg:callType         "call" ;
+    lkg:callTranscription "pich pich" ;
     lkg:recordType       "field-observation" ;
     dwc:basisOfRecord    "HumanObservation" ;
     dwciri:recordedBy    data:person_c6b2ff6250e5 .
-
-data:vocalisation_Waldohreule_0 a lkg:Vocalisation ;
-    dcterms:isPartOf      data:obs_Waldohreule ;
-    lkg:callType          "call" ;
-    lkg:callTranscription "pich pich" .
 
 # --- OBS 6: Storch (walk, nest, breeding confirmed) ---
 data:obs_Storch_Kirchturm a lkg:Observation ;

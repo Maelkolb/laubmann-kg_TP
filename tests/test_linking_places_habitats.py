@@ -107,8 +107,13 @@ def test_link_places_applies_links_writes_review_and_emits_rdf(tmp_path, monkeyp
     assert e1.observations[0].place is p                    # references re-pointed to the one linked object
     graph = build_graph(result)
     node = DATA[p.uid]
-    assert (node, OWL.sameAs, URIRef("https://sws.geonames.org/2895643/")) in graph
-    assert (node, OWL.sameAs, URIRef("http://www.wikidata.org/entity/Q262560")) in graph
+    # OSM hit and GeoNames record agree -> exact matches in the common link pattern (0.6.0)
+    assert p.georef_source == "osm+geonames"
+    assert (node, SKOS.exactMatch, URIRef("https://sws.geonames.org/2895643/")) in graph
+    assert (node, SKOS.exactMatch, URIRef("http://www.wikidata.org/entity/Q262560")) in graph
+    assert (URIRef("https://sws.geonames.org/2895643/"), SKOS.inScheme, LKG.authority_geonames) in graph
+    assert (URIRef("http://www.wikidata.org/entity/Q262560"), SKOS.notation, Literal("Q262560")) in graph
+    assert not list(graph.triples((node, OWL.sameAs, None)))
     assert graph.value(node, DWC.coordinateUncertaintyInMeters).toPython() == 2000
     assert graph.value(node, DWC.georeferenceSources) is not None
     assert _shacl_ok(graph, tmp_path)

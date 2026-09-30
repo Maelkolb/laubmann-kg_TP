@@ -94,12 +94,15 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
     # collect names with usage counts (mentions + observer attributions)
     usage: Counter = Counter()
     wikidata: dict[str, str] = {}
+    wd_match: dict[str, str] = {}        # name -> exact | close (grade of its Wikidata link)
     gnd: dict[str, str] = {}
     for entry in result.entries:
         for p in entry.persons:
             usage[p.name] += 1
             if p.wikidata_iri:
                 wikidata[p.name] = p.wikidata_iri
+                if p.wikidata_match:
+                    wd_match[p.name] = p.wikidata_match
             if p.gnd_iri:
                 gnd[p.name] = p.gnd_iri
         for obs in entry.observations:
@@ -107,6 +110,8 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
                 usage[obs.observer.name] += 1
                 if obs.observer.wikidata_iri:
                     wikidata[obs.observer.name] = obs.observer.wikidata_iri
+                    if obs.observer.wikidata_match:
+                        wd_match[obs.observer.name] = obs.observer.wikidata_match
                 if obs.observer.gnd_iri:
                     gnd[obs.observer.name] = obs.observer.gnd_iri
     names = sorted(usage)                # the diarist stays in the pool as a forced canonical
@@ -267,11 +272,14 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
     def canonical_person(name: str, template: Person) -> Person:
         c = mapping.get(name, name)
         if c not in canon_person:
-            qid = wikidata.get(c) or next((wikidata[v] for v in alts.get(c, []) if v in wikidata), None)
+            src = c if c in wikidata else next((v for v in alts.get(c, []) if v in wikidata), None)
+            qid = wikidata.get(src) if src else None
+            match = wd_match.get(src) if src else None
             if c == DIARIST.name:
                 qid = qid or DIARIST.wikidata_iri
             g = gnd.get(c) or next((gnd[v] for v in alts.get(c, []) if v in gnd), None)
-            canon_person[c] = Person(name=c, role=None, wikidata_iri=qid, alt_names=tuple(sorted(set(alts.get(c, [])))), gnd_iri=g)
+            canon_person[c] = Person(name=c, role=None, wikidata_iri=qid, wikidata_match=match,
+                                     alt_names=tuple(sorted(set(alts.get(c, [])))), gnd_iri=g)
         base = canon_person[c]
         return replace(base, role=template.role) if template.role else base
 

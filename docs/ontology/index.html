@@ -392,7 +392,7 @@
     ],
     "https://schema.org/creator": [
       {
-        "@id": "_:n06771214fad04612a8862ea9674ba033b1"
+        "@id": "_:nb19cb8f1c05b4c77a372b428c0f8e17ab1"
       }
     ],
     "https://schema.org/dateIssued": [
@@ -404,17 +404,17 @@
     "https://schema.org/dateModified": [
       {
         "@type": "http://www.w3.org/2001/XMLSchema#date",
-        "@value": "2026-08-19"
+        "@value": "2026-09-30"
       }
     ],
     "https://schema.org/description": [
       {
         "@language": "en",
-        "@value": "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat and mapped to the EUNIS habitat classification (2012) with skos:exactMatch / closeMatch / broadMatch (ontology 0.4.3); places carry owl:sameAs to their GeoNames feature and Wikidata item. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."
+        "@value": "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Two grouping classes structure the model: archival units (volume, page, entry, layout region — body-text regions and multimodal regions such as drawings, photographs, mounted objects and inserted texts) and entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events and their legs, weather reports); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat. Every link to an external authority — GBIF (taxa), EUNIS (habitats), GeoNames and Wikidata (places), Wikidata and GND (persons) — uses the same pattern (ontology 0.6.0): skos:exactMatch / skos:closeMatch / skos:broadMatch to the authority's IRI, which is described as a skos:Concept with skos:inScheme lkg:authority_<name>, skos:notation and skos:prefLabel. Version 0.5.0 adds fine-grained spatial and temporal qualifications on Observation (Ziel 1: vantage-point context, microhabitat, relative elevation, qualitative time of day / daylight phase, estimated observation radius mirrored as dwc:coordinateUncertaintyInMeters, dwc:samplingProtocol) for GBIF-grade Darwin Core archives. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, call type, entry kind, weather, travel, mention roles, spatial/temporal qualification, region kind). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."
       },
       {
         "@language": "en",
-        "@value": "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat), each mapped to a EUNIS habitat class (skos:exactMatch / closeMatch / broadMatch); places link to GeoNames and Wikidata (owl:sameAs)."
+        "@value": "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat). External links (GBIF, EUNIS, GeoNames, Wikidata, GND) all use skos:exactMatch / closeMatch / broadMatch to an authority record in one of the lkg:authority_* schemes."
       }
     ],
     "https://schema.org/license": [
@@ -435,7 +435,7 @@
     ]
   },
   {
-    "@id": "_:n06771214fad04612a8862ea9674ba033b1",
+    "@id": "_:nb19cb8f1c05b4c77a372b428c0f8e17ab1",
     "https://schema.org/name": [
       {
         "@value": "Laubmann KG Project"
@@ -485,7 +485,7 @@
             <dt>
               <a class="hover_property" href="http://purl.org/dc/terms/modified" title="Date on which the resource was changed. Defined in DCMI Metadata Terms">Date Modified</a>
             </dt>
-            <dd><p>2026-08-19</p></dd>
+            <dd><p>2026-09-30</p></dd>
           </div>
           <div>
             <dt>
@@ -512,21 +512,21 @@
               <a class="hover_property" href="http://www.w3.org/2002/07/owl#versionIRI" title="The property that identifies the version IRI of an ontology. Defined in The OWL 2 Schema vocabulary (OWL 2)">Version Iri</a>
             </dt>
             <dd>
-              <a href="https://w3id.org/laubmann-kg/ontology/0.4.3">https://w3id.org/laubmann-kg/ontology/0.4.3</a>
+              <a href="https://w3id.org/laubmann-kg/ontology/0.6.0">https://w3id.org/laubmann-kg/ontology/0.6.0</a>
             </dd>
           </div>
           <div>
             <dt>
               <a class="hover_property" href="http://www.w3.org/2002/07/owl#versionInfo" title="The annotation property that provides version information for an ontology or another OWL construct. Defined in The OWL 2 Schema vocabulary (OWL 2)">Version Info</a>
             </dt>
-            <dd><p>0.4.3</p></dd>
+            <dd><p>0.6.0</p></dd>
           </div>
           <div>
             <dt>
               <a class="hover_property" href="http://www.w3.org/2002/07/owl#priorVersion" title="The annotation property that indicates the predecessor ontology of a given ontology. Defined in The OWL 2 Schema vocabulary (OWL 2)">Prior Version</a>
             </dt>
             <dd>
-              <a href="https://w3id.org/laubmann-kg/ontology/0.4.2">https://w3id.org/laubmann-kg/ontology/0.4.2</a>
+              <a href="https://w3id.org/laubmann-kg/ontology/0.5.0">https://w3id.org/laubmann-kg/ontology/0.5.0</a>
             </dd>
           </div>
           <div>
@@ -557,8 +557,8 @@
             </dt>
             <dd>
               <ul class="pylodelitlist">
-                <li><p>Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Three grouping classes structure the model: archival units (volume, page, entry, layout region), entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events, weather reports) and record details (vocalisations, travel legs); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat and mapped to the EUNIS habitat classification (2012) with skos:exactMatch / closeMatch / broadMatch (ontology 0.4.3); places carry owl:sameAs to their GeoNames feature and Wikidata item. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, entry kind, weather, travel, mention roles). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL.</p></li>
-                <li><p>Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord / RecordDetail plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat), each mapped to a EUNIS habitat class (skos:exactMatch / closeMatch / broadMatch); places link to GeoNames and Wikidata (owl:sameAs).</p></li>
+                <li><p>Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Two grouping classes structure the model: archival units (volume, page, entry, layout region — body-text regions and multimodal regions such as drawings, photographs, mounted objects and inserted texts) and entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events and their legs, weather reports); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat. Every link to an external authority — GBIF (taxa), EUNIS (habitats), GeoNames and Wikidata (places), Wikidata and GND (persons) — uses the same pattern (ontology 0.6.0): skos:exactMatch / skos:closeMatch / skos:broadMatch to the authority's IRI, which is described as a skos:Concept with skos:inScheme lkg:authority_<name>, skos:notation and skos:prefLabel. Version 0.5.0 adds fine-grained spatial and temporal qualifications on Observation (Ziel 1: vantage-point context, microhabitat, relative elevation, qualitative time of day / daylight phase, estimated observation radius mirrored as dwc:coordinateUncertaintyInMeters, dwc:samplingProtocol) for GBIF-grade Darwin Core archives. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, call type, entry kind, weather, travel, mention roles, spatial/temporal qualification, region kind). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL.</p></li>
+                <li><p>Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat). External links (GBIF, EUNIS, GeoNames, Wikidata, GND) all use skos:exactMatch / closeMatch / broadMatch to an authority record in one of the lkg:authority_* schemes.</p></li>
               </ul>
             </dd>
           </div>
@@ -582,7 +582,7 @@
           </div>
           <div>
             <dt>
-              <a class="hover_property" href="http://purl.org/dc/terms/language" title="A language of the resource. Defined in None">Language</a>
+              <a class="hover_property" href="http://purl.org/dc/terms/language" title="Recommended practice is to use either a non-literal value representing a language from a controlled vocabulary such as ISO 639-2 or ISO 639-3, or a literal value consisting of an IETF Best Current Practice 47 [[IETF-BCP47](https://tools.ietf.org/html/bcp47)] language tag. Defined in None">Language</a>
             </dt>
             <dd>
               <ul class="pylodelitlist">
@@ -625,6 +625,11 @@
                 </li>
                 <li>
                   <a href="#SourceRegion">Source Region</a>
+                  <ul class="hierarchy">
+                    <li>
+                      <a href="#MultimodalRegion">Multimodal Region</a>
+                    </li>
+                  </ul>
                 </li>
               </ul>
             </li>
@@ -638,6 +643,9 @@
                   <a href="#TravelEvent">Travel Event</a>
                 </li>
                 <li>
+                  <a href="#TravelLeg">Travel Leg</a>
+                </li>
+                <li>
                   <a href="#WeatherReport">Weather Report</a>
                 </li>
               </ul>
@@ -647,17 +655,6 @@
             </li>
             <li>
               <a href="#Place">Place</a>
-            </li>
-            <li>
-              <a href="#RecordDetail">Record Detail</a>
-              <ul class="hierarchy">
-                <li>
-                  <a href="#TravelLeg">Travel Leg</a>
-                </li>
-                <li>
-                  <a href="#Vocalisation">Vocalisation</a>
-                </li>
-              </ul>
             </li>
             <li>
               <a href="#Taxon">Taxon</a>
@@ -680,7 +677,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A unit of the digitised source: a diary volume, a scanned page, a dated entry or a layout region on a page. Grouping class only (not asserted as rdf:type in the data); the units are connected by dcterms:isPartOf (region → page → volume, entry → page).</p></td>
+              <td><p>A unit of the digitised source: a diary volume, a scanned page, a dated entry or a layout region on a page (body text or multimodal). Grouping class only (not asserted as rdf:type in the data); the units are connected by dcterms:isPartOf (region → page → volume, entry → page).</p></td>
             </tr>
             <tr>
               <th>
@@ -798,6 +795,12 @@
                   </li>
                   <li>
                     <span>
+                      <a href="#hasMultimodalRegion">has multimodal region</a>
+                      <sup class="sup-op" title="OWL Object Property">op</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
                       <a href="#hasSourceRegion">has source region</a>
                       <sup class="sup-op" title="OWL Object Property">op</sup>
                     </span>
@@ -894,7 +897,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>Anything the extraction model reads out of one diary entry: an Observation, a TravelEvent or a WeatherReport. Every entry record is dcterms:isPartOf and prov:wasDerivedFrom exactly one DiaryEntry and prov:wasGeneratedBy the extraction run. Grouping class only (not asserted as rdf:type in the data).</p></td>
+              <td><p>Anything the extraction model reads out of one diary entry: an Observation, a TravelEvent, a TravelLeg or a WeatherReport. Every entry record is prov:wasDerivedFrom exactly one DiaryEntry and prov:wasGeneratedBy the extraction run; it is dcterms:isPartOf that entry (a TravelLeg: of its TravelEvent). Grouping class only (not asserted as rdf:type in the data). Since 0.6.0 there is no separate 'record detail' level: vocalisations are properties of the Observation, travel legs are entry records.</p></td>
             </tr>
             <tr>
               <th>
@@ -927,11 +930,79 @@
                   </li>
                   <li>
                     <span>
+                      <a href="#TravelLeg">Travel Leg</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
                       <a href="#WeatherReport">Weather Report</a>
                       <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                     </span>
                   </li>
                 </ul>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="MultimodalRegion">
+          <h3>Multimodal Region
+            <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#MultimodalRegion</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>A non-body-text region of a page that belongs to a diary entry: a drawing or sketch map, a photograph or postcard, a printed illustration, a mounted object (feathers, pressed leaves, labels) or an inserted text (newspaper clipping, typed report, letter, caption, list). Taken from the cleaned multimodal catalogue v2 (images and objects linked to a dated entry; duplicate scans of the same page removed) and from the text-inserts catalogue (paragraphs and lists judged relevant; marginal notes excluded). Carries dcterms:type (DCMI type), lkg:regionKind, dcterms:description (the layout model's description of an image, English) and lkg:visibleText (text on the region as transcribed); dcterms:isPartOf its DiaryPage, reached from its entry via lkg:hasMultimodalRegion. It is the entry it sits in, not the observations, that the region belongs to: the diarist placed it with the day's notes.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subClassOf" title="The subject is a subclass of a class. Defined in The RDF Schema vocabulary (RDFS)">Sub Class Of</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#SourceRegion">Source Region</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/inDomainOf" title="Inverse of rdfs:domain. Defined in Ontology Documentation Profile">In Domain Of</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li>
+                    <span>
+                      <a href="#regionKind">region kind</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#visibleText">visible text</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/inRangeOf" title="Inverse of rdfs:range. Defined in Ontology Documentation Profile">In Range Of</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#hasMultimodalRegion">has multimodal region</a>
+                  <sup class="sup-op" title="OWL Object Property">op</sup>
+                </span>
               </td>
             </tr>
           </table>
@@ -985,7 +1056,25 @@
                   </li>
                   <li>
                     <span>
+                      <a href="#callTranscription">call transcription</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#callType">call type</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
                       <a href="#countQualifier">count qualifier</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#daylightPhase">daylight phase</a>
                       <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
                     </span>
                   </li>
@@ -1009,12 +1098,6 @@
                   </li>
                   <li>
                     <span>
-                      <a href="#hasVocalisation">has vocalisation</a>
-                      <sup class="sup-op" title="OWL Object Property">op</sup>
-                    </span>
-                  </li>
-                  <li>
-                    <span>
                       <a href="#individualCountMax">individual count (maximum)</a>
                       <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
                     </span>
@@ -1027,7 +1110,25 @@
                   </li>
                   <li>
                     <span>
+                      <a href="#microhabitat">microhabitat</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
                       <a href="#movementKind">movement kind</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#observationDurationMinutes">observation duration in minutes</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#observationRadiusMeters">observation radius in meters</a>
                       <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
                     </span>
                   </li>
@@ -1046,6 +1147,24 @@
                   <li>
                     <span>
                       <a href="#recordType">record type</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#relativeElevation">relative elevation</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#spatialConfidence">spatial confidence</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#spatialContext">spatial context description</a>
                       <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
                     </span>
                   </li>
@@ -1086,7 +1205,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node. Name variants merged by entity resolution ("W. Wüst", "Wüst" → "Walter Wüst") are skos:altLabels.</p></td>
+              <td><p>A person mentioned in the diary (companion, source, collector, cited author) or recorded as observer (dwciri:recordedBy). The role is carried on the mention edge (sub-properties of lkg:mentionsPerson), not on the shared Person node. Name variants merged by entity resolution ("W. Wüst", "Wüst" → "Walter Wüst") are skos:altLabels. Linked persons carry skos:exactMatch / closeMatch to their Wikidata item and GND record (lkg:authority_wikidata, lkg:authority_gnd).</p></td>
             </tr>
             <tr>
               <th>
@@ -1124,7 +1243,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned, merged spellings as skos:altLabel). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme.</p></td>
+              <td><p>A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned, merged spellings as skos:altLabel). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT, and link to their GeoNames feature and Wikidata item (skos:exactMatch / closeMatch, authority schemes lkg:authority_geonames, lkg:authority_wikidata). Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme.</p></td>
             </tr>
             <tr>
               <th>
@@ -1202,46 +1321,6 @@
             </tr>
           </table>
         </div>
-        <div class="property entity" id="RecordDetail">
-          <h3>Record Detail
-            <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-          </h3>
-          <table>
-            <tr>
-              <th>IRI</th>
-              <td>
-                <code>https://w3id.org/laubmann-kg/ontology#RecordDetail</code>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
-              </th>
-              <td><p>A structured detail of an entry record that cannot be a single literal: a Vocalisation of an Observation, a TravelLeg of a TravelEvent. dcterms:isPartOf its record. Grouping class only (not asserted as rdf:type in the data).</p></td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/superClassOf" title="Inverse of RDFS' subClassOf. Defined in Ontology Documentation Profile">Super Class Of</a>
-              </th>
-              <td>
-                <ul class="pylodelitlist">
-                  <li>
-                    <span>
-                      <a href="#TravelLeg">Travel Leg</a>
-                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <a href="#Vocalisation">Vocalisation</a>
-                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                    </span>
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </table>
-        </div>
         <div class="property entity" id="SourceRegion">
           <h3>Source Region
             <sup class="sup-c" title="OWL/RDFS Class">c</sup>
@@ -1257,7 +1336,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A detected layout region on a scanned page (HistOrniGraph layout stage) whose text became a diary entry; dcterms:isPartOf its DiaryPage. Hook for linking the multimodal (image) corpus.</p></td>
+              <td><p>A detected layout region on a scanned page (HistOrniGraph layout stage) that belongs to a diary entry; dcterms:isPartOf its DiaryPage. Asserted as lkg:SourceRegion for the body-text regions an entry's text was read from (an entry that runs over several pages has several), as lkg:MultimodalRegion for the pictorial, physical and inserted-text regions placed with the entry.</p></td>
             </tr>
             <tr>
               <th>
@@ -1281,6 +1360,17 @@
                 </span>
               </td>
             </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/superClassOf" title="Inverse of RDFS' subClassOf. Defined in Ontology Documentation Profile">Super Class Of</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#MultimodalRegion">Multimodal Region</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
           </table>
         </div>
         <div class="property entity" id="Taxon">
@@ -1298,7 +1388,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName; further spellings merged by entity resolution as skos:altLabel). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch, dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus).</p></td>
+              <td><p>A biological taxon (species, genus, family or informal group) observed or mentioned, keyed by the German vernacular name as the diarist wrote it (dwc:vernacularName; further spellings merged by entity resolution as skos:altLabel). Resolved names carry dwc:scientificName, dwc:taxonRank, the GBIF backbone link (skos:exactMatch / closeMatch / broadMatch to an authority record in lkg:authority_gbif; mirrored as the Darwin Core literal dwc:taxonID) and the GBIF higher classification (dwc:kingdom … dwc:genus).</p></td>
             </tr>
             <tr>
               <th>
@@ -1428,7 +1518,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>A single segment of a journey (one train leg, one walking leg …); dcterms:isPartOf its TravelEvent.</p></td>
+              <td><p>A single segment of a journey (one train leg, one walking leg …); dcterms:isPartOf its TravelEvent, prov:wasDerivedFrom the entry.</p></td>
             </tr>
             <tr>
               <th>
@@ -1436,7 +1526,7 @@
               </th>
               <td>
                 <span>
-                  <a href="#RecordDetail">Record Detail</a>
+                  <a href="#EntryRecord">Entry Record</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -1493,68 +1583,6 @@
               <td>
                 <span>
                   <a href="#hasLeg">has leg</a>
-                  <sup class="sup-op" title="OWL Object Property">op</sup>
-                </span>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="property entity" id="Vocalisation">
-          <h3>Vocalisation
-            <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-          </h3>
-          <table>
-            <tr>
-              <th>IRI</th>
-              <td>
-                <code>https://w3id.org/laubmann-kg/ontology#Vocalisation</code>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
-              </th>
-              <td><p>A vocalisation noted for an Observation: call type and, when the diarist wrote one, the phonetic transcription. dcterms:isPartOf its Observation, which also carries lkg:evidenceKind lkg:evidence_auditory.</p></td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subClassOf" title="The subject is a subclass of a class. Defined in The RDF Schema vocabulary (RDFS)">Sub Class Of</a>
-              </th>
-              <td>
-                <span>
-                  <a href="#RecordDetail">Record Detail</a>
-                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/inDomainOf" title="Inverse of rdfs:domain. Defined in Ontology Documentation Profile">In Domain Of</a>
-              </th>
-              <td>
-                <ul class="pylodelitlist">
-                  <li>
-                    <span>
-                      <a href="#callTranscription">call transcription</a>
-                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <a href="#callType">call type</a>
-                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
-                    </span>
-                  </li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/inRangeOf" title="Inverse of rdfs:range. Defined in Ontology Documentation Profile">In Range Of</a>
-              </th>
-              <td>
-                <span>
-                  <a href="#hasVocalisation">has vocalisation</a>
                   <sup class="sup-op" title="OWL Object Property">op</sup>
                 </span>
               </td>
@@ -1679,9 +1707,11 @@
             </li>
             <li>
               <a href="#hasSourceRegion">has source region</a>
-            </li>
-            <li>
-              <a href="#hasVocalisation">has vocalisation</a>
+              <ul class="hierarchy">
+                <li>
+                  <a href="#hasMultimodalRegion">has multimodal region</a>
+                </li>
+              </ul>
             </li>
             <li>
               <a href="#hasWeather">has weather</a>
@@ -1942,7 +1972,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>How the organism was detected, as concept(s) of lkg:evidenceKindScheme: lkg:evidence_visual, lkg:evidence_auditory, lkg:evidence_nest, lkg:evidence_specimen. Only emitted when the text says how; an observation may have none or several. Auditory evidence with call detail additionally gets a lkg:Vocalisation node.</p></td>
+              <td><p>How the organism was detected, as concept(s) of lkg:evidenceKindScheme: lkg:evidence_visual, lkg:evidence_auditory, lkg:evidence_nest, lkg:evidence_specimen. Only emitted when the text says how; an observation may have none or several. What was heard is on the same observation: lkg:callType and lkg:callTranscription.</p></td>
             </tr>
             <tr>
               <th>
@@ -2055,6 +2085,58 @@
             </tr>
           </table>
         </div>
+        <div class="property entity" id="hasMultimodalRegion">
+          <h3>has multimodal region
+            <sup class="sup-op" title="OWL Object Property">op</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#hasMultimodalRegion</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Entry → a drawing, map, photograph, postcard, mounted object or inserted text placed with it (the nearest preceding entry header in the page's reading order).</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subPropertyOf" title="The subject is a subproperty of a property. Defined in The RDF Schema vocabulary (RDFS)">Sub Property Of</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#hasSourceRegion">has source region</a>
+                  <sup class="sup-op" title="OWL Object Property">op</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#DiaryEntry">Diary Entry</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#MultimodalRegion">Multimodal Region</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="hasSourceRegion">
           <h3>has source region
             <sup class="sup-op" title="OWL Object Property">op</sup>
@@ -2070,7 +2152,18 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>Entry → the layout region on the scanned page its text was read from (the region is dcterms:isPartOf the page).</p></td>
+              <td><p>Entry → a layout region on a scanned page that belongs to it (the region is dcterms:isPartOf its page). Asserted for every body-text region the entry's text was read from — an entry that continues over several pages has one per page — and, via the sub-property lkg:hasMultimodalRegion, for its multimodal regions.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/superPropertyOf" title="Inverse of RDFS' subPropertyOf. Defined in Ontology Documentation Profile">Super Property Of</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#hasMultimodalRegion">has multimodal region</a>
+                  <sup class="sup-op" title="OWL Object Property">op</sup>
+                </span>
+              </td>
             </tr>
             <tr>
               <th>
@@ -2090,58 +2183,6 @@
               <td>
                 <span>
                   <a href="#SourceRegion">Source Region</a>
-                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                </span>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="property entity" id="hasVocalisation">
-          <h3>has vocalisation
-            <sup class="sup-op" title="OWL Object Property">op</sup>
-          </h3>
-          <table>
-            <tr>
-              <th>IRI</th>
-              <td>
-                <code>https://w3id.org/laubmann-kg/ontology#hasVocalisation</code>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
-              </th>
-              <td><p>Observation → a vocalisation noted for it (auditory evidence with call type / transcription).</p></td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subPropertyOf" title="The subject is a subproperty of a property. Defined in The RDF Schema vocabulary (RDFS)">Sub Property Of</a>
-              </th>
-              <td>
-                <span>
-                  <a href="http://purl.org/dc/terms/hasPart">has part</a>
-                  <sup class="sup-p" title="RDF Property">p</sup>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
-              </th>
-              <td>
-                <span>
-                  <a href="#Observation">Observation</a>
-                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
-              </th>
-              <td>
-                <span>
-                  <a href="#Vocalisation">Vocalisation</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -2569,6 +2610,49 @@
       </div>
       <div class="section" id="datatypeproperties">
         <h2>Datatype Properties</h2>
+        <div class="property entity" id="altitudeinmeters">
+          <h3>altitude in meters
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#altitudeM</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Absolute elevation in meters above sea level, when the diary states one.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+                <span class="cardinality">or</span>
+                <span>
+                  <a href="#Place">Place</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#decimal">xsd:decimal</a>
+              </td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="arrivalTime">
           <h3>arrival time
             <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
@@ -2692,7 +2776,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>Phonetic transcription of the call as written in the diary. Only present when the diarist wrote one (no placeholder).</p></td>
+              <td><p>Phonetic rendering of the call as written in the diary ("zich zich", "Tlü-hit"). Only when the diarist wrote one (no placeholder); several values when he wrote several.</p></td>
             </tr>
             <tr>
               <th>
@@ -2700,7 +2784,7 @@
               </th>
               <td>
                 <span>
-                  <a href="#Vocalisation">Vocalisation</a>
+                  <a href="#Observation">Observation</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -2730,7 +2814,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>Type of vocalisation: song, call, alarm, drumming, unknown (lkg:callTypeScheme).</p></td>
+              <td><p>Type of vocalisation heard: song, call, alarm, drumming (lkg:callTypeScheme). Only when the text says which; an observation heard singing and calling has two values. Implies lkg:evidenceKind lkg:evidence_auditory, which is always asserted alongside (an auditory record without a stated type has the evidence kind only). Replaces the lkg:Vocalisation node of 0.4–0.5 and the dwc:behavior copies ("singend", "ruft").</p></td>
             </tr>
             <tr>
               <th>
@@ -2738,7 +2822,7 @@
               </th>
               <td>
                 <span>
-                  <a href="#Vocalisation">Vocalisation</a>
+                  <a href="#Observation">Observation</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -2825,6 +2909,44 @@
               </th>
               <td>
                 <a href="http://www.w3.org/2001/XMLSchema#boolean">xsd:boolean</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="daylightPhase">
+          <h3>daylight phase
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#daylightPhase</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Daylight phase: dawn, day, dusk, night.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
               </td>
             </tr>
           </table>
@@ -3171,6 +3293,44 @@
             </tr>
           </table>
         </div>
+        <div class="property entity" id="microhabitat">
+          <h3>microhabitat
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#microhabitat</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Specific fine-grained microhabitat structure (e.g. 'Baumkrone', 'Teichufer', 'Fenstersims'). Distinct from the habitat type on dwc:habitat / dwciri:habitat.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString">langString</a>
+              </td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="movementKind">
           <h3>movement kind
             <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
@@ -3205,6 +3365,82 @@
               </th>
               <td>
                 <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="observationDurationMinutes">
+          <h3>observation duration in minutes
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#observationDurationMinutes</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Stated or clearly implied duration of the watch, in minutes.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#integer">xsd:integer</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="observationRadiusMeters">
+          <h3>observation radius in meters
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#observationRadiusMeters</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Estimated maximum viewing distance/radius from the observation point (e.g. 100 for a window watch). Mirrored as dwc:coordinateUncertaintyInMeters on the Observation.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#integer">xsd:integer</a>
               </td>
             </tr>
           </table>
@@ -3323,6 +3559,82 @@
             </tr>
           </table>
         </div>
+        <div class="property entity" id="regionKind">
+          <h3>region kind
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#regionKind</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>What a multimodal region shows: drawing, photograph, map, print, object, text-insert, list (lkg:regionKindScheme).</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#MultimodalRegion">Multimodal Region</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="relativeElevation">
+          <h3>relative elevation
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#relativeElevation</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Verbatim or normalised relative height above ground (e.g. 'in mäßiger Höhe', 'hoch kreisend').</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString">langString</a>
+              </td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="skyCondition">
           <h3>sky condition
             <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
@@ -3357,6 +3669,82 @@
               </th>
               <td>
                 <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="spatialConfidence">
+          <h3>spatial confidence
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#spatialConfidence</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Confidence of the spatial localisation: high, medium, low, inferred.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="spatialContext">
+          <h3>spatial context description
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#spatialContext</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Verbatim description of the observer's vantage point or immediate context (e.g. 'aus dem Fenster meiner Wohnung', 'am Wegrand').</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString">langString</a>
               </td>
             </tr>
           </table>
@@ -3437,6 +3825,54 @@
             </tr>
           </table>
         </div>
+        <div class="property entity" id="timeofday">
+          <h3>time of day
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#timeOfDay</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Qualitative time of day: morning, forenoon, noon, afternoon, evening, night.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+                <span class="cardinality">or</span>
+                <span>
+                  <a href="#DiaryEntry">Diary Entry</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+                <span class="cardinality">or</span>
+                <span>
+                  <a href="#WeatherReport">Weather Report</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="transportMode">
           <h3>transport mode
             <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
@@ -3499,6 +3935,44 @@
               <td>
                 <span>
                   <a href="#Observation">Observation</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString">langString</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="visibleText">
+          <h3>visible text
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#visibleText</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Text on a multimodal region as transcribed (caption, label, the text of a clipping or letter). Not part of any entry's dwc:fieldNotes and not read by the extraction model.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#MultimodalRegion">Multimodal Region</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -3727,6 +4201,9 @@
               <a href="#EntryRecord">Entry Record</a>
             </li>
             <li style="margin-left:10px;">
+              <a href="#MultimodalRegion">Multimodal Region</a>
+            </li>
+            <li style="margin-left:10px;">
               <a href="#Observation">Observation</a>
             </li>
             <li style="margin-left:10px;">
@@ -3734,9 +4211,6 @@
             </li>
             <li style="margin-left:10px;">
               <a href="#Place">Place</a>
-            </li>
-            <li style="margin-left:10px;">
-              <a href="#RecordDetail">Record Detail</a>
             </li>
             <li style="margin-left:10px;">
               <a href="#SourceRegion">Source Region</a>
@@ -3749,9 +4223,6 @@
             </li>
             <li style="margin-left:10px;">
               <a href="#TravelLeg">Travel Leg</a>
-            </li>
-            <li style="margin-left:10px;">
-              <a href="#Vocalisation">Vocalisation</a>
             </li>
             <li style="margin-left:10px;">
               <a href="#WeatherReport">Weather Report</a>
@@ -3794,10 +4265,10 @@
               <a href="#hasLocality">has locality</a>
             </li>
             <li style="margin-left:10px;">
-              <a href="#hasSourceRegion">has source region</a>
+              <a href="#hasMultimodalRegion">has multimodal region</a>
             </li>
             <li style="margin-left:10px;">
-              <a href="#hasVocalisation">has vocalisation</a>
+              <a href="#hasSourceRegion">has source region</a>
             </li>
             <li style="margin-left:10px;">
               <a href="#hasWeather">has weather</a>
@@ -3837,6 +4308,9 @@
           </h4>
           <ul class="second">
             <li>
+              <a href="#altitudeinmeters">altitude in meters</a>
+            </li>
+            <li>
               <a href="#arrivalTime">arrival time</a>
             </li>
             <li>
@@ -3853,6 +4327,9 @@
             </li>
             <li>
               <a href="#datePlausible">date plausible</a>
+            </li>
+            <li>
+              <a href="#daylightPhase">daylight phase</a>
             </li>
             <li>
               <a href="#departureTime">departure time</a>
@@ -3885,7 +4362,16 @@
               <a href="#matchMethod">match method</a>
             </li>
             <li>
+              <a href="#microhabitat">microhabitat</a>
+            </li>
+            <li>
               <a href="#movementKind">movement kind</a>
+            </li>
+            <li>
+              <a href="#observationDurationMinutes">observation duration in minutes</a>
+            </li>
+            <li>
+              <a href="#observationRadiusMeters">observation radius in meters</a>
             </li>
             <li>
               <a href="#placeKind">place kind</a>
@@ -3897,7 +4383,19 @@
               <a href="#recordType">record type</a>
             </li>
             <li>
+              <a href="#regionKind">region kind</a>
+            </li>
+            <li>
+              <a href="#relativeElevation">relative elevation</a>
+            </li>
+            <li>
               <a href="#skyCondition">sky condition</a>
+            </li>
+            <li>
+              <a href="#spatialConfidence">spatial confidence</a>
+            </li>
+            <li>
+              <a href="#spatialContext">spatial context description</a>
             </li>
             <li>
               <a href="#temperatureUnit">temperature unit</a>
@@ -3906,10 +4404,16 @@
               <a href="#temperatureValue">temperature value</a>
             </li>
             <li>
+              <a href="#timeofday">time of day</a>
+            </li>
+            <li>
               <a href="#transportMode">transport mode</a>
             </li>
             <li>
               <a href="#verbatimNotes">verbatim notes</a>
+            </li>
+            <li>
+              <a href="#visibleText">visible text</a>
             </li>
             <li>
               <a href="#weatherVerbatim">weather verbatim</a>

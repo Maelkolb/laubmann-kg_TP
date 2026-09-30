@@ -188,6 +188,9 @@ def graph_from_result(result, meta: Optional[dict] = None) -> dict[str, Any]:
                 "roles": person.role,
                 "role": person.role,
                 "wd": (person.wikidata_iri or "").rsplit("/", 1)[-1] or None,
+                # link grade of the Wikidata item (skos:exactMatch = reviewed, closeMatch = automatic)
+                "wdm": (person.wikidata_match or "close") if person.wikidata_iri else None,
+                "gnd": (person.gnd_iri or "").rsplit("/", 1)[-1] or None,
                 "n": 0,
                 "ne": 0,
             }
@@ -314,8 +317,10 @@ def graph_from_result(result, meta: Optional[dict] = None) -> dict[str, Any]:
                 rec["cit"] = obs.literature_citation
             if obs.evidence:
                 rec["ev"] = [[ev.kind] for ev in obs.evidence]
+                # lkg:callType / lkg:callTranscription on the observation (0.6.0);
+                # None = heard, type not stated (no "unknown" placeholder)
                 voc = [
-                    [ev.call_type or "unknown", ev.call_transcription]
+                    [ev.call_type if ev.call_type != "unknown" else None, ev.call_transcription]
                     for ev in obs.evidence if ev.is_call
                 ]
                 if voc:

@@ -174,7 +174,7 @@ def test_occurrence_columns_from_model_detail() -> None:
     assert k["sex"] == "male" and k["lifeStage"] == "adult"
     assert k["reproductiveCondition"] == "breeding"                # from breeding_evidence
     assert k["vitality"] == ""
-    assert k["behavior"] == "Balz; Zug"
+    assert k["behavior"] == "Ruf; Balz; Zug"                       # call type (lkg:callType) first, then behaviours
     assert k["identificationQualifier"] == "" and k["identificationRemarks"] == ""
     assert k["locality"] == "Dechsendorfer Weiher"                 # own place
     assert k["verbatimLocality"] == "Dechsendorfer Weiher"

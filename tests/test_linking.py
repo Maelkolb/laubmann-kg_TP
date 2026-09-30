@@ -561,7 +561,11 @@ def test_person_auto_link(tmp_path, monkeypatch) -> None:
     assert wuest.wikidata_iri is None             # ambiguity never auto-links
 
     graph = build_graph(result)
-    assert (None, OWL.sameAs, URIRef(iri)) in graph
+    # one link pattern (0.6.0): an automatic unique-label match is a close match
+    assert (None, SKOS.closeMatch, URIRef(iri)) in graph
+    assert (URIRef(iri), SKOS.inScheme, LKG.authority_wikidata) in graph
+    assert (URIRef(iri), SKOS.notation, Literal("Q66936")) in graph
+    assert not list(graph.triples((None, OWL.sameAs, None)))
 
 
 def _person_result(*names: str) -> ExtractionResult:
@@ -588,7 +592,11 @@ def test_reviewed_gnd_and_wikidata_are_applied(tmp_path, monkeypatch) -> None:
     assert by["Hans Bauer"].gnd_iri is None
     assert {r["person_name"]: r["gnd"] for r in rows if r["rule"] == "reviewed"} == {"Walter Wüst": "117351938", "Anton Fischer": "1012345-6"}
     g = build_graph(result)
-    assert (None, OWL.sameAs, URIRef(GND_NS + "117351938")) in g
+    # reviewed Wikidata and GND links are exact matches in the common pattern
+    assert (None, SKOS.exactMatch, URIRef(GND_NS + "117351938")) in g
+    assert (None, SKOS.exactMatch, URIRef(WIKIDATA_ENTITY_NS + "Q2546836")) in g
+    assert (URIRef(GND_NS + "117351938"), SKOS.inScheme, LKG.authority_gnd) in g
+    assert (URIRef(GND_NS + "117351938"), SKOS.notation, Literal("117351938")) in g
     assert gnd_id("GND 11854023X") == "11854023X" and gnd_id("n/a") is None
 
 

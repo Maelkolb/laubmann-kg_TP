@@ -49,7 +49,7 @@ graph conforms.
 | Travel / route questions | blocked | travel extraction is future work |
 | Cross-dataset taxon IRIs | blocked | needs `links_long` (see INTERFACES.md) |
 
-## Ontology coverage (0.4.0)
+## Ontology coverage (0.6.0)
 
 Since 0.4.0 the ontology declares **only what the emitter produces**:
 `tests/test_ontology_alignment.py` fails if a declared `lkg:` class/property is
@@ -58,33 +58,38 @@ shape, or if the JSON-LD context misses an emitted predicate. Hence there is no
 "not yet" row any more — every term below is populated by the full run;
 `partial` marks conditional population.
 
-### Classes (15 concrete + 3 grouping)
+### Classes (12 concrete `lkg:` + 2 grouping)
 
 | Class | Group | Status |
 |---|---|---|
-| `lkg:DiaryVolume`, `lkg:DiaryPage`, `lkg:DiaryEntry`, `lkg:SourceRegion` | `lkg:ArchivalUnit` (⊑ rico:Record; not asserted in data) | populated; `dcterms:isPartOf` chain region → page → volume, entry → page |
-| `lkg:Observation` (⊑ dwc:Occurrence), `lkg:TravelEvent`, `lkg:WeatherReport` | `lkg:EntryRecord` (⊑ prov:Entity; not asserted) | populated; `dcterms:isPartOf` + `prov:wasDerivedFrom` entry, `prov:wasGeneratedBy` run |
-| `lkg:Vocalisation`, `lkg:TravelLeg` | `lkg:RecordDetail` (not asserted) | populated (vocalisation for auditory evidence with call detail) |
+| `lkg:DiaryVolume`, `lkg:DiaryPage`, `lkg:DiaryEntry`, `lkg:SourceRegion`, `lkg:MultimodalRegion` (⊑ SourceRegion) | `lkg:ArchivalUnit` (⊑ rico:Record; not asserted in data) | populated; `dcterms:isPartOf` chain region → page → volume, entry → page; every body-text region an entry spans; multimodal regions from `multimodal_regions.jsonl` |
+| `lkg:Observation` (⊑ dwc:Occurrence), `lkg:TravelEvent`, `lkg:TravelLeg`, `lkg:WeatherReport` | `lkg:EntryRecord` (⊑ prov:Entity; not asserted) | populated; `prov:wasDerivedFrom` entry, `prov:wasGeneratedBy` run, `dcterms:isPartOf` entry (leg: its travel event) |
 | `lkg:Taxon`, `lkg:Place`, `lkg:Person` | shared referents | populated (coords partial; persons via mention edges + `dwciri:recordedBy`) |
 | habitat nodes | `skos:Concept` in `lkg:habitatScheme` (no class) | populated, shared across observations |
 
 Removed in 0.4.0: `ObservationEvent` (→ Observation), `BirdCall` (→ Vocalisation),
 `ObservationEvidence` (→ `lkg:evidenceKind` concepts), `BehaviourNote` (→
 `dwc:behavior` literals), `Habitat` (→ skos:Concept), `Route`, `TimeEstimate`.
+Removed in 0.6.0: `RecordDetail`, `Vocalisation`, `hasVocalisation` (→
+`lkg:callType` / `lkg:callTranscription` on the Observation); `owl:sameAs` is no
+longer emitted (every external link is `skos:exactMatch/closeMatch/broadMatch`
+to an authority record in `lkg:authority_gbif|eunis|geonames|wikidata|gnd`).
 
-### Properties (47 `lkg:` + standard terms)
+### Properties (58 `lkg:` + standard terms)
 
 | Group | Terms | Status |
 |---|---|---|
-| Partonomy | `containsObservation`, `containsTravelEvent`, `hasWeather`, `hasLeg`, `hasVocalisation` (all ⊑ `dcterms:hasPart`), `hasSourceRegion`; `dcterms:isPartOf` on every child | populated |
+| Partonomy | `containsObservation`, `containsTravelEvent`, `hasWeather`, `hasLeg` (all ⊑ `dcterms:hasPart`), `hasSourceRegion`, `hasMultimodalRegion` ⊑ `hasSourceRegion`; `dcterms:isPartOf` on every child | populated |
+| Multimodal region | `regionKind`, `visibleText`; `dcterms:type`, `dcterms:description`, `dcterms:identifier` | populated for the regions of `multimodal_regions.jsonl` |
 | Entry | `entryPlace`, `entryKind`, `datePlausible`; `dwc:eventDate`, `dwc:verbatimEventDate`, `dwc:fieldNotes`, `skos:note`, `dcterms:identifier` | populated |
 | Mentions | `mentionsPerson` ⊑ schema:mentions + `mentionsCompanion/Source/Collector/CitedAuthor/Other` | populated (role edge only when the model gave a role) |
 | Observation | `observedTaxon`, `observedAt`, `hasLocality`, `recordType`, `evidenceKind`, `countQualifier`, `individualCountMin/Max`, `breedingEvidence`, `movementKind`, `flightDirection`, `verbatimNotes`; `dwc:occurrenceStatus/individualCount/sex/lifeStage/vitality/reproductiveCondition/behavior/habitat/identificationQualifier/eventDate/eventTime/verbatimLocality/occurrenceRemarks/basisOfRecord/associatedReferences`, `dwciri:habitat`, `dwciri:recordedBy` | populated (each only when stated) |
-| Vocalisation | `callType`, `callTranscription` | populated (transcription only when written) |
+| What was heard (on the Observation) | `callType`, `callTranscription` | populated (type only when stated, transcription only when written) |
 | Travel | `departurePlace`, `arrivalPlace`, `viaPlace`, `departureTime`, `arrivalTime`, `transportMode` | populated |
 | Weather | `weatherVerbatim`, `temperatureValue`, `temperatureUnit`, `precipitation`, `wind`, `skyCondition` | populated (one report per entry today; several allowed) |
 | Place | `placeKind`; `dwc:verbatimLocality`, `geo:lat/long`, `dwc:decimalLatitude/Longitude`, `dwc:geodeticDatum`, `gsp:asWKT` | partial (coordinates only for gazetteer/georeferenced places) |
-| Taxon | `isBird`, `matchMethod`, `matchConfidence`, `gbifMatchType`; `dwc:vernacularName`, `dwc:scientificName`, `dwc:taxonRank`, `dwc:taxonID`, `dwc:kingdom…genus`, `skos:exactMatch/closeMatch/broadMatch`, `owl:sameAs` | populated (classification only for GBIF-linked taxa) |
+| Taxon | `isBird`, `matchMethod`, `matchConfidence`, `gbifMatchType`; `dwc:vernacularName`, `dwc:scientificName`, `dwc:taxonRank`, `dwc:taxonID`, `dwc:kingdom…genus`, `skos:exactMatch/closeMatch/broadMatch` (GBIF authority record) | populated (classification only for GBIF-linked taxa) |
+| Authority links | `skos:exactMatch/closeMatch/broadMatch` → `skos:Concept` with `skos:inScheme lkg:authority_*`, `skos:notation`, `skos:prefLabel` (taxa → GBIF, habitats → EUNIS, places → GeoNames + Wikidata, persons → Wikidata + GND) | populated where linked |
 | PROV | `backend`; `prov:startedAtTime`, `prov:wasAssociatedWith`, `prov:used` | populated |
 
 ## Dedup toolchain (integrated 2026-08-10)

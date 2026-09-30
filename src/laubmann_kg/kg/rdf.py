@@ -1,4 +1,4 @@
-"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.5.0.
+"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.6.0.
 
 Design notes
 - The data contract is ``kg/model.py``; this module only maps it onto triples.
@@ -8,13 +8,17 @@ Design notes
   declared in ontologies/laubmann.ttl (tests/test_ontology_alignment.py).
 - Explicit partonomy: every child node gets ``dcterms:isPartOf`` (page→volume,
   entry→page|volume, region→page, observation/travel/weather→entry,
-  leg→travel event, vocalisation→observation); the parent-side containment
-  properties are sub-properties of ``dcterms:hasPart``.
+  leg→travel event); the parent-side containment properties are
+  sub-properties of ``dcterms:hasPart``.
 - SHACL runs with ``inference="none"`` (see shacl_validate.py): the grouping
-  superclasses (ArchivalUnit / EntryRecord / RecordDetail) are NOT asserted in
-  the data; shapes target the concrete classes. Super-properties that shapes or
+  superclasses (ArchivalUnit / EntryRecord) are NOT asserted in the data;
+  shapes target the concrete classes. Super-properties that shapes or
   consumers rely on are asserted next to the sub-property (mentionsPerson next
-  to the role edge).
+  to the role edge, hasSourceRegion next to hasMultimodalRegion).
+- External links (GBIF, EUNIS, GeoNames, Wikidata, GND) all take one form
+  (kg/authority.py): ``skos:exactMatch|closeMatch|broadMatch`` to the
+  authority IRI, described as a ``skos:Concept`` in ``lkg:authority_<name>``
+  with ``skos:notation`` and, when known, ``skos:prefLabel``. No owl:sameAs.
 - Nothing is inferred from prose here: a value is emitted only when the
   extractor set it.
 """
@@ -29,19 +33,22 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from rdflib import Graph, Literal, Namespace, URIRef
-from rdflib.namespace import DCTERMS, OWL, PROV, RDF, RDFS, SKOS, XSD
+from rdflib.namespace import DCTERMS, PROV, RDF, RDFS, SKOS, XSD
 
+from laubmann_kg.kg import authority
+from laubmann_kg.kg.authority import AuthorityLink
 from laubmann_kg.kg.model import (
     DATA_NS,
     DIARIST,
     DiaryEntry,
     DiaryPage,
     DiaryVolume,
-    Evidence,
     Habitat,
+    MultimodalRegion,
     Observation,
     Person,
     Place,
+    SourceRegionRef,
     Taxon,
     TravelEvent,
 )
@@ -59,6 +66,7 @@ DWCIRI = Namespace("http://rs.tdwg.org/dwc/iri/")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
 GSP = Namespace("http://www.opengis.net/ont/geosparql#")
 SCHEMA = Namespace("https://schema.org/")
+DCMITYPE = Namespace("http://purl.org/dc/dcmitype/")
 DATA = Namespace(DATA_NS)
 DE = "de"
 
@@ -72,6 +80,19 @@ _MENTION_PROPS = {
     "cited-author": LKG.mentionsCitedAuthor,
     "other": LKG.mentionsOther,
 }
+# match grade -> SKOS mapping property (the one link pattern of ontology 0.6.0)
+_MATCH_PROPS = {"exact": SKOS.exactMatch, "close": SKOS.closeMatch, "broad": SKOS.broadMatch}
+_AUTHORITY_LABELS = {
+    "authority_gbif": "GBIF Backbone Taxonomy",
+    "authority_eunis": "EUNIS habitat classification (2012)",
+    "authority_geonames": "GeoNames",
+    "authority_wikidata": "Wikidata",
+    "authority_gnd": "Gemeinsame Normdatei (GND)",
+}
+# MultimodalRegion.kind -> DCMI type of what the region shows
+_DCMI_TYPES = {"object": DCMITYPE.PhysicalObject, "text-insert": DCMITYPE.Text, "list": DCMITYPE.Text}
+_REGION_KIND_DE = {"drawing": "Zeichnung", "photograph": "Fotografie", "map": "Karte", "print": "Druck",
+                   "object": "Objekt", "text-insert": "Texteinlage", "list": "Liste"}
 # GBIF rank name -> Darwin Core term (dwc:class is spelled "class").
 _RANK_TERMS = {rank: DWC[rank] for rank in ("kingdom", "phylum", "class", "order", "family", "genus")}
 
@@ -90,10 +111,10 @@ def _bind(graph: Graph) -> None:
     graph.bind("gsp", GSP, override=True, replace=True)
     graph.bind("data", DATA)
     graph.bind("skos", SKOS)
-    graph.bind("owl", OWL)
     graph.bind("prov", PROV)
     graph.bind("dcterms", DCTERMS)
     graph.bind("schema", SCHEMA)
+    graph.bind("dcmitype", DCMITYPE)
     graph.bind("rdfs", RDFS)
     graph.bind("xsd", XSD)
 
@@ -111,6 +132,34 @@ def _iri_slug(value: str) -> str:
 def _wkt_point(lat: float, long: float) -> Literal:
     # GeoSPARQL/WKT axis order is longitude latitude.
     return Literal(f"POINT({Decimal(str(long))} {Decimal(str(lat))})", datatype=GSP.wktLiteral)
+
+
+# --------------------------------------------------------------------------
+# External authority links (one pattern for GBIF, EUNIS, GeoNames, Wikidata, GND)
+# --------------------------------------------------------------------------
+
+def _add_authority_record(graph: Graph, link: AuthorityLink) -> URIRef:
+    """The link target as an authority record: skos:Concept in its lkg:authority_*
+    scheme, with the authority's id (skos:notation) and label when known."""
+    node = URIRef(link.iri)
+    scheme = LKG[link.scheme]
+    if (node, SKOS.inScheme, scheme) not in graph:
+        graph.add((node, RDF.type, SKOS.Concept))
+        graph.add((node, SKOS.inScheme, scheme))
+        graph.add((node, SKOS.notation, Literal(link.notation)))
+        if (scheme, RDF.type, SKOS.ConceptScheme) not in graph:
+            graph.add((scheme, RDF.type, SKOS.ConceptScheme))
+            graph.add((scheme, SKOS.prefLabel, Literal(_AUTHORITY_LABELS[link.scheme], lang="en")))
+    if link.label and (node, SKOS.prefLabel, None) not in graph:
+        label = Literal(link.label, lang=link.label_lang) if link.label_lang else Literal(link.label)
+        graph.add((node, SKOS.prefLabel, label))
+        graph.add((node, RDFS.label, label))
+    return node
+
+
+def _add_authority_links(graph: Graph, node: URIRef, links: list[AuthorityLink]) -> None:
+    for link in links:
+        graph.add((node, _MATCH_PROPS[link.match], _add_authority_record(graph, link)))
 
 
 # --------------------------------------------------------------------------
@@ -146,19 +195,12 @@ def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
         graph.add((node, LKG.matchConfidence, _decimal(taxon.confidence)))
     if taxon.gbif_match_type:
         graph.add((node, LKG.gbifMatchType, Literal(taxon.gbif_match_type)))
-    if taxon.taxon_iri:
-        graph.add((node, OWL.sameAs, URIRef(taxon.taxon_iri)))
-    if taxon.gbif_key:
-        gbif = URIRef(f"https://www.gbif.org/species/{taxon.gbif_key}")
-        if taxon.gbif_match_type == "HIGHERRANK":
-            pred = SKOS.broadMatch          # genus anchor is broader, not equal
-        elif taxon.match_method == "llm+gbif" or taxon.gbif_match_type == "FUZZY":
-            pred = SKOS.closeMatch          # LLM-mediated or fuzzy: weaker claim
-        else:
-            pred = SKOS.exactMatch
-        graph.add((node, pred, gbif))
-        if taxon.gbif_match_type != "HIGHERRANK":
-            graph.add((node, DWC.taxonID, Literal(str(gbif))))
+    links = authority.taxon_links(taxon)
+    _add_authority_links(graph, node, links)
+    for link in links:
+        if link.authority == "gbif" and link.match != "broad":
+            # Darwin Core mirror of the GBIF identity (not for a genus anchor)
+            graph.add((node, DWC.taxonID, Literal(link.iri)))
     return node
 
 
@@ -184,10 +226,7 @@ def _add_place(graph: Graph, place: Place) -> URIRef:
             if place.georef_source:
                 graph.add((node, DWC.georeferenceSources, Literal(_GEOREF_SOURCES.get(place.georef_source, place.georef_source))))
         # gazetteer identity (linking/places.py): GeoNames feature, Wikidata item
-        if place.geonames_id:
-            graph.add((node, OWL.sameAs, URIRef(f"https://sws.geonames.org/{int(place.geonames_id)}/")))
-        if place.wikidata_iri:
-            graph.add((node, OWL.sameAs, URIRef(place.wikidata_iri)))
+        _add_authority_links(graph, node, authority.place_links(place))
     return node
 
 
@@ -211,10 +250,7 @@ def _add_person(graph: Graph, person: Person) -> URIRef:
     # Outside the type guard: an enriched Person instance may arrive after a
     # bare one; rdflib set semantics dedupes the repeated add. The role is NOT
     # a property of the shared person node — it sits on the mention edge.
-    if person.wikidata_iri:
-        graph.add((node, OWL.sameAs, URIRef(person.wikidata_iri)))
-    if person.gnd_iri:
-        graph.add((node, OWL.sameAs, URIRef(person.gnd_iri)))
+    _add_authority_links(graph, node, authority.person_links(person))
     return node
 
 
@@ -235,8 +271,7 @@ def _add_habitat_concept(graph: Graph, habitat: Habitat) -> URIRef:
     return node
 
 
-_EUNIS_MATCH = {"exact": SKOS.exactMatch, "close": SKOS.closeMatch, "broad": SKOS.broadMatch}
-EUNIS_SCHEME = URIRef("http://eunis.eea.europa.eu/eunishabitats/")
+EUNIS_SCHEME = LKG.authority_eunis
 # The EUNIS web application is retired (the concept URIs are identifiers, not
 # pages); these two are maintained: the Eionet Data Dictionary concept view
 # (label, definition, hierarchy) and the BISE hierarchical view of the 2012
@@ -246,27 +281,22 @@ EUNIS_BISE_PAGE = "https://biodiversity.europa.eu/resources/search-habitat/eunis
 
 
 def _add_eunis_concept(graph: Graph, code: str, label: str, uri: str) -> URIRef:
-    """A EUNIS habitat class as an external skos:Concept (Eionet vocabulary
-    URI), with its label and notation cached in the graph and rdfs:seeAlso
-    links to the maintained pages."""
-    node = URIRef(uri)
-    if (node, RDF.type, SKOS.Concept) not in graph:
-        graph.add((node, RDF.type, SKOS.Concept))
-        graph.add((node, SKOS.prefLabel, Literal(label, lang="en")))
-        graph.add((node, RDFS.label, Literal(f"{code} {label}", lang="en")))
-        graph.add((node, SKOS.notation, Literal(code)))
-        graph.add((node, SKOS.inScheme, EUNIS_SCHEME))
-        graph.add((node, RDFS.seeAlso, URIRef(EUNIS_DD_PAGE.format(code=code))))
-        graph.add((node, RDFS.seeAlso, URIRef(EUNIS_BISE_PAGE.format(code=code))))
-        graph.add((EUNIS_SCHEME, RDF.type, SKOS.ConceptScheme))
+    """A EUNIS habitat class as an authority record (lkg:authority_eunis, like
+    every other link target) plus the EUNIS-specific rdfs:seeAlso links to the
+    maintained pages."""
+    node = _add_authority_record(graph, AuthorityLink("eunis", uri, code, "close", label, "en"))
+    graph.add((node, RDFS.seeAlso, URIRef(EUNIS_DD_PAGE.format(code=code))))
+    graph.add((node, RDFS.seeAlso, URIRef(EUNIS_BISE_PAGE.format(code=code))))
     return node
 
 
 def _add_eunis_link(graph: Graph, habitat_node: URIRef, habitat: Habitat) -> None:
-    """habitat concept -> skos:{exact,close,broad}Match -> EUNIS class, plus the
-    class's broader chain (so "all woodland" = skos:broader* G)."""
+    """habitat concept -> skos:{exact,close,broad}Match -> EUNIS class (the
+    common authority-link pattern), plus the class's broader chain (so "all
+    woodland" = skos:broader* G)."""
+    links = authority.habitat_links(habitat)
     target = _add_eunis_concept(graph, habitat.eunis_code, habitat.eunis_label or habitat.eunis_code, habitat.eunis_uri)
-    graph.add((habitat_node, _EUNIS_MATCH.get(habitat.eunis_match or "close", SKOS.closeMatch), target))
+    graph.add((habitat_node, _MATCH_PROPS[links[0].match], target))
     child = target
     for code, label, uri in habitat.eunis_parents:
         parent = _add_eunis_concept(graph, code, label, uri)
@@ -301,6 +331,10 @@ def _add_travel_event(graph: Graph, entry_node: URIRef, event: TravelEvent,
         graph.add((node, RDF.type, LKG.TravelLeg))
         graph.add((ev, LKG.hasLeg, node))
         graph.add((node, DCTERMS.isPartOf, ev))
+        # a leg is an entry record like the others (0.6.0): derived from the entry
+        graph.add((node, PROV.wasDerivedFrom, entry_node))
+        if run is not None:
+            graph.add((node, PROV.wasGeneratedBy, run))
         graph.add((node, LKG.departurePlace, _add_place(graph, leg.departure_place)))
         graph.add((node, LKG.arrivalPlace, _add_place(graph, leg.arrival_place)))
         for via in leg.via_places:
@@ -337,19 +371,6 @@ def _add_weather(graph: Graph, entry_node: URIRef, entry: DiaryEntry,
         graph.add((node, LKG.skyCondition, Literal(w.sky)))
     graph.add((entry_node, LKG.hasWeather, node))
     _add_record_links(graph, node, entry_node, run)
-
-
-def _add_vocalisation(graph: Graph, obs_node: URIRef, obs_uid: str,
-                      evidence: Evidence, index: int) -> URIRef:
-    node = _uri(evidence.vocalisation_uid(obs_uid, index))
-    graph.add((node, RDF.type, LKG.Vocalisation))
-    graph.add((node, DCTERMS.isPartOf, obs_node))
-    graph.add((node, LKG.callType, Literal(evidence.call_type or "unknown")))
-    # No placeholder transcription: only what the diary actually wrote.
-    if evidence.call_transcription:
-        graph.add((node, LKG.callTranscription, Literal(evidence.call_transcription)))
-    graph.add((obs_node, LKG.hasVocalisation, node))
-    return node
 
 
 def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
@@ -451,15 +472,19 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
     if obs.literature_citation:
         graph.add((node, DWC.associatedReferences, Literal(obs.literature_citation, lang=DE)))
 
-    # --- how: evidence kinds, vocalisations, behaviour, habitat -------------
-    call_index = 0
+    # --- how: evidence kinds, what was heard, behaviour, habitat -----------
     for evidence in obs.evidence:
         concept = _EVIDENCE_CONCEPTS.get(evidence.kind)
         if concept is not None:
             graph.add((node, LKG.evidenceKind, concept))
         if evidence.is_call:
-            _add_vocalisation(graph, node, obs.uid, evidence, call_index)
-            call_index += 1
+            graph.add((node, LKG.evidenceKind, _EVIDENCE_CONCEPTS["auditory"]))
+            # the sound sits on the observation itself (0.6.0); no "unknown"
+            # placeholder and no transcription the diary did not write
+            if evidence.call_type in vocab.EMITTED_CALL_TYPES:
+                graph.add((node, LKG.callType, Literal(evidence.call_type)))
+            if evidence.call_transcription:
+                graph.add((node, LKG.callTranscription, Literal(evidence.call_transcription)))
     for behaviour in obs.behaviour:
         graph.add((node, DWC.behavior, Literal(behaviour.label, lang=DE)))
     if obs.habitat is not None:
@@ -471,6 +496,47 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
 # --------------------------------------------------------------------------
 # Archival units
 # --------------------------------------------------------------------------
+
+def _add_page(graph: Graph, volume: int, page_uid: str, page_id: str,
+              scan: Optional[str], volume_node: URIRef) -> Optional[URIRef]:
+    if not page_uid:
+        return None
+    page = DiaryPage(page_uid, volume, page_id, scan)
+    page_node = _uri(page.uid)
+    if (page_node, RDF.type, LKG.DiaryPage) not in graph:
+        graph.add((page_node, RDF.type, LKG.DiaryPage))
+        graph.add((page_node, RDFS.label, Literal(page.label)))
+        if page.page_id:
+            graph.add((page_node, DCTERMS.identifier, Literal(page.page_id)))
+        graph.add((page_node, DCTERMS.isPartOf, volume_node))
+    return page_node
+
+
+def _add_multimodal_region(graph: Graph, entry_node: URIRef, region: MultimodalRegion,
+                           volume_node: URIRef) -> URIRef:
+    """A drawing, map, photograph, object or inserted text placed with the entry
+    (lkg:MultimodalRegion ⊑ lkg:SourceRegion). hasSourceRegion is asserted
+    next to hasMultimodalRegion so consumers without inference see every region."""
+    node = _uri(region.uid)
+    graph.add((node, RDF.type, LKG.MultimodalRegion))
+    scan = f", Scan {int(region.scan):04d}" if str(region.scan or "").isdigit() else ""
+    kind_de = _REGION_KIND_DE.get(region.kind, region.kind)
+    graph.add((node, RDFS.label, Literal(f"{kind_de} · Bd. {int(region.volume):02d}{scan}", lang=DE)))
+    graph.add((node, LKG.regionKind, Literal(region.kind)))
+    graph.add((node, DCTERMS.type, _DCMI_TYPES.get(region.kind, DCMITYPE.StillImage)))
+    if region.description:
+        graph.add((node, DCTERMS.description, Literal(region.description, lang="en")))
+    if region.visible_text:
+        graph.add((node, LKG.visibleText, Literal(region.visible_text, lang=DE)))
+    if region.crop:
+        graph.add((node, DCTERMS.identifier, Literal(region.crop)))
+    page_node = _add_page(graph, region.volume, region.page_uid, region.page_id, region.scan, volume_node)
+    if page_node is not None:
+        graph.add((node, DCTERMS.isPartOf, page_node))
+    graph.add((entry_node, LKG.hasMultimodalRegion, node))
+    graph.add((entry_node, LKG.hasSourceRegion, node))
+    return node
+
 
 def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, volume_spans: Optional[dict] = None) -> None:
     node = _uri(entry.uid)
@@ -505,25 +571,27 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, vo
     if span:
         # the time span the volume covers according to its title page (YYYY-MM/YYYY-MM)
         graph.add((volume_node, DCTERMS.temporal, Literal(f"{span[0]}/{span[1]}")))
-    page_node: Optional[URIRef] = None
-    if entry.page_uid:
-        page = DiaryPage(entry.page_uid, entry.volume, entry.page_id, entry.scan)
-        page_node = _uri(page.uid)
-        graph.add((page_node, RDF.type, LKG.DiaryPage))
-        graph.add((page_node, RDFS.label, Literal(page.label)))
-        if page.page_id:
-            graph.add((page_node, DCTERMS.identifier, Literal(page.page_id)))
-        graph.add((page_node, DCTERMS.isPartOf, volume_node))
+    page_node = _add_page(graph, entry.volume, entry.page_uid, entry.page_id, entry.scan, volume_node)
     # entry → page (or straight to the volume when the page is unknown)
     graph.add((node, DCTERMS.isPartOf, page_node if page_node is not None else volume_node))
-    if entry.region_uid:
-        # The layout region on the scanned page whose text became this entry.
-        region = _uri(f"region_{entry.region_uid}")
+    # The body-text regions the entry's text was read from: the header region
+    # and, for an entry that continues over pages, one region per further page.
+    regions = list(entry.source_regions)
+    if entry.region_uid and not any(r.region_uid == entry.region_uid for r in regions):
+        regions.insert(0, SourceRegionRef(entry.region_uid, entry.page_uid, entry.page_id, entry.scan))
+    multimodal_uids = {m.region_uid for m in entry.multimodal}
+    for ref in regions:
+        region = _uri(f"region_{ref.region_uid}")
         graph.add((node, LKG.hasSourceRegion, region))
+        region_page = _add_page(graph, entry.volume, ref.page_uid, ref.page_id, ref.scan, volume_node)
+        if region_page is not None:
+            graph.add((region, DCTERMS.isPartOf, region_page))
+        if ref.region_uid in multimodal_uids:
+            continue        # an inserted text read with the entry: typed and labelled as MultimodalRegion below
         graph.add((region, RDF.type, LKG.SourceRegion))
-        graph.add((region, RDFS.label, Literal(f"Region {entry.region_uid}")))
-        if page_node is not None:
-            graph.add((region, DCTERMS.isPartOf, page_node))
+        graph.add((region, RDFS.label, Literal(f"Region {ref.region_uid}")))
+    for mm in entry.multimodal:
+        _add_multimodal_region(graph, node, mm, volume_node)
 
     for obs in entry.observations:
         obs_node = _add_observation(graph, obs, node, entry.entry_date, run)

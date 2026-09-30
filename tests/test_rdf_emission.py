@@ -21,9 +21,11 @@ from laubmann_kg.kg.model import (
     DiaryEntry,
     Evidence,
     Habitat,
+    MultimodalRegion,
     Observation,
     Person,
     Place,
+    SourceRegionRef,
     Taxon,
     TravelEvent,
     TravelLeg,
@@ -108,6 +110,15 @@ def _full_entry() -> DiaryEntry:
                   via_places=(Place("Kosbach", canonical="Kosbach", kind="settlement"),),
                   departure_time="1919-04-12T06:00:00", arrival_time="1919-04-12T07:15:00",
                   verbatim="zu Fuß über Kosbach")])]
+    # the entry continues on the next page (second body-text region) and has a
+    # sketch map pasted next to it (multimodal catalogue)
+    entry.source_regions = [SourceRegionRef("r_rdf1", "p_rdf1", "L03-p012", "0012"),
+                            SourceRegionRef("r_rdf2", "p_rdf2", "L03-p013", "0013")]
+    entry.multimodal = [MultimodalRegion(
+        region_uid="r_rdf_map", page_uid="p_rdf2", page_id="L03-p013", volume=3, scan="0013",
+        entry_uid="e_rdf1", kind="map", description="A hand-drawn map of the Dechsendorfer Weiher.",
+        visible_text="Dechsendorfer Weiher", crop="regions/L03-p013/r03_ImageRegion.png",
+        region_type="ImageRegion")]
     return entry
 
 
@@ -194,16 +205,17 @@ def test_evidence_vocalisation_and_habitat() -> None:
     assert set(graph.objects(node, LKG.evidenceKind)) == {LKG.evidence_auditory, LKG.evidence_visual}
     assert list(graph.subjects(RDF.type, LKG.ObservationEvidence)) == []
     assert list(graph.subjects(RDF.type, LKG.BirdCall)) == []
-    # the call becomes a Vocalisation node, part of the observation
-    calls = list(graph.objects(node, LKG.hasVocalisation))
-    assert len(calls) == 1
-    call = calls[0]
-    assert call == DATA[absence.evidence[0].vocalisation_uid(absence.uid, 0)]
-    assert (call, RDF.type, LKG.Vocalisation) in graph
-    assert graph.value(call, DCTERMS.isPartOf) == node
-    assert graph.value(call, LKG.callType) == Literal("call")
-    assert graph.value(call, LKG.callTranscription) is None       # no "Ruf" placeholder
+    # what was heard sits on the observation itself (0.6.0): no Vocalisation node
+    assert list(graph.subjects(RDF.type, LKG.Vocalisation)) == []
+    assert list(graph.triples((None, LKG.hasVocalisation, None))) == []
+    assert set(graph.objects(node, LKG.callType)) == {Literal("call")}
+    assert graph.value(node, LKG.callTranscription) is None       # no "Ruf" placeholder
     assert Literal("Ruf") not in set(graph.objects(None, None))
+    heard = DATA[entry.observations[2].uid]
+    assert graph.value(heard, LKG.callType) == Literal("song")
+    assert graph.value(heard, LKG.callTranscription) == Literal("zirr zirr")
+    assert graph.value(heard, LKG.evidenceKind) == LKG.evidence_auditory
+    assert graph.value(DATA[entry.observations[1].uid], LKG.callType) is None   # nothing stated
 
     # habitat: shared skos:Concept via dwciri:habitat (+ dwc:habitat literal), no lkg:Habitat class
     habitat = graph.value(node, DWCIRI.habitat)
@@ -421,29 +433,33 @@ def test_hand_written_fixture_conforms() -> None:
                                 shapes_path=str(SHAPES))
     g = Graph().parse(str(fixture), format="turtle")
     assert (None, RDF.type, LKG.Observation) in g
-    assert (None, RDF.type, LKG.Vocalisation) in g
+    assert (None, RDF.type, LKG.MultimodalRegion) in g
+    assert (None, LKG.callTranscription, None) in g
+    assert (None, RDF.type, LKG.Vocalisation) not in g
 
 
 def test_ontology_axioms_and_vocabularies_parse() -> None:
     onto = Graph().parse(str(ONTOLOGY), format="turtle")
     onto_iri = URIRef("https://w3id.org/laubmann-kg/ontology")
-    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.5.0")
+    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.6.0")
     # grouping hierarchy
     RICO = URIRef("https://www.ica.org/standards/RiC/ontology#Record")
     assert (LKG.ArchivalUnit, RDFS.subClassOf, RICO) in onto
     assert (LKG.EntryRecord, RDFS.subClassOf, PROV.Entity) in onto
     for cls in ("DiaryVolume", "DiaryPage", "DiaryEntry", "SourceRegion"):
         assert (LKG[cls], RDFS.subClassOf, LKG.ArchivalUnit) in onto, cls
-    for cls in ("Observation", "TravelEvent", "WeatherReport"):
+    for cls in ("Observation", "TravelEvent", "WeatherReport", "TravelLeg"):
         assert (LKG[cls], RDFS.subClassOf, LKG.EntryRecord) in onto, cls
-    for cls in ("Vocalisation", "TravelLeg"):
-        assert (LKG[cls], RDFS.subClassOf, LKG.RecordDetail) in onto, cls
+    assert (LKG.MultimodalRegion, RDFS.subClassOf, LKG.SourceRegion) in onto
+    assert (LKG.hasMultimodalRegion, RDFS.subPropertyOf, LKG.hasSourceRegion) in onto
+    for name in ("RecordDetail", "Vocalisation", "hasVocalisation"):     # removed in 0.6.0
+        assert (LKG[name], None, None) not in onto, name
     assert (LKG.Observation, RDFS.subClassOf, DWC.Occurrence) in onto
     assert (LKG.DiaryEntry, RDFS.subClassOf, DWC.Event) in onto
     assert (LKG.observedTaxon, RDFS.subPropertyOf, DWCIRI.toTaxon) in onto
     assert (LKG.observedAt, RDFS.subPropertyOf, DWCIRI.inDescribedPlace) not in onto
     # partonomy: containment properties are sub-properties of dcterms:hasPart
-    for prop in ("containsObservation", "containsTravelEvent", "hasWeather", "hasLeg", "hasVocalisation"):
+    for prop in ("containsObservation", "containsTravelEvent", "hasWeather", "hasLeg"):
         assert (LKG[prop], RDFS.subPropertyOf, DCTERMS.hasPart) in onto, prop
     # role edges
     for prop in ("mentionsCompanion", "mentionsSource", "mentionsCollector",
@@ -461,7 +477,8 @@ def test_ontology_axioms_and_vocabularies_parse() -> None:
     assert (LKG.habitatScheme, RDF.type, SKOS.ConceptScheme) not in onto
     for prop in ("entryPlace", "hasLocality", "entryKind", "datePlausible",
                  "individualCountMin", "individualCountMax", "breedingEvidence", "movementKind",
-                 "flightDirection", "evidenceKind", "hasVocalisation", "callType", "callTranscription",
+                 "flightDirection", "evidenceKind", "callType", "callTranscription",
+                 "hasSourceRegion", "hasMultimodalRegion", "regionKind", "visibleText",
                  "matchMethod", "matchConfidence", "gbifMatchType", "isBird", "placeKind",
                  "recordType", "backend", "spatialContext", "microhabitat", "relativeElevation",
                  "observationRadiusMeters", "spatialConfidence", "timeOfDay", "daylightPhase",
@@ -484,6 +501,10 @@ def test_ontology_axioms_and_vocabularies_parse() -> None:
     assert _values(LKG.movementKindScheme) == set(vocab.MOVEMENT_KINDS)
     assert _values(LKG.taxonRankScheme) == set(vocab.TAXON_RANKS)
     assert _values(LKG.placeKindScheme) == set(vocab.PLACE_KINDS)
+    assert _values(LKG.callTypeScheme) == set(vocab.EMITTED_CALL_TYPES)
+    assert _values(LKG.regionKindScheme) == set(vocab.REGION_KINDS)
+    for key, (prefix, scheme) in __import__("laubmann_kg.kg.authority", fromlist=["AUTHORITIES"]).AUTHORITIES.items():
+        assert (LKG[scheme], RDF.type, SKOS.ConceptScheme) in vocabs, key
     assert _values(LKG.entryKindScheme) == set(vocab.ENTRY_KINDS)
     assert _values(LKG.evidenceKindScheme) == set(vocab.EVIDENCE_KINDS)
     assert (LKG.habitatScheme, RDF.type, SKOS.ConceptScheme) in vocabs
@@ -494,10 +515,10 @@ def test_shapes_encode_relaxed_constraints() -> None:
     # the load-bearing shape changes on the shapes graph itself.
     from rdflib.namespace import SH
     shapes = Graph().parse(str(SHAPES), format="turtle")
-    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.5.0")
+    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.6.0")
     call = next(shapes.subjects(SH.path, LKG.callTranscription))
     assert shapes.value(call, SH.minCount) is None                # optional transcription
-    assert shapes.value(call, SH.maxCount).toPython() == 1
+    assert shapes.value(call, SH.maxCount) is None                # several calls on one observation
     count = next(p for p in shapes.subjects(SH.path, DWC.individualCount)
                  if shapes.value(p, SH.minInclusive) is not None)
     assert shapes.value(count, SH.minInclusive).toPython() == 0    # absences may carry 0
@@ -510,7 +531,7 @@ def test_shapes_encode_relaxed_constraints() -> None:
     assert {DWC.occurrenceStatus, DWC.sex, DWC.lifeStage, DWC.vitality, LKG.breedingEvidence,
             LKG.movementKind, LKG.hasLocality, LKG.individualCountMin, DWC.eventDate,
             DWC.eventTime, LKG.countQualifier, DWCIRI.habitat, DWCIRI.recordedBy,
-            LKG.hasVocalisation, DWC.behavior, LKG.spatialContext, LKG.microhabitat,
+            LKG.callType, LKG.callTranscription, DWC.behavior, LKG.spatialContext, LKG.microhabitat,
             LKG.relativeElevation, LKG.timeOfDay, LKG.daylightPhase,
             LKG.observationRadiusMeters, LKG.spatialConfidence,
             LKG.observationDurationMinutes, LKG.altitudeM} <= obs_paths
@@ -526,5 +547,71 @@ def test_shapes_encode_relaxed_constraints() -> None:
     # habitat concepts are addressed as objects of dwciri:habitat (no class shape)
     assert (LKG.HabitatConceptShape, SH.targetObjectsOf, DWCIRI.habitat) in shapes
     for old in ("ObservationEventShape", "HabitatShape", "BirdCallShape", "ObservationEvidenceShape",
-                "BehaviourNoteShape", "RouteShape", "TimeEstimateShape", "NoOrphanObservationShape"):
+                "BehaviourNoteShape", "RouteShape", "TimeEstimateShape", "NoOrphanObservationShape",
+                "VocalisationShape", "EunisConceptShape"):
         assert (LKG[old], None, None) not in shapes, old
+
+
+def test_source_and_multimodal_regions() -> None:
+    """0.6.0: an entry links every body-text region it runs through (continuation
+    pages included) and its multimodal regions (hasMultimodalRegion, with the
+    super-property asserted alongside)."""
+    graph, entry = _graph()
+    node = DATA[entry.uid]
+    r1, r2, mm = DATA["region_r_rdf1"], DATA["region_r_rdf2"], DATA["region_r_rdf_map"]
+    assert set(graph.objects(node, LKG.hasSourceRegion)) == {r1, r2, mm}
+    assert set(graph.objects(node, LKG.hasMultimodalRegion)) == {mm}
+    assert graph.value(r2, DCTERMS.isPartOf) == DATA["page_p_rdf2"]
+    assert (DATA["page_p_rdf2"], RDF.type, LKG.DiaryPage) in graph          # continuation page is in the graph
+    assert graph.value(DATA["page_p_rdf2"], DCTERMS.isPartOf) == DATA["volume_03"]
+    assert (mm, RDF.type, LKG.MultimodalRegion) in graph
+    assert graph.value(mm, LKG.regionKind) == Literal("map")
+    assert graph.value(mm, DCTERMS.type) == URIRef("http://purl.org/dc/dcmitype/StillImage")
+    assert graph.value(mm, LKG.visibleText) == Literal("Dechsendorfer Weiher", lang="de")
+    assert graph.value(mm, DCTERMS.identifier) == Literal("regions/L03-p013/r03_ImageRegion.png")
+    assert graph.value(mm, DCTERMS.isPartOf) == DATA["page_p_rdf2"]
+    assert graph.value(node, DCTERMS.isPartOf) == DATA["page_p_rdf1"]   # the entry itself: first page only
+
+
+def test_authority_links_share_one_pattern() -> None:
+    """0.6.0: GBIF, EUNIS, GeoNames, Wikidata and GND links are all
+    skos:*Match to a skos:Concept in an lkg:authority_* scheme with a
+    skos:notation — and no owl:sameAs anywhere."""
+    from laubmann_kg.kg.model import Habitat as H
+    entry = _full_entry()
+    place = Place("Ismaning", canonical="Ismaning", lat=48.2333, long=11.6833, kind="settlement",
+                  geonames_id=2895643, wikidata_iri="http://www.wikidata.org/entity/Q262560",
+                  georef_source="geonames")
+    entry.place = place
+    entry.persons = [Person("Walter Wüst", role="companion",
+                            wikidata_iri="http://www.wikidata.org/entity/Q2546836", wikidata_match="exact",
+                            gnd_iri="https://d-nb.info/gnd/117351938")]
+    entry.observations[0].habitat = H("Schilf", eunis_code="C3.21", eunis_label="Phragmites australis beds",
+                                      eunis_match="exact", eunis_uri="http://eunis.eea.europa.eu/eunishabitats/C3.21",
+                                      eunis_parents=(("C3.2", "Water-fringing reedbeds", "http://eunis.eea.europa.eu/eunishabitats/C3.2"),))
+    graph = build_graph(ExtractionResult(entries=[entry], provenance=PROVENANCE))
+    assert not list(graph.triples((None, OWL.sameAs, None)))
+    expected = {
+        (DATA[entry.observations[0].taxon.uid], SKOS.exactMatch, "https://www.gbif.org/species/2480962", "authority_gbif", "2480962"),
+        (DATA[place.uid], SKOS.closeMatch, "https://sws.geonames.org/2895643/", "authority_geonames", "2895643"),
+        (DATA[place.uid], SKOS.closeMatch, "http://www.wikidata.org/entity/Q262560", "authority_wikidata", "Q262560"),
+        (DATA[entry.persons[0].uid], SKOS.exactMatch, "http://www.wikidata.org/entity/Q2546836", "authority_wikidata", "Q2546836"),
+        (DATA[entry.persons[0].uid], SKOS.exactMatch, "https://d-nb.info/gnd/117351938", "authority_gnd", "117351938"),
+        (DATA[entry.observations[0].habitat.uid], SKOS.exactMatch, "http://eunis.eea.europa.eu/eunishabitats/C3.21", "authority_eunis", "C3.21"),
+    }
+    for subject, pred, iri, scheme, notation in expected:
+        target = URIRef(iri)
+        assert (subject, pred, target) in graph, (subject, iri)
+        assert (target, RDF.type, SKOS.Concept) in graph
+        assert graph.value(target, SKOS.inScheme) == LKG[scheme]
+        assert graph.value(target, SKOS.notation) == Literal(notation)
+    # EUNIS keeps its hierarchy; GBIF keeps the Darwin Core mirror
+    assert (URIRef("http://eunis.eea.europa.eu/eunishabitats/C3.21"), SKOS.broader,
+            URIRef("http://eunis.eea.europa.eu/eunishabitats/C3.2")) in graph
+    assert graph.value(DATA[entry.observations[0].taxon.uid], DWC.taxonID) == \
+        Literal("https://www.gbif.org/species/2480962")
+    assert graph.value(URIRef("https://www.gbif.org/species/2480962"), SKOS.prefLabel) is None   # no canonical name set
+    path = Path(__import__("tempfile").mkdtemp()) / "links.ttl"
+    serialize_turtle(graph, path)
+    assert run_shacl_validation(data_path=str(path), ontology_path=str(ONTOLOGY),
+                                shapes_path=str(SHAPES))

@@ -98,6 +98,21 @@ def _coordinate_uncertainty(obs) -> str:
     return ""
 
 
+_CALL_LABELS_DE = {"song": "Gesang", "call": "Ruf", "alarm": "Warnruf", "drumming": "Trommeln"}
+
+
+def _behavior(obs) -> str:
+    """dwc:behavior of the flat archive: the call types heard (German labels of
+    lkg:callTypeScheme, since 0.6.0 no longer repeated as behaviour phrases in
+    the graph) followed by the other behaviours as written."""
+    calls = []
+    for evidence in obs.evidence:
+        label = _CALL_LABELS_DE.get(evidence.call_type or "") if evidence.is_call else None
+        if label and label not in calls:
+            calls.append(label)
+    return "; ".join(calls + [b.label for b in obs.behaviour])
+
+
 def _taxon_id(taxon) -> str:
     if taxon.gbif_key and taxon.gbif_match_type != "HIGHERRANK":
         return f"https://www.gbif.org/species/{taxon.gbif_key}"
@@ -137,7 +152,7 @@ def build_occurrences(result: "ExtractionResult", media_by_entry: dict | None = 
                 "lifeStage": obs.life_stage or "",
                 "reproductiveCondition": _reproductive_condition(obs),
                 "vitality": obs.vitality or "",
-                "behavior": "; ".join(b.label for b in obs.behaviour),
+                "behavior": _behavior(obs),
                 "identificationQualifier": obs.identification_qualifier or "",
                 "identificationRemarks": _identification_remarks(taxon),
                 "verbatimIdentification": obs.taxon_verbatim or "",

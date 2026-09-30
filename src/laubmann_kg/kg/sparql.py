@@ -3,7 +3,7 @@
 The queries use the Darwin-Core-first vocabulary of the emitted graph:
 ``dwc:vernacularName`` / ``dwc:scientificName`` on taxa, ``dwc:eventDate`` on
 entries, ``dcterms:isPartOf`` for the partonomy, ``lkg:evidenceKind`` concepts
-and ``lkg:hasVocalisation`` nodes for how the bird was detected.
+and ``lkg:callType`` / ``lkg:callTranscription`` for how the bird was detected.
 """
 
 from __future__ import annotations
@@ -51,17 +51,14 @@ QUERIES: dict[str, str] = {
             ?t dwc:vernacularName ?vernacular .
         } ORDER BY ?place
     """,
-    # Auditory records: evidence kind on the observation; call detail (type,
-    # transcription) on the optional Vocalisation node.
+    # Auditory records: evidence kind, call type and transcription all sit on
+    # the observation itself (ontology 0.6.0).
     "CQ4_auditory_observations": PREFIXES + """
         SELECT ?vernacular ?callType ?transcription WHERE {
             ?obs a lkg:Observation ; lkg:observedTaxon ?t ;
                  lkg:evidenceKind lkg:evidence_auditory .
-            OPTIONAL {
-                ?obs lkg:hasVocalisation ?v .
-                OPTIONAL { ?v lkg:callType ?callType }
-                OPTIONAL { ?v lkg:callTranscription ?transcription }
-            }
+            OPTIONAL { ?obs lkg:callType ?callType }
+            OPTIONAL { ?obs lkg:callTranscription ?transcription }
             ?t dwc:vernacularName ?vernacular .
         }
     """,

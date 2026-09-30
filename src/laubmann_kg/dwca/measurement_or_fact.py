@@ -12,6 +12,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from laubmann_kg.kg.model import ONTO_NS
+from laubmann_kg.normalization import vocabularies as vocab
 
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
@@ -63,7 +64,7 @@ def build_measurements(result: "ExtractionResult") -> list[dict]:
 
             for evidence in obs.evidence:
                 _add("evidenceType", evidence.kind)
-                if evidence.is_call and evidence.call_type:
+                if evidence.is_call and evidence.call_type in vocab.EMITTED_CALL_TYPES:
                     _add("callType", evidence.call_type)
             _add("countQualifier", obs.count_qualifier)
             _add("breedingEvidence", obs.breeding_evidence)

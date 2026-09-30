@@ -909,14 +909,14 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
   }
   // ---------- ontology (labels used in graph + statements) ----------
-  const CLS = { entries: 'lkg:DiaryEntry', obs: 'lkg:Observation', taxa: 'lkg:Taxon', places: 'lkg:Place', persons: 'lkg:Person', habitats: 'skos:Concept · lkg:habitatScheme', weather: 'lkg:WeatherReport', travel: 'lkg:TravelEvent', leg: 'lkg:TravelLeg', archival: 'lkg:DiaryVolume / lkg:DiaryPage', evidence: 'skos:Concept · lkg:evidenceKindScheme', vocal: 'lkg:Vocalisation' };
+  const CLS = { entries: 'lkg:DiaryEntry', obs: 'lkg:Observation', taxa: 'lkg:Taxon', places: 'lkg:Place', persons: 'lkg:Person', habitats: 'skos:Concept · lkg:habitatScheme', weather: 'lkg:WeatherReport', travel: 'lkg:TravelEvent', leg: 'lkg:TravelLeg', archival: 'lkg:DiaryVolume / lkg:DiaryPage', evidence: 'skos:Concept · lkg:evidenceKindScheme', vocal: 'lkg:callType (literal on the observation)' };
   const PRED = { // key → [legend label, colour, dash, on-edge label]
     contains: ['lkg:containsObservation', 'var(--p-contains)', '', 'containsObservation'], taxon: ['lkg:observedTaxon', 'var(--p-taxon)', '', 'observedTaxon'],
     at: ['lkg:observedAt (entry place)', 'var(--p-place)', '4 3', 'observedAt'], loc: ['lkg:observedAt · lkg:hasLocality', 'var(--p-place)', '', 'observedAt · hasLocality'],
     by: ['dwciri:recordedBy', 'var(--p-person)', '', 'dwciri:recordedBy'], mentions: ['lkg:mentionsPerson (+ role edge)', 'var(--p-person)', '4 3', 'mentionsPerson'],
     habitat: ['dwciri:habitat', 'var(--p-habitat)', '', 'dwciri:habitat'], entryPlace: ['lkg:entryPlace', 'var(--p-place)', '', 'entryPlace'],
     weather: ['lkg:hasWeather', 'var(--p-weather)', '', 'hasWeather'], travel: ['lkg:containsTravelEvent', 'var(--p-travel)', '', 'containsTravelEvent'], hasLeg: ['lkg:hasLeg', 'var(--p-travel)', '', 'hasLeg'],
-    evidence: ['lkg:evidenceKind', 'var(--p-evidence)', '', 'evidenceKind'], vocal: ['lkg:hasVocalisation', 'var(--p-evidence)', '', 'hasVocalisation'],
+    evidence: ['lkg:evidenceKind', 'var(--p-evidence)', '', 'evidenceKind'], vocal: ['lkg:callType · lkg:callTranscription (literals)', 'var(--p-evidence)', '2 2', 'callType'],
     legFrom: ['lkg:departurePlace', 'var(--p-travel)', '3 3', 'departurePlace'], legTo: ['lkg:arrivalPlace', 'var(--p-travel)', '3 3', 'arrivalPlace'],
     partOf: ['dcterms:isPartOf', 'var(--c-archival)', '', 'dcterms:isPartOf'],
     inEntry: ['dcterms:isPartOf · prov:wasDerivedFrom (inverse)', 'var(--p-contains)', '', 'isPartOf⁻¹'], shares: ['shares observations (derived)', 'var(--p-derived)', '2 3', 'shares obs.'],
@@ -1176,7 +1176,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="tile"><b>${fmt(PE.length)}</b><span>persons · ${fmt(PE.filter(p => p.wd).length)} on Wikidata</span></div>
         <div class="tile"><b>${fmt(WX.length)}</b><span>weather reports</span></div>
         <div class="tile"><b>${fmt(legs)}</b><span>travel legs · ${fmt(journeys)} journeys</span></div>
-        <div class="tile"><b>${fmt(calls)}</b><span>vocalisations (lkg:Vocalisation)</span></div>
+        <div class="tile"><b>${fmt(calls)}</b><span>calls heard (lkg:callType / lkg:callTranscription)</span></div>
         <div class="tile"><b>${fmt(absent)}</b><span>recorded absences</span></div>
         <div class="tile"><b>${fmt(META.triples)}</b><span>RDF triples</span></div>
         <div class="tile"><b>${fmt((META.merged_taxa || 0) + (META.merged_persons || 0) + (META.merged_places || 0) + (META.merged_habitats || 0))}</b><span>entities with merged spellings · ${fmt(META.merged_taxa || 0)} taxa · ${fmt(META.merged_persons || 0)} persons · ${fmt(META.merged_places || 0)} places</span></div>
@@ -1210,7 +1210,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
     state.view = { cls: 'about' };
     $('#detail').innerHTML = `<h2>Laubmann knowledge graph</h2><div class="sub">34 field diaries of Alfred Laubmann · ${Y0}–${Y1} · export of 2026-08-19 · ontology 0.4.1</div>
       <div class="small">Every node in this explorer is a resource in <code>laubmann_sample.ttl</code> (${fmt(META.triples)} triples, ${fmt(META.entries)} DiaryEntry subjects). The <b>graph</b> view shows one entry or entity at a time as its real neighbourhood in the RDF (every node class of the ontology except lkg:SourceRegion, which the explorer data does not carry, and literal-valued properties such as dwc:behavior, which are in the statements table) — every edge is a predicate of the lkg ontology or of Darwin Core / DCTERMS, written along the line; hover a node to isolate its statements, zoom in to read dense fans. The <b>map</b> view plots the ${fmt(GEO.length)} places that carry coordinates on a real basemap and follows your selection — a taxon shows its distribution, a person where they observed, an entry its places and travel legs. Lists on the left respect the volume / year filters and the search box.</div>
-      <h3>what is new in this export (ontology 0.4.1)</h3><div class="small">Darwin-Core-first vocabulary — standard terms wherever they exist (dwc:individualCount, dwc:scientificName, dwc:eventDate, dwc:fieldNotes, dwciri:recordedBy, dwciri:habitat …), lkg: only for project-specific meaning; an explicit part-of hierarchy (dcterms:isPartOf on every node: observation → entry → page → volume); lkg:ObservationEvent renamed lkg:Observation; evidence kinds as SKOS concepts on the observation, calls as lkg:Vocalisation nodes (${fmt(O.reduce((s, o) => s + (o.voc || []).length, 0))}), behaviour as dwc:behavior literals; entity resolution — spellings of one taxon (same GBIF species), person (name variants) or place merged into one node with skos:altLabel, the written taxon name kept as dwc:verbatimIdentification; entry dates checked against each volume's title-page span (dcterms:temporal on the volume: OCR years repaired from the neighbouring entries, misfiled scans re-homed, entries written outside the diaries' period dated by their position in the volume — no entry is dated before April 1917 or after December 1965); person roles on the mention edge (lkg:mentionsCompanion / Source / Collector / CitedAuthor / Other); GBIF classification (dwc:kingdom … genus) on ${fmt(T.filter(t => t.fam).length)} linked taxa; weather reports (${fmt(WX.length)} entries), observer attribution (dwciri:recordedBy — ${fmt(O.filter(o => o.by != null && o.by !== LAUB).length)} third-party observations), taxa linked to GBIF (${fmt(T.filter(t => t.gbif).length)}), persons linked to Wikidata (${fmt(PE.filter(p => p.wd).length)}), and a PROV activity per record.</div>
+      <h3>what is new in this export (ontology 0.4.1)</h3><div class="small">Darwin-Core-first vocabulary — standard terms wherever they exist (dwc:individualCount, dwc:scientificName, dwc:eventDate, dwc:fieldNotes, dwciri:recordedBy, dwciri:habitat …), lkg: only for project-specific meaning; an explicit part-of hierarchy (dcterms:isPartOf on every node: observation → entry → page → volume); lkg:ObservationEvent renamed lkg:Observation; evidence kinds as SKOS concepts on the observation, calls as lkg:callType / lkg:callTranscription on the observation since 0.6.0 (${fmt(O.reduce((s, o) => s + (o.voc || []).length, 0))}), behaviour as dwc:behavior literals; entity resolution — spellings of one taxon (same GBIF species), person (name variants) or place merged into one node with skos:altLabel, the written taxon name kept as dwc:verbatimIdentification; entry dates checked against each volume's title-page span (dcterms:temporal on the volume: OCR years repaired from the neighbouring entries, misfiled scans re-homed, entries written outside the diaries' period dated by their position in the volume — no entry is dated before April 1917 or after December 1965); person roles on the mention edge (lkg:mentionsCompanion / Source / Collector / CitedAuthor / Other); GBIF classification (dwc:kingdom … genus) on ${fmt(T.filter(t => t.fam).length)} linked taxa; weather reports (${fmt(WX.length)} entries), observer attribution (dwciri:recordedBy — ${fmt(O.filter(o => o.by != null && o.by !== LAUB).length)} third-party observations), taxa linked to GBIF (${fmt(T.filter(t => t.gbif).length)}), persons linked to Wikidata (${fmt(PE.filter(p => p.wd).length)}), and a PROV activity per record.</div>
       <h3>keyboard</h3><div class="small"><b>/</b> focus search · <b>↑ ↓</b> or <b>j k</b> walk the current list · <b>Esc</b> leave a field · double-click the canvas to re-fit.</div>
       <h3>colours</h3><div class="small">${Object.entries(CLS).map(([k, v]) => `<span style="color:${col[k]}">■</span> ${v}`).join(' &nbsp; ')}</div>`;
     renderList();
@@ -1401,7 +1401,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
     if (o.sp) rows.push(['dwc:samplingProtocol', lit(o.sp, '@de')]);
     if (o.dur != null) rows.push(['lkg:observationDurationMinutes', lit(o.dur, '^^xsd:integer')]);
     [...new Set((o.ev || []).map(ev => ev[0]))].forEach(k => rows.push(['lkg:evidenceKind', `lkg:evidence_${esc(k)} <span class="muted">(skos:Concept)</span>`]));
-    (o.voc || []).forEach((v, k) => rows.push(['lkg:hasVocalisation', `data:vocalisation_obs_${esc(o.u)}_${k} <span class="muted">a lkg:Vocalisation · dcterms:isPartOf ↑ · lkg:callType "${esc(v[0] || 'unknown')}"${v[1] ? ' · lkg:callTranscription "' + esc(v[1]) + '"' : ''}</span>`]));
+    (o.voc || []).forEach(v => { if (v[0]) rows.push(['lkg:callType', lit(v[0])]); if (v[1]) rows.push(['lkg:callTranscription', lit(v[1])]); });
     (o.beh || []).forEach(b => rows.push(['dwc:behavior', lit(b, '@de')]));
     if (o.h != null) { rows.push(['dwciri:habitat', `data:${esc(H[o.h].u)} <span class="muted">(skos:Concept · ${esc(H[o.h].name)})</span>`]); rows.push(['dwc:habitat', lit(H[o.h].name, '@de')]); }
     rows.push(['lkg:recordType', lit(o.rt || 'field-observation')]); rows.push(['dwc:basisOfRecord', lit(basis(o))]);
@@ -1422,7 +1422,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
       if (x.lat != null) { rows.push(['geo:lat', lit(x.lat, '^^xsd:decimal')], ['geo:long', lit(x.lon, '^^xsd:decimal')], ['dwc:decimalLatitude', lit(x.lat, '^^xsd:decimal')], ['dwc:decimalLongitude', lit(x.lon, '^^xsd:decimal')], ['dwc:geodeticDatum', lit('WGS84')], ['gsp:asWKT', lit(`POINT(${x.lon} ${x.lat})`, '^^gsp:wktLiteral')]); }
       return { iri: DATA_NS + x.u, rows }; }
     const x = PE[i]; rows.push(['rdf:type', pfx('lkg:Person')], ['rdfs:label', lit(x.name)], ['schema:name', lit(x.name)]); (x.alt || []).forEach(a => rows.push(['skos:altLabel', lit(a)])); if (x.roles) rows.push(['← lkg:mentions…', `<span class="muted">incoming role edges: ${esc(x.roles)}</span>`]);
-    if (x.wd) rows.push(['owl:sameAs', `<a class="link" href="https://www.wikidata.org/wiki/${esc(x.wd)}" target="_blank" rel="noopener">&lt;http://www.wikidata.org/entity/${esc(x.wd)}&gt;</a>`]);
+    if (x.wd) rows.push([x.wdm === 'exact' ? 'skos:exactMatch' : 'skos:closeMatch', `<a class="link" href="https://www.wikidata.org/wiki/${esc(x.wd)}" target="_blank" rel="noopener">&lt;http://www.wikidata.org/entity/${esc(x.wd)}&gt;</a> <span class="muted">(lkg:authority_wikidata)</span>`]);
+    if (x.gnd) rows.push(['skos:exactMatch', `<a class="link" href="https://d-nb.info/gnd/${esc(x.gnd)}" target="_blank" rel="noopener">&lt;https://d-nb.info/gnd/${esc(x.gnd)}&gt;</a> <span class="muted">(lkg:authority_gnd)</span>`]);
     return { iri: DATA_NS + x.u, rows };
   }
   function stmHtml(title, st) {
@@ -1460,12 +1461,13 @@ svg.leaflet-image-layer.leaflet-interactive path {
       if (o.p != null) edges.push([nid, ent('places', o.p, P[o.p].name, P[o.p].kind), o.own ? 'loc' : 'at', !o.own]);
       if (o.by != null) edges.push([nid, ent('persons', o.by, PE[o.by].name, 'observer'), 'by']);
       if (o.h != null) edges.push([nid, ent('habitats', o.h, H[o.h].name, 'habitat'), 'habitat']);
-      // evidence kinds are shared SKOS concepts (lkg:evidenceKind → lkg:evidence_visual …); calls are lkg:Vocalisation nodes (lkg:hasVocalisation).
+      // evidence kinds are shared SKOS concepts (lkg:evidenceKind → lkg:evidence_visual …); what was heard is drawn as a
+      // value pill: lkg:callType / lkg:callTranscription are literals on the observation (0.6.0, no Vocalisation node).
       // Behaviour is a dwc:behavior literal since 0.4.0 — no node (see the statements table).
       [...new Set((o.ev || []).map(ev => ev[0]))].forEach(kd => { const id = 'evk:' + kd; if (!seen.has(id)) { const nd = { id, kind: 'evidence', label: kd, tip: `lkg:evidence_${kd} · skos:Concept in lkg:evidenceKindScheme`, r: 5, w: 0 }; seen.set(id, nd); ring2.push(nd); }
         edges.push([nid, id, 'evidence']); });
       (o.voc || []).forEach((v, j) => { const id = `voc:${oi}:${j}`;
-        ring2.push({ id, kind: 'vocal', label: '♪ ' + [v[0], v[1] ? '„' + v[1] + '“' : null].filter(Boolean).join(' '), tip: `lkg:Vocalisation · lkg:callType ${v[0] || 'unknown'}${v[1] ? ' · lkg:callTranscription „' + v[1] + '“' : ''} · dcterms:isPartOf this observation`, r: 4.5, w: 0, onclick: () => showObs(oi, true) });
+        ring2.push({ id, kind: 'vocal', label: '♪ ' + [v[0], v[1] ? '„' + v[1] + '“' : null].filter(Boolean).join(' '), tip: `literals on this observation: ${v[0] ? 'lkg:callType "' + v[0] + '"' : 'heard (lkg:evidence_auditory), type not stated'}${v[1] ? ' · lkg:callTranscription „' + v[1] + '“' : ''}`, r: 4.5, w: 0, onclick: () => showObs(oi, true) });
         edges.push([nid, id, 'vocal']); });
     });
     if (e.p != null) edges.push(['c', ent('places', e.p, P[e.p].name, 'entry place'), 'entryPlace']);

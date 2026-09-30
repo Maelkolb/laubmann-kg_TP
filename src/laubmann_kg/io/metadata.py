@@ -2,16 +2,24 @@
 
 The delivered corpus ships ``multimodal.md`` (a Markdown catalogue whose HTML
 comments carry the structured fields). The frozen contract also allows a
-``multimodal.csv``; both are supported here and yield the same record shape.
+``multimodal.csv``; since ontology 0.6.0 the preferred input is
+``multimodal_regions.jsonl`` (HistOrniGraph_addons/build_multimodal_regions.py:
+catalogue v2 images/objects + selected text inserts, duplicate scans removed,
+relinked to the entries of the corpus it was built against). All three yield
+the same record shape; ``to_region`` turns a record into the model object.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from pathlib import Path
+from typing import Optional
 
 from laubmann_kg.io.csv import read_dicts
+from laubmann_kg.kg.model import MultimodalRegion
+from laubmann_kg.normalization import vocabularies as vocab
 
 logger = logging.getLogger(__name__)
 
@@ -45,11 +53,46 @@ def _volume_at(text: str, pos: int) -> str:
     return vol
 
 
+# layout region type -> lkg:regionKind when the catalogue gives no finer kind
+_KIND_BY_TYPE = {"ImageRegion": "drawing", "GraphicRegion": "drawing", "ObjectRegion": "object",
+                 "ParagraphRegion": "text-insert", "ListRegion": "list", "TableRegion": "list",
+                 "InsertRegion": "text-insert"}
+
+
+def to_region(record: dict, volume: Optional[int] = None) -> Optional[MultimodalRegion]:
+    """A catalogue record as a ``MultimodalRegion`` (None without a region uid).
+    Marginal notes are not multimodal regions of the graph (0.6.0)."""
+    uid = (record.get("region_uid") or "").strip()
+    rtype = record.get("region_type") or record.get("type_original") or ""
+    if not uid or rtype == "MarginaliaRegion" and not record.get("kind"):
+        return None
+    kind = record.get("kind") if record.get("kind") in vocab.REGION_KINDS else _KIND_BY_TYPE.get(rtype, "drawing")
+    vol = record.get("volume")
+    return MultimodalRegion(
+        region_uid=uid,
+        page_uid=record.get("page_uid") or "",
+        page_id=record.get("page_id") or "",
+        volume=int(vol) if str(vol or "").strip().isdigit() else int(volume or 0),
+        scan=str(record.get("scan")) if record.get("scan") not in (None, "") else None,
+        entry_uid=record.get("entry_uid") or None,
+        kind=kind,
+        description=(record.get("description") or "").strip() or None,
+        visible_text=(record.get("visible_text") or "").strip() or None,
+        crop=record.get("crop") or None,
+        region_type=rtype or None,
+    )
+
+
 def read_multimodal(path: Path) -> list[dict[str, str]]:
     """Return one record per non-text region, keyed for join on ``entry_uid``."""
     path = Path(path)
     if path.suffix.lower() == ".csv":
         return [dict(row) for row in read_dicts(path)]
+    if path.suffix.lower() == ".jsonl":
+        with path.open(encoding="utf-8") as handle:
+            records = [json.loads(line) for line in handle if line.strip()]
+        logger.info("read %d multimodal regions from %s", len(records), path)
+        return records
 
     text = path.read_text(encoding="utf-8")
     records: list[dict[str, str]] = []

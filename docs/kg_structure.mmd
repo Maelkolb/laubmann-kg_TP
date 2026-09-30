@@ -7,11 +7,8 @@ classDiagram
     }
     class EntryRecord {
         <<abstract · prov:Entity>>
-        dcterms:isPartOf · prov:wasDerivedFrom → entry
-    }
-    class RecordDetail {
-        <<abstract>>
-        dcterms:isPartOf → record
+        prov:wasDerivedFrom → entry
+        dcterms:isPartOf → entry (leg → travel event)
     }
 
     class DiaryVolume {
@@ -27,6 +24,12 @@ classDiagram
         entryKind · datePlausible · skos:note
     }
     class SourceRegion {
+        body-text region(s) of the entry
+    }
+    class MultimodalRegion {
+        regionKind drawing | photograph | map | print | object | text-insert | list
+        dcterms:type · dcterms:description
+        visibleText · dcterms:identifier (crop)
     }
 
     class Observation {
@@ -39,6 +42,7 @@ classDiagram
         dwc:sex · dwc:lifeStage · dwc:vitality
         breedingEvidence · dwc:reproductiveCondition
         movementKind · flightDirection
+        callType song | call | alarm | drumming · callTranscription
         dwc:behavior · dwc:habitat
         dwc:identificationQualifier
         dwc:eventDate · dwc:eventTime · timeOfDay · daylightPhase
@@ -46,10 +50,6 @@ classDiagram
         observationRadiusMeters · dwc:coordinateUncertaintyInMeters
         spatialConfidence · dwc:samplingProtocol
         dwc:basisOfRecord
-    }
-    class Vocalisation {
-        callType
-        callTranscription
     }
     class TravelEvent {
         <<dwc:Event>>
@@ -88,10 +88,11 @@ classDiagram
         <<skos:Concept · lkg:habitatScheme>>
         skos:prefLabel · skos:altLabel
     }
-    class EunisClass {
-        <<skos:Concept · EUNIS 2012>>
+    class AuthorityRecord {
+        <<skos:Concept · lkg:authority_*>>
+        skos:inScheme GBIF | EUNIS | GeoNames | Wikidata | GND
         skos:notation · skos:prefLabel
-        skos:broader chain
+        skos:broader chain (EUNIS)
     }
     class EvidenceKind {
         <<skos:Concept · lkg:evidenceKindScheme>>
@@ -111,33 +112,21 @@ classDiagram
         sha256
     }
 
-    class GBIF_Species {
-        gbif.org/species/KEY
-    }
-    class Wikidata_Item {
-        wikidata.org/entity/Q…
-    }
-    class GeoNames_Feature {
-        sws.geonames.org/ID/
-    }
-    class GND_Person {
-        d-nb.info/gnd/…
-    }
-
     ArchivalUnit <|-- DiaryVolume
     ArchivalUnit <|-- DiaryPage
     ArchivalUnit <|-- DiaryEntry
     ArchivalUnit <|-- SourceRegion
+    SourceRegion <|-- MultimodalRegion
     EntryRecord <|-- Observation
     EntryRecord <|-- TravelEvent
+    EntryRecord <|-- TravelLeg
     EntryRecord <|-- WeatherReport
-    RecordDetail <|-- Vocalisation
-    RecordDetail <|-- TravelLeg
 
     DiaryPage --> "1" DiaryVolume : dcterms∶isPartOf
     DiaryEntry --> "1" DiaryPage : dcterms∶isPartOf
     SourceRegion --> "0..1" DiaryPage : dcterms∶isPartOf
-    DiaryEntry --> "0..1" SourceRegion : hasSourceRegion
+    DiaryEntry --> "*" SourceRegion : hasSourceRegion
+    DiaryEntry --> "*" MultimodalRegion : hasMultimodalRegion ⊑ hasSourceRegion
     DiaryEntry --> "0..1" Place : entryPlace
     DiaryEntry --> "*" Observation : containsObservation ⊑ dcterms∶hasPart
     DiaryEntry --> "*" TravelEvent : containsTravelEvent ⊑ dcterms∶hasPart
@@ -149,7 +138,6 @@ classDiagram
     Observation --> "0..1" Place : hasLocality (own place)
     Observation --> "0..1" Person : dwciri∶recordedBy
     Observation --> "0..4" EvidenceKind : evidenceKind
-    Observation --> "*" Vocalisation : hasVocalisation ⊑ dcterms∶hasPart
     Observation --> "0..1" HabitatConcept : dwciri∶habitat
     Observation --> "1" ExtractionRun : prov∶wasGeneratedBy
 
@@ -158,21 +146,19 @@ classDiagram
     ExtractionRun --> "1" SoftwareAgent : prov∶wasAssociatedWith
     ExtractionRun --> "1" Prompt : prov∶used
 
-    Taxon --> "0..1" GBIF_Species : skos∶exactMatch · closeMatch · broadMatch
-    Person --> "0..1" Wikidata_Item : owl∶sameAs
-    Person --> "0..1" GND_Person : owl∶sameAs
-    Place --> "0..1" GeoNames_Feature : owl∶sameAs
-    Place --> "0..1" Wikidata_Item : owl∶sameAs
-    HabitatConcept --> "0..1" EunisClass : skos∶exactMatch · closeMatch · broadMatch
+    Taxon --> "0..1" AuthorityRecord : skos∶exactMatch | closeMatch | broadMatch (GBIF)
+    HabitatConcept --> "0..1" AuthorityRecord : skos∶exactMatch | closeMatch | broadMatch (EUNIS)
+    Place --> "0..2" AuthorityRecord : skos∶exactMatch | closeMatch (GeoNames, Wikidata)
+    Person --> "0..2" AuthorityRecord : skos∶exactMatch | closeMatch (Wikidata, GND)
 
-    cssClass "ArchivalUnit,EntryRecord,RecordDetail" abstract
-    cssClass "DiaryVolume,DiaryPage,SourceRegion" source
+    cssClass "ArchivalUnit,EntryRecord" abstract
+    cssClass "DiaryVolume,DiaryPage,SourceRegion,MultimodalRegion" source
     cssClass "DiaryEntry,Observation" hub
-    cssClass "Vocalisation,TravelEvent,TravelLeg,WeatherReport" detail
+    cssClass "TravelEvent,TravelLeg,WeatherReport" detail
     cssClass "Taxon,Place,Person" entity
-    cssClass "HabitatConcept,EvidenceKind,EunisClass" concept
+    cssClass "HabitatConcept,EvidenceKind" concept
     cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
-    cssClass "GBIF_Species,Wikidata_Item,GeoNames_Feature,GND_Person" ext
+    cssClass "AuthorityRecord" ext
     classDef abstract fill:#FBFBF9,stroke:#7E8C82,stroke-width:1px,stroke-dasharray:3 3,color:#5F6E64,font-style:italic
     classDef hub fill:#DDEBDF,stroke:#2F6B45,stroke-width:3px,color:#14261B
     classDef entity fill:#E2EBF5,stroke:#35608A,stroke-width:2px,color:#14263A

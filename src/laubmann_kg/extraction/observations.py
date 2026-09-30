@@ -40,7 +40,7 @@ def _evidence(sentence: str) -> tuple[list[Evidence], list[Behaviour]]:
     if any(cue in low for cue in vocab.SPECIMEN_CUES):
         evidence.append(Evidence("specimen", "Beleg / erlegtes Stück"))
     if any(cue in low for cue in vocab.AUDITORY_CUES):
-        call_type = "unknown"
+        call_type = None
         if any(cue in low for cue in vocab.SONG_CUES):
             call_type = "song"
         elif any(cue in low for cue in vocab.DRUMMING_CUES):

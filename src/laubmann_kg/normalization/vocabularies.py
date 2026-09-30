@@ -6,7 +6,9 @@ import re
 from typing import Optional
 
 TRANSPORT_MODES = ("train", "foot", "boat", "car", "carriage", "bicycle", "unknown")
-CALL_TYPES = ("song", "call", "alarm", "drumming", "unknown")
+CALL_TYPES = ("song", "call", "alarm", "drumming", "unknown")   # "unknown" is accepted from the model but never emitted
+EMITTED_CALL_TYPES = ("song", "call", "alarm", "drumming")      # lkg:callTypeScheme (0.6.0)
+REGION_KINDS = ("drawing", "photograph", "map", "print", "object", "text-insert", "list")   # lkg:regionKindScheme
 COUNT_QUALIFIERS = ("exact", "minimum", "approximate", "plural-unspecified")
 EVIDENCE_KINDS = ("visual", "auditory", "nest", "specimen")
 
@@ -47,6 +49,62 @@ SPECIMEN_CUES = ("erlegt", "geschossen", "gesammelt", "eingesandt", "präpar", "
 SONG_CUES = ("gesang", "singt", "singen", "sang", "schlägt", "schlagen", "schwirrt")
 DRUMMING_CUES = ("trommelt", "trommeln")
 
+# Behaviour phrases that only restate what was heard ("singend", "ruft",
+# "lockend verhört", "lebhaft singend") are folded into the observation's call
+# type instead of being kept as a dwc:behavior copy (ontology 0.6.0). Word
+# stems -> call type; checked in this order ("Warnruf" is an alarm, not a call).
+VOCAL_STEMS = (
+    ("warn", "alarm"),
+    ("trommel", "drumming"),
+    ("gesang", "song"), ("sing", "song"), ("sang", "song"), ("schlag", "song"),
+    ("schläg", "song"), ("schwirr", "song"), ("zwitscher", "song"), ("triller", "song"),
+    ("ruf", "call"), ("rief", "call"), ("lock", "call"), ("schrei", "call"),
+    ("pfeif", "call"), ("pfiff", "call"),
+)
+# words that may accompany the vocal verb without adding information of their
+# own (manner, intensity, hearing); any other word keeps the phrase as behaviour
+VOCAL_FILLERS = frozenset("""
+    gehört verhört hörbar zu hören hörte hören vernommen und u. oder auch noch schon
+    wieder laut leise lebhaft eifrig eifrigst fleißig fleissig voll vollem kräftig
+    schön herrlich prächtig anhaltend ununterbrochen dauernd vereinzelt einzeln
+    kurz mehrfach öfters oft viel sehr eben gerade erstmals
+""".split())
+
+
+def _vocal_type(word: str) -> Optional[str]:
+    w = word.lower().strip(".,;:!?()\"'„“")
+    for stem, call_type in VOCAL_STEMS:
+        if w.startswith(stem):
+            return call_type
+    return None
+
+
+def split_vocal_behaviour(phrases) -> tuple[list[str], list[str]]:
+    """Split behaviour phrases into (kept phrases, call types they restate).
+
+    A phrase made only of vocal words and fillers ("singend", "ruft laut",
+    "lockend verhört") says nothing but what was heard: it is dropped and
+    yields its call type(s). A phrase with any other content ("singend auf der
+    Fichtenspitze", "schreien laut durcheinander, fast wie auf den
+    Brutplätzen", "balzend") stays a behaviour and yields nothing — the
+    mapper never derives evidence from prose."""
+    kept: list[str] = []
+    implied: list[str] = []
+    for phrase in phrases:
+        text = str(phrase).strip()
+        if not text:
+            continue
+        words = [w for w in text.replace("/", " ").split() if w.strip(".,;:")]
+        types = [t for t in (_vocal_type(w) for w in words) if t]
+        purely_vocal = bool(types) and all(
+            _vocal_type(w) or w.lower().strip(".,;:!?()") in VOCAL_FILLERS for w in words)
+        if not purely_vocal:
+            kept.append(text)
+            continue
+        for t in types:
+            if t not in implied:
+                implied.append(t)
+    return kept, implied
 # Diary phrasing → transport mode, for when the LLM answers in German instead of
 # the vocabulary term. Order matters: "kraftwagen" must hit car before "wagen"
 # hits carriage.

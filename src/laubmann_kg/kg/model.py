@@ -1,10 +1,12 @@
-"""Knowledge graph domain model mirroring ontologies/laubmann.ttl (0.5.0).
+"""Knowledge graph domain model mirroring ontologies/laubmann.ttl (0.6.0).
 
 The dataclasses are the contract between extraction and emission. Not every
 dataclass is a node in the graph: ``Evidence``, ``Behaviour`` and ``Habitat``
 are emitter inputs — the RDF emitter turns evidence into ``lkg:evidenceKind``
-concept links (plus a ``lkg:Vocalisation`` node for calls), behaviour into
-``dwc:behavior`` literals and habitat into a shared ``skos:Concept`` node.
+concept links (calls into ``lkg:callType`` / ``lkg:callTranscription`` on the
+observation itself), behaviour into ``dwc:behavior`` literals and habitat into
+a shared ``skos:Concept`` node. External links (GBIF, EUNIS, GeoNames,
+Wikidata, GND) are read off the fields below by ``kg/authority.py``.
 """
 
 from __future__ import annotations
@@ -101,8 +103,8 @@ class Place:
     kind: Optional[str] = None                # vocab.PLACE_KINDS (settlement|locality|region|route|unknown)
     alt_names: tuple[str, ...] = ()           # merged spellings (entity resolution) -> skos:altLabel
     # linking/places.py: gazetteer identity of the georeference
-    geonames_id: Optional[int] = None         # -> owl:sameAs https://sws.geonames.org/<id>/
-    wikidata_iri: Optional[str] = None        # -> owl:sameAs
+    geonames_id: Optional[int] = None         # -> skos:exactMatch|closeMatch https://sws.geonames.org/<id>/
+    wikidata_iri: Optional[str] = None        # -> skos:exactMatch|closeMatch (same grade as the georeference)
     coordinate_uncertainty_m: Optional[int] = None   # -> dwc:coordinateUncertaintyInMeters (centroid radius)
     georef_source: Optional[str] = None       # gazetteer | osm | osm+geonames | geonames | reviewed -> dwc:georeferenceSources
 
@@ -140,6 +142,7 @@ class Person:
     wikidata_iri: Optional[str] = None  # http://www.wikidata.org/entity/Q... (verified)
     alt_names: tuple[str, ...] = ()     # merged name variants (entity resolution) -> skos:altLabel
     gnd_iri: Optional[str] = None       # https://d-nb.info/gnd/<id> (reviewer-added, person_link_review.csv gnd)
+    wikidata_match: Optional[str] = None  # exact (reviewed) | close (automatic unique-label match); None = close
 
     @property
     def uid(self) -> str:
@@ -177,13 +180,8 @@ class Evidence:
     label: str
     occurrence_status: str = "present"
     is_call: bool = False
-    call_type: Optional[str] = None
-    call_transcription: Optional[str] = None
-
-    def vocalisation_uid(self, obs_uid: str, index: int = 0) -> str:
-        # index keeps several calls on one observation distinct (two calls must
-        # not collapse onto one lkg:Vocalisation node)
-        return f"vocalisation_{obs_uid}_{index}"
+    call_type: Optional[str] = None           # song | call | alarm | drumming; None/"unknown" = not stated
+    call_transcription: Optional[str] = None  # the diarist's phonetic rendering, as written
 
 
 @dataclass(frozen=True)
@@ -257,6 +255,38 @@ class Observation:
         return f"obs_{_slug(base)}"
 
 
+@dataclass(frozen=True)
+class SourceRegionRef:
+    """A body-text layout region an entry's text was read from (the first is
+    the header region; an entry continuing over pages has one per page)."""
+    region_uid: str
+    page_uid: str
+    page_id: str
+    scan: Optional[str] = None
+
+
+@dataclass
+class MultimodalRegion:
+    """A drawing, map, photograph, mounted object or inserted text placed with
+    an entry (multimodal catalogue v2 / text-inserts catalogue), relinked to the
+    entry that precedes it in reading order."""
+    region_uid: str
+    page_uid: str
+    page_id: str
+    volume: int
+    scan: Optional[str]
+    entry_uid: Optional[str]
+    kind: str                                 # vocab.REGION_KINDS
+    description: Optional[str] = None         # layout model's description (English)
+    visible_text: Optional[str] = None        # text on the region as transcribed
+    crop: Optional[str] = None                # regions/<page_id>/<file>.png
+    region_type: Optional[str] = None         # layout type (ImageRegion, ObjectRegion, ParagraphRegion …)
+
+    @property
+    def uid(self) -> str:
+        return f"region_{self.region_uid}"
+
+
 @dataclass
 class DiaryEntry:
     entry_uid: str
@@ -281,6 +311,10 @@ class DiaryEntry:
     date_plausible: Optional[bool] = None     # model: False = header date contradicted and not repairable
     date_note: Optional[str] = None           # model's German note on a corrected/doubted date
     header_date: Optional[str] = None         # upstream ISO date before any model correction
+    # every body-text region the entry's text runs through (corpus span); empty
+    # = only the header region (region_uid) is known
+    source_regions: list[SourceRegionRef] = field(default_factory=list)
+    multimodal: list[MultimodalRegion] = field(default_factory=list)
 
     @property
     def uid(self) -> str:

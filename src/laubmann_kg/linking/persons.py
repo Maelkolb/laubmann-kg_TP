@@ -172,6 +172,7 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
     # name.lower() -> wikidata IRI: same identity as Person.uid (casefold
     # would collapse ß/ss and stamp one QID onto two distinct people)
     links: dict[str, str] = {}
+    grades: dict[str, str] = {}          # name.lower() -> exact (reviewed) | close (automatic)
     uncached = 0
     for item in _collect_persons(result):
         try:
@@ -183,6 +184,7 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
                 base["gnd"] = gnd[low][len(GND_NS):]
             if low in reviewed:
                 links[low] = WIKIDATA_ENTITY_NS + reviewed[low]
+                grades[low] = "exact"
                 rows.append({**base, "qid": reviewed[low], "rule": "reviewed"})
                 continue
             if low in gnd:
@@ -236,6 +238,7 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
                 rows.append({**candidate, "rule": "not-human"})
                 continue
             links[low] = WIKIDATA_ENTITY_NS + qid
+            grades[low] = "close"            # unique exact-label human: a name match, not reviewed
             rows.append({**candidate, "rule": "linked"})
         except Exception as exc:  # noqa: BLE001 - linking must never abort the pipeline
             logger.warning("person linking failed for %r: %s", item.get("name"), exc)
@@ -245,6 +248,7 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
     for entry in result.entries:
         entry.persons = [
             replace(p, wikidata_iri=links.get(p.name.lower(), p.wikidata_iri),
+                    wikidata_match=grades.get(p.name.lower(), p.wikidata_match),
                     gnd_iri=gnd.get(p.name.lower(), p.gnd_iri))
             for p in entry.persons]
         for obs in entry.observations:
@@ -253,5 +257,7 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
                     obs.observer,
                     wikidata_iri=links.get(obs.observer.name.lower(),
                                            obs.observer.wikidata_iri),
+                    wikidata_match=grades.get(obs.observer.name.lower(),
+                                              obs.observer.wikidata_match),
                     gnd_iri=gnd.get(obs.observer.name.lower(), obs.observer.gnd_iri))
     return len(links), rows

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import datetime as _dt
 import hashlib
+import json
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -21,8 +22,8 @@ import yaml
 from laubmann_kg.env import load_dotenv
 from laubmann_kg.extraction.observations import extract_observations
 from laubmann_kg.io.csv import read_entries
-from laubmann_kg.io.metadata import read_multimodal
-from laubmann_kg.kg.model import DiaryEntry, Place
+from laubmann_kg.io.metadata import read_multimodal, to_region
+from laubmann_kg.kg.model import DiaryEntry, Place, SourceRegionRef
 from laubmann_kg.normalization.dates import normalize_date
 from laubmann_kg.normalization.places import normalize_place
 from laubmann_kg.normalization.taxa import build_resolver
@@ -58,9 +59,11 @@ def _resolve_corpus(config: dict, input_dir: Optional[Path]) -> tuple[Path, Opti
     multimodal = None
     if input_dir and (Path(input_dir) / "entries.csv").exists():
         entries = Path(input_dir) / "entries.csv"
-        # the cleaned catalogue (multimodal_clean.md: duplicate pages and
-        # degenerate crops/descriptions removed) wins over the raw one
-        for name in ("multimodal_clean.md", "multimodal.md"):
+        # the relinked region file (HistOrniGraph_addons/build_multimodal_regions.py:
+        # catalogue v2 + selected text inserts, duplicates removed, entry_uid of
+        # THIS corpus) wins over the cleaned catalogue (multimodal_clean.md:
+        # duplicate pages and degenerate crops removed), which wins over the raw one
+        for name in ("multimodal_regions.jsonl", "multimodal_clean.md", "multimodal.md"):
             mm = Path(input_dir) / name
             if mm.exists():
                 multimodal = mm
@@ -73,6 +76,21 @@ def _resolve_corpus(config: dict, input_dir: Optional[Path]) -> tuple[Path, Opti
     if entries is None:
         raise FileNotFoundError("No entries.csv found via input-dir or config.corpus.entries")
     return entries, multimodal
+
+
+def _source_regions(raw: Optional[str]) -> list[SourceRegionRef]:
+    """``source_regions`` column of a patched corpus: JSON list of the body-text
+    regions the entry's text runs through ({region_uid, page_uid, page_id, scan})."""
+    if not raw:
+        return []
+    try:
+        items = json.loads(raw)
+    except (TypeError, ValueError):
+        logger.warning("unreadable source_regions cell: %.60s", raw)
+        return []
+    return [SourceRegionRef(str(i["region_uid"]), str(i.get("page_uid") or ""), str(i.get("page_id") or ""),
+                            str(i["scan"]) if i.get("scan") not in (None, "") else None)
+            for i in items if isinstance(i, dict) and i.get("region_uid")]
 
 
 def build_entry(row: dict) -> DiaryEntry:
@@ -92,6 +110,7 @@ def build_entry(row: dict) -> DiaryEntry:
         verbatim_event_date=row.get("date_raw") or None,
         location_raw=row.get("location_raw") or None,
         text_clean=row.get("text_clean") or row.get("text_raw") or "",
+        source_regions=_source_regions(row.get("source_regions")),
     )
 
 
@@ -315,9 +334,17 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
         logger.info("habitat linking: %s", run_habitat_linking(result, linking_cfg))
 
     if multimodal_path is not None:
-        entry_uids = {e.entry_uid for e in result.entries}
-        result.multimodal = [r for r in read_multimodal(multimodal_path)
-                             if r.get("entry_uid") in entry_uids]
+        # every region goes to the entry it sits in (lkg:hasMultimodalRegion);
+        # regions of entries that QA excluded are dropped with them
+        by_uid = {e.entry_uid: e for e in result.entries}
+        for record in read_multimodal(multimodal_path):
+            entry = by_uid.get(record.get("entry_uid") or "")
+            if entry is None:
+                continue
+            region = to_region(record, entry.volume)
+            if region is not None:
+                entry.multimodal.append(region)
+                result.multimodal.append(region)
 
     logger.info("pipeline: %d entries (%d empty, %d failed), %d observations, "
                 "%d travel events, %d persons, %d places, %d media",

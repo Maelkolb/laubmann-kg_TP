@@ -1,4 +1,4 @@
-# Diary Entry Extraction (observation_extraction v2 / ontology 0.5.0)
+# Diary Entry Extraction (observation_extraction v3 / ontology 0.6.0)
 
 You are given one complete entry from the field diaries of the ornithologist
 Alfred Laubmann (Bavaria and his travels, 1917–1965), in German. You are the
@@ -101,12 +101,16 @@ else copied in), or `other`.
 - `evidence`: array of `{kind, call_type?, call_transcription?}` with `kind`
   one of `visual`, `auditory`, `nest`, `specimen` — ONLY when the text says how
   the bird was detected. Use `auditory` with a `call_type`
-  (`song`/`call`/`alarm`/`drumming`) when a vocalisation is described, and put
+  (`song`/`call`/`alarm`/`drumming`) when a vocalisation is described — one
+  item per kind of sound (a bird singing and calling gets two) — and put
   the diarist's phonetic rendering ("zick zick") in `call_transcription` (omit
-  it if there is none). When the text does not say (digest lines, reports),
-  omit `evidence` entirely — never default to `visual`.
-- `behaviour`: array of short German phrases as written (`["singt", "badet"]`).
-  Do not encode breeding status or migration here — use the fields below.
+  it if there is none; omit `call_type` if the text does not say which sound).
+  When the text does not say (digest lines, reports), omit `evidence`
+  entirely — never default to `visual`.
+- `behaviour`: array of short German phrases as written (`["badet", "kreisend"]`).
+  What was HEARD is not a behaviour: singing, calling, drumming ("singt",
+  "ruft", "lockend verhört") go only into `evidence` as above. Do not encode
+  breeding status or migration here either — use the fields below.
 - `breeding_evidence`: `confirmed` (occupied nest with eggs or young, fledged
   young being fed, adults carrying food or faecal sacs, distraction display),
   `probable` (pair in suitable habitat in season, territorial song at the same

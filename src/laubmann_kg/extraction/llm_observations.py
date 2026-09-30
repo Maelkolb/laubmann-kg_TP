@@ -172,7 +172,7 @@ def _clock_time(value) -> Optional[str]:
 
 def _evidence_from(items) -> list[Evidence]:
     """Only evidence the model stated. ``kind`` outside the vocabulary (incl. an
-    explicit 'unknown') yields no node; an auditory evidence without a
+    explicit 'unknown') is dropped; an auditory evidence without a
     transcription has none (no placeholder)."""
     out: list[Evidence] = []
     for item in _as_list(items):
@@ -184,7 +184,7 @@ def _evidence_from(items) -> list[Evidence]:
         if kind is None:
             continue
         if kind == "auditory":
-            call_type = vocab.normalize_enum(item.get("call_type"), vocab.CALL_TYPES) or "unknown"
+            call_type = vocab.normalize_enum(item.get("call_type"), vocab.EMITTED_CALL_TYPES)
             out.append(Evidence("auditory", "Lautäußerung", is_call=True,
                                 call_type=call_type,
                                 call_transcription=_text(item.get("call_transcription"))))
@@ -193,6 +193,28 @@ def _evidence_from(items) -> list[Evidence]:
                      "specimen": "Beleg / erlegtes Stück"}[kind]
             out.append(Evidence(kind, label))
     return out
+
+
+def _fold_vocal_behaviour(evidence: list[Evidence], phrases: list[str]) -> tuple[list[Evidence], list[str]]:
+    """Behaviour phrases that only restate a vocalisation ("singend", "ruft")
+    become the observation's call type (ontology 0.6.0: one place for what was
+    heard). Returns (evidence, kept behaviour phrases). An auditory evidence
+    without a type takes the first implied type; further types are added."""
+    kept, implied = vocab.split_vocal_behaviour(phrases)
+    have = {e.call_type for e in evidence if e.is_call and e.call_type}
+    out = list(evidence)
+    for call_type in implied:
+        if call_type in have:
+            continue
+        untyped = next((i for i, e in enumerate(out) if e.is_call and not e.call_type), None)
+        if untyped is not None:
+            e = out[untyped]
+            out[untyped] = Evidence("auditory", e.label, is_call=True, call_type=call_type,
+                                    call_transcription=e.call_transcription)
+        else:
+            out.append(Evidence("auditory", "Lautäußerung", is_call=True, call_type=call_type))
+        have.add(call_type)
+    return out, kept
 
 
 _DIARIST_ALIASES = {"ich", "wir", "lbm", "l", "laubmann", "a. laubmann",
@@ -330,8 +352,10 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             rank=rank,
             is_bird=_sanitize_bool(item.get("is_bird")),
         )
-        behaviour = [Behaviour(str(b).strip()) for b in _as_list(item.get("behaviour"))
-                     if str(b).strip()]
+        evidence, behaviour_phrases = _fold_vocal_behaviour(
+            _evidence_from(item.get("evidence")),
+            [str(b).strip() for b in _as_list(item.get("behaviour")) if str(b).strip()])
+        behaviour = [Behaviour(b) for b in behaviour_phrases]
         habitat = _text(item.get("habitat"))
         citation = _text(item.get("literature_citation"))
         observer_name = _sanitize_observer(item.get("observer"))
@@ -371,7 +395,7 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             place=locality or place,
             individual_count=count,
             count_qualifier=vocab.normalize_enum(item.get("count_qualifier"), vocab.COUNT_QUALIFIERS),
-            evidence=_evidence_from(item.get("evidence")),
+            evidence=evidence,
             behaviour=behaviour,
             habitat=Habitat(habitat) if habitat else None,
             index=index,
