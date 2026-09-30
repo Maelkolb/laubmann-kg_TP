@@ -34,7 +34,7 @@ extraction:
                             # 2026-08-17); truncated answers are never cached, so they re-run
   timeout: 600               # long digests (up to 38k characters) need minutes, not seconds
   thinking_level: low       # minimal | low | medium (API default) | high
-  concurrency: 8            # parallel Gemini calls; lower to 4 if 429s appear
+  concurrency: 16           # parallel Gemini calls (3.8 Flash: ~1.3 calls/s at 12); lower on HTTP 429
   context_cache: true       # the prompt's instructions (up to "## Entry") are a Gemini CachedContent,
                             #   billed at the cached-input price (~4k of ~4.3k prompt tokens per call)
   retry_backoff: 2.0        # seconds, exponential — rides out transient 429s

@@ -1,114 +1,125 @@
-# Full re-extraction with Gemini (ontology 0.6.0, patched corpus)
+# Full re-extraction with Gemini (ontology 0.7.0, prompt v4, patched corpus)
 
 Runbook for one unattended run of the whole pipeline — extraction → value
-corrections → coverage/QA → linking → entity resolution → EUNIS → RDF/JSON-LD
-+ SHACL → Darwin Core Archive — on the patched corpus (9,857 entries). Written
-for a Claude Code session that orchestrates the run; every step is a shell
-command. Prompt `observation_extraction` v3 is new, so every entry is a live
-Gemini call (~9,900 calls; the old LLM caches do not apply).
+corrections → coverage/QA → harmonisation → linking → entity resolution →
+EUNIS → RDF/JSON-LD + SHACL → Darwin Core Archive — on the patched corpus
+(9,857 entries). Written for a Claude Code session on Windows that orchestrates
+the run (every step is one PowerShell command with literal paths; shell
+variables do not survive between tool calls). Prompt `observation_extraction`
+v4 is new: every entry is a live Gemini call, except the 76 entries of the
+2026-09-30 A/B sample already in the cache.
+
+Model and cost (A/B test 2026-09-30, 68 entries, blind-judged): `gemini-3.8-flash`
+(fewer errors than 3.5 Flash, no runaway generations, ~5x cheaper per call) with
+explicit context caching of the prompt's instructions. Expected: ~$40 for the
+extraction (~9.4M output tokens at $3.75/M, prompt tokens ~95 % cached), a
+few dollars for the linking LLMs (3.5 Flash, mostly cached), 1–1.5 h extraction
+at concurrency 16, then linking, SHACL (15–30 min) and the archive.
 
 ## 1. Repository and environment
 
-```bash
-git clone https://github.com/desyLoyz/laubmann-kg.git && cd laubmann-kg   # or: git pull --ff-only
-python3 -m venv .venv && .venv/bin/pip install -e ".[dev,llm]"
-echo "GOOGLE_API_KEY=<key>" > .env          # read by the CLI; .env is gitignored
-.venv/bin/python -m pytest -q               # must be green before a long run
+```powershell
+# the final branch (worktree of the laubmann-kg clone); after the merge: upstream main
+cd C:\Users\totom\Projects\laubmann-kg_final
+git log --oneline -3                                   # final-0.6: ontology 0.7.0 / prompt v4
+.venv\Scripts\python.exe -m pytest -q                  # must be green (293 tests)
 ```
 
-## 2. Inputs (Drive `HistOrniGraph_output/`, e.g. via `rclone copy gdrive:HistOrniGraph_output/<dir> <dest>`)
+`.env` holds `GOOGLE_API_KEY=…` (git-ignored). Write it from Bash
+(`printf 'GOOGLE_API_KEY=%s\n' KEY > .env`); PowerShell's `>` writes a BOM that
+the loader does not read.
+
+## 2. Inputs (Drive `HistOrniGraph_output/`)
 
 | what | Drive | local |
 |---|---|---|
-| patched corpus (preferred: ready to use) | `corpus_2026-09-30_patched/` | `data/corpus_patched/` |
-| linking caches (GBIF, Wikidata, Nominatim, GeoNames, EUNIS LLM) | `linking_cache/` | `data/cache/linking/` |
+| patched corpus | `corpus_2026-09-30_patched/` | `data\corpus_patched\` |
+| linking caches (GBIF, Wikidata, Nominatim, GeoNames, taxon + EUNIS LLM) | `linking_cache/` | `data\cache\linking\` |
 
-Check the corpus: `data/corpus_patched/boundaries_summary.json` says
-`"output_entries": 9857, "lost_entries": 0`; `multimodal_regions.jsonl` has
-1,674 lines (1,626 with an `entry_uid`).
-
-If the patched corpus is not on Drive, rebuild it (deterministic, seconds) from
-`corpus_2026-07-21_dedup/` → `data/corpus_dedup/`, `corpus_2026-07-21/entries.csv`
-→ `data/corpus_2026-07-21/entries.csv` and the multimodal catalogue v2
-(`multimodal_v2_images.jsonl`, `text_inserts_v2.jsonl`, Drive
-`multimodal_catalogue_v2_2026-08-18/`):
-
-```bash
-.venv/bin/python HistOrniGraph_addons/dedup/apply_entry_boundaries.py --corpus-dir data/corpus_dedup \
-    --boundaries data/corpus_patches/entry_boundaries.csv --mask data/corpus_patches/masked_regions.csv \
-    --out-dir data/corpus_patched
-.venv/bin/python HistOrniGraph_addons/build_multimodal_regions.py --corpus-dir data/corpus_patched \
-    --catalogue-dir <multimodal_catalogue_v2_2026-08-18> --reading-order data/corpus_dedup/multimodal_clean.md \
-    --insert-decisions data/corpus_patches/text_insert_decisions.csv \
-    --duplicates data/corpus_patches/multimodal_duplicates.csv \
-    --catalogue-entries data/corpus_2026-07-21/entries.csv \
-    --out data/corpus_patched/multimodal_regions.jsonl
+```powershell
+robocopy "G:\My Drive\HistOrniGraph_output\corpus_2026-09-30_patched" data\corpus_patched /E /XF desktop.ini
+robocopy "G:\My Drive\HistOrniGraph_output\linking_cache" data\cache\linking /E /XF desktop.ini
 ```
 
-## 3. Run config
+Check: `data\corpus_patched\boundaries_summary.json` says `"output_entries": 9857,
+"lost_entries": 0`; `multimodal_regions.jsonl` has 1,674 lines.
 
-Do not edit `configs/full_llm.yaml` in place; write a local copy that points
-the LLM cache somewhere persistent (an interrupted run resumes from it), the
-two LLM caches of the linking stage at their copies from Drive (folk-name
-proposer `llm/`, EUNIS classifier `llm_habitats/`; the config's defaults are
-other folders, and every miss is a new Gemini call) and the review output into
-the export folder — the default `data/review` holds the tracked decision files
-that `reviewed_csv` reads.
+## 3. Config
 
-```bash
-TAG=2026-10-01                                  # one tag per run
-OUT=data/exports/kg_exports_$TAG
-.venv/bin/python - <<EOF
-import yaml
-c = yaml.safe_load(open("configs/full_llm.yaml"))
-c["extraction"]["cache_dir"] = "data/cache/llm_v3"
-c["linking"]["taxa"]["llm"]["cache_dir"] = "data/cache/linking/llm"
-c["linking"]["habitats"]["llm"]["cache_dir"] = "data/cache/linking/llm_habitats"
-c["linking"]["review_dir"] = "$OUT/review"
-c["resolution"]["review_dir"] = "$OUT/review"
-yaml.safe_dump(c, open("configs/local_full.yaml", "w"), sort_keys=False, allow_unicode=True)
-EOF
-```
+`configs/full_llm.yaml` is used as is: extraction cache `data/cache/llm_v4`,
+linking LLM caches `data/cache/linking/llm` and `…/llm_habitats` (these stay on
+3.5 Flash so the Drive answers apply), review CSVs of the run in
+`<output-dir>/review` (never `data/review`, which holds the decisions the run
+reads). The machine review (`review.machine`, 2026-09-30) fills name forms and
+links nobody reviewed by hand (confidence ≥ 0.9, two agreeing sources; graded
+`closeMatch`); human decisions exported from the review page go to
+`data/review/identities.csv` and always win.
 
 ## 4. Smoke test, then the full run
 
-```bash
-# the 16 entries of the A/B test (reports, digests, split days, register cut, travel)
-.venv/bin/python - <<'EOF'
-import yaml
-c = yaml.safe_load(open("configs/local_full.yaml"))
-c["sample"] = {"volume": None, "entry_ids": ["L01-e0196", "L02-e0113", "L06-e0020", "L01-e0140", "L01-e0140a",
-    "L01-e0140b", "L05-e0216", "L14-e0035", "L14-e0035a", "L07-e0008", "L07-e0008a", "L04-e0057",
-    "L25-e0072", "L25-e0072a", "L17-e0242", "L17-e0242a"]}
-yaml.safe_dump(c, open("configs/local_smoke.yaml", "w"), sort_keys=False, allow_unicode=True)
-EOF
-.venv/bin/laubmann-kg export-all --config configs/local_smoke.yaml --input-dir data/corpus_patched \
-    --output-dir data/exports/smoke_$TAG
-# expect: 16 entries, 0 failed, SHACL 0 violations, DwC-A valid; L25-e0072a and L17-e0242a
-# are correspondence with third-party records by E. Riggel / Adolf Müller
-
-nohup .venv/bin/laubmann-kg export-all --config configs/local_full.yaml --input-dir data/corpus_patched \
-    --output-dir $OUT > $OUT.log 2>&1 &
+```powershell
+# 16 entries (reports, digests, split days, register cut, travel); cache hits, ~1 min
+.venv\Scripts\laubmann-kg.exe export-all --config configs/local_smoke.yaml --input-dir data/corpus_patched --output-dir data/exports/smoke_2026-10-01
+# expect: 16 entries, 0 failed, "SUMMARY: 0 Violation(s)", DwC-A written;
+# L25-e0072a / L17-e0242a are reports by E. Riggel / A. Müller (third-party-report)
 ```
 
-Extraction runs at `concurrency: 8` (lower to 4 on HTTP 429); expect a few
-hours for ~9,900 calls, then linking (mostly cached), resolution, EUNIS
-classification and SHACL (15–30 min on the full graph). Re-running the same
-command after an interruption continues from the caches.
+Start the full run as its own process (a Bash/PowerShell tool call is stopped
+after 2 h; this one survives the session). Logging goes to stderr, the SHACL
+report to stdout:
+
+```powershell
+New-Item -ItemType Directory -Force data\exports | Out-Null
+Start-Process -FilePath .venv\Scripts\laubmann-kg.exe -WorkingDirectory C:\Users\totom\Projects\laubmann-kg_final -WindowStyle Hidden `
+  -ArgumentList 'export-all','--config','configs/full_llm.yaml','--input-dir','data/corpus_patched','--output-dir','data/exports/kg_exports_2026-10-01' `
+  -RedirectStandardError data\exports\kg_exports_2026-10-01.log -RedirectStandardOutput data\exports\kg_exports_2026-10-01.out
+```
+
+Watch it:
+
+```powershell
+Get-Content data\exports\kg_exports_2026-10-01.log -Tail 5            # "[i/9857] L..-e.... -> n observations"
+.venv\Scripts\python.exe tools\llm_cost.py data\cache\llm_v4            # calls, tokens, USD so far
+Get-Process laubmann-kg -ErrorAction SilentlyContinue                    # still running?
+```
+
+Re-running the same command after an interruption continues from the caches
+(answers truncated at the token cap or failed are never cached and are retried).
+On HTTP 429 lower `extraction.concurrency`.
+
+Cheaper alternative (half price, asynchronous, turnaround typically minutes to
+a few hours): fill the cache through the Gemini Batch API, then run the same
+`export-all` (pure cache replay):
+
+```powershell
+.venv\Scripts\python.exe tools\batch_extract.py prepare --config configs/full_llm.yaml --input-dir data/corpus_patched --work data\batch\2026-10-01
+.venv\Scripts\python.exe tools\batch_extract.py submit  --work data\batch\2026-10-01
+.venv\Scripts\python.exe tools\batch_extract.py status  --work data\batch\2026-10-01   # until JOB_STATE_SUCCEEDED
+.venv\Scripts\python.exe tools\batch_extract.py collect --config configs/full_llm.yaml --work data\batch\2026-10-01
+```
 
 ## 5. Checks
 
-- log: `pipeline: <n> entries (<k> empty, 0 failed)`; any `failed` entry is
-  retried by simply re-running (truncated or failed answers are never cached)
-- `SHACL … 0 Violation(s)`; warnings are mostly entries without records
-- DwC-A summary `'valid': True, 'problems': []`
-- `$OUT/rdf/laubmann_sample.ttl`: no `owl:sameAs`, no `lkg:Vocalisation`, about
-  1,625 `lkg:MultimodalRegion`
-- `$OUT/review/`: qa_flags.csv and the link/merge review CSVs for adjudication
+- log: `pipeline: 9857 entries (<k> empty, 0 failed)`; `harmonize:` and
+  `linking:` summaries; QA flags in `review/qa_flags.csv` (watch
+  `truncated_output`, `literature_without_citation`, `absent_with_count`)
+- stdout: `SUMMARY: 0 Violation(s)`; warnings are mostly entries without records
+- DwC-A: `dwca/` with event, occurrence, measurementorfact (multimedia only once
+  the crops are hosted), validator without problems
+- `rdf/laubmann_sample.ttl`: no `owl:sameAs`, no `lkg:Vocalisation`, no
+  `lkg:observationRadiusMeters`, about 1,625 `lkg:MultimodalRegion`
+- cost: `tools\llm_cost.py data\cache\llm_v4` (and `data\cache\linking\llm*`)
 
-Afterwards copy `$OUT` and `data/cache/llm_v3/` to Drive (`kg_exports_<tag>/`,
-`llm_cache_v3/`) and load the Turtle into Fuseki. The cache is what makes the
-run reproducible: Gemini does not answer identically twice, but every later
-`export-all` with the same prompt replays these answers. Once the region crops are hosted, set `multimodal.image_base_url` and
-re-run `export-all` — the Gemini answers come from the cache, only the graph
-and the archive are rewritten.
+## 6. Afterwards
+
+```powershell
+robocopy data\exports\kg_exports_2026-10-01 "G:\My Drive\HistOrniGraph_output\kg_exports_2026-10-01" /E
+robocopy data\cache\llm_v4 "G:\My Drive\HistOrniGraph_output\llm_cache_v4" /E
+robocopy data\cache\linking "G:\My Drive\HistOrniGraph_output\linking_cache" /E /XO
+```
+
+The cache makes the run reproducible: Gemini does not answer identically twice,
+but every later `export-all` with the same prompt replays these answers. Once the
+region crops are hosted, set `multimodal.image_base_url` and re-run `export-all`
+— only the graph and the archive are rewritten. Validation (the review page) is
+then rebuilt on this export (tools/validation_ui, REBUILD.md on Drive).
