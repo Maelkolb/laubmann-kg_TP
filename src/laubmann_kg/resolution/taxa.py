@@ -44,8 +44,8 @@ def merge_taxa(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Merge
 
     groups: dict[str, list[str]] = defaultdict(list)
     for key, (taxon, _) in seen.items():
-        if taxon.rank in _SUPRASPECIFIC:
-            continue        # "Ente" (family) and "Raubmöwe" (genus) stay separate concepts
+        if taxon.rank in _SUPRASPECIFIC and taxon.match_method != "review":
+            continue        # "Ente" (family) and "Raubmöwe" (genus) stay separate concepts, unless a reviewer identified them
         if taxon.gbif_key and taxon.gbif_match_type in _MERGEABLE_MATCH:
             groups[f"gbif:{taxon.gbif_key}"].append(key)
         elif on_sci and taxon.scientific_name and not taxon.gbif_key:

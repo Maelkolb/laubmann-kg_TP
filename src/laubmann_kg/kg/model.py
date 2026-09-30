@@ -143,6 +143,7 @@ class Person:
     alt_names: tuple[str, ...] = ()     # merged name variants (entity resolution) -> skos:altLabel
     gnd_iri: Optional[str] = None       # https://d-nb.info/gnd/<id> (reviewer-added, person_link_review.csv gnd)
     wikidata_match: Optional[str] = None  # exact (reviewed) | close (automatic unique-label match); None = close
+    gnd_match: Optional[str] = None     # exact (human review) | close (machine review); None = exact
 
     @property
     def uid(self) -> str:
@@ -322,6 +323,7 @@ class DiaryEntry:
     boundary_kind: Optional[str] = None
     boundary_source: Optional[str] = None
     multimodal: list[MultimodalRegion] = field(default_factory=list)
+    reading_notes: list[str] = field(default_factory=list)   # reviewer corrections of the transcription (skos:note)
 
     @property
     def uid(self) -> str:

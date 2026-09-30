@@ -96,7 +96,7 @@ def test_load_corrections_validates_rows(tmp_path: Path) -> None:
         w = csv.DictWriter(h, fieldnames=FIELDS); w.writeheader()
         w.writerow({"kind": "taxon", "entry_uid": "e1", "old_value": "Reh", "new_value": "Birkhenne", "is_bird": ""})
         w.writerow({"kind": "taxon", "old_value": "Reh", "new_value": "X"})                  # no entry
-        w.writerow({"kind": "person", "entry_uid": "e1", "old_value": "A", "new_value": "B"})  # unknown kind
+        w.writerow({"kind": "weather", "entry_uid": "e1", "old_value": "A", "new_value": "B"})  # unknown kind
         w.writerow({"kind": "place", "entry_id": "L01-e0024", "old_value": "A", "new_value": "B", "is_bird": "n"})
     rows = load_corrections(p)
     assert [(r.kind, r.old) for r in rows] == [("taxon", "Reh"), ("place", "A")]

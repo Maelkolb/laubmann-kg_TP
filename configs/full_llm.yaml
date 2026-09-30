@@ -41,8 +41,19 @@ extraction:
 taxa:
   links_long_path: null       # set to the index linker's long table when available
 
-corrections:                  # reviewer fixes of misread species/place names (validation UI export), applied before QA
+corrections:                  # reviewer decisions on single mentions (validation UI export), applied before QA
   csv: data/review/value_corrections.csv   # absent file = no corrections
+
+review:                       # validation UI decisions (tools/validation_ui, "Abgleich"); absent files = none
+  identities: data/review/identities.csv              # name form -> entity (same/own/none) and entity links (link/nolink)
+  text_corrections: data/review/text_corrections.csv  # corrected readings, applied before extraction (re-reads those entries)
+  machine:                    # machine review (tools/validation_ui/machine_review, Claude Sonnet 5.5 subagents, 2026-09-30):
+    enabled: true             #   fills the name forms and entity links nobody has reviewed; a row of identities.csv always wins
+    identities: data/review/machine/identities_machine.csv
+    min_confidence: 0.9       #   machine rows need this confidence ...
+    min_agreement: 2          #   ... and this many independent sources (text agent, scan agent, Gemini, Opus) agreeing
+    value_corrections: data/review/machine/value_corrections_machine.csv   # single mentions the scan agent read differently
+    min_correction_confidence: 0.9
 
 qa:
   enabled: true

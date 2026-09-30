@@ -237,6 +237,7 @@ _GEOREF_SOURCES = {
     "osm": "OpenStreetMap/Nominatim name match",
     "geonames": "GeoNames name match (unique in home region)",
     "reviewed": "reviewed place_link_review.csv",
+    "machine-review": "machine review of the place link (LLM subagents, validation tools)",
 }
 
 
@@ -569,6 +570,8 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, vo
                    Literal(bool(entry.date_plausible), datatype=XSD.boolean)))
     if entry.date_note:
         graph.add((node, SKOS.note, Literal(entry.date_note, lang=DE)))
+    for note in entry.reading_notes:
+        graph.add((node, SKOS.note, Literal(note, lang=DE)))
     if entry.entry_kind:
         graph.add((node, LKG.entryKind, Literal(entry.entry_kind)))
     if entry.place is not None:

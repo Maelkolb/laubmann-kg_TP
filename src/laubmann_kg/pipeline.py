@@ -46,6 +46,9 @@ class ExtractionResult:
     # public base URL of the region crops once hosted (config multimodal.image_base_url);
     # None = crops are only referenced by their path (dcterms:identifier)
     image_base_url: Optional[str] = None
+    # reviewed identities of name forms (review/identities.csv, validation UI):
+    # read by linking and resolution; see laubmann_kg.review.identities
+    identities: object = None
 
     @property
     def observations(self) -> list:
@@ -230,12 +233,26 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     result = ExtractionResult(provenance=provenance,
                               image_base_url=(config.get("multimodal") or {}).get("image_base_url") or None)
 
+    # Validation decisions (tools/validation_ui export, config section ``review``):
+    # corrected readings are applied to the entry texts BEFORE extraction (the
+    # model reads the corrected entry; only those entries miss the LLM cache),
+    # reviewed identities are read by the corrections, linking and resolution stages.
+    review_cfg = config.get("review") or {}
+    from laubmann_kg.review.identities import Identities
+    from laubmann_kg.review.readings import apply_readings, load_readings
+    # machine review (tools/validation_ui/machine_review): fills the forms nobody reviewed;
+    # a human row in identities.csv always wins, machine rows need confidence + agreement
+    machine_cfg = review_cfg.get("machine") or {}
+    result.identities = Identities.load_layers(review_cfg.get("identities"), machine_cfg.get("identities") if machine_cfg.get("enabled", True) else None,
+                                              float(machine_cfg.get("min_confidence", 0.9)), int(machine_cfg.get("min_agreement", 2)))
+    built = [build_entry(row) for row in rows]
+    reading_flags = apply_readings(built, load_readings(review_cfg.get("text_corrections")))
+
     # Sequential prep. The gazetteer/regex reading of the header is only the
     # FALLBACK place: the LLM extractor replaces it with the model's own reading
     # of the entry place (entry.place); the offline backend keeps it.
     jobs: list[tuple] = []
-    for row in rows:
-        entry = build_entry(row)
+    for entry in built:
         entry.place = normalize_place(entry.location_raw)
         jobs.append((entry, entry.place))
 
@@ -265,11 +282,17 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
 
     # Reviewer corrections of misread species/place names (review/value_corrections.csv):
     # applied before coverage and QA so a corrected "non-bird" or place-less entry is judged anew.
-    correction_flags: list = []
+    correction_flags: list = list(reading_flags)
     corr_cfg = config.get("corrections") or {}
+    from laubmann_kg.normalization.corrections import apply_corrections, apply_identity_removals, load_corrections
     if corr_cfg.get("enabled", True) and corr_cfg.get("csv"):
-        from laubmann_kg.normalization.corrections import apply_corrections, load_corrections
-        _, correction_flags = apply_corrections(result.entries, load_corrections(corr_cfg["csv"]))
+        correction_flags += apply_corrections(result.entries, load_corrections(corr_cfg["csv"]))[1]
+    if machine_cfg.get("enabled", True) and machine_cfg.get("value_corrections"):
+        # scan-checked single mentions of the machine review, above the confidence threshold only
+        correction_flags += apply_corrections(result.entries, load_corrections(
+            machine_cfg["value_corrections"], float(machine_cfg.get("min_correction_confidence", 0.9))))[1]
+    # name-level "not a taxon / person / place / habitat" decisions of the review
+    correction_flags += apply_identity_removals(result.entries, result.identities)
 
     qa_cfg = dict(config.get("qa", {}) or {})
     # Volume coverage: misfiled scans -> home volume, OCR years repaired against

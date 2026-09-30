@@ -34,7 +34,7 @@ AUTHORITIES: dict[str, tuple[str, str]] = {
 # Place.georef_source -> grade: two independent sources agreeing (OSM hit and
 # GeoNames record) or a reviewer decision is an identity claim; a
 # single-source name match is a close match.
-_PLACE_GRADES = {"osm+geonames": EXACT, "reviewed": EXACT}
+_PLACE_GRADES = {"osm+geonames": EXACT, "reviewed": EXACT}      # "machine-review" stays close
 
 
 @dataclass(frozen=True)
@@ -75,7 +75,7 @@ def taxon_links(taxon: Taxon) -> list[AuthorityLink]:
     if taxon.gbif_key:
         if taxon.gbif_match_type == "HIGHERRANK":
             grade = BROAD                       # genus anchor is broader, not equal
-        elif taxon.match_method == "llm+gbif" or taxon.gbif_match_type == "FUZZY":
+        elif taxon.match_method in ("llm+gbif", "machine-review") or taxon.gbif_match_type == "FUZZY":
             grade = CLOSE                       # LLM-mediated or fuzzy: weaker claim
         else:
             grade = EXACT
@@ -114,5 +114,6 @@ def person_links(person: Person) -> list[AuthorityLink]:
         grade = person.wikidata_match if person.wikidata_match in MATCH_GRADES else CLOSE
         out.append(_link("wikidata", person.wikidata_iri, grade))
     if person.gnd_iri:
-        out.append(_link("gnd", person.gnd_iri, EXACT))     # reviewer-researched
+        # researched by a reviewer (exact) or proposed by the machine review (close)
+        out.append(_link("gnd", person.gnd_iri, person.gnd_match if person.gnd_match in MATCH_GRADES else EXACT))
     return out

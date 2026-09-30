@@ -36,6 +36,7 @@ from collections import Counter, defaultdict
 from dataclasses import replace
 
 from laubmann_kg.kg.model import DIARIST, Person
+from laubmann_kg.linking.persons import GND_NS, WIKIDATA_ENTITY_NS
 from laubmann_kg.resolution.common import Decisions, MergeRow, fold
 
 logger = logging.getLogger(__name__)
@@ -96,6 +97,7 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
     wikidata: dict[str, str] = {}
     wd_match: dict[str, str] = {}        # name -> exact | close (grade of its Wikidata link)
     gnd: dict[str, str] = {}
+    gnd_match: dict[str, str] = {}       # name -> exact | close (grade of its GND link)
     for entry in result.entries:
         for p in entry.persons:
             usage[p.name] += 1
@@ -105,6 +107,8 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
                     wd_match[p.name] = p.wikidata_match
             if p.gnd_iri:
                 gnd[p.name] = p.gnd_iri
+                if p.gnd_match:
+                    gnd_match[p.name] = p.gnd_match
         for obs in entry.observations:
             if obs.observer is not None:
                 usage[obs.observer.name] += 1
@@ -114,6 +118,8 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
                         wd_match[obs.observer.name] = obs.observer.wikidata_match
                 if obs.observer.gnd_iri:
                     gnd[obs.observer.name] = obs.observer.gnd_iri
+                    if obs.observer.gnd_match:
+                        gnd_match[obs.observer.name] = obs.observer.gnd_match
     names = sorted(usage)                # the diarist stays in the pool as a forced canonical
     if not names:
         return 0, []
@@ -255,7 +261,15 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
         if decisions.applies(row, variant_aliases=clusters[rv], canonical_aliases=clusters[rc]) and v_can not in mapping:
             mapping[v_can] = c_can
 
-    if not mapping:
+    # reviewed identities (validation UI) override the rules: a form moved to
+    # another person, or kept apart as a person of its own
+    from laubmann_kg.review.identities import apply_mappings, identities_of
+    ids = identities_of(result)
+    if ids:
+        n_rev = apply_mappings(mapping, names, "persons", ids)
+        if n_rev:
+            logger.info("persons: %d reviewed identities applied", n_rev)
+    if not mapping and not ids.links["persons"]:
         return 0, rows
     # resolve chains: "Dr Wüst" -> "Wüst" (same-key) -> "Walter Wüst" (accepted candidate)
     def root_of(n):
@@ -269,6 +283,10 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
     for m, c in mapping.items():
         alts[c].append(m)
     canon_person: dict[str, Person] = {}
+    def reviewed_link(c: str):
+        # a reviewed link (or "no link") on the canonical, else on any member,
+        # wins over automatic links inherited from a member
+        return next((l for l in (ids.link("persons", m) for m in [c] + sorted(alts.get(c, []))) if l is not None), None)
     def canonical_person(name: str, template: Person) -> Person:
         c = mapping.get(name, name)
         if c not in canon_person:
@@ -277,9 +295,20 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
             match = wd_match.get(src) if src else None
             if c == DIARIST.name:
                 qid = qid or DIARIST.wikidata_iri
-            g = gnd.get(c) or next((gnd[v] for v in alts.get(c, []) if v in gnd), None)
+            g_src = c if c in gnd else next((v for v in alts.get(c, []) if v in gnd), None)
+            g = gnd.get(g_src) if g_src else None
+            g_match = gnd_match.get(g_src) if g_src else None
+            rl = reviewed_link(c)
+            if rl is not None:
+                # a reviewed link (or "no link") wins; human decisions are exact,
+                # machine-review decisions (LLM-mediated) close matches
+                qid = (WIKIDATA_ENTITY_NS + rl.auth("wd")) if rl.decision == "link" and rl.auth("wd") else None
+                g = (GND_NS + rl.auth("gnd")) if rl.decision == "link" and rl.auth("gnd") else None
+                grade = "exact" if rl.origin == "human" else "close"
+                match = grade if qid else None
+                g_match = grade if g else None
             canon_person[c] = Person(name=c, role=None, wikidata_iri=qid, wikidata_match=match,
-                                     alt_names=tuple(sorted(set(alts.get(c, [])))), gnd_iri=g)
+                                     alt_names=tuple(sorted(set(alts.get(c, [])))), gnd_iri=g, gnd_match=g_match)
         base = canon_person[c]
         return replace(base, role=template.role) if template.role else base
 
@@ -288,7 +317,7 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
         new_persons: list[Person] = []
         seen_names: set[str] = set()
         for p in entry.persons:
-            q = canonical_person(p.name, p) if (p.name in mapping or p.name in alts) else p
+            q = canonical_person(p.name, p) if (p.name in mapping or p.name in alts or ids.link("persons", p.name)) else p
             if q.name != p.name:
                 merged += 1
             if q.name in seen_names:
@@ -299,7 +328,8 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
             new_persons.append(q)
         entry.persons = new_persons
         for obs in entry.observations:
-            if obs.observer is not None and (obs.observer.name in mapping or obs.observer.name in alts):
+            if obs.observer is not None and (obs.observer.name in mapping or obs.observer.name in alts
+                                             or ids.link("persons", obs.observer.name)):
                 if obs.observer.name in mapping:
                     merged += 1
                 obs.observer = canonical_person(obs.observer.name, obs.observer)

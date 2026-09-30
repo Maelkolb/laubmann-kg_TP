@@ -3,3 +3,5 @@ payload.b64
 *.html
 !template.html
 shots/
+pages_geometry.json
+vernaculars.json
