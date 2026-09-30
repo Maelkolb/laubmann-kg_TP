@@ -32,8 +32,10 @@ Output one compact JSON object on a single line, nothing else:
   (garbled machine text, a duplicate) — never for text the page shows, and
   never for text that may stand on a page you were not given.
 - Only real misreadings: never modernise spelling, punctuation, line breaks or
-  `<u>` underline markup, never "improve" the diarist's wording, never add
-  interpretation. Where the scan is illegible, leave the transcription.
+  `<u>` underline markup, never replace the diarist's word by a synonym or a
+  more usual form ("Gimpel" stays "Gimpel", not "Dompfaff"), never join words
+  split at a line break, never "improve" his wording or add interpretation.
+  Where the scan is illegible, leave the transcription.
 
 ## Entry
 
