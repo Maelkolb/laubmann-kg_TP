@@ -41,7 +41,9 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
   are sub-properties of `dcterms:hasPart`; every child node carries
   `dcterms:isPartOf`.
 - **Flat where a node adds nothing.** Behaviour = `dwc:behavior` literals;
-  evidence kinds = `lkg:evidenceKind` concept links on the observation; what
+  evidence kinds = `lkg:evidenceKind` values on the observation ("visual" |
+  "auditory" | "nest" | "specimen"; since 0.6.0 every controlled value is a
+  literal = the English prefLabel of its concept, checked with `sh:in`); what
   was heard = `lkg:callType` (song | call | alarm | drumming, no "unknown"
   placeholder) and `lkg:callTranscription` literals on the observation (0.6.0 —
   the former `lkg:Vocalisation` node and the `dwc:behavior` copies such as
@@ -67,7 +69,15 @@ Human-readable ontology docs: `docs/ontology/index.html` (pyLODE).
   (`lkg:hasMultimodalRegion` ⊑ `lkg:hasSourceRegion` → `lkg:MultimodalRegion`:
   drawings, maps, photographs, prints, mounted objects, inserted texts, with
   `lkg:regionKind`, `dcterms:type` (DCMI), `dcterms:description`,
-  `lkg:visibleText`, `dcterms:identifier` = crop file).
+  `lkg:visibleText`, `dcterms:identifier` = crop file, `schema:image` = public
+  URL of the crop once the images are hosted — config
+  `multimodal.image_base_url`; the DwC-A multimedia identifier follows).
+- **Travel legs never invent a start.** `lkg:departurePlace` is the stated
+  start, else the previous leg's arrival, else the entry's place for a leg
+  that leads elsewhere; a leg to the entry's own place with no stated start
+  has an arrival only (0.6.0; before: "Kaufbeuren → Kaufbeuren").
+- **Count qualifier** `exact | minimum | maximum | approximate |
+  plural-unspecified` ("maximum" = "höchstens", "bis zu", since 0.6.0).
 - **Ziel 1 (0.5.0) — time and space on the observation.** The named site stays
   a `lkg:Place` (`lkg:hasLocality` when it differs from `lkg:entryPlace`);
   vantage wording, microhabitat and relative height are literals
@@ -171,7 +181,7 @@ Observation  (dwc:Occurrence)
   ├─ lkg:observedTaxon (⊑ dwciri:toTaxon) → Taxon
   ├─ lkg:observedAt → Place                  (EFFECTIVE place: own locality, else entry place)
   ├─ lkg:hasLocality → Place                 (only when the record states its OWN locality; + dwc:verbatimLocality)
-  ├─ lkg:evidenceKind → lkg:evidence_visual|auditory|nest|specimen   (0–4 concepts)
+  ├─ lkg:evidenceKind "visual"|"auditory"|"nest"|"specimen"   (0–4 values)
   ├─ lkg:callType "song"|"call"|"alarm"|"drumming", lkg:callTranscription "…"   (literals; 0.6.0)
   ├─ dwc:behavior "…"@de                     (literals, no node)
   ├─ dwciri:habitat → habitat concept        (+ dwc:habitat literal)
@@ -197,7 +207,7 @@ and no `wasGeneratedBy` are emitted.
 | `identification_qualifier` | `dwc:identificationQualifier` | the diarist's hedge as written |
 | `event_date`, `event_time` | `dwc:eventDate` (xsd:date; falls back to the entry date), `dwc:eventTime` "HH:MM" | |
 | `record_type`, `observer`, `literature_citation` | `lkg:recordType`, derived `dwc:basisOfRecord`, `dwciri:recordedBy`, `dwc:associatedReferences` | see ontology comment on recordType |
-| `evidence[]` | `lkg:evidenceKind` concept per kind; calls additionally `lkg:callType` (only when the type is stated) and `lkg:callTranscription` (only when written) on the observation | no placeholder; purely vocal behaviour phrases are folded in here |
+| `evidence[]` | `lkg:evidenceKind` value per kind; calls additionally `lkg:callType` (only when the type is stated) and `lkg:callTranscription` (only when written) on the observation | no placeholder; purely vocal behaviour phrases are folded in here |
 | `taxon_verbatim` | `dwc:verbatimIdentification` | the name as written, when resolution merged it into a canonical taxon |
 | `behaviour[]` | `dwc:behavior`@de literals | |
 | `habitat` | `dwciri:habitat` → shared concept + `dwc:habitat` literal | |

@@ -13,6 +13,12 @@ corpus:
   entries: data/corpus_patched/entries.csv
   multimodal: data/corpus_patched/multimodal_regions.jsonl
 
+# Region crops (lkg:MultimodalRegion): set the public base URL once the images are
+# hosted; the graph then carries schema:image <base_url>/<crop path> and the DwC-A
+# multimedia identifier becomes that URL. null = crops referenced by path only.
+multimodal:
+  image_base_url: null
+
 # null = all volumes. Set to a number to restrict to one volume.
 sample:
   volume: null

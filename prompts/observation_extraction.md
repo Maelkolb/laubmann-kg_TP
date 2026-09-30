@@ -38,8 +38,8 @@ end of the preceding text, where the diarist usually introduces it ("Nachfolgend
 ein Bericht von E. Bezzel aus Ismaning vom 19. X.:", "Adolf Müller schreibt:").
 Use both ONLY to decide who wrote or observed this entry's records
 (`entry_kind`, `record_type`, `observer`) and to complete a missing date or
-place. Never extract observations, travel, persons or weather from
-`context_before` itself.
+place. `context_before` belongs to another entry that is extracted separately:
+never take observations, travel, persons or weather from it.
 
 **A report or letter by another person** (`segment_note` says so, or the text
 is signed by / headed with someone else's name): `entry_kind` is
@@ -48,7 +48,9 @@ is signed by / headed with someone else's name): `entry_kind` is
 `context_before` — unless a record names a different observer; add the author
 to `persons` with role `source`. "Ich"/"wir" in such a report is its author,
 never the diarist. A companion named in the report ("mit Herrn Dr. Wüst") does
-not change the author.
+not change the author. The author's own journeys ("mit dem Postomnibus nach
+Neufinsing, zu Fuß zum Damm") are not the diarist's: give no `travel_events`
+for them.
 
 ## Output
 
@@ -113,11 +115,14 @@ else copied in), or `other`.
 - `verbatim_notes` (required): the exact clause/sentence the record is drawn
   from.
 - `individual_count`: integer ≥ 0 when the text gives a number (digits or
-  number words); `0` for an explicit absence. For a range ("3-4", "40-50",
-  "10 + x") give `count_min`/`count_max` and put the lower bound here.
-- `count_min` / `count_max`: integers, only for ranges.
-- `count_qualifier`: `exact`, `minimum`, `approximate`, or
-  `plural-unspecified` ("einige", "mehrere", bare plural).
+  number words); `0` for an explicit absence. For a range ("3-4", "40-50")
+  give `count_min`/`count_max` and put the lower bound here.
+- `count_min` / `count_max`: integers, only for ranges with both bounds.
+- `count_qualifier`: `exact` (a plain number), `minimum` ("mindestens",
+  "über 30", "mehr als", "10 + x" — the number goes into `individual_count`),
+  `maximum` ("höchstens", "bis zu 20", "max."), `approximate` ("ca.", "etwa",
+  "gegen", ranges), or `plural-unspecified` ("einige", "mehrere", bare
+  plural).
 - `occurrence_status`: `absent` for negative records ("keine Schwalben mehr",
   "fehlen", "völliges Fehlen der Feldlerchen"); otherwise omit (present).
 - `evidence`: array of `{kind, call_type?, call_transcription?}` with `kind`
@@ -203,7 +208,8 @@ else copied in), or `other`.
   diarist saw or heard the bird himself; the default when nothing suggests
   otherwise), `third-party-report` (someone else observed it and told or wrote
   to the diarist: "meldet", "berichtet", "teilt mit", "schreibt", "nach
-  Angabe/Mitteilung von"), or `literature-record` (the entry digests a
+  Angabe/Mitteilung von"; every record of a report or letter by another
+  person, see above), or `literature-record` (the entry digests a
   publication, journal, or card index — later volumes contain digest lines like
   "Heckenbraunelle: 19. III. 49 Feldmoos (Kiefer)" naming an external source).
   Judge the entry's style (`entry_kind`), not only the sentence.
@@ -216,7 +222,8 @@ else copied in), or `other`.
   the whole entry unless the text says otherwise. "(Lbm.)" is Laubmann himself
   → omit. In "Wie F. Müller an G. Engel schreibt, ..." the observer/source is
   F. Müller — G. Engel is only the recipient. First person ("ich", "wir",
-  unattributed field notes) is the diarist → omit.
+  unattributed field notes) is the diarist → omit — except in a report or
+  letter by another person, where it is that author (see above).
 - `literature_citation`: the bibliographic reference exactly as written when
   the record comes from literature ("A.S.Z. 1949, S. 12", "Orn. Monatsber.
   41"), else omit. Journal abbreviations in parentheses such as "(A.S.Z.)" are
@@ -224,12 +231,17 @@ else copied in), or `other`.
 
 ### travel_events — journeys the diarist himself makes
 
-One event per coherent journey; `legs` is an array with one object per segment:
+One event per coherent journey of the diarist (not of the author of a pasted
+report or letter); `legs` is an array with one object per segment:
 
 - `departure_place` / `arrival_place`: place names in modern standard spelling
-  as far as the text allows. `arrival_place` is required; leave
-  `departure_place` out when the text only implies leaving the current
-  location.
+  as far as the text allows. `arrival_place` is required. Give
+  `departure_place` whenever the text or a route header says or clearly
+  implies where the leg started ("München – Grafrath", "von meiner Wohnung",
+  "zurück nach München" after a day out). Leave it out otherwise: the pipeline
+  then uses the previous leg's arrival, or the entry's own place for a leg
+  that leads elsewhere, and never invents a start for a leg that leads TO the
+  entry's place.
 - `via_places`: JSON array of intermediate stations or waypoints, in order.
 - `transport_mode`: `train`, `foot`, `boat`, `car`, `carriage`, `bicycle`, or
   `unknown`.

@@ -9,7 +9,7 @@ TRANSPORT_MODES = ("train", "foot", "boat", "car", "carriage", "bicycle", "unkno
 CALL_TYPES = ("song", "call", "alarm", "drumming", "unknown")   # "unknown" is accepted from the model but never emitted
 EMITTED_CALL_TYPES = ("song", "call", "alarm", "drumming")      # lkg:callTypeScheme (0.6.0)
 REGION_KINDS = ("drawing", "photograph", "map", "print", "object", "text-insert", "list")   # lkg:regionKindScheme
-COUNT_QUALIFIERS = ("exact", "minimum", "approximate", "plural-unspecified")
+COUNT_QUALIFIERS = ("exact", "minimum", "maximum", "approximate", "plural-unspecified")
 EVIDENCE_KINDS = ("visual", "auditory", "nest", "specimen")
 
 # --- Model-provided observation detail (prompts/observation_extraction.md) ---

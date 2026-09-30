@@ -217,7 +217,7 @@ classDiagram
     class MultimodalRegion {
         regionKind drawing | photograph | map | print | object | text-insert | list
         dcterms:type · dcterms:description
-        visibleText · dcterms:identifier (crop)
+        visibleText · dcterms:identifier (crop) · schema:image (URL, once hosted)
     }
 
     class Observation {
@@ -226,10 +226,11 @@ classDiagram
         recordType field | third-party | literature
         dwc:occurrenceStatus present | absent
         dwc:individualCount ≥0 · individualCountMin · Max
-        countQualifier
+        countQualifier exact | minimum | maximum | approximate | plural-unspecified
         dwc:sex · dwc:lifeStage · dwc:vitality
         breedingEvidence · dwc:reproductiveCondition
         movementKind · flightDirection
+        evidenceKind visual | auditory | nest | specimen
         callType song | call | alarm | drumming · callTranscription
         dwc:behavior · dwc:habitat
         dwc:identificationQualifier
@@ -282,10 +283,6 @@ classDiagram
         skos:notation · skos:prefLabel
         skos:broader chain (EUNIS)
     }
-    class EvidenceKind {
-        &lt;&lt;skos:Concept · lkg:evidenceKindScheme&gt;&gt;
-        visual | auditory | nest | specimen
-    }
 
     class ExtractionRun {
         &lt;&lt;prov:Activity&gt;&gt;
@@ -325,12 +322,11 @@ classDiagram
     Observation --&gt; "0..1" Place : observedAt
     Observation --&gt; "0..1" Place : hasLocality (own place)
     Observation --&gt; "0..1" Person : dwciri∶recordedBy
-    Observation --&gt; "0..4" EvidenceKind : evidenceKind
     Observation --&gt; "0..1" HabitatConcept : dwciri∶habitat
     Observation --&gt; "1" ExtractionRun : prov∶wasGeneratedBy
 
     TravelEvent --&gt; "1..*" TravelLeg : hasLeg ⊑ dcterms∶hasPart
-    TravelLeg --&gt; "1..*" Place : departurePlace · arrivalPlace · viaPlace
+    TravelLeg --&gt; "1..*" Place : arrivalPlace · departurePlace (0..1) · viaPlace
     ExtractionRun --&gt; "1" SoftwareAgent : prov∶wasAssociatedWith
     ExtractionRun --&gt; "1" Prompt : prov∶used
 
@@ -344,7 +340,7 @@ classDiagram
     cssClass "DiaryEntry,Observation" hub
     cssClass "TravelEvent,TravelLeg,WeatherReport" detail
     cssClass "Taxon,Place,Person" entity
-    cssClass "HabitatConcept,EvidenceKind" concept
+    cssClass "HabitatConcept" concept
     cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
     cssClass "AuthorityRecord" ext
     classDef abstract fill:#FBFBF9,stroke:#7E8C82,stroke-width:1px,stroke-dasharray:3 3,color:#5F6E64,font-style:italic
@@ -357,7 +353,7 @@ classDiagram
     classDef ext fill:#FFFFFF,stroke:#35608A,stroke-width:1px,stroke-dasharray:6 4,color:#14263A</pre></div>
   <ul style="margin-top:14px">
     <li>Two grouping superclasses (<code>ArchivalUnit</code>, <code>EntryRecord</code>) carry the hierarchy; every child node is <code>dcterms:isPartOf</code> its parent, every extracted record (travel legs included) <code>prov:wasDerivedFrom</code> its entry.</li>
-    <li><code>DiaryEntry</code> is the DwC event; <code>Observation</code> is the DwC occurrence. Behaviour = <code>dwc:behavior</code> literals, evidence kinds = <code>lkg:evidenceKind</code> concepts, what was heard = <code>lkg:callType</code> / <code>lkg:callTranscription</code> on the observation (0.6.0; no separate vocalisation node).</li>
+    <li><code>DiaryEntry</code> is the DwC event; <code>Observation</code> is the DwC occurrence. Behaviour = <code>dwc:behavior</code> literals, evidence kinds = <code>lkg:evidenceKind</code> values ("visual", "auditory" …; every controlled value is a literal), what was heard = <code>lkg:callType</code> / <code>lkg:callTranscription</code> on the observation (0.6.0; no separate vocalisation node).</li>
     <li><strong>Regions (0.6.0):</strong> an entry links every body-text region it runs through (<code>lkg:hasSourceRegion</code>) and its drawings, maps, photographs, mounted objects and inserted texts (<code>lkg:hasMultimodalRegion</code> → <code>lkg:MultimodalRegion</code> ⊑ <code>SourceRegion</code>).</li>
     <li><strong>Ziel 1 (0.5.0):</strong> on the observation — <code>lkg:spatialContext</code>, <code>lkg:microhabitat</code>, <code>lkg:relativeElevation</code>, <code>lkg:timeOfDay</code> / <code>lkg:daylightPhase</code>, <code>lkg:observationRadiusMeters</code> (mirrored as <code>dwc:coordinateUncertaintyInMeters</code>), <code>dwc:samplingProtocol</code>, <code>lkg:spatialConfidence</code>. Named sites stay <code>lkg:Place</code> via <code>hasLocality</code> when they differ from <code>entryPlace</code>.</li>
     <li>Merged spellings sit on the node as <code>skos:altLabel</code>; a merged observation keeps the written taxon name as <code>dwc:verbatimIdentification</code>.</li>

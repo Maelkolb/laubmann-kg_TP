@@ -29,6 +29,7 @@ import hashlib
 import logging
 import re
 from decimal import Decimal
+from urllib.parse import quote
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
@@ -70,8 +71,8 @@ DCMITYPE = Namespace("http://purl.org/dc/dcmitype/")
 DATA = Namespace(DATA_NS)
 DE = "de"
 
-# Evidence kinds map 1:1 onto the SKOS concepts in controlled_vocabularies.ttl.
-_EVIDENCE_CONCEPTS = {kind: LKG[f"evidence_{kind}"] for kind in vocab.EVIDENCE_KINDS}
+# Controlled values are literals: the English prefLabel of the concept in its
+# scheme (controlled_vocabularies.ttl), checked with sh:in.
 # Person.role -> role-specific mention property (all ⊑ lkg:mentionsPerson).
 _MENTION_PROPS = {
     "companion": LKG.mentionsCompanion,
@@ -335,7 +336,8 @@ def _add_travel_event(graph: Graph, entry_node: URIRef, event: TravelEvent,
         graph.add((node, PROV.wasDerivedFrom, entry_node))
         if run is not None:
             graph.add((node, PROV.wasGeneratedBy, run))
-        graph.add((node, LKG.departurePlace, _add_place(graph, leg.departure_place)))
+        if leg.departure_place is not None:
+            graph.add((node, LKG.departurePlace, _add_place(graph, leg.departure_place)))
         graph.add((node, LKG.arrivalPlace, _add_place(graph, leg.arrival_place)))
         for via in leg.via_places:
             graph.add((node, LKG.viaPlace, _add_place(graph, via)))
@@ -474,11 +476,10 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
 
     # --- how: evidence kinds, what was heard, behaviour, habitat -----------
     for evidence in obs.evidence:
-        concept = _EVIDENCE_CONCEPTS.get(evidence.kind)
-        if concept is not None:
-            graph.add((node, LKG.evidenceKind, concept))
+        if evidence.kind in vocab.EVIDENCE_KINDS:
+            graph.add((node, LKG.evidenceKind, Literal(evidence.kind)))
         if evidence.is_call:
-            graph.add((node, LKG.evidenceKind, _EVIDENCE_CONCEPTS["auditory"]))
+            graph.add((node, LKG.evidenceKind, Literal("auditory")))
             # the sound sits on the observation itself (0.6.0); no "unknown"
             # placeholder and no transcription the diary did not write
             if evidence.call_type in vocab.EMITTED_CALL_TYPES:
@@ -512,8 +513,16 @@ def _add_page(graph: Graph, volume: int, page_uid: str, page_id: str,
     return page_node
 
 
+def image_url(base_url: Optional[str], crop: Optional[str]) -> Optional[str]:
+    """Public URL of a region crop once the images are hosted
+    (config multimodal.image_base_url + the crop path), else None."""
+    if not base_url or not crop:
+        return None
+    return base_url.rstrip("/") + "/" + quote(crop.lstrip("/"))
+
+
 def _add_multimodal_region(graph: Graph, entry_node: URIRef, region: MultimodalRegion,
-                           volume_node: URIRef) -> URIRef:
+                           volume_node: URIRef, base_url: Optional[str] = None) -> URIRef:
     """A drawing, map, photograph, object or inserted text placed with the entry
     (lkg:MultimodalRegion ⊑ lkg:SourceRegion). hasSourceRegion is asserted
     next to hasMultimodalRegion so consumers without inference see every region."""
@@ -530,6 +539,9 @@ def _add_multimodal_region(graph: Graph, entry_node: URIRef, region: MultimodalR
         graph.add((node, LKG.visibleText, Literal(region.visible_text, lang=DE)))
     if region.crop:
         graph.add((node, DCTERMS.identifier, Literal(region.crop)))
+    url = image_url(base_url, region.crop)
+    if url:
+        graph.add((node, SCHEMA.image, URIRef(url)))
     page_node = _add_page(graph, region.volume, region.page_uid, region.page_id, region.scan, volume_node)
     if page_node is not None:
         graph.add((node, DCTERMS.isPartOf, page_node))
@@ -538,7 +550,8 @@ def _add_multimodal_region(graph: Graph, entry_node: URIRef, region: MultimodalR
     return node
 
 
-def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, volume_spans: Optional[dict] = None) -> None:
+def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, volume_spans: Optional[dict] = None,
+               image_base_url: Optional[str] = None) -> None:
     node = _uri(entry.uid)
     graph.add((node, RDF.type, LKG.DiaryEntry))
     graph.add((node, RDFS.label, Literal(entry.label, lang=DE)))
@@ -591,7 +604,7 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, vo
         graph.add((region, RDF.type, LKG.SourceRegion))
         graph.add((region, RDFS.label, Literal(f"Region {ref.region_uid}")))
     for mm in entry.multimodal:
-        _add_multimodal_region(graph, node, mm, volume_node)
+        _add_multimodal_region(graph, node, mm, volume_node, image_base_url)
 
     for obs in entry.observations:
         obs_node = _add_observation(graph, obs, node, entry.entry_date, run)
@@ -668,7 +681,8 @@ def build_graph(result: "ExtractionResult") -> Graph:
         if not entry.entry_date:
             skipped += 1
             continue
-        _add_entry(graph, entry, run, getattr(result, 'volume_spans', None))
+        _add_entry(graph, entry, run, getattr(result, 'volume_spans', None),
+                   getattr(result, 'image_base_url', None))
     if skipped:
         logger.warning("skipped %d undated entries (SHACL dwc:eventDate requirement)", skipped)
     return graph

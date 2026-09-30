@@ -202,7 +202,7 @@ def test_evidence_vocalisation_and_habitat() -> None:
     absence = entry.observations[0]
     node = DATA[absence.uid]
     # evidence kinds are concept links on the observation itself
-    assert set(graph.objects(node, LKG.evidenceKind)) == {LKG.evidence_auditory, LKG.evidence_visual}
+    assert set(graph.objects(node, LKG.evidenceKind)) == {Literal("auditory"), Literal("visual")}
     assert list(graph.subjects(RDF.type, LKG.ObservationEvidence)) == []
     assert list(graph.subjects(RDF.type, LKG.BirdCall)) == []
     # what was heard sits on the observation itself (0.6.0): no Vocalisation node
@@ -214,7 +214,7 @@ def test_evidence_vocalisation_and_habitat() -> None:
     heard = DATA[entry.observations[2].uid]
     assert graph.value(heard, LKG.callType) == Literal("song")
     assert graph.value(heard, LKG.callTranscription) == Literal("zirr zirr")
-    assert graph.value(heard, LKG.evidenceKind) == LKG.evidence_auditory
+    assert graph.value(heard, LKG.evidenceKind) == Literal("auditory")
     assert graph.value(DATA[entry.observations[1].uid], LKG.callType) is None   # nothing stated
 
     # habitat: shared skos:Concept via dwciri:habitat (+ dwc:habitat literal), no lkg:Habitat class

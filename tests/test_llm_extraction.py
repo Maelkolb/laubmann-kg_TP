@@ -108,3 +108,10 @@ def test_segment_note_names_reviewed_report_splits() -> None:
     assert "segment_note: reviewed split: a report, letter or card" in client.prompts[0]
     entry.boundary_kind, entry.boundary_source = "field-day", "review-resumption"
     assert "resuming" in segment_note(entry)
+
+
+def test_count_qualifier_maximum_is_kept() -> None:
+    payload = json.dumps([{"vernacular_de": "Star", "verbatim_notes": "höchstens 20 Stare",
+                           "individual_count": 20, "count_qualifier": "maximum"}])
+    obs, _ = _run("höchstens 20 Stare", payload)
+    assert obs[0].count_qualifier == "maximum" and obs[0].individual_count == 20

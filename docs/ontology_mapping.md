@@ -49,7 +49,7 @@ meaning ("axiom"). No `lkg:` twin of a standard term remains.
 | coordinates | `geo:lat`/`geo:long`, `dwc:decimalLatitude`/`Longitude` + `dwc:geodeticDatum`, `gsp:asWKT` | direct |
 | habitat | `dwciri:habitat` (concept IRI) + `dwc:habitat` (literal) | direct (was `lkg:hasHabitat`) |
 | behaviour | `dwc:behavior` literals | direct (was `lkg:hasBehaviour` → BehaviourNote) |
-| evidence kind | `lkg:evidenceKind` → `lkg:evidence_*` concepts (on the observation) | project term (was on evidence nodes) |
+| evidence kind | `lkg:evidenceKind` literal "visual" … (on the observation; concept documented in `lkg:evidenceKindScheme`) | project term (concept IRIs until 0.5.0, evidence nodes before) |
 | what was heard | `lkg:callType`, `lkg:callTranscription` literals on the observation | project terms (on `lkg:Vocalisation` nodes until 0.5.0) |
 | breeding | `lkg:breedingEvidence` (+ `dwc:reproductiveCondition "breeding"` for confirmed/probable) | project term + direct |
 | record type | `lkg:recordType` (deliberately not ⊑ `dwc:basisOfRecord`); derived `dwc:basisOfRecord` | project term + direct |
@@ -73,6 +73,7 @@ Every enumerated literal (`lkg:entryKind`, `lkg:placeKind`, `dwc:sex`, …) is
 the English `skos:prefLabel` of a concept in
 `ontologies/controlled_vocabularies.ttl`; the tuples in
 `normalization/vocabularies.py` and the `sh:in` lists in `shacl_shapes.ttl`
-mirror them. Observations point at the evidence concept IRIs via
-`lkg:evidenceKind` (`lkg:evidence_visual` …). Habitat concepts are open data
-(`data:habitat_*` in `lkg:habitatScheme`).
+mirror them — `lkg:evidenceKind` included since 0.6.0 (before, it pointed at
+the concept IRIs `lkg:evidence_visual` …). Habitat concepts are open data
+(`data:habitat_*` in `lkg:habitatScheme`), because they carry their own EUNIS
+links; external authority records are `skos:Concept`s in `lkg:authority_*`.

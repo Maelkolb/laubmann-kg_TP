@@ -2,7 +2,7 @@
 
 The queries use the Darwin-Core-first vocabulary of the emitted graph:
 ``dwc:vernacularName`` / ``dwc:scientificName`` on taxa, ``dwc:eventDate`` on
-entries, ``dcterms:isPartOf`` for the partonomy, ``lkg:evidenceKind`` concepts
+entries, ``dcterms:isPartOf`` for the partonomy, ``lkg:evidenceKind`` values
 and ``lkg:callType`` / ``lkg:callTranscription`` for how the bird was detected.
 """
 
@@ -56,7 +56,7 @@ QUERIES: dict[str, str] = {
     "CQ4_auditory_observations": PREFIXES + """
         SELECT ?vernacular ?callType ?transcription WHERE {
             ?obs a lkg:Observation ; lkg:observedTaxon ?t ;
-                 lkg:evidenceKind lkg:evidence_auditory .
+                 lkg:evidenceKind "auditory" .
             OPTIONAL { ?obs lkg:callType ?callType }
             OPTIONAL { ?obs lkg:callTranscription ?transcription }
             ?t dwc:vernacularName ?vernacular .

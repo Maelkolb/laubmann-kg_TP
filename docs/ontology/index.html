@@ -392,7 +392,7 @@
     ],
     "https://schema.org/creator": [
       {
-        "@id": "_:nb19cb8f1c05b4c77a372b428c0f8e17ab1"
+        "@id": "_:n9d3840e1e71049f1bac9844c656efafab1"
       }
     ],
     "https://schema.org/dateIssued": [
@@ -435,7 +435,7 @@
     ]
   },
   {
-    "@id": "_:nb19cb8f1c05b4c77a372b428c0f8e17ab1",
+    "@id": "_:n9d3840e1e71049f1bac9844c656efafab1",
     "https://schema.org/name": [
       {
         "@value": "Laubmann KG Project"
@@ -1081,7 +1081,7 @@
                   <li>
                     <span>
                       <a href="#evidenceKind">evidence kind</a>
-                      <sup class="sup-op" title="OWL Object Property">op</sup>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
                     </span>
                   </li>
                   <li>
@@ -1697,9 +1697,6 @@
               <a href="#entryPlace">entry place</a>
             </li>
             <li>
-              <a href="#evidenceKind">evidence kind</a>
-            </li>
-            <li>
               <a href="#hasLeg">has leg</a>
             </li>
             <li>
@@ -1894,6 +1891,12 @@
             </tr>
             <tr>
               <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>Where the leg started: as stated, else the previous leg's arrival, else the entry's own place when the leg leads elsewhere. Absent when nothing says where a leg to the entry's own place began (0.6.0: no departure is invented).</p></td>
+            </tr>
+            <tr>
+              <th>
                 <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
               </th>
               <td>
@@ -1951,47 +1954,6 @@
               <td>
                 <span>
                   <a href="#Place">Place</a>
-                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                </span>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="property entity" id="evidenceKind">
-          <h3>evidence kind
-            <sup class="sup-op" title="OWL Object Property">op</sup>
-          </h3>
-          <table>
-            <tr>
-              <th>IRI</th>
-              <td>
-                <code>https://w3id.org/laubmann-kg/ontology#evidenceKind</code>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
-              </th>
-              <td><p>How the organism was detected, as concept(s) of lkg:evidenceKindScheme: lkg:evidence_visual, lkg:evidence_auditory, lkg:evidence_nest, lkg:evidence_specimen. Only emitted when the text says how; an observation may have none or several. What was heard is on the same observation: lkg:callType and lkg:callTranscription.</p></td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
-              </th>
-              <td>
-                <span>
-                  <a href="#Observation">Observation</a>
-                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
-              </th>
-              <td>
-                <span>
-                  <a href="http://www.w3.org/2004/02/skos/core#Concept">Concept</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -2852,7 +2814,7 @@
               <th>
                 <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
               </th>
-              <td><p>Qualifier for the count: exact, minimum, approximate, plural-unspecified (lkg:countQualifierScheme).</p></td>
+              <td><p>Qualifier for the count: exact, minimum ("mindestens", "über"), maximum ("höchstens", "bis zu"), approximate, plural-unspecified (lkg:countQualifierScheme).</p></td>
             </tr>
             <tr>
               <th>
@@ -3013,6 +2975,44 @@
               <td>
                 <span>
                   <a href="#DiaryEntry">Diary Entry</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="evidenceKind">
+          <h3>evidence kind
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/laubmann-kg/ontology#evidenceKind</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>How the organism was detected: visual, auditory, nest, specimen (lkg:evidenceKindScheme; the value is the concept's English prefLabel, like every controlled value of the ontology). Only emitted when the text says how; an observation may have none or several. What was heard is on the same observation: lkg:callType and lkg:callTranscription.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Observation">Observation</a>
                   <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                 </span>
               </td>
@@ -4115,10 +4115,6 @@
           <dd>
             <code>https://schema.org/</code>
           </dd>
-          <dt id="skos">skos</dt>
-          <dd>
-            <code>http://www.w3.org/2004/02/skos/core#</code>
-          </dd>
           <dt id="vann">vann</dt>
           <dd>
             <code>http://purl.org/vocab/vann/</code>
@@ -4256,9 +4252,6 @@
               <a href="#entryPlace">entry place</a>
             </li>
             <li style="margin-left:10px;">
-              <a href="#evidenceKind">evidence kind</a>
-            </li>
-            <li style="margin-left:10px;">
               <a href="#hasLeg">has leg</a>
             </li>
             <li style="margin-left:10px;">
@@ -4336,6 +4329,9 @@
             </li>
             <li>
               <a href="#entryKind">entry kind</a>
+            </li>
+            <li>
+              <a href="#evidenceKind">evidence kind</a>
             </li>
             <li>
               <a href="#extractionbackend">extraction backend</a>
@@ -4463,9 +4459,6 @@
             </li>
             <li>
               <a href="#schema">schema</a>
-            </li>
-            <li>
-              <a href="#skos">skos</a>
             </li>
             <li>
               <a href="#vann">vann</a>

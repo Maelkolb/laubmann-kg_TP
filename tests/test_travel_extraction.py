@@ -198,3 +198,24 @@ def test_graph_emits_full_ontology_and_conforms(tmp_path) -> None:
         ontology_path=str(REPO_ROOT / "ontologies" / "laubmann.ttl"),
         shapes_path=str(REPO_ROOT / "ontologies" / "shacl_shapes.ttl"),
     )
+
+
+def test_leg_to_the_entry_place_keeps_no_invented_departure() -> None:
+    """ "Wir fahren mit der Bahn nach Kaufbeuren" in a Kaufbeuren entry: the
+    start is unknown, so the leg has an arrival only — never "Kaufbeuren →
+    Kaufbeuren". A leg leaving the entry place still gets it as departure."""
+    payload = json.dumps({"entry_place": {"name": "Kaufbeuren", "kind": "settlement"},
+                          "observations": [], "travel_events": [{"legs": [
+        {"arrival_place": "Kaufbeuren", "transport_mode": "train"},
+        {"arrival_place": "Biessenhofen", "transport_mode": "foot"}]},
+        {"legs": [{"arrival_place": "Irsee", "transport_mode": "foot"}]}]})
+    entry, _ = _run(payload)
+    first, second = entry.travel_events[0].legs
+    assert first.departure_place is None and first.arrival_place.name == "Kaufbeuren"
+    assert second.departure_place.name == "Kaufbeuren"            # previous leg's arrival
+    assert entry.travel_events[1].legs[0].departure_place.name == "Kaufbeuren"   # leaves the entry place
+    from laubmann_kg.kg.rdf import LKG, build_graph
+    from laubmann_kg.pipeline import ExtractionResult
+    g = build_graph(ExtractionResult(entries=[entry]))
+    legs = list(g.subjects(RDF.type, LKG.TravelLeg))
+    assert sum(1 for l in legs if (l, LKG.departurePlace, None) in g) == 2

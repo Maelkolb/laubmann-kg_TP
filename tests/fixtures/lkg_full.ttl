@@ -10,6 +10,7 @@
 @prefix lkg:      <https://w3id.org/laubmann-kg/ontology#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:   <https://schema.org/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix wd:       <http://www.wikidata.org/entity/> .
 @prefix gnd:      <https://d-nb.info/gnd/> .
@@ -51,6 +52,7 @@ data:region_19250530 a lkg:SourceRegion ;
 data:region_map_19250530 a lkg:MultimodalRegion ;
     rdfs:label "Karte · Bd. ??, Scan 0031"@de ;
     lkg:regionKind "map" ;
+    schema:image <https://images.example.org/laubmann/regions/p_19250530/r04_ImageRegion.png> ;
     dcterms:type dcmitype:StillImage ;
     dcterms:description "A hand-drawn map of the Aach valley between Zwiefaltendorf and Gossenzugen with the route in red."@en ;
     lkg:visibleText "Zwiefaltendorf – Baach – Gossenzugen"@de ;
@@ -322,7 +324,7 @@ data:obs_Kiebitz_Mering a lkg:Observation ;
     dwc:occurrenceStatus "present" ;
     lkg:countQualifier   "plural-unspecified" ;
     lkg:verbatimNotes    "einige Kiebitze auf den Feldern"@de ;
-    lkg:evidenceKind     lkg:evidence_visual ;
+    lkg:evidenceKind     "visual" ;
     lkg:recordType       "field-observation" ;
     dwc:basisOfRecord    "HumanObservation" ;
     dwciri:recordedBy    data:person_c6b2ff6250e5 ;
@@ -340,7 +342,7 @@ data:obs_Moewe_Lech a lkg:Observation ;
     dwc:individualCount  1 ;
     dwc:identificationQualifier "?" ;
     lkg:verbatimNotes    "möwenartiger Vogel, aus weiter Ferne nicht sicher ansprechen"@de ;
-    lkg:evidenceKind     lkg:evidence_visual ;
+    lkg:evidenceKind     "visual" ;
     lkg:recordType       "field-observation" ;
     dwc:basisOfRecord    "HumanObservation" ;
     dwciri:recordedBy    data:person_c6b2ff6250e5 .
@@ -356,7 +358,7 @@ data:obs_Heuschreckensaenger a lkg:Observation ;
     dwc:occurrenceStatus "present" ;
     dwc:individualCount  1 ;
     lkg:verbatimNotes    "rechts der Straße schwirrt ein Heuschreckensänger"@de ;
-    lkg:evidenceKind     lkg:evidence_auditory ;
+    lkg:evidenceKind     "auditory" ;
     lkg:callType         "song" ;
     lkg:callTranscription "schwirrt" ;
     lkg:recordType       "field-observation" ;
@@ -376,7 +378,7 @@ data:obs_Wachtelkoenig a lkg:Observation ;
     dwc:occurrenceStatus "present" ;
     lkg:countQualifier   "plural-unspecified" ;
     lkg:verbatimNotes    "das Schnarren mehrerer Wachtelkönige"@de ;
-    lkg:evidenceKind     lkg:evidence_auditory ;
+    lkg:evidenceKind     "auditory" ;
     lkg:callType         "call" ;
     lkg:callTranscription "Schnarren" ;
     lkg:recordType       "field-observation" ;
@@ -394,7 +396,7 @@ data:obs_Waldohreule a lkg:Observation ;
     dwc:occurrenceStatus "present" ;
     dwc:individualCount  1 ;
     lkg:verbatimNotes    "Eine Waldohreule ruft ihr pich pich"@de ;
-    lkg:evidenceKind     lkg:evidence_auditory ;
+    lkg:evidenceKind     "auditory" ;
     lkg:callType         "call" ;
     lkg:callTranscription "pich pich" ;
     lkg:recordType       "field-observation" ;
@@ -411,7 +413,7 @@ data:obs_Storch_Kirchturm a lkg:Observation ;
     dwc:eventDate        "1925-05-30"^^xsd:date ;
     dwc:occurrenceStatus "present" ;
     lkg:verbatimNotes    "das besetzte Storchennest ist auf dem Kirchturm zu erkennen"@de ;
-    lkg:evidenceKind     lkg:evidence_nest , lkg:evidence_visual ;
+    lkg:evidenceKind     "nest" , "visual" ;
     dwc:behavior         "Brüten / besetztes Nest"@de ;
     lkg:breedingEvidence "confirmed" ;
     dwc:reproductiveCondition "breeding" ;

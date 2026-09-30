@@ -35,8 +35,8 @@ body-text region the entry's text runs through, header region first; read into
 and `boundary_kind` (set on entries that start at a reviewed boundary:
 `review` / `auto-markup` / … and `field-day` / `correspondence` /
 `species-digest`) and `context_before` (for entries split off at a boundary of
-kind correspondence / species-digest / retrospective / other and for
-resumptions: the last 1,200 characters of the text before them, where the
+kind correspondence / retrospective / other: the last 1,200 characters of the
+text before them, where the
 diarist introduces a pasted report; shown to the extraction model as
 `context_before` together with a `segment_note` derived from `boundary_kind`,
 for attribution only). Entries added by a boundary keep the detector's `entry_uid`

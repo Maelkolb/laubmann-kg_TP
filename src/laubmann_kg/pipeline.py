@@ -43,6 +43,9 @@ class ExtractionResult:
     # volume -> (start, end) YYYY-MM from configs/volume_coverage.yaml (title
     # pages); emitted as dcterms:temporal on the DiaryVolume nodes
     volume_spans: dict = field(default_factory=dict)
+    # public base URL of the region crops once hosted (config multimodal.image_base_url);
+    # None = crops are only referenced by their path (dcterms:identifier)
+    image_base_url: Optional[str] = None
 
     @property
     def observations(self) -> list:
@@ -224,7 +227,8 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
         backend, concurrency,
     )
 
-    result = ExtractionResult(provenance=provenance)
+    result = ExtractionResult(provenance=provenance,
+                              image_base_url=(config.get("multimodal") or {}).get("image_base_url") or None)
 
     # Sequential prep. The gazetteer/regex reading of the header is only the
     # FALLBACK place: the LLM extractor replaces it with the model's own reading

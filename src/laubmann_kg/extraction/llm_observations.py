@@ -476,9 +476,12 @@ def map_travel(entry: DiaryEntry, items: list,
     """Map LLM travel events onto SHACL-safe TravelEvent/TravelLeg objects.
 
     A leg missing its departure inherits the previous leg's arrival, then the
-    entry's own place (diary semantics: the entry is written somewhere). Legs
-    that still lack either endpoint are dropped; events without surviving legs
-    are dropped (TravelEventShape requires >= 1 leg)."""
+    entry's own place (diary semantics: the entry is written somewhere) — but
+    never for a leg that leads TO the entry's place ("wir fahren mit der Bahn
+    nach Kaufbeuren" in a Kaufbeuren entry): that leg keeps only its arrival
+    rather than an invented "Kaufbeuren → Kaufbeuren". Legs without an arrival
+    are dropped; events without surviving legs are dropped (TravelEventShape
+    requires >= 1 leg)."""
     events: list[TravelEvent] = []
     for ti, item in enumerate(_as_list(items)):
         if not isinstance(item, dict):
@@ -494,11 +497,12 @@ def map_travel(entry: DiaryEntry, items: list,
             if not isinstance(raw_leg, dict):
                 continue
             arrival = _travel_place(raw_leg.get("arrival_place"))
-            departure = (_travel_place(raw_leg.get("departure_place"))
-                         or prev_arrival or entry_place)
-            if arrival is None or departure is None:
-                logger.debug("dropping travel leg without both endpoints (%s)",
-                             entry.entry_id)
+            departure = _travel_place(raw_leg.get("departure_place")) or prev_arrival
+            if departure is None and entry_place is not None and arrival is not None \
+                    and entry_place.name.casefold() != arrival.name.casefold():
+                departure = entry_place
+            if arrival is None:
+                logger.debug("dropping travel leg without an arrival (%s)", entry.entry_id)
                 continue
             dep_t = _iso_datetime(entry.entry_date, raw_leg.get("departure_time"))
             arr_t = _iso_datetime(entry.entry_date, raw_leg.get("arrival_time"))

@@ -250,3 +250,23 @@ def test_multimedia_rows_only_for_event_entries() -> None:
                MultimodalRegion("r_b", "p_1", "x_L", 5, "10", "e_2", "map", crop="b.png")]
     rows = build_multimedia(ExtractionResult(entries=[dated, undated], multimodal=regions))
     assert [r["identifier"] for r in rows] == ["a.png"]
+
+
+def test_image_base_url_turns_crops_into_public_urls() -> None:
+    """Once the crops are hosted, config multimodal.image_base_url makes them
+    schema:image URLs in the graph and the DwC-A multimedia identifier."""
+    from rdflib import URIRef
+    from laubmann_kg.dwca.multimedia import build_multimedia
+    from laubmann_kg.kg.model import DiaryEntry, MultimodalRegion
+    from laubmann_kg.kg.rdf import SCHEMA
+    from laubmann_kg.pipeline import ExtractionResult
+    entry = DiaryEntry("e_1", "L05-e0001", 5, "p_1", "x_L", "r_1", "10", "1917-04-07", None, None, "t")
+    region = MultimodalRegion("r_a", "p_1", "x_L", 5, "10", "e_1", "photograph", crop="regions/x_L/r03 Image.png")
+    entry.multimodal = [region]
+    plain = ExtractionResult(entries=[entry], multimodal=[region])
+    assert (None, SCHEMA.image, None) not in build_graph(plain)
+    assert build_multimedia(plain)[0]["identifier"] == "regions/x_L/r03 Image.png"
+    hosted = ExtractionResult(entries=[entry], multimodal=[region], image_base_url="https://img.example.org/laubmann/")
+    url = URIRef("https://img.example.org/laubmann/regions/x_L/r03%20Image.png")
+    assert (DATA["region_r_a"], SCHEMA.image, url) in build_graph(hosted)
+    assert build_multimedia(hosted)[0]["identifier"] == str(url)

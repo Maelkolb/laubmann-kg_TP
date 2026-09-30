@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from laubmann_kg.kg.rdf import image_url
+
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
 
@@ -39,7 +41,8 @@ def build_multimedia(result: "ExtractionResult") -> list[dict]:
             continue
         rows.append({
             "eventID": entry_uid,
-            "identifier": crop,
+            # the public URL once the crops are hosted (multimodal.image_base_url), else the path
+            "identifier": image_url(getattr(result, "image_base_url", None), crop) or crop,
             "type": "StillImage",            # the crop is an image, whatever it shows
             "format": _format(crop),
             "title": _get(region, "kind") or _get(region, "region_type") or "",

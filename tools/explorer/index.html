@@ -1400,7 +1400,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
     if (o.sconf) rows.push(['lkg:spatialConfidence', lit(o.sconf)]);
     if (o.sp) rows.push(['dwc:samplingProtocol', lit(o.sp, '@de')]);
     if (o.dur != null) rows.push(['lkg:observationDurationMinutes', lit(o.dur, '^^xsd:integer')]);
-    [...new Set((o.ev || []).map(ev => ev[0]))].forEach(k => rows.push(['lkg:evidenceKind', `lkg:evidence_${esc(k)} <span class="muted">(skos:Concept)</span>`]));
+    [...new Set((o.ev || []).map(ev => ev[0]))].forEach(k => rows.push(['lkg:evidenceKind', lit(k)]));
     (o.voc || []).forEach(v => { if (v[0]) rows.push(['lkg:callType', lit(v[0])]); if (v[1]) rows.push(['lkg:callTranscription', lit(v[1])]); });
     (o.beh || []).forEach(b => rows.push(['dwc:behavior', lit(b, '@de')]));
     if (o.h != null) { rows.push(['dwciri:habitat', `data:${esc(H[o.h].u)} <span class="muted">(skos:Concept · ${esc(H[o.h].name)})</span>`]); rows.push(['dwc:habitat', lit(H[o.h].name, '@de')]); }
@@ -1461,10 +1461,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
       if (o.p != null) edges.push([nid, ent('places', o.p, P[o.p].name, P[o.p].kind), o.own ? 'loc' : 'at', !o.own]);
       if (o.by != null) edges.push([nid, ent('persons', o.by, PE[o.by].name, 'observer'), 'by']);
       if (o.h != null) edges.push([nid, ent('habitats', o.h, H[o.h].name, 'habitat'), 'habitat']);
-      // evidence kinds are shared SKOS concepts (lkg:evidenceKind → lkg:evidence_visual …); what was heard is drawn as a
+      // evidence kinds are literal values (lkg:evidenceKind "visual" …, drawn as shared pills); what was heard is drawn as a
       // value pill: lkg:callType / lkg:callTranscription are literals on the observation (0.6.0, no Vocalisation node).
       // Behaviour is a dwc:behavior literal since 0.4.0 — no node (see the statements table).
-      [...new Set((o.ev || []).map(ev => ev[0]))].forEach(kd => { const id = 'evk:' + kd; if (!seen.has(id)) { const nd = { id, kind: 'evidence', label: kd, tip: `lkg:evidence_${kd} · skos:Concept in lkg:evidenceKindScheme`, r: 5, w: 0 }; seen.set(id, nd); ring2.push(nd); }
+      [...new Set((o.ev || []).map(ev => ev[0]))].forEach(kd => { const id = 'evk:' + kd; if (!seen.has(id)) { const nd = { id, kind: 'evidence', label: kd, tip: `lkg:evidenceKind "${kd}" (value from lkg:evidenceKindScheme)`, r: 5, w: 0 }; seen.set(id, nd); ring2.push(nd); }
         edges.push([nid, id, 'evidence']); });
       (o.voc || []).forEach((v, j) => { const id = `voc:${oi}:${j}`;
         ring2.push({ id, kind: 'vocal', label: '♪ ' + [v[0], v[1] ? '„' + v[1] + '“' : null].filter(Boolean).join(' '), tip: `literals on this observation: ${v[0] ? 'lkg:callType "' + v[0] + '"' : 'heard (lkg:evidence_auditory), type not stated'}${v[1] ? ' · lkg:callTranscription „' + v[1] + '“' : ''}`, r: 4.5, w: 0, onclick: () => showObs(oi, true) });

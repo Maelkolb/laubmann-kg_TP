@@ -151,7 +151,7 @@ class Person:
 
 @dataclass(frozen=True)
 class TravelLeg:
-    departure_place: Place
+    departure_place: Optional[Place]          # None: the text does not say where the leg began
     arrival_place: Place
     via_places: tuple[Place, ...] = ()
     transport_mode: str = "unknown"

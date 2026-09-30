@@ -66,10 +66,12 @@ ENTRY_COLS = ["entry_id", "volume", "scan", "page_id", "image", "region_id", "re
 
 # entries split off at a boundary of these kinds get the tail of the text
 # before them as read-only context for the extraction model: a pasted report
-# or digest is introduced by the diarist ("Bericht von E. Bezzel vom 19. X.:")
-# and without that line its "ich" reads as the diarist
-CONTEXT_KINDS = {"correspondence", "species-digest", "retrospective", "other"}
-CONTEXT_SOURCES = {"review-resumption"}
+# is introduced by the diarist ("Bericht von E. Bezzel vom 19. X.:") and
+# without that line its "ich" reads as the diarist. Digests and resumptions
+# get none: they need no attribution help, and the A/B test showed the model
+# re-extracting travel from a resumption's context.
+CONTEXT_KINDS = {"correspondence", "retrospective", "other"}
+CONTEXT_SOURCES: set = set()
 CONTEXT_CHARS = 1200
 
 

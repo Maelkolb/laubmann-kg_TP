@@ -43,10 +43,11 @@ lkg:countQualifierScheme a skos:ConceptScheme ;
 
 lkg:count_exact              a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "exact"@en, "genau"@de .
 lkg:count_minimum            a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "minimum"@en, "mindestens"@de .
+lkg:count_maximum            a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "maximum"@en, "höchstens"@de .
 lkg:count_approximate        a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "approximate"@en, "ungefähr"@de .
 lkg:count_plural_unspecified a skos:Concept ; skos:inScheme lkg:countQualifierScheme ; skos:prefLabel "plural-unspecified"@en, "Mehrzahl, unbeziffert"@de .
 
-# --- Evidence kinds (Observation.evidenceKind) --------
+# --- Evidence kinds (Observation.evidenceKind; a literal like every controlled value since 0.6.0) --------
 lkg:evidenceKindScheme a skos:ConceptScheme ;
     skos:prefLabel "Observation evidence kinds"@en , "Belegarten"@de .
 

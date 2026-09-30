@@ -10,7 +10,9 @@
 #        MultimodalRegionShape; einheitliche Normdaten-Verknüpfung: owl:sameAs
 #        ist nicht mehr erlaubt, AuthorityRecordShape prüft jedes Ziel von
 #        skos:exactMatch/closeMatch/broadMatch (skos:inScheme lkg:authority_*,
-#        skos:notation), je Klasse sind nur die passenden Normdateien erlaubt.
+#        skos:notation), je Klasse sind nur die passenden Normdateien erlaubt;
+#        evidenceKind ist ein Literal (sh:in), countQualifier kennt "maximum";
+#        schema:image an MultimodalRegion (öffentliche Bild-URL, sobald gehostet).
 # v0.5.0 (2026-09-15) — Ziel 1 (Zeit & Raum): timeOfDay, daylightPhase,
 #        spatialContext, microhabitat, relativeElevation, altitudeM,
 #        observationRadiusMeters, dwc:coordinateUncertaintyInMeters,
@@ -56,6 +58,7 @@
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix schema:  <https://schema.org/> .
 
 # -------------------------------------------------------------
 # Shapes graph declaration (also lets pyLODE/valpub document it)
@@ -162,6 +165,13 @@ lkg:MultimodalRegionShape
         sh:in ( <http://purl.org/dc/dcmitype/StillImage> <http://purl.org/dc/dcmitype/PhysicalObject> <http://purl.org/dc/dcmitype/Text> ) ;
         sh:message "dcterms:type einer MultimodalRegion ist ein DCMI-Typ (StillImage, PhysicalObject, Text)." ;
         sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path schema:image ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "schema:image ist höchstens eine öffentliche URL des Regionsbilds (multimodal.image_base_url)." ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path lkg:visibleText ;
@@ -424,13 +434,14 @@ lkg:ObservationShape
     ] ;
 
     # Evidenz nur, wenn der Text sagt WIE beobachtet wurde: kein minCount.
-    # Max. 4 = visual + auditory + nest + specimen. Die Konzept-IRIs leben in
-    # controlled_vocabularies.ttl (nicht im Datengraph) → sh:in statt sh:class.
+    # Max. 4 = visual + auditory + nest + specimen. Seit 0.6.0 ein Literal wie
+    # jeder andere kontrollierte Wert (prefLabel des Konzepts in lkg:evidenceKindScheme).
     sh:property [
         sh:path lkg:evidenceKind ;
         sh:maxCount 4 ;
-        sh:in ( lkg:evidence_visual lkg:evidence_auditory lkg:evidence_nest lkg:evidence_specimen ) ;
-        sh:message "evidenceKind: höchstens 4 Konzepte aus lkg:evidence_visual, _auditory, _nest, _specimen." ;
+        sh:datatype xsd:string ;
+        sh:in ( "visual" "auditory" "nest" "specimen" ) ;
+        sh:message "evidenceKind: höchstens 4 Werte aus visual, auditory, nest, specimen." ;
         sh:severity sh:Warning ;
     ] ;
     # 0.6.0: was gehört wurde, steht an der Beobachtung selbst
@@ -495,8 +506,8 @@ lkg:ObservationShape
     sh:property [
         sh:path lkg:countQualifier ;
         sh:maxCount 1 ;
-        sh:in ( "exact" "minimum" "approximate" "plural-unspecified" ) ;
-        sh:message "countQualifier muss exact, minimum, approximate oder plural-unspecified sein." ;
+        sh:in ( "exact" "minimum" "maximum" "approximate" "plural-unspecified" ) ;
+        sh:message "countQualifier muss exact, minimum, maximum, approximate oder plural-unspecified sein." ;
         sh:severity sh:Warning ;
     ] ;
 
@@ -717,10 +728,9 @@ lkg:TravelLegShape
     ] ;
     sh:property [
         sh:path lkg:departurePlace ;
-        sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:class lkg:Place ;
-        sh:message "TravelLeg MUSS genau einen Abfahrtsort (lkg:departurePlace) haben." ;
+        sh:message "TravelLeg hat höchstens einen Abfahrtsort (lkg:departurePlace); er fehlt, wenn der Text ihn nicht nennt (0.6.0: kein erfundener Abfahrtsort)." ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [

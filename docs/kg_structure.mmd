@@ -29,7 +29,7 @@ classDiagram
     class MultimodalRegion {
         regionKind drawing | photograph | map | print | object | text-insert | list
         dcterms:type · dcterms:description
-        visibleText · dcterms:identifier (crop)
+        visibleText · dcterms:identifier (crop) · schema:image (URL, once hosted)
     }
 
     class Observation {
@@ -38,10 +38,11 @@ classDiagram
         recordType field | third-party | literature
         dwc:occurrenceStatus present | absent
         dwc:individualCount ≥0 · individualCountMin · Max
-        countQualifier
+        countQualifier exact | minimum | maximum | approximate | plural-unspecified
         dwc:sex · dwc:lifeStage · dwc:vitality
         breedingEvidence · dwc:reproductiveCondition
         movementKind · flightDirection
+        evidenceKind visual | auditory | nest | specimen
         callType song | call | alarm | drumming · callTranscription
         dwc:behavior · dwc:habitat
         dwc:identificationQualifier
@@ -94,10 +95,6 @@ classDiagram
         skos:notation · skos:prefLabel
         skos:broader chain (EUNIS)
     }
-    class EvidenceKind {
-        <<skos:Concept · lkg:evidenceKindScheme>>
-        visual | auditory | nest | specimen
-    }
 
     class ExtractionRun {
         <<prov:Activity>>
@@ -137,12 +134,11 @@ classDiagram
     Observation --> "0..1" Place : observedAt
     Observation --> "0..1" Place : hasLocality (own place)
     Observation --> "0..1" Person : dwciri∶recordedBy
-    Observation --> "0..4" EvidenceKind : evidenceKind
     Observation --> "0..1" HabitatConcept : dwciri∶habitat
     Observation --> "1" ExtractionRun : prov∶wasGeneratedBy
 
     TravelEvent --> "1..*" TravelLeg : hasLeg ⊑ dcterms∶hasPart
-    TravelLeg --> "1..*" Place : departurePlace · arrivalPlace · viaPlace
+    TravelLeg --> "1..*" Place : arrivalPlace · departurePlace (0..1) · viaPlace
     ExtractionRun --> "1" SoftwareAgent : prov∶wasAssociatedWith
     ExtractionRun --> "1" Prompt : prov∶used
 
@@ -156,7 +152,7 @@ classDiagram
     cssClass "DiaryEntry,Observation" hub
     cssClass "TravelEvent,TravelLeg,WeatherReport" detail
     cssClass "Taxon,Place,Person" entity
-    cssClass "HabitatConcept,EvidenceKind" concept
+    cssClass "HabitatConcept" concept
     cssClass "ExtractionRun,SoftwareAgent,Prompt" prov
     cssClass "AuthorityRecord" ext
     classDef abstract fill:#FBFBF9,stroke:#7E8C82,stroke-width:1px,stroke-dasharray:3 3,color:#5F6E64,font-style:italic

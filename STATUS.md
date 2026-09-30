@@ -68,7 +68,7 @@ shape, or if the JSON-LD context misses an emitted predicate. Hence there is no
 | habitat nodes | `skos:Concept` in `lkg:habitatScheme` (no class) | populated, shared across observations |
 
 Removed in 0.4.0: `ObservationEvent` (→ Observation), `BirdCall` (→ Vocalisation),
-`ObservationEvidence` (→ `lkg:evidenceKind` concepts), `BehaviourNote` (→
+`ObservationEvidence` (→ `lkg:evidenceKind`, literal values since 0.6.0), `BehaviourNote` (→
 `dwc:behavior` literals), `Habitat` (→ skos:Concept), `Route`, `TimeEstimate`.
 Removed in 0.6.0: `RecordDetail`, `Vocalisation`, `hasVocalisation` (→
 `lkg:callType` / `lkg:callTranscription` on the Observation); `owl:sameAs` is no
@@ -85,7 +85,7 @@ to an authority record in `lkg:authority_gbif|eunis|geonames|wikidata|gnd`).
 | Mentions | `mentionsPerson` ⊑ schema:mentions + `mentionsCompanion/Source/Collector/CitedAuthor/Other` | populated (role edge only when the model gave a role) |
 | Observation | `observedTaxon`, `observedAt`, `hasLocality`, `recordType`, `evidenceKind`, `countQualifier`, `individualCountMin/Max`, `breedingEvidence`, `movementKind`, `flightDirection`, `verbatimNotes`; `dwc:occurrenceStatus/individualCount/sex/lifeStage/vitality/reproductiveCondition/behavior/habitat/identificationQualifier/eventDate/eventTime/verbatimLocality/occurrenceRemarks/basisOfRecord/associatedReferences`, `dwciri:habitat`, `dwciri:recordedBy` | populated (each only when stated) |
 | What was heard (on the Observation) | `callType`, `callTranscription` | populated (type only when stated, transcription only when written) |
-| Travel | `departurePlace`, `arrivalPlace`, `viaPlace`, `departureTime`, `arrivalTime`, `transportMode` | populated |
+| Travel | `departurePlace` (optional since 0.6.0: never invented), `arrivalPlace`, `viaPlace`, `departureTime`, `arrivalTime`, `transportMode` | populated |
 | Weather | `weatherVerbatim`, `temperatureValue`, `temperatureUnit`, `precipitation`, `wind`, `skyCondition` | populated (one report per entry today; several allowed) |
 | Place | `placeKind`; `dwc:verbatimLocality`, `geo:lat/long`, `dwc:decimalLatitude/Longitude`, `dwc:geodeticDatum`, `gsp:asWKT` | partial (coordinates only for gazetteer/georeferenced places) |
 | Taxon | `isBird`, `matchMethod`, `matchConfidence`, `gbifMatchType`; `dwc:vernacularName`, `dwc:scientificName`, `dwc:taxonRank`, `dwc:taxonID`, `dwc:kingdom…genus`, `skos:exactMatch/closeMatch/broadMatch` (GBIF authority record) | populated (classification only for GBIF-linked taxa) |

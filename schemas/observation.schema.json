@@ -16,7 +16,7 @@
     "count_max": {"type": ["integer", "string", "null"]},
     "count_qualifier": {
       "type": ["string", "null"],
-      "enum": ["exact", "minimum", "approximate", "plural-unspecified", null]
+      "enum": ["exact", "minimum", "maximum", "approximate", "plural-unspecified", null]
     },
     "occurrence_status": {"type": ["string", "null"]},
     "evidence": {
