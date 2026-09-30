@@ -48,9 +48,12 @@ If the patched corpus is not on Drive, rebuild it (deterministic, seconds) from
 ## 3. Run config
 
 Do not edit `configs/full_llm.yaml` in place; write a local copy that points
-the LLM cache somewhere persistent (an interrupted run resumes from it) and the
-review output into the export folder — the default `data/review` holds the
-tracked decision files that `reviewed_csv` reads.
+the LLM cache somewhere persistent (an interrupted run resumes from it), the
+two LLM caches of the linking stage at their copies from Drive (folk-name
+proposer `llm/`, EUNIS classifier `llm_habitats/`; the config's defaults are
+other folders, and every miss is a new Gemini call) and the review output into
+the export folder — the default `data/review` holds the tracked decision files
+that `reviewed_csv` reads.
 
 ```bash
 TAG=2026-10-01                                  # one tag per run
@@ -59,6 +62,8 @@ OUT=data/exports/kg_exports_$TAG
 import yaml
 c = yaml.safe_load(open("configs/full_llm.yaml"))
 c["extraction"]["cache_dir"] = "data/cache/llm_v3"
+c["linking"]["taxa"]["llm"]["cache_dir"] = "data/cache/linking/llm"
+c["linking"]["habitats"]["llm"]["cache_dir"] = "data/cache/linking/llm_habitats"
 c["linking"]["review_dir"] = "$OUT/review"
 c["resolution"]["review_dir"] = "$OUT/review"
 yaml.safe_dump(c, open("configs/local_full.yaml", "w"), sort_keys=False, allow_unicode=True)
@@ -101,7 +106,9 @@ command after an interruption continues from the caches.
   1,625 `lkg:MultimodalRegion`
 - `$OUT/review/`: qa_flags.csv and the link/merge review CSVs for adjudication
 
-Afterwards copy `$OUT` to Drive (`kg_exports_<tag>/`) and load the Turtle into
-Fuseki. Once the region crops are hosted, set `multimodal.image_base_url` and
+Afterwards copy `$OUT` and `data/cache/llm_v3/` to Drive (`kg_exports_<tag>/`,
+`llm_cache_v3/`) and load the Turtle into Fuseki. The cache is what makes the
+run reproducible: Gemini does not answer identically twice, but every later
+`export-all` with the same prompt replays these answers. Once the region crops are hosted, set `multimodal.image_base_url` and
 re-run `export-all` — the Gemini answers come from the cache, only the graph
 and the archive are rewritten.
