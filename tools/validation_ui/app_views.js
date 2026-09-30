@@ -40,7 +40,7 @@ function authBlock(t, e, tab) {
     const llm = e.names.map(nm => nm.f[5]).find(Boolean);
     return '<div class="auth"><div class="ah">GBIF</div>' + (x[2] ? '<a href="https://www.gbif.org/species/' + esc(x[2]) + '" target="_blank" rel="noopener"><i>' + esc(x[1] || x[2]) + '</i> ↗</a> <span class="muted small">' + esc(x[3] || '') + (x[4] ? ' · ' + esc(x[4]) : '') + (x[6] ? ' · ' + esc(x[6]) : '') + (x[7] ? ' · ' + esc(x[7]) : '') + '</span>' + (x[4] === 'HIGHERRANK' ? ' <span class="bd warn">nur übergeordnete Ebene</span>' : '')
       + (x[9].length ? '<div class="small muted" style="margin-top:4px">Deutsche Namen laut GBIF/Wikidata: ' + x[9].slice(0, 16).map(esc).join(', ') + (x[9].length > 16 ? ' …' : '') + '</div>' : '')
-      : '<span class="bd warn">keine Art zugeordnet</span>' + (llm ? ' · Modell schlug <i>' + esc(llm) + '</i> vor' : '')) + '</div>';
+      : '<span class="bd warn">keine Art zugeordnet</span>' + (llm ? ' · Modell schlug <i>' + esc(llm) + '</i> vor' : '')) + machineBox('taxon', e) + '</div>';
   }
   if (t === 'person') return personAuth(e, tab);
   if (t === 'place') return placeAuth(e, tab);
@@ -59,6 +59,7 @@ function personAuth(e, tab) {
   const gnd = a.gnd || (!a.d && x[2]) || '';
   return '<div class="auth"><div class="ah">Wikidata / GND</div><div class="cands">' + (list || '<div class="muted small">Keine Wikidata-Kandidaten. Unten suchen oder ✗ „Keine Normdaten“.</div>') + '</div>'
     + (pm ? '<div class="modelbox"><b>Modell (Claude Opus 5.5)</b>: ' + (pm[0] === 'none' ? 'keiner der Kandidaten passt' : pm[0] === 'unclear' ? 'nicht entscheidbar' : 'Kandidat ' + esc(pm[0])) + ' · ' + Math.round(100 * pm[1]) + ' % — ' + esc(pm[2]) + '</div>' : '')
+    + machineBox('person', e)
     + '<div class="row" style="margin-top:8px"><span class="small muted">GND:</span>' + (gnd ? '<a href="https://d-nb.info/gnd/' + esc(gnd) + '" target="_blank" rel="noopener">' + esc(a.gnd_label && a.gnd_label !== gnd ? a.gnd_label + ' · ' : '') + esc(gnd) + ' ↗</a> <span class="muted small">' + esc(a.gnd_info || (a.gnd ? '' : 'im Graph')) + '</span> <button class="lbtn" id="gndclear">entfernen</button>' : '<span class="small muted">noch keine</span>') + '</div>'
     + '<div class="panel"><h5>Suchen</h5><div class="row"><input type="text" class="grow ftext" id="wq" value="' + esc(e.label.replace(/^(Prof\.|Dr\.|Herr|Frau|Frl\.|Lehrer|Pfarrer|Oberförster|Förster)\s+/g, '')) + '"><button class="lbtn" id="wbtn">Wikidata</button><button class="lbtn" id="gndbtn">GND</button></div>'
     + '<div class="row" style="margin-top:6px"><input type="text" class="ftext" id="wqid" placeholder="QID, z. B. Q12345" style="width:160px"><button class="lbtn" id="wqidbtn">übernehmen</button><input type="text" class="ftext" id="gndid" placeholder="GND-ID oder d-nb.info-Link" style="width:210px"><button class="lbtn" id="gndidbtn">übernehmen</button></div><div id="wres" class="res"></div></div></div>';
@@ -69,10 +70,49 @@ function placeAuth(e, tab) {
     + (x[4] ? '<dt>GeoNames</dt><dd><a href="https://www.geonames.org/' + esc(x[4]) + '" target="_blank" rel="noopener">' + esc(lr[7] || x[4]) + ' ↗</a>' + (lr[11] ? ' · ' + esc(lr[11]) : '') + (lr[8] ? ' · ' + esc(lr[8]) : '') + '</dd>' : '')
     + (x[5] ? '<dt>Wikidata</dt><dd><a href="https://www.wikidata.org/wiki/' + esc(x[5]) + '" target="_blank" rel="noopener">' + esc(x[5]) + ' ↗</a></dd>' : '') + (lr[3] ? '<dt>Hinweis</dt><dd class="small">' + esc(lr[3]) + '</dd>' : '')
     + (fix ? '<dt>Korrektur</dt><dd>' + (fix.lat ? fix.lat + ', ' + fix.lon + ' (± ' + fmt(fix.uncertainty_m) + ' m)' : 'Koordinaten wie im Graph') + (fix.geonames_id ? ' · GeoNames ' + esc(fix.geonames_id) : '') + (fix.qid ? ' · ' + esc(fix.qid) : '') + (fix.note ? ' · <span class="small">' + esc(fix.note) + '</span>' : '') + ' <button class="lbtn" id="unfix">verwerfen</button></dd>' : '') + '</dl>'
+    + machineBox('place', e)
     + '<div id="map"></div><div class="maplegend"><span><i style="background:#e0542e"></i>im Graph</span><span><i style="background:#1e7a4c"></i>Korrektur</span><span><i style="background:#3a6fb0;opacity:.6"></i>Orte derselben Einträge</span><span>Klick in die Karte setzt die Lage</span></div>'
     + '<div class="panel"><h5>Lage suchen</h5><div class="row"><input type="text" class="grow ftext" id="nq" value="' + esc(e.label) + '"><button class="lbtn" id="nbtn">OpenStreetMap</button><button class="lbtn" id="pwbtn">Wikidata</button><a class="lbtn" target="_blank" rel="noopener" href="https://www.geonames.org/search.html?q=' + encodeURIComponent(e.label) + '">GeoNames ↗</a></div>'
     + '<div class="row" style="margin-top:6px"><input type="text" class="ftext" id="ll" placeholder="Breite, Länge" style="width:140px"><select id="unc" class="ftext"><option value="100">± 100 m</option><option value="500">± 500 m</option><option value="1000" selected>± 1 km</option><option value="2000">± 2 km</option><option value="5000">± 5 km</option><option value="10000">± 10 km</option></select><button class="lbtn" id="llbtn">setzen</button>'
     + '<input type="text" class="ftext" id="gnid" placeholder="GeoNames-ID" style="width:120px" value="' + esc((fix && fix.geonames_id) || '') + '"><input type="text" class="ftext" id="pqid" placeholder="Wikidata-QID" style="width:110px" value="' + esc((fix && fix.qid) || '') + '"><button class="lbtn" id="idbtn">IDs übernehmen</button></div><div id="nres" class="res"></div></div></div>';
+}
+
+// ---------------------------------------------------------------- machine review ("Maschinelle Prüfung", Claude Sonnet 5.5 subagents)
+const MV_TITLE = () => 'Maschinelle Prüfung (' + esc((MV && MV.model) || 'Modell') + ')';
+function machineVerdict(t, e) { return ((MV && MV[t] && MV[t].ent) || {})[e.i] || null; }
+function machineBox(t, e) {
+  const v = machineVerdict(t, e); if (!v) return '';
+  const pct = v.confidence != null ? ' · ' + Math.round(100 * v.confidence) + ' %' : '';
+  let text = '', accept = '';
+  if (t === 'taxon') {
+    if (v.new_key) { text = (e.e[2] ? 'andere Art: ' : 'Art: ') + '<i>' + esc(v.new_sci || v.sci || '') + '</i>' + (v.species_de ? ' (' + esc(v.species_de) + ')' : '') + ' · GBIF ' + esc(v.new_key); accept = 'übernehmen'; }
+    else if (v.link === 'ok') { text = 'GBIF-Art bestätigt' + (v.note ? ' · ' + esc(v.note) : ''); accept = e.e[2] ? 'bestätigen' : ''; }
+    else if (v.link === 'none') { text = 'kein Taxon (nicht bestimmbar)'; accept = 'übernehmen'; }
+    else text = 'unsicher' + (v.sci ? ' · Vorschlag <i>' + esc(v.sci) + '</i>' : '');
+  } else if (t === 'person') {
+    const q = /^Q\d+$/.test(v.wikidata || '') ? v.wikidata : '', g = v.gnd && !/^(none|unclear)$/.test(v.gnd) ? v.gnd : '';
+    if (q || g) { text = (q ? 'Wikidata <a href="https://www.wikidata.org/wiki/' + esc(q) + '" target="_blank" rel="noopener">' + esc(q) + ' ↗</a>' : '') + (q && g ? ' · ' : '') + (g ? 'GND <a href="https://d-nb.info/gnd/' + esc(g) + '" target="_blank" rel="noopener">' + esc(g) + ' ↗</a>' : ''); accept = 'übernehmen'; }
+    else if (v.wikidata === 'none') { text = 'keine Normdaten passen' + (e.e[1] && v.auto_link_ok === false ? ' — der automatische Link ist falsch' : ''); accept = 'übernehmen'; }
+    else text = 'nicht entscheidbar';
+    if (v.note) text += ' · <span class="small">' + esc(v.note) + '</span>';
+  } else if (t === 'place') {
+    const c = v.candidate;
+    if (v.verdict === 'ok') { text = 'Lage und Normdaten bestätigt'; accept = e.e[1] != null ? 'bestätigen' : ''; }
+    else if ((v.verdict === 'wrong' || v.verdict === 'unlocated_ok') && c) { text = (v.verdict === 'wrong' ? 'andere Lage: ' : 'Lage: ') + esc(c.display_name || c.name || '') + ' (' + c.lat + ', ' + c.lon + (v.uncertainty_m ? ', ± ' + fmt(v.uncertainty_m) + ' m' : '') + ')' + (c.wikidata ? ' · ' + esc(c.wikidata) : ''); accept = 'übernehmen'; }
+    else if (v.verdict === 'wrong') { text = 'die Lage im Graph ist falsch' + (v.hint ? ' · ' + esc(v.hint) : ''); }
+    else if (v.verdict === 'unlocatable') text = 'nicht verortbar' + (v.hint ? ' · ' + esc(v.hint) : '');
+    else if (v.verdict === 'not_a_place') { text = 'kein Ort'; accept = 'übernehmen'; }
+    else text = 'unsicher' + (v.hint ? ' · ' + esc(v.hint) : '');
+  }
+  return '<div class="modelbox mv"><b>' + MV_TITLE() + '</b>: ' + text + pct + (v.reason ? ' — ' + esc(v.reason) : '')
+    + (accept ? ' <button class="btn sm" data-mvaccept="' + t + '" title="Urteil der Maschine als eigene Entscheidung übernehmen">' + accept + '</button>' : '') + '</div>';
+}
+function machineNameBadge(nm) {
+  const v = ((MV && MV.taxon && MV.taxon.form) || {})[nm.fi]; if (!v) return '';
+  const pct = v.confidence != null && v.decision !== 'unsure' ? Math.round(100 * v.confidence) + ' %' : '';
+  const cls = v.decision === 'same' && !v.changed ? 'ok' : v.decision === 'same' ? 'info' : v.decision === 'none' ? 'risk' : 'warn';
+  const txt = v.decision === 'same' && !v.changed ? 'Maschine: stimmt' : v.decision === 'same' ? 'Maschine: ' + (v.species_de || v.sci || '?') : v.decision === 'none' ? 'Maschine: kein Vogel' : 'Maschine: unsicher';
+  return '<span class="bd ' + cls + '" title="' + esc((v.sources ? v.sources + ' · ' : '') + (v.note || '')) + '">' + esc(txt) + (pct ? ' · ' + pct : '') + '</span>';
 }
 
 // ---------------------------------------------------------------- merge suggestions ("dasselbe wie")
@@ -103,7 +143,8 @@ function nameRow(t, e, nm, incoming) {
   const stTxt = d && d.d ? '<span class="bd ' + (d.d === 'y' ? 'ok' : d.d === 'u' ? 'warn' : d.d === 'n' ? 'risk' : 'info') + '">' + decLine(t, d).replace(/<[^>]+>/g, '') + '</span>' : st === 'y' ? '<span class="bd ok">✓ bestätigt</span>' : st === 'f' ? '<span class="bd info">folgt dem Eintrag</span>' : st === 'm' ? '<span class="bd info" title="Jeder Beleg dieses Namens wurde einzeln entschieden oder neu gelesen">alle Belege einzeln entschieden</span>' : '';
   const gone = d && nameGone(d.d) && !d.target;
   const located = nm.men.some(mi => P[t].men[mi][2] >= 0);
-  return '<div class="nm' + (checked ? '' : ' off') + '" data-fi="' + nm.fi + '" data-inc="' + (incoming ? 1 : 0) + '"><div class="nh"><input type="checkbox" class="cb" ' + (checked ? 'checked' : '') + ' title="' + (incoming ? 'gehört auch hierher' : 'gehört zu diesem Eintrag') + '"><div><span class="nn">' + esc(nm.name) + '</span><span class="ct">' + fmt(nm.n) + '×</span> <span class="bd ' + cls[1] + '" title="' + esc(cls[2]) + '">' + esc(cls[0]) + '</span>' + (isLabel(t, nm) && !incoming ? '<span class="bd plain">Hauptname</span>' : '') + (readings ? '<span class="bd tip" data-read="' + readMen[0] + '" style="cursor:pointer" title="Modelle lesen bei diesen Belegen etwas anderes — Klick öffnet die Aufgabe Zweitlesung">' + readings + ' Zweitlesung ↗</span>' : '') + '<span class="why">' + why + (incoming ? (cand ? 'derzeit bei „' + esc(home.label) + '“ (' + authText(t, home).replace(/<[^>]+>/g, '') + ') · ' + esc(cand[2]) : 'aus „' + esc(home.label) + '“ hierher zugeordnet') : '') + '</span> ' + stTxt + '</div>'
+  const mvb = t === 'taxon' ? machineNameBadge(nm) : '';
+  return '<div class="nm' + (checked ? '' : ' off') + '" data-fi="' + nm.fi + '" data-inc="' + (incoming ? 1 : 0) + '"><div class="nh"><input type="checkbox" class="cb" ' + (checked ? 'checked' : '') + ' title="' + (incoming ? 'gehört auch hierher' : 'gehört zu diesem Eintrag') + '"><div><span class="nn">' + esc(nm.name) + '</span><span class="ct">' + fmt(nm.n) + '×</span> <span class="bd ' + cls[1] + '" title="' + esc(cls[2]) + '">' + esc(cls[0]) + '</span>' + (isLabel(t, nm) && !incoming ? '<span class="bd plain">Hauptname</span>' : '') + mvb + (readings ? '<span class="bd tip" data-read="' + readMen[0] + '" style="cursor:pointer" title="Modelle lesen bei diesen Belegen etwas anderes — Klick öffnet die Aufgabe Zweitlesung">' + readings + ' Zweitlesung ↗</span>' : '') + '<span class="why">' + why + (incoming ? (cand ? 'derzeit bei „' + esc(home.label) + '“ (' + authText(t, home).replace(/<[^>]+>/g, '') + ') · ' + esc(cand[2]) : 'aus „' + esc(home.label) + '“ hierher zugeordnet') : '') + '</span> ' + stTxt + '</div>'
     + '<span class="tools">' + (!incoming && located ? '<button class="lbtn" data-nread="' + nm.fi + '" title="Der Name ist überall falsch transkribiert: alle Belege neu lesen als …">✎</button>' : '') + '<button class="lbtn" data-toggle="' + nm.fi + '">' + (open ? 'Belege ▴' : 'Belege ▾') + '</button></span></div>'
     + (gone ? '<div class="sub2"><span class="muted">gehört nicht hierher —</span><button class="lbtn" data-nreassign="' + nm.fi + '">↪ zu welchem Eintrag?</button><button class="lbtn" data-nnot="' + nm.fi + '">✗ kein(e) ' + esc(TT[t].one) + ' …</button></div>' : '')
     + (ui.nword === nm.fi ? '<div style="padding:0 10px 8px">' + nwordRow(t, nm) + '</div>' : '')

@@ -80,15 +80,26 @@ class Correction:
         return bool(self.entry_id) and entry.entry_id == self.entry_id
 
 
-def load_corrections(path) -> list[Correction]:
+def load_corrections(path, min_confidence: Optional[float] = None) -> list[Correction]:
+    """Read one value_corrections.csv. ``min_confidence`` filters rows by their
+    ``confidence`` column (the machine review writes one; rows without the
+    column pass), so machine corrections can be taken above a threshold only."""
     path = Path(path)
     if not path.exists():
         logger.info("no value corrections at %s", path)
         return []
     out: list[Correction] = []
+    dropped = 0
     with path.open(newline="", encoding="utf-8") as handle:
         for i, row in enumerate(csv.DictReader(handle), 2):
             g = lambda k: (row.get(k) or "").strip()   # noqa: E731
+            if min_confidence is not None and g("confidence"):
+                try:
+                    if float(g("confidence")) < min_confidence:
+                        dropped += 1
+                        continue
+                except ValueError:
+                    pass
             kind, action = g("kind").lower(), (g("action").lower() or "replace")
             if kind not in KINDS or action not in ("replace", "drop") or not g("old_value") \
                     or (action == "replace" and not g("new_value")):
@@ -105,6 +116,8 @@ def load_corrections(path) -> list[Correction]:
             out.append(Correction(kind, g("old_value"), g("new_value"), g("entry_uid"), g("entry_id"),
                                   g("scientific_name"), g("is_bird").lower() not in _NO, g("note"), action,
                                   int(occ) if occ.isdigit() else None, int(key) if key.isdigit() else None, g("reason")))
+    if dropped:
+        logger.info("%s: %d corrections below the confidence threshold %.2f skipped", path.name, dropped, min_confidence)
     return out
 
 

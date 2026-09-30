@@ -1,0 +1,128 @@
+entry_uid,entry_id,old_text,new_text,note,reviewed_by,reviewed_at,confidence,matters_for
+e_f700086b42b4,L22-e0238,Billhoven,Bilthoven,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_274ebcb17628,L16-e0300,Taucherenten,Haubentaucher,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_274ebcb17628,L16-e0300,Bachstelze,Hausrotschwänze (wahrscheinlich),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_274ebcb17628,L16-e0300,Brenbronn,Bregenz (wahrscheinlich),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_274ebcb17628,L16-e0300,Arzstellen,Beckstetten/Bertstetten (wahrscheinlich),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_274ebcb17628,L16-e0300,Hagenau,Hagnau,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_274ebcb17628,L16-e0300,Laubwürmer,"unklar, Vogelart (evtl. Haussperlinge)",betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_fad336eac671,L30-e0010,St. Kommas,St. Kosmas,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_fad336eac671,L30-e0010,+- x - bis 20 Stück,± x - bis 20 Stück (Zahl unleserlich),betrifft count,machine:claude-sonnet-5-5,2026-09-30T02:40,,count
+e_385ed87738d0,L11-e0170,Pörtschach,Pöcking,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_385ed87738d0,L11-e0170,Dr Walter Müller,Dr Walter Wüst,betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_385ed87738d0,L11-e0170,Mairinger See,Maisinger See,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_385ed87738d0,L11-e0170,Bild eines jungen Kormorans,Lied eines jungen Rohrsängers,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_7296d813f303,L31-e0031,W. West,W. Wüst,betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_7296d813f303,L31-e0031,Zwergtaube,Zwergtaucher,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_7296d813f303,L31-e0031,Zwerggans,Zwergsäger,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_7296d813f303,L31-e0031,Trauorente,Trauerente,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_bf84d0dacbd1,L04-e0008,Galgenmoos,Galgensee,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_bf84d0dacbd1,L04-e0008,Schlangenman,Schlangenmoos,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_bf84d0dacbd1,L04-e0008,Ebenhofen,Hörmatshofen (unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_bf84d0dacbd1,L04-e0008,Als,Ob (unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_b7e2648404e0,L09-e0082,Steppberg,Stepperg,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_cf021400745d,L15-e0023,Wiesenlaubvögel,Waldlaubvögel,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_cf021400745d,L15-e0023,Luggrin,Lenggries,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_cf021400745d,L15-e0023,Hirschtal-Sattel,Hirschbachtal-Sattel (Hirschtal),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_18bd42c6a159,L31-e0282,"Mauernachw. Rauhbeinwelle. Bleiverlänger. Beschwerlänge. Zinngehäuse; Klapperchen, Blattstiel","Mauersegler, Rauchschwalbe, Schilfrohrsänger, Seggenrohrsänger, Dorngrasmücke, Klappergrasmücke, Schafstelze",betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_fa1e1726da61,L25-e0118,Murnau,München,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_fa1e1726da61,L25-e0118,unterhalb der halb dem Föhringer Stauwehr,oberhalb dem Föhringer Stauwehr (Scan: 'oberhalb'),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_fa1e1726da61,L25-e0118,An den Auen,In den Anlagen/Auen (unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_16837ba97428,L10-e0009,Schwalben,Uferschwalben (?),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_5286c32497e9,L05-e0110,Herriot,Hartert,betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_5286c32497e9,L05-e0110,Skörum,Strödam,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_5286c32497e9,L05-e0110,Garl,Jarl,betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_0a3616373183,L34-e0206,Mönchsgrasm.,Mönchsgrasmücke,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_3c49ced041c2,L33-e0010,Spielplatz,"unsicher, Scan unklar (evtl. anderer Platzname)",betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_c557c7f2f603,L20-e0198,Harlachinger Höhe,Harlachinger Straße,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_c557c7f2f603,L20-e0198,Zaunkönig singt,Ein Zaunkönig singt,betrifft count,machine:claude-sonnet-5-5,2026-09-30T02:40,,count
+e_93732662529c,L34-e0107,Falco rufigularis,Falco peregrinus Gray,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_93732662529c,L34-e0107,Turmfalk,Kriegfalke,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_93732662529c,L34-e0107,12.K.,12. X.,betrifft date,machine:claude-sonnet-5-5,2026-09-30T02:40,,date
+e_728579219723,L26-e0082,Haubenlerche,Heidelerche,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_728579219723,L26-e0082,Rauchschwalme,Haubenmeise (?),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_728579219723,L26-e0082,Frasning,Ismaning,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_728579219723,L26-e0082,Kirchsteinen,Fischteichen,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_728579219723,L26-e0082,15. August 1933,15. August 1953,betrifft date,machine:claude-sonnet-5-5,2026-09-30T02:40,,date
+e_728579219723,L26-e0082,Fasanenwalze am Falkenstein,Felsenschwalbe vom Falkenstein,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_728579219723,L26-e0082,Heidebracker-Platz,Heidelerchen-Platz,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_95e175f0d05e,L03-e0304,Winterlaubvogel,Weidenlaubvogel (wahrscheinlich),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_b7c5a4872d0b,L01-e0137,Schrei des Wendehalsvogels,Djuit des Weidenlaubvogels,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_26027b0bbcd1,L33-e0184,Zaunkönig gehört. Vormittags singt in der Griedensstraße auch oben im Kammertaskweg,Zaunkönig gehört. Vormittags singt in der Friedenstraße auch noch ein Hausrotschwanz,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_26027b0bbcd1,L33-e0184,Griedensstraße,Friedenstraße,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_90369e4db437,L19-e0207,Hofgarten,Perlacher Forst,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_90369e4db437,L19-e0207,Durlacher Forst,Perlacher Forst,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_90369e4db437,L19-e0207,Schwarzmieren,unsicher (Schwarzmilan?),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_90369e4db437,L19-e0207,Nordarm,Nordrand,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_69df46e1b61d,L31-e0345,Waldkantvogel,Waldlaubvogel,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_69df46e1b61d,L31-e0345,Stantm larte,Haubenlerche,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_69df46e1b61d,L31-e0345,H. Wid,W. Wüst,betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_69df46e1b61d,L31-e0345,Postkante,Hochleite (wahrscheinlich),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_69df46e1b61d,L31-e0345,Chiemgen Straße,Chiemgaustraße,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_fb9d681caa56,L29-e0074,Buch,Buchfink,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_fb9d681caa56,L29-e0074,176omStockenten,1760 Stockenten,betrifft count,machine:claude-sonnet-5-5,2026-09-30T02:40,,count
+e_fb9d681caa56,L29-e0074,Reihereneten,Reiherenten,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_6dadbe6f4256,L21-e0258,"Schwarzmilan, zugleich neu als Brutvogel","Schwanzmeisen, zugleich neu als Brutvogel",betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_6dadbe6f4256,L21-e0258,1 Zwergschnepfe,1 Sandregenpfeifer (wahrscheinlich),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_6dadbe6f4256,L21-e0258,Flüge von 100er Bergfinken,Flüge von 100 + X Bergfinken,betrifft count,machine:claude-sonnet-5-5,2026-09-30T02:40,,count
+e_cbc080c12997,L23-e0167,Franz Murr,Franz Müller? (Handschrift unsicher),betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_cbc080c12997,L23-e0167,Sonnerhofen,wohl Sonnerhofen/Sonderhofen (unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_abbf6d9a2408,L17-e0157,Eichelhähervogel,Fitislaubvogel,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_abbf6d9a2408,L17-e0157,Sturmadlerfremde,Wacholderdrosseln,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_abbf6d9a2408,L17-e0157,Waldschn-,Nach Schätzung,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_abbf6d9a2408,L17-e0157,kleinen freien Platz,kleinen Haus (beim Haus),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_5b2bc431d989,L28-e0062,Grosstreppe,Stockente,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_5b2bc431d989,L28-e0062,Kornweihe,Krickente,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_5b2bc431d989,L28-e0062,Schneebussard,Schnatterente,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_5b2bc431d989,L28-e0062,Heidelerche,Reiherente,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_5b2bc431d989,L28-e0062,Habicht,kein Habicht (Entenzahlen),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_5b2bc431d989,L28-e0062,Vkt.,Vkl.,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_527c9008cec6,L06-e0124,Am See rief der Zaunkönigchen.,Am See wieder der Haubentaucher.,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_91054b12195f,L13-e0039,Er Horst,Dr. Wüst,betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_91054b12195f,L13-e0039,Püggemann,Küggemann (wohl),betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_91054b12195f,L13-e0039,Westphalia,Nordbrabant (wohl),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_91054b12195f,L13-e0039,Ellishofen,Elishofen (wohl),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_82467ba78c05,L25-e0184,Buggel,Bezzel,betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_da4ef24727f8,L03-e0366,Nussbaumen,Neuhausen,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_f18e4002d7ac,L30-e0298,Stieglitzen,Distelfinken,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_ba511ac5ec3c,L14-e0074,Seeshaupt,Viehhalde (Viehweide-Gelände; unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_ba511ac5ec3c,L14-e0074,40-50,4 ♂♂,betrifft count,machine:claude-sonnet-5-5,2026-09-30T02:40,,count
+e_ba511ac5ec3c,L14-e0074,10 und 299,1 ♂ und 2 ♀♀,betrifft count,machine:claude-sonnet-5-5,2026-09-30T02:40,,count
+e_ba511ac5ec3c,L14-e0074,25. VI 42,25. VII (1936),betrifft date,machine:claude-sonnet-5-5,2026-09-30T02:40,,date
+e_ba511ac5ec3c,L14-e0074,27. VI.,27. VII.,betrifft date,machine:claude-sonnet-5-5,2026-09-30T02:40,,date
+e_ba511ac5ec3c,L14-e0074,Auf dem Weg zwischen,Auf der Wiese zwischen (unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_5da217c5370b,L21-e0083,Gartengrasmücke,Gartenspötter (?),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_a3da2767f89a,L02-e0220,Gartenlaubsänger,Gartenbaumläufer,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_a3da2767f89a,L02-e0220,rotbrüstigen Würgers,rotrückigen Würgers,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_a3da2767f89a,L02-e0220,Bürgel,Osterzell,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_a3da2767f89a,L02-e0220,Heidelerche,Heidemeisen (?),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_a3da2767f89a,L02-e0220,"Rande, Gef. Welt",Autorname unsicher (Gef. Welt = Gefiederte Welt),betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_104149872e4c,L24-e0049,Steinwälzern,Hausrotschwänzen (unsicher),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_104149872e4c,L24-e0049,id. Wildvögel,1 Misteldrossel (unsicher),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_104149872e4c,L24-e0049,Gartenammer läufer,Gartenbaumläufer,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_104149872e4c,L24-e0049,14. Oktober 1952,14. Oktober 1951,betrifft date,machine:claude-sonnet-5-5,2026-09-30T02:40,,date
+e_104149872e4c,L24-e0049,Müllergeräumt,"unklar (Ortsname, evtl. Müllabladeplatz o.ae.)",betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_722342b09f57,L19-e0004,Feldperlingen,Feldsperlingen,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_3843a8e796ed,L13-e0192,Grasgarten,Grasgarten,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_66525e90f4f4,L19-e0183,Heidelerche,"...meisen (Plural, evtl. Weidenmeisen)",betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_66525e90f4f4,L19-e0183,Maining,Maining (Graph-Ort weicht ab: Meiningen am See),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_dfc82757bb9f,L18-e0159,Zaunpmerling,Zaunammer,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_dfc82757bb9f,L18-e0159,Gird,Gerda (wahrscheinlich),betrifft person,machine:claude-sonnet-5-5,2026-09-30T02:40,,person
+e_33de4eabfb92,L33-e0381,Rabenmewe,Lachmöwe (wahrscheinlich),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_33de4eabfb92,L33-e0381,westlich von Ismaning,"unsicher, evtl. anderer Ortsname vor 'im Ismaninger Gebiet'",betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_da386e817b5b,L23-e0242,Wacholderdrosseln,Waldwasserläufer (wahrscheinlich),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_da386e817b5b,L23-e0242,Raubmöwe,Rohrweihe,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_da386e817b5b,L23-e0242,i. Ismaninger,"unsicher, evtl. 'i. Nachtreiher...'",betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_a03d8b178296,L16-e0154,Eisvogel,Zaunkönigs (wahrscheinlich),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_a03d8b178296,L16-e0154,in den Wäldchen hinter dem Triebgebiet,in den Wäldchen zwischen dem Triebgebiet,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_de2dbb71f0d2,L03-e0203,Rauhfußbuss,Kaufbeuren,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_de2dbb71f0d2,L03-e0203,Bitringen,vermutlich Bidingen,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_778279e5b9fb,L07-e0176,Alpenmeisenmeise,Alpenmeise (evtl. Alpenmeisenmeise wie geschrieben),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_ddd10022f3f0,L33-e0505,Schwarz- und Grünspecht,Zilpzalp und Grünspecht,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_ddd10022f3f0,L33-e0505,Blaumeisen,Buchfinken,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_ddd10022f3f0,L33-e0505,2 ♀,2 ♂♀ (unsicher),betrifft count,machine:claude-sonnet-5-5,2026-09-30T02:40,,count
+e_fa40d748af4b,L12-e0019,Schwanen,Schneeammer (unsicher),betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_fa40d748af4b,L12-e0019,Zwergpflingerschnäpper,Zwergfliegenschnäpper,betrifft species,machine:claude-sonnet-5-5,2026-09-30T02:40,,species
+e_fa40d748af4b,L12-e0019,Maininger See,Maisinger See,betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_fa40d748af4b,L12-e0019,En-s,Ens-/Ess-See (unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place
+e_08775dbf85e1,L15-e0135,an der Eisbachbrücke 5 Seidenschwänze,an der Brücke (?) ... Seidenschwänze (Zahl/Ortsname unsicher),betrifft place,machine:claude-sonnet-5-5,2026-09-30T02:40,,place

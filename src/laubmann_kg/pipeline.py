@@ -214,7 +214,11 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     review_cfg = config.get("review") or {}
     from laubmann_kg.review.identities import Identities
     from laubmann_kg.review.readings import apply_readings, load_readings
-    result.identities = Identities.load(review_cfg.get("identities"))
+    # machine review (tools/validation_ui/machine_review): fills the forms nobody reviewed;
+    # a human row in identities.csv always wins, machine rows need confidence + agreement
+    machine_cfg = review_cfg.get("machine") or {}
+    result.identities = Identities.load_layers(review_cfg.get("identities"), machine_cfg.get("identities") if machine_cfg.get("enabled", True) else None,
+                                              float(machine_cfg.get("min_confidence", 0.9)), int(machine_cfg.get("min_agreement", 2)))
     built = [build_entry(row) for row in rows]
     reading_flags = apply_readings(built, load_readings(review_cfg.get("text_corrections")))
 
@@ -257,6 +261,10 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     from laubmann_kg.normalization.corrections import apply_corrections, apply_identity_removals, load_corrections
     if corr_cfg.get("enabled", True) and corr_cfg.get("csv"):
         correction_flags += apply_corrections(result.entries, load_corrections(corr_cfg["csv"]))[1]
+    if machine_cfg.get("enabled", True) and machine_cfg.get("value_corrections"):
+        # scan-checked single mentions of the machine review, above the confidence threshold only
+        correction_flags += apply_corrections(result.entries, load_corrections(
+            machine_cfg["value_corrections"], float(machine_cfg.get("min_correction_confidence", 0.9))))[1]
     # name-level "not a taxon / person / place / habitat" decisions of the review
     correction_flags += apply_identity_removals(result.entries, result.identities)
 

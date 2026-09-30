@@ -229,6 +229,18 @@ async def main():
         await pg.click("#llbtn")
         assert (await H("window.__hog.S.ent.place['Englischer Garten']"))["fix"]["lat"] == "48.16420"
         await shot("check_place")
+        # --- machine review: verdict box on a taxon with a machine verdict, "übernehmen" makes it the reviewer's decision
+        mv = await H("""() => { const h = window.__hog; if (!h.MV || !h.MV.taxon) return null; h.cur.type = 'taxon'; h.S.ui.type.check = 'taxon'; h.openTab('check');
+            for (let p = 0; p < h.cur.list.length; p++) { const e = h.cur.list[p]; const v = h.MV.taxon.ent[e.i]; if (v && (v.new_key || v.link === 'ok') && !h.entDec('taxon', e)) { h.selectItem(e); return [e.label, v.new_key || null]; } } return null; }""")
+        await pg.wait_for_timeout(400)
+        if mv:
+            assert await pg.query_selector(".modelbox.mv"), "machine verdict box missing"
+            await shot("check_taxon_machine")
+            await pg.click("[data-mvaccept]")
+            d = await H(f"window.__hog.S.ent.taxon[{json.dumps(mv[0])}]")
+            assert d and d["d"] in ("y", "r") and d.get("note") == "Maschinelle Prüfung", d
+            if mv[1]:
+                assert d["d"] == "r" and d["target"]["key"] == str(mv[1]), d
         await H("() => { const h = window.__hog; h.cur.type = 'habitat'; h.S.ui.type.check = 'habitat'; h.openTab('check'); }")
         await pg.wait_for_timeout(400)
         await shot("check_habitat")

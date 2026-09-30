@@ -292,14 +292,14 @@ window.addEventListener('beforeunload', () => { try { localStorage.setItem(LS, J
 try { P = await loadPayload(); }
 catch (e) { $('#loading').textContent = 'Die Daten konnten nicht geladen werden. Bitte Chrome, Edge oder Firefox (aktuell) verwenden. (' + e.message + ')'; return; }
 try { DRIVE = JSON.parse($('#drive').textContent || '{}'); } catch (e) { DRIVE = {}; }
-E = P.E; PG = P.PG; SUG = P.sug || {}; SUG3 = P.sug3 || {}; PM = P.pm || {}; CAND = P.cand; EUNIS = new Map(P.eunis.map(e => [e[0], e])); uid2e = new Map(E.map((e, i) => [e[1], i]));
+E = P.E; PG = P.PG; SUG = P.sug || {}; SUG3 = P.sug3 || {}; SUGS = P.sugs || {}; PM = P.pm || {}; CAND = P.cand; MV = P.mv || { taxon: { ent: {}, form: {} }, person: { ent: {} }, place: { ent: {} } }; EUNIS = new Map(P.eunis.map(e => [e[0], e])); uid2e = new Map(E.map((e, i) => [e[1], i]));
 for (const t of TYPES) CAND[t] = CAND[t] || { nc: {}, ec: {} };
 $('#exportname').textContent = P.export;
 try { const raw = localStorage.getItem(LS); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) { }
 normalizeState();
 document.documentElement.dataset.theme = S.ui.theme || 'light';   // light unless the reviewer switched
 buildModel(); buildReadItems(); migrate();
-window.__hog = { P, S, X, READ, SUG, SUG3, PM, CAND, cur, ui, openTab, selectItem, showScan, scanFor, entAct, readAct, applyReading, nameCheck, mergeInto, setName, setEnt, setMen, setGrp, commit, diffHunks, applyReadings, exportIdentities, exportMentions, exportText, exportEval, exportReadings, importV1, entState, nameState, namesState, readState, itemState, sameWord, writtenOf, undo };
+window.__hog = { P, S, X, READ, SUG, SUG3, SUGS, PM, MV, CAND, entDec, cur, ui, openTab, selectItem, showScan, scanFor, entAct, readAct, applyReading, nameCheck, mergeInto, setName, setEnt, setMen, setGrp, commit, diffHunks, applyReadings, exportIdentities, exportMentions, exportText, exportEval, exportReadings, importV1, entState, nameState, namesState, readState, itemState, sameWord, writtenOf, undo };
 $('#loading').remove();
 if (S.ui.noscan) $('#main').classList.add('noscan');
 savedLabel(); initGrip();

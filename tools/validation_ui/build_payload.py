@@ -47,6 +47,8 @@ ap.add_argument("--seed", type=int, default=20260928)
 ap.add_argument("--second-reading", default=None, help="output of second_reading.py (model suggestions for doubtful taxon mentions)")
 ap.add_argument("--third-reading", default=None, help="third_reading.json of model_answers_merge.py (second model)")
 ap.add_argument("--person-matches", default=None, help="person_matches.json of model_answers_merge.py")
+ap.add_argument("--machine-review", default=None, help="machine_review.json of machine_review/merge.py (verdicts per entity and name)")
+ap.add_argument("--machine-readings", default=None, help="readings_machine.json of machine_review/merge.py (scan agent readings per mention)")
 ap.add_argument("--out", default="payload.b64")
 args = ap.parse_args()
 R = Path(args.review_dir)
@@ -767,9 +769,72 @@ if args.person_matches and Path(args.person_matches).exists():
             PM[i] = [a["decision"], conf, (a.get("reason") or "")[:400]]
     print("person matches", len(PM))
 
+
+# machine review (tools/validation_ui/machine_review): verdicts per entity / name form, remapped by
+# label and name so a rebuilt payload (other index order) still finds them
+def _readings_table(path, label):
+    out = {}
+    if not path or not Path(path).exists():
+        return out
+    table = json.loads(Path(path).read_text(encoding="utf-8"))
+    occ = collections.Counter()
+    for i, m in enumerate(TX.men):
+        k = E[m[1]][1] + "|" + TX.forms[m[0]][0].lower()
+        key = f"{k}|{occ[k]}"
+        occ[k] += 1
+        a = table.get(key)
+        if not a or not a.get("reading"):
+            continue
+        t = None
+        if a.get("kind") == "bird":
+            t = by_sci.get((a.get("sci") or "").lower().strip())
+            if t is None:
+                t = by_de.get((a.get("species_de") or "").lower().strip())
+        try:
+            conf = round(float(a.get("confidence") or 0), 2)
+        except (TypeError, ValueError):
+            conf = 0.0
+        out[i] = [a["reading"], 1 if a.get("legible", True) else 0, a.get("kind") or "", a.get("species_de") or "",
+                  a.get("sci") or "", conf, (a.get("note") or "")[:300], -1 if t is None else t]
+    print(label, len(out))
+    return out
+
+
+SUGS = _readings_table(args.machine_readings, "machine readings")
+MV = {"model": "", "built": "", "taxon": {"ent": {}, "form": {}}, "person": {"ent": {}}, "place": {"ent": {}}}
+if args.machine_review and Path(args.machine_review).exists():
+    mr = json.loads(Path(args.machine_review).read_text(encoding="utf-8"))
+    MV["model"], MV["built"] = mr.get("model", ""), mr.get("built", "")
+    tx_idx = {(e[0], e[2]): i for i, e in enumerate(TX.ent)}
+    for k, v in (mr.get("taxon", {}).get("ent") or {}).items():
+        i = tx_idx.get((v.get("label"), v.get("cur_key")))
+        if i is None and k.isdigit() and int(k) < len(TX.ent) and TX.ent[int(k)][0] == v.get("label"):
+            i = int(k)
+        if i is not None:
+            MV["taxon"]["ent"][i] = v
+    tf_idx = {(f[0], TX.ent[f[2]][0]): i for i, f in enumerate(TX.forms)}
+    for k, v in (mr.get("taxon", {}).get("form") or {}).items():
+        i = tf_idx.get((v.get("name"), v.get("ent_label")))
+        if i is None and k.isdigit() and int(k) < len(TX.forms) and TX.forms[int(k)][0] == v.get("name"):
+            i = int(k)
+        if i is not None:
+            MV["taxon"]["form"][i] = v
+    for sec, SEC in (("person", PS), ("place", PL)):
+        idx = {}
+        for i, e in enumerate(SEC.ent):
+            idx.setdefault(e[0], i)
+        for k, v in (mr.get(sec, {}).get("ent") or {}).items():
+            i = idx.get(v.get("label"))
+            if i is None and k.isdigit() and int(k) < len(SEC.ent) and SEC.ent[int(k)][0] == v.get("label"):
+                i = int(k)
+            if i is not None:
+                MV[sec]["ent"][i] = v
+    print("machine review: taxon entities", len(MV["taxon"]["ent"]), "forms", len(MV["taxon"]["form"]),
+          "persons", len(MV["person"]["ent"]), "places", len(MV["place"]["ent"]))
+
 payload = {"v": 4, "built": args.built, "export": args.export_name or R.resolve().parent.name,
            "E": E, "PG": PG, "taxon": pack(TX), "person": pack(PS), "place": pack(PL), "habitat": pack(HB),
-           "qa": QA, "sample": SAMPLE, "eunis": eunis, "sug": SUG, "sug3": SUG3, "pm": PM, "cand": CAND}
+           "qa": QA, "sample": SAMPLE, "eunis": eunis, "sug": SUG, "sug3": SUG3, "sugs": SUGS, "pm": PM, "cand": CAND, "mv": MV}
 raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode()
 gz = gzip.compress(raw, 9, mtime=0)
 Path(args.out).write_text(base64.b64encode(gz).decode())

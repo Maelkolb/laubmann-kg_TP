@@ -235,3 +235,43 @@ def test_reviewed_place_identity_and_nolink(tmp_path: Path) -> None:
     rows_dec = Decisions(by_id={"places: Neufinning -> Neufinsing": "y"})     # an old machine decision
     merge_places(ExtractionResult(entries=e, identities=ids), {"similarity": 0.8}, rows_dec)
     assert e[1].place.name == "Maisinger See" and e[3].place.name == "Neufinning"
+
+
+# ----------------------------------------------------------------- machine review layer
+
+def test_machine_identities_fill_only_unreviewed_forms_above_thresholds(tmp_path: Path) -> None:
+    human = _write(tmp_path / "identities.csv", IDENTITY_FIELDS, [
+        {"section": "taxa", "name_form": "Dompfaff", "decision": "same", "target": "Gimpel", "authority": "gbif:2494543"}])
+    machine = _write(tmp_path / "identities_machine.csv", IDENTITY_FIELDS + ["confidence", "agreement"], [
+        # same form as the human row: the human decision wins even at full confidence
+        {"section": "taxa", "name_form": "dompfaff", "decision": "none", "confidence": "1.0", "agreement": "3"},
+        # clears both thresholds: taken over
+        {"section": "taxa", "name_form": "Wildente", "decision": "same", "target": "Stockente", "authority": "gbif:9761484",
+         "scientific_name": "Anas platyrhynchos", "rank": "species", "confidence": "0.95", "agreement": "2"},
+        # below the agreement threshold
+        {"section": "taxa", "name_form": "Türkenlämmer", "decision": "none", "confidence": "0.95", "agreement": "1"},
+        # below the confidence threshold
+        {"section": "persons", "name_form": "Adolf Müller", "decision": "link", "authority": "wd:Q1", "confidence": "0.6", "agreement": "2"},
+        # a link row that clears both
+        {"section": "places", "name_form": "Süddamm", "decision": "link", "authority": "osm:way/1 wd:Q2", "lat": "48.2", "lon": "11.7",
+         "uncertainty_m": "500", "confidence": "0.9", "agreement": "2"}])
+    ids = Identities.load_layers(human, machine, min_confidence=0.9, min_agreement=2)
+    assert ids.form("taxa", "Dompfaff").decision == "same" and ids.form("taxa", "Dompfaff").target == "Gimpel"
+    assert ids.form("taxa", "Wildente").gbif_key == 9761484
+    assert ids.form("taxa", "Türkenlämmer") is None
+    assert ids.link("persons", "Adolf Müller") is None
+    assert ids.link("places", "Süddamm").auth("osm") == "way/1" and ids.link("places", "Süddamm").uncertainty_m == 500
+    # without a machine file the human decisions are all there is
+    assert not Identities.load_layers(human, None).form("taxa", "Wildente")
+
+
+def test_machine_corrections_filtered_by_confidence(tmp_path: Path) -> None:
+    from laubmann_kg.normalization.corrections import FIELDS, load_corrections
+    path = _write(tmp_path / "value_corrections_machine.csv", FIELDS + ["confidence"], [
+        {"kind": "taxon", "entry_uid": "e_1", "old_value": "Tirol", "occurrence": "0", "action": "replace", "new_value": "Pirol",
+         "scientific_name": "Oriolus oriolus", "gbif_key": "2483000", "confidence": "0.95"},
+        {"kind": "taxon", "entry_uid": "e_1", "old_value": "Stam", "action": "drop", "confidence": "0.7"},
+        {"kind": "place", "entry_uid": "e_2", "old_value": "Rauchschwalben", "action": "drop"}])          # no confidence column value: passes
+    rows = load_corrections(path, min_confidence=0.9)
+    assert [(c.old, c.action) for c in rows] == [("Tirol", "replace"), ("Rauchschwalben", "drop")]
+    assert len(load_corrections(path)) == 3

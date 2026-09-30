@@ -31,7 +31,7 @@ async function loadPayload() {
 }
 let P, DRIVE = {};
 const TYPES = ['taxon', 'person', 'place', 'habitat'];
-let E, PG, SUG, SUG3, PM, CAND, EUNIS, uid2e;
+let E, PG, SUG, SUG3, SUGS, PM, CAND, EUNIS, uid2e, MV;
 
 // ---------------------------------------------------------------- state, persistence, undo
 let S = { who: '', id: {}, men: {}, ent: {}, grp: {}, text: [], qa: {}, ev: {}, ui: {} };
@@ -99,7 +99,7 @@ const TABS = [
   { id: 'read', label: 'Zweitlesung', kind: 'read' }, { id: 'eval', label: 'Stichprobe', kind: 'eval' }, { id: 'qa', label: 'Hinweise', kind: 'qa' }, { id: 'log', label: 'Protokoll', kind: 'log' },
 ];
 const TAB = Object.fromEntries(TABS.map(t => [t.id, t]));
-const MODEL_DE = { g: 'Gemini 3.5 Flash', o: 'Claude Opus 5.5' };
+const MODEL_DE = { g: 'Gemini 3.5 Flash', o: 'Claude Opus 5.5', s: 'Claude Sonnet 5.5' };
 
 // ---------------------------------------------------------------- model
 const X = {};
@@ -155,9 +155,10 @@ function readingDiffers(r, mi) {
 }
 function readingsOf(mi) {
   const out = [];
-  const g = SUG[mi], o = SUG3[mi];
+  const g = SUG[mi], o = SUG3[mi], s = SUGS[mi];
   if (g) out.push({ src: 'g', word: g[0], same: !!g[1], kind: g[2], species: g[3], sci: g[4], conf: g[5], note: g[6], target: g[7] });
   if (o && o[1]) out.push({ src: 'o', word: o[0], same: false, kind: o[2], species: o[3], sci: o[4], conf: o[5], note: o[6], target: o[7] });
+  if (s && s[1]) out.push({ src: 's', word: s[0], same: false, kind: s[2], species: s[3], sci: s[4], conf: s[5], note: s[6], target: s[7] });
   for (const r of out) r.differs = readingDiffers(r, mi);
   return out;
 }
@@ -175,7 +176,7 @@ function wordElsewhere(word, mi) {
 }
 const READ = [];   // read-task items
 function buildReadItems() {
-  const all = new Set([...Object.keys(SUG), ...Object.keys(SUG3)].map(Number));
+  const all = new Set([...Object.keys(SUG), ...Object.keys(SUG3), ...Object.keys(SUGS)].map(Number));
   for (const mi of all) { const rs = readingsOf(mi); const diff = rs.filter(r => r.differs); if (!diff.length) continue; const ag = agreement(rs);
     const mis = diff.every(r => r.kind === 'bird' && !r.same && wordElsewhere(r.word, mi));
     // what is disputed: the word itself, only the species behind an agreed word, or whether it is a bird at all

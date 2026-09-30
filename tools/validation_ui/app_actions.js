@@ -152,6 +152,26 @@ function entAct(t, e, a) {
     if (a === 'n') { commit('Lage nicht bestimmbar', () => setEnt(t, e, cd.d === 'n' ? null : { d: 'n' })); return afterDecision(); }
   }
 }
+function mvAccept(t, e) {   // take the machine verdict over as the reviewer's own decision (one click, undoable)
+  const v = machineVerdict(t, e); if (!v) return;
+  if (t === 'taxon') {
+    if (v.new_key) { commit('Maschine: Art übernommen', () => setEnt(t, e, { d: 'r', target: { label: v.species_de || v.new_sci || v.new_key, sci: v.new_sci || v.sci || '', key: String(v.new_key), rank: v.new_rank || 'species' }, note: 'Maschinelle Prüfung' })); return afterDecision(); }
+    if (v.link === 'ok' && e.e[2]) { commit('Maschine: Art bestätigt', () => setEnt(t, e, { d: 'y', note: 'Maschinelle Prüfung' })); return afterDecision(); }
+    if (v.link === 'none') { commit('Maschine: nicht bestimmbar', () => setEnt(t, e, { d: 'n', note: 'Maschinelle Prüfung' })); return afterDecision(); }
+  }
+  if (t === 'person') {
+    const q = /^Q\d+$/.test(v.wikidata || '') ? v.wikidata : '', g = v.gnd && !/^(none|unclear)$/.test(v.gnd) ? v.gnd : '';
+    if (q || g) { const cands = new Map(); for (const nm of e.names) for (const c of nm.f[5] || []) cands.set(c[0], c); const c = cands.get(q) || [];
+      commit('Maschine: Normdaten übernommen', () => setEnt(t, e, Object.assign({}, entDec(t, e) || {}, { d: 'y', qid: q || null, wd_label: c[1] || '', wd_description: c[2] || '', gnd: g || null, gnd_label: g || '', gnd_info: g ? 'Maschinelle Prüfung' : '', note: 'Maschinelle Prüfung' }))); return afterDecision(); }
+    if (v.wikidata === 'none') { commit('Maschine: keine Normdaten', () => setEnt(t, e, { d: 'n', note: 'Maschinelle Prüfung' })); return afterDecision(); }
+  }
+  if (t === 'place') {
+    const c = v.candidate;
+    if (v.verdict === 'ok' && e.e[1] != null) { commit('Maschine: Lage bestätigt', () => setEnt(t, e, Object.assign({}, entDec(t, e) || {}, { d: 'y', note: 'Maschinelle Prüfung' }))); return afterDecision(); }
+    if ((v.verdict === 'wrong' || v.verdict === 'unlocated_ok') && c) return setPlaceFix(e, +c.lat, +c.lon, { note: 'Maschinelle Prüfung: ' + (c.display_name || ''), uncertainty_m: v.uncertainty_m || 1000, qid: c.wikidata || '', osm: c.osm || '' });
+    if (v.verdict === 'not_a_place') { for (const nm of e.names) if (!nameDec(t, nm)) commit('Maschine: kein Ort', () => setName(t, nm, { d: 'n', reason: 'kein Ort (Maschinelle Prüfung)' })); return afterDecision(); }
+  }
+}
 function mergeInto(t, e, y) {
   if (t === 'taxon' && y.e[2]) commit('zusammengeführt mit ' + y.label, () => setEnt(t, e, { d: 'r', target: targetOf(t, y) }));
   else if (t === 'habitat' && y.e[1]) commit('zusammengeführt mit ' + y.label, () => setEnt(t, e, { d: 'r', target: entTarget(t, y) }));
@@ -459,6 +479,7 @@ $('#work').addEventListener('click', ev => {
   const rs = t0.closest('[data-reason]'); if (rs) { const root = rs.closest('[data-scope]'); return reason(TAB[cur.tab].typed ? t : 'taxon', root.dataset.scope, rs.dataset.reason); }
   const mg = t0.closest('[data-merge]'); if (mg) return mergeInto(t, cur.sel, X[t].ents[+mg.dataset.merge]);
   const eu = t0.closest('[data-eunis]'); if (eu) { const code = eu.dataset.eunis; return commit('EUNIS-Klasse übernommen', () => setEnt('habitat', cur.sel, { d: 'r', target: { code, label: code + ' ' + ((EUNIS.get(code) || [])[1] || ''), match: eu.dataset.match || 'close' } })); }
+  const mva = t0.closest('[data-mvaccept]'); if (mva) return mvAccept(mva.dataset.mvaccept, cur.sel);
   const sll = t0.closest('[data-setll]'); if (sll) { const [la, lo, g, q] = sll.dataset.setll.split(','); return setPlaceFix(cur.sel, +la, +lo, { note: 'Gazetteer-Vorschlag', uncertainty_m: 2000, geonames_id: g || '', qid: q || '' }); }
   const rd = t0.closest('[data-read]'); if (rd) return openTab('read', X.taxon.mkey[+rd.dataset.read]);
   const tg = t0.closest('[data-toggle]'); if (tg) { const fi = +tg.dataset.toggle; ui.open.has(fi) ? ui.open.delete(fi) : ui.open.add(fi); return renderWork(false); }

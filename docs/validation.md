@@ -227,3 +227,63 @@ unreviewed forms.
 * The graph links an entry only to its first page (`dcterms:isPartOf`); the
   page span computed for the UI (corpus stream offsets) could be emitted as
   well.
+
+## 8. Machine review ("Maschinelle Prüfung", 2026-09-30)
+
+Before the reviewers work through the queues, language-model subagents
+(Claude Sonnet 5.5, driven from a Claude Code session; tools in
+`tools/validation_ui/machine_review/`) check the same units the UI asks
+about, and their answers are written in the same decision contracts, so they
+survive a re-extraction with the final ontology exactly like human decisions:
+
+| check | unit | evidence | answer |
+|---|---|---|---|
+| species, text | every taxon entity with all its written names (1,182 entities, 2,252 names) | GBIF record + German names, evidence class, passages, earlier Gemini/Opus readings, merge candidates | GBIF link ok / wrong (+species) / none; per written name `same` / `other` / `none` / `unsure`; per merge candidate belongs |
+| species, scan | the doubtful names (B, C, L: 1,460 names, 1,624 line images on 203 contact sheets) | the line cut from the scan, transcription word, context, current taxon, earlier readings | reading of the word, kind, species, confidence, legible |
+| persons | persons linked to Wikidata or with ≥ 3 mentions (691) | written names, roles, years, passages, Wikidata candidates with dates/occupation/GND, GND candidates from lobid.org | Wikidata item / GND record / none / unclear, is the automatic link right |
+| places | places with ≥ 3 mentions | the graph's location and GeoNames record, the header places of the entries that mention it (anchors, distances), passages, Nominatim candidates for the label and for "label, main anchor" | ok / wrong (+candidate) / unlocated_ok (+candidate) / unlocatable / not a place |
+| extraction | 60 entries, stratified by volume | scan pages, transcription, every record the graph holds for the entry | per observation ok / wrong (fields, correction) / spurious; missing records; entry date, place, kind; misread words |
+
+**Consolidation** (`merge.py`). For every written taxon name the independent
+opinions are tallied — text agent, scan agent, Gemini second reading, Opus
+third reading, incoming-candidate votes — after every named species is
+resolved to a GBIF *species* key (the linking stage had left several names on
+subspecies keys: Haubentaucher, Kormoran, Bekassine, Silbermöwe, Wasseramsel,
+Raubwürger, Alpenstrandläufer, Uferschnepfe …; the lift to the species counts
+as a GBIF vote). The majority wins with a **confidence** and an **agreement**
+(number of independent sources); confident contradictions give `unsure`.
+Persons are cross-checked (Wikidata ↔ GND cross-references, life dates against
+the mention years, the Opus decision), places take the verdict with the
+candidate's coordinates and count deterministic corroboration as a second
+source: an independently geocoded Nominatim candidate at the graph point
+(`nominatim`), a chosen candidate within 30 km of the main header place while
+the current point is more than 50 km away (`anchor`), or a generic label such
+as *Feld* or *Weiher* for `not_a_place` (`generic`).
+
+**Outputs** (`machine_review/`, copied to `data/review/machine/`):
+`identities_machine.csv` (the `identities.csv` contract plus `confidence`,
+`agreement`, `sources`), `value_corrections_machine.csv` (single mentions the
+scan agent read as another species or not a bird), `text_corrections_machine.csv`
+(reading suggestions from the extraction check, not applied),
+`readings_machine.json` (the scan agent's readings per mention key),
+`machine_review.json` (verdicts for the UI), `graph_checks*.csv` and
+`report.md`.
+
+**How they are used.**
+
+* *Pipeline*: `review.machine` in the config. `Identities.load_layers` reads
+  the human `identities.csv` first and then the machine file; a machine row
+  counts only where no human decision exists for the same written name or
+  entity, and only above `min_confidence` (0.9) with `min_agreement` (2)
+  independent sources. Machine mention corrections need
+  `min_correction_confidence` (0.9). So the machine fills the forms nobody
+  reviewed, and a reviewer's decision always wins.
+* *UI*: every entity shows a box "Maschinelle Prüfung" with the verdict, its
+  confidence and reason, and a button that takes the verdict over as the
+  reviewer's own decision (undoable, logged like every other decision); each
+  written name carries a badge with the machine's decision; the scan agent's
+  readings appear as a third model in *Zweitlesung*.
+
+The numbers of the run on the 2026-08-19 export are in the report
+(`machine_review/report.md`, copied to Drive
+`Laubmann_KG_Maschinenpruefung_2026-09-30/`).

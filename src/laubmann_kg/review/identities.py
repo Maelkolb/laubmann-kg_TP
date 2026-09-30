@@ -92,7 +92,11 @@ class Identities:
     links: dict[str, dict[str, Identity]] = field(default_factory=lambda: {s: {} for s in SECTIONS})
 
     @classmethod
-    def load(cls, path) -> "Identities":
+    def load(cls, path, min_confidence: Optional[float] = None, min_agreement: Optional[int] = None) -> "Identities":
+        """Read one identities.csv. ``min_confidence`` / ``min_agreement`` filter
+        rows by their ``confidence`` (0-1) and ``agreement`` (number of
+        independent sources) columns - the machine review writes both; a row
+        without the column passes. Human review files are read without filters."""
         ids = cls()
         if not path:
             return ids
@@ -100,6 +104,7 @@ class Identities:
         if not path.exists():
             logger.info("no reviewed identities at %s", path)
             return ids
+        dropped = 0
         with path.open(newline="", encoding="utf-8") as handle:
             for i, row in enumerate(csv.DictReader(handle), 2):
                 g = lambda k: (row.get(k) or "").strip()   # noqa: E731
@@ -107,14 +112,45 @@ class Identities:
                 if sec not in SECTIONS or not name or dec not in FORM_DECISIONS + LINK_DECISIONS:
                     logger.warning("%s:%d skipped (section/name_form/decision invalid)", path.name, i)
                     continue
+                conf, agree = _float(g("confidence")), _float(g("agreement"))
+                if (min_confidence is not None and conf is not None and conf < min_confidence) or \
+                        (min_agreement is not None and agree is not None and agree < min_agreement):
+                    dropped += 1
+                    continue
                 auth = tuple(tuple(tok.split(":", 1)) for tok in g("authority").split() if ":" in tok)
                 unc = _float(g("uncertainty_m"))
                 ident = Identity(sec, name, dec, g("target"), auth, g("scientific_name"), g("rank").lower(),
                                  _float(g("lat")), _float(g("lon")), int(unc) if unc is not None else None,
                                  g("eunis_match").lower(), g("reason"), g("note"))
                 (ids.links if dec in LINK_DECISIONS else ids.forms)[sec][_key(name)] = ident
-        logger.info("reviewed identities: %s", {s: (len(ids.forms[s]), len(ids.links[s])) for s in SECTIONS})
+        logger.info("reviewed identities %s: %s%s", path.name, {s: (len(ids.forms[s]), len(ids.links[s])) for s in SECTIONS},
+                    f" ({dropped} rows below the confidence/agreement threshold)" if dropped else "")
         return ids
+
+    @classmethod
+    def load_layers(cls, human, machine=None, min_confidence: float = 0.9, min_agreement: int = 2) -> "Identities":
+        """Human decisions (``human``) completed by the machine review
+        (``machine``, ``machine_review/identities_machine.csv``): a machine row
+        counts only where no human decision exists for the same name form (or
+        entity link) and it clears both thresholds. So a reviewer's decision
+        always wins, and the machine fills the forms nobody has looked at."""
+        ids = cls.load(human)
+        if machine:
+            ids.add_fallback(cls.load(machine, min_confidence, min_agreement))
+        return ids
+
+    def add_fallback(self, other: "Identities") -> int:
+        """Take over every decision of ``other`` whose (section, name) has none here."""
+        added = 0
+        for table, src in ((self.forms, other.forms), (self.links, other.links)):
+            for sec in SECTIONS:
+                for key, ident in src[sec].items():
+                    if key not in table[sec]:
+                        table[sec][key] = ident
+                        added += 1
+        if added:
+            logger.info("machine identities used as fallback: %d", added)
+        return added
 
     def form(self, section: str, name: Optional[str]) -> Optional[Identity]:
         return self.forms[section].get(_key(name)) if name else None
