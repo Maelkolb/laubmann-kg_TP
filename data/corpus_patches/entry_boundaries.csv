@@ -279,7 +279,7 @@ stop,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0021_R,r02,120.) <u>Singbussard</u>
 stop,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0022_L,r02,156.) <u>Höckerschwan</u>,,,,,register,,review,life list 156.)-190.)
 stop,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0022_R,r02,"191.) <u>Kiebitzregenpfeifer</u>: Tgb. <u>X</u>, 145.",,,,,register,,review,life list 191.)-225.)
 stop,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0024_L,r02,226.) <u>Heringsmöve</u>,,,,,register,,review,"life list 226.)-275.) (refs up to Tgb. 28, later addition). CAUTION: this page interrupts the 26 May 1936 entry, whose narrative resumes on 0025_L - the stop must not swallow 0025_L"
-start,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0025_L,r02,der Windach wenig und zwar wieder zurück,1936-05-26,,y,,field-day,medium,review-resumption,resumes the 26 May 1936 entry after the interleaved life list (register stop on 0024_L)
+start,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0025_L,r02,der Windach wenig und zwar wieder zurück,1936-05-26,,y,Ampermoos,field-day,medium,review-resumption,"resumes the 26 May 1936 entry after the interleaved life list (register stop on 0024_L); place of the interrupted entry (header ""26. Mai 1936. Ampermoos."")"
 stop,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0113_L,r02,<u>Zwergseeschwalbe</u>: 31;,,,,,register,,review,end-of-volume species index with page numbers
 stop,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0113_R,r02,"<u>Rötelbrustke</u>: 28,",,,,,register,,review,end-of-volume species index with page numbers
 stop,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0114_L,r02,<u>Langschwanz-Raubmöve</u>: 19;,,,,,register,,review,end-of-volume species index with page numbers
