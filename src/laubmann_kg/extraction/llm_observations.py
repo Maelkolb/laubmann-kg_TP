@@ -627,7 +627,8 @@ def render_prompt(entry: DiaryEntry, prompts) -> Optional[str]:
 
 
 def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
-                             place: Optional[Place], prompts, schema: dict) -> list[Observation]:
+                             place: Optional[Place], prompts, schema: dict,
+                             images=None) -> list[Observation]:
     """One LLM call per entry. Returns the observations; entry place/date/kind,
     travel_events, persons, and weather are attached to ``entry`` directly.
     Legacy array-only responses (old caches, old schema configs) are accepted
@@ -642,7 +643,8 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
     prompt = render_prompt(entry, prompts)
     if prompt is None:
         return []
-    raw = client.complete(prompt)
+    page_images = images(entry) if images is not None else None
+    raw = client.complete(prompt, images=page_images) if page_images else client.complete(prompt)
     if getattr(raw, "truncated", False):
         # the model hit max_output_tokens: the repaired prefix is used, QA flags it
         entry.flags.append("truncated_output")

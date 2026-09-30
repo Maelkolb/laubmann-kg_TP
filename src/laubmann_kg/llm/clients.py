@@ -51,7 +51,7 @@ class OfflineClient:
         self.model = model
         self._responses = responses or {}
 
-    def complete(self, prompt: str) -> str:
+    def complete(self, prompt: str, images=None) -> str:
         return self._responses.get(cache_key(self.model, prompt), "[]")
 
 
@@ -84,15 +84,23 @@ class CachedClient:
             },
         }
 
-    def complete(self, prompt: str) -> str:
-        key = cache_key(self.model, prompt)
+    def complete(self, prompt: str, images: Optional[list[tuple[str, bytes]]] = None) -> str:
+        """``images``: ``[(image_id, jpeg_bytes)]`` shown to the model before the
+        prompt's entry block. The ids (page ids) and the media resolution are
+        part of the cache key, the bytes are not (a page scan does not change)."""
+        if images:
+            key = cache_key(self.model, prompt, [i for i, _ in images],
+                            getattr(self.client, "media_resolution", None))
+        else:
+            key = cache_key(self.model, prompt)
         hit = self.cache.get(key)
         if hit is not None:
             logger.debug("llm cache hit %s", key)
             return hit
+        call = (lambda: self.client.complete(prompt, images=images)) if images else \
+            (lambda: self.client.complete(prompt))
         try:
-            response = retry_call(lambda: self.client.complete(prompt),
-                                  attempts=self.attempts, backoff=self.backoff,
+            response = retry_call(call, attempts=self.attempts, backoff=self.backoff,
                                   no_retry=(TruncatedOutput,))
         except TruncatedOutput as exc:
             logger.warning("truncated output for prompt %s (%d chars): returned "
@@ -101,7 +109,11 @@ class CachedClient:
             return TruncatedText(exc.text)
         usage = _last_usage(self.client)
         self.cache.log_usage(key, self.model, usage)
-        self.cache.set(key, self._request(prompt), response, usage=usage)
+        request = self._request(prompt)
+        if images:
+            request["images"] = [i for i, _ in images]
+            request["params"]["media_resolution"] = getattr(self.client, "media_resolution", None)
+        self.cache.set(key, request, response, usage=usage)
         return response
 
 
@@ -139,6 +151,7 @@ def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cove
             context_cache_marker=(config.get("context_cache_marker", "\n## Entry\n")
                                   if config.get("context_cache") else None),
             context_cache_ttl_s=int(config.get("context_cache_ttl_s", 10800)),
+            media_resolution=config.get("media_resolution"),
         )
     raise NotImplementedError(
         f"LLM backend '{backend}' is not configured. Supported: offline, google/gemini. "
@@ -170,7 +183,8 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
                  timeout_s: float = 120,
                  thinking_level: Optional[str] = None,
                  context_cache_marker: Optional[str] = None,
-                 context_cache_ttl_s: int = 10800) -> None:
+                 context_cache_ttl_s: int = 10800,
+                 media_resolution: Optional[str] = None) -> None:
         self.model = model
         self._api_key_env = api_key_env
         # public generation params: CachedClient records them in the cache entry
@@ -181,6 +195,7 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
         self._impl: Optional[tuple[str, object]] = None
         self._lock = threading.Lock()
         self._local = threading.local()      # per-thread usage of the last call
+        self.media_resolution = media_resolution   # MEDIA_RESOLUTION_HIGH | _MEDIUM | _LOW (images only)
         self._cache_marker = context_cache_marker
         self._cache_ttl_s = context_cache_ttl_s
         self._contexts: dict[str, str] = {}  # sha256(prefix) -> cachedContents/… name
@@ -228,7 +243,7 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
             self.model, self.temperature, self.max_output_tokens,
             self._timeout_ms / 1000, self.thinking_level or "default")
 
-    def complete(self, prompt: str) -> str:
+    def complete(self, prompt: str, images: Optional[list[tuple[str, bytes]]] = None) -> str:
         self._ensure()
         kind, obj = self._impl  # type: ignore[misc]
         logger.debug("Gemini call: model=%s prompt_chars=%d", self.model, len(prompt))
@@ -249,6 +264,21 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
                 name, rest = context
                 cfg_kwargs["cached_content"] = name
                 contents = rest
+            if images:
+                # the scans come right before the entry block (after the cached
+                # instructions when there is a context cache)
+                if isinstance(contents, str) and context is None and self._cache_marker \
+                        and self._cache_marker in contents:
+                    cut = contents.index(self._cache_marker)
+                    head, contents = contents[:cut], contents[cut:]
+                else:
+                    head = ""
+                parts = ([types.Part(text=head)] if head else []) + \
+                    [types.Part.from_bytes(data=data, mime_type="image/jpeg") for _, data in images] + \
+                    [types.Part(text=contents)]
+                contents = [types.Content(role="user", parts=parts)]
+                if self.media_resolution:
+                    cfg_kwargs["media_resolution"] = self.media_resolution
             try:
                 resp = obj.models.generate_content(  # type: ignore[attr-defined]
                     model=self.model,

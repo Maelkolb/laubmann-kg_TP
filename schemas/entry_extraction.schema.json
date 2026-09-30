@@ -57,6 +57,26 @@
     }
   },
   "properties": {
+    "reading": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "quality": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "corrections": {
+          "type": [
+            "array",
+            "null"
+          ]
+        }
+      }
+    },
     "entry_date": {
       "type": [
         "object",

@@ -14,6 +14,30 @@ from laubmann_kg.kg.shacl_validate import run_shacl_validation
 logger = logging.getLogger(__name__)
 
 
+def write_transcript_corrections(result, path: Path) -> Optional[Path]:
+    """The model's corrections of the transcription (visual reading, prompt v5)
+    in the review/text_corrections.csv contract (entry_uid, entry_id, old_text,
+    new_text, note, reviewed_by, reviewed_at) plus ``applied``: a reviewer can
+    confirm them and feed them back as data/review/text_corrections.csv."""
+    import csv
+    rows = []
+    model = (result.provenance or {}).get("model") or "model"
+    for e in result.entries:
+        for old, new, applied in (getattr(e, "transcript_corrections", None) or []):
+            rows.append({"entry_uid": e.entry_uid, "entry_id": e.entry_id, "old_text": old, "new_text": new,
+                         "note": f"visual reading, transcript quality {e.transcript_quality or '?'}",
+                         "reviewed_by": f"{model} (scan)", "reviewed_at": "", "applied": "y" if applied else "n"})
+    if not rows:
+        return None
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    logger.info("wrote %d transcript corrections to %s", len(rows), path)
+    return path
+
+
 def review_dir_default(config: dict, output_dir: Path) -> dict:
     """The review CSVs a run writes (link and merge reviews) go to
     ``<output_dir>/review`` unless the config names a folder: ``data/review``
@@ -38,6 +62,7 @@ def export(config: dict, input_dir: Optional[Path], output_dir: Path,
     if result.qa_flags:
         from laubmann_kg.qa import write_review_table
         write_review_table(result.qa_flags, output_dir / "review" / "qa_flags.csv")
+    write_transcript_corrections(result, output_dir / "review" / "transcript_corrections.csv")
 
     graph = build_graph(result)
     ttl_path = output_dir / "rdf" / "laubmann_sample.ttl"

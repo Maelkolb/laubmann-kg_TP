@@ -25,6 +25,8 @@ TAXON_RANKS = ("species", "subspecies", "genus", "family", "group")
 PLACE_KINDS = ("settlement", "locality", "region")
 ENTRY_KINDS = ("field-day", "species-digest", "retrospective", "correspondence", "other")
 TIME_OF_DAY = ("dawn", "morning", "forenoon", "noon", "afternoon", "evening", "dusk", "night")
+# the model's verdict on the transcription after comparing it with the scans (prompt v5)
+TRANSCRIPT_QUALITY = ("good", "minor", "poor", "illegible")
 # how a Taxon's vernacular name was tied to a scientific name / GBIF record (lkg:matchMethodScheme)
 MATCH_METHODS = ("gazetteer", "llm", "llm+gbif", "review", "machine-review", "unresolved")
 

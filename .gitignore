@@ -46,3 +46,10 @@ tools/explorer/*.full.html
 .pytest_cache/
 .coverage
 htmlcov/
+
+# local copies for rebuilding the patched corpus / the visual reading
+data/corpus_patched_*/
+data/corpus_2026-07-21/
+data/multimodal_catalogue_v2/
+data/pages_jpg/
+data/batch/

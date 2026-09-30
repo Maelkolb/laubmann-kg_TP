@@ -211,6 +211,35 @@ def _build_extractor(config: dict) -> tuple:
         entry, client, resolver, place, prompts, schema)), provenance
 
 
+def entry_page_ids(entry: DiaryEntry) -> list[str]:
+    """The pages an entry is written on, in reading order (header page first)."""
+    ids = [entry.page_id] + [ref.page_id for ref in entry.source_regions]
+    return [i for i in dict.fromkeys(ids) if i]
+
+
+def page_image_loader(cfg: dict):
+    """``entry -> [(page_id, jpeg bytes)]`` for the visual reading (config
+    ``reading``: enabled, images_dir, max_pages), or None when disabled.
+    Pages without an image file are left out (logged once)."""
+    if not cfg.get("enabled"):
+        return None
+    folder = Path(cfg.get("images_dir", "data/pages_jpg"))
+    max_pages = int(cfg.get("max_pages", 12))
+    missing: set[str] = set()
+
+    def load(entry: DiaryEntry):
+        out = []
+        for page_id in entry_page_ids(entry)[:max_pages]:
+            path = folder / f"{page_id}.jpg"
+            if path.exists():
+                out.append((page_id, path.read_bytes()))
+            elif page_id not in missing:
+                missing.add(page_id)
+                logger.warning("no page image %s (entry %s)", path, entry.entry_id)
+        return out
+    return load
+
+
 def load_entries(config: dict, input_dir: Optional[Path] = None) -> tuple[list[DiaryEntry], list]:
     """The entries a run extracts, exactly as the model will read them: the
     corpus rows of the configured sample, with the reviewed readings
@@ -222,8 +251,18 @@ def load_entries(config: dict, input_dir: Optional[Path] = None) -> tuple[list[D
     sample = config.get("sample", {}) or {}
     volume = sample.get("volume")
     rows = read_entries(entries_csv, volume=int(volume) if volume is not None else None)
+    # neighbours in the volume stream (for the visual reading: the text of the
+    # entry before/after on a shared page is not this entry's)
+    around: dict[str, tuple[str, str]] = {}
+    for i, row in enumerate(rows):
+        prev = rows[i - 1] if i > 0 and rows[i - 1].get("volume") == row.get("volume") else None
+        nxt = rows[i + 1] if i + 1 < len(rows) and rows[i + 1].get("volume") == row.get("volume") else None
+        around[row.get("entry_id") or ""] = ((prev.get("text_clean") or "")[-300:] if prev else "",
+                                             (nxt.get("text_clean") or "")[:300] if nxt else "")
     rows = select_sample_rows(rows, sample)
     built = [build_entry(row) for row in rows]
+    for entry in built:
+        entry.neighbour_before, entry.neighbour_after = around.get(entry.entry_id, ("", ""))
     review_cfg = config.get("review") or {}
     reading_flags = apply_readings(built, load_readings(review_cfg.get("text_corrections")))
     return built, reading_flags
@@ -238,6 +277,16 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
 
     built, reading_flags = load_entries(config, input_dir)
     total = len(built)
+    # Visual reading (config ``reading``): each transcription is checked against
+    # its page scans and corrected before the extraction model reads it.
+    reading_cfg = config.get("reading") or {}
+    if reading_cfg.get("enabled"):
+        from laubmann_kg.extraction.reading import reading_prompt_sha, run_reading
+        logger.info("reading: %s", run_reading(built, reading_cfg, page_image_loader(reading_cfg)))
+        provenance["reading"] = {"model": reading_cfg.get("model", "gemini-3.8-flash"),
+                                 "prompt": "transcript_reading",
+                                 "prompt_sha256": reading_prompt_sha(reading_cfg.get("prompt_dir")),
+                                 "media_resolution": reading_cfg.get("media_resolution", "MEDIA_RESOLUTION_HIGH")}
     extraction_cfg = config.get("extraction", {})
     backend = (extraction_cfg.get("backend") or "offline").lower()
     concurrency = max(1, int(extraction_cfg.get("concurrency", 1)))

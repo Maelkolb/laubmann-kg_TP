@@ -31,10 +31,24 @@ extraction:
   max_output_tokens: 32768
   timeout: 600
   thinking_level: low
-  concurrency: 8
+  concurrency: 16
   context_cache: true
   retry_backoff: 2.0
   cache_dir: data/cache/llm_v4
+reading:
+  enabled: true
+  provider: google
+  model: gemini-3.8-flash
+  api_key_env: GOOGLE_API_KEY
+  cache_dir: data/cache/reading_v1
+  images_dir: data/pages_jpg
+  media_resolution: MEDIA_RESOLUTION_HIGH
+  max_pages: 12
+  thinking_level: low
+  max_output_tokens: 16384
+  context_cache: true
+  concurrency: 16
+  timeout: 600
 taxa:
   links_long_path: null
 corrections:

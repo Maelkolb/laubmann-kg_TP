@@ -41,6 +41,24 @@ extraction:
   cache_dir: data/cache/llm_v4   # prompt v4 answers (copy to Drive llm_cache_v4 after the run;
                                  #   in Colab point it at Drive so interrupted runs resume)
 
+# Visual reading before extraction: each entry's transcription is checked against the
+# scan(s) of its page(s) (prompts/transcript_reading.md); corrections are applied to the
+# text the extraction reads and listed in review/transcript_corrections.csv.
+reading:
+  enabled: true
+  provider: google
+  model: gemini-3.8-flash
+  api_key_env: GOOGLE_API_KEY
+  cache_dir: data/cache/reading_v1
+  images_dir: data/pages_jpg      # tools/export_page_images.py (JPEG, 2000 px, one file per page_id)
+  media_resolution: MEDIA_RESOLUTION_HIGH   # ~1,090 tokens per page (MEDIUM ~520; LOW too coarse for handwriting)
+  max_pages: 12                   # an entry spans 1.43 pages on average, at most 20
+  thinking_level: low
+  max_output_tokens: 16384
+  context_cache: true
+  concurrency: 16
+  timeout: 600
+
 taxa:
   links_long_path: null       # set to the index linker's long table when available
 

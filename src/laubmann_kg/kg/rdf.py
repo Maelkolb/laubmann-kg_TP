@@ -559,6 +559,11 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, vo
                    Literal(bool(entry.date_plausible), datatype=XSD.boolean)))
     if entry.date_note:
         graph.add((node, SKOS.note, Literal(entry.date_note, lang=DE)))
+    if entry.transcript_quality:
+        applied = sum(1 for c in entry.transcript_corrections if c[2])
+        graph.add((node, SKOS.note, Literal(
+            f"Transkription am Scan geprüft ({entry.transcript_quality}); "
+            f"{applied} Lesung(en) korrigiert, Liste in review/transcript_corrections.csv", lang=DE)))
     for note in entry.reading_notes:
         graph.add((node, SKOS.note, Literal(note, lang=DE)))
     if entry.entry_kind:

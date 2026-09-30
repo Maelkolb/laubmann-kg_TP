@@ -124,6 +124,18 @@ def run_qa(entries, config: Optional[dict] = None):
                     _act(excluded), e.entry_date))
                 drop_entry = drop_entry or excluded
 
+        # --- visual reading (prompt v5) ---------------------------------------
+        quality = getattr(e, "transcript_quality", None)
+        if quality in ("poor", "illegible"):
+            flags.append(QAFlag(e.entry_id, e.entry_uid, "transcript_" + quality,
+                "Transkription laut Scan " + ("stark fehlerhaft" if quality == "poor" else "unlesbar"),
+                "flagged", str(len(getattr(e, "transcript_corrections", ()) or ()))))
+        unmatched = [c for c in (getattr(e, "transcript_corrections", None) or []) if not c[2]]
+        if unmatched:
+            flags.append(QAFlag(e.entry_id, e.entry_uid, "transcript_correction_unmatched",
+                f"{len(unmatched)} Korrektur(en) des Modells nicht im Text gefunden",
+                "flagged", " | ".join(f"{o[:30]} -> {n[:30]}" for o, n, _ in unmatched[:3])))
+
         # --- extraction -----------------------------------------------------
         if "truncated_output" in getattr(e, "flags", ()):
             flags.append(QAFlag(e.entry_id, e.entry_uid, "truncated_output",

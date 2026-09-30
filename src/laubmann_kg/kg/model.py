@@ -349,6 +349,16 @@ class DiaryEntry:
     multimodal: list[MultimodalRegion] = field(default_factory=list)
     # extraction notes for QA (e.g. "truncated_output": the model hit its token cap)
     flags: list[str] = field(default_factory=list)
+    # visual reading (prompt v5): the model compared the transcription with the
+    # page scans; text_clean holds the corrected reading, text_transcribed the
+    # transcription as it came from the corpus
+    transcript_quality: Optional[str] = None          # good | minor | poor | illegible
+    transcript_corrections: list[tuple[str, str, bool]] = field(default_factory=list)  # (old, new, applied)
+    text_transcribed: Optional[str] = None
+    # the end of the entry before and the beginning of the entry after this one
+    # in the volume (reading pass only: their text is not this entry's)
+    neighbour_before: Optional[str] = None
+    neighbour_after: Optional[str] = None
     reading_notes: list[str] = field(default_factory=list)   # reviewer corrections of the transcription (skos:note)
 
     @property
