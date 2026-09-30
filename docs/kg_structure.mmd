@@ -3,7 +3,7 @@ classDiagram
     direction TB
 
     class ArchivalUnit {
-        <<abstract · rico:Record>>
+        <<abstract · rico:RecordResource>>
     }
     class EntryRecord {
         <<abstract · prov:Entity>>
@@ -12,18 +12,22 @@ classDiagram
     }
 
     class DiaryVolume {
+        <<rico:Record>>
         dcterms:temporal YYYY-MM/YYYY-MM
     }
     class DiaryPage {
+        <<rico:RecordPart>>
         dcterms:identifier
     }
     class DiaryEntry {
-        <<dwc:Event>>
+        <<dwc:Event · rico:RecordPart>>
         dwc:eventDate · dwc:verbatimEventDate
+        dwc:verbatimLocality (header wording)
         dwc:fieldNotes
         entryKind · datePlausible · skos:note
     }
     class SourceRegion {
+        <<rico:RecordPart>>
         body-text region(s) of the entry
     }
     class MultimodalRegion {
@@ -35,28 +39,29 @@ classDiagram
     class Observation {
         <<dwc:Occurrence>>
         verbatimNotes
-        recordType field | third-party | literature
+        recordType field-observation | third-party-report | literature-record
+        dwc:basisOfRecord · dwc:associatedReferences
         dwc:occurrenceStatus present | absent
         dwc:individualCount ≥0 · individualCountMin · Max
         countQualifier exact | minimum | maximum | approximate | plural-unspecified
-        dwc:sex · dwc:lifeStage · dwc:vitality
-        breedingEvidence · dwc:reproductiveCondition
+        dwc:sex · dwc:lifeStage · dwc:vitality dead
+        breedingEvidence · dwc:reproductiveCondition (confirmed)
         movementKind · flightDirection
         evidenceKind visual | auditory | nest | specimen
         callType song | call | alarm | drumming · callTranscription
         dwc:behavior · dwc:habitat
-        dwc:identificationQualifier
-        dwc:eventDate · dwc:eventTime · timeOfDay · daylightPhase
+        dwc:identificationQualifier · dwc:verbatimIdentification
+        dwc:eventDate (own date or range, else entry date or interval)
+        dwc:eventTime · timeOfDay dawn … dusk | night
+        dwc:verbatimLocality (own locality)
         spatialContext · microhabitat · relativeElevation
-        observationRadiusMeters · dwc:coordinateUncertaintyInMeters
-        spatialConfidence · dwc:samplingProtocol
-        dwc:basisOfRecord
+        dwc:minimumElevationInMeters · dwc:maximumElevationInMeters
     }
     class TravelEvent {
-        <<dwc:Event>>
+        journey of the diarist
     }
     class TravelLeg {
-        transportMode
+        transportMode (when stated)
         departureTime · arrivalTime
     }
     class WeatherReport {
@@ -70,16 +75,21 @@ classDiagram
         dwc:vernacularName · dwc:scientificName
         dwc:taxonRank · isBird
         dwc:kingdom … dwc:genus
-        matchMethod · matchConfidence · gbifMatchType
+        matchMethod · gbifMatchType
         dwc:taxonID
     }
     class Place {
-        <<geo:SpatialThing · dcterms:Location>>
-        rdfs:label · dwc:verbatimLocality
-        placeKind
-        geo:lat · geo:long · gsp:asWKT
+        <<geo:SpatialThing · dcterms:Location · gsp:Feature>>
+        rdfs:label · skos:altLabel
+        placeKind settlement | locality | region
+        geo:lat · geo:long
         dwc:coordinateUncertaintyInMeters
         dwc:georeferenceSources
+        dwc:minimumElevationInMeters · dwc:maximumElevationInMeters
+    }
+    class Geometry {
+        <<gsp:Geometry>>
+        gsp:asWKT POINT(lon lat)
     }
     class Person {
         <<schema:Person>>
@@ -127,13 +137,13 @@ classDiagram
     DiaryEntry --> "0..1" Place : entryPlace
     DiaryEntry --> "*" Observation : containsObservation ⊑ dcterms∶hasPart
     DiaryEntry --> "*" TravelEvent : containsTravelEvent ⊑ dcterms∶hasPart
-    DiaryEntry --> "*" WeatherReport : hasWeather ⊑ dcterms∶hasPart
+    DiaryEntry --> "0..1" WeatherReport : hasWeather ⊑ dcterms∶hasPart
     DiaryEntry --> "*" Person : mentionsPerson · mentionsCompanion | Source | Collector | CitedAuthor | Other
 
     Observation --> "1" Taxon : observedTaxon ⊑ dwciri∶toTaxon
     Observation --> "0..1" Place : observedAt
     Observation --> "0..1" Place : hasLocality (own place)
-    Observation --> "0..1" Person : dwciri∶recordedBy
+    Observation --> "*" Person : dwciri∶recordedBy (diarist + co-observers, or third-party observer)
     Observation --> "0..1" HabitatConcept : dwciri∶habitat
     Observation --> "1" ExtractionRun : prov∶wasGeneratedBy
 
@@ -142,6 +152,7 @@ classDiagram
     ExtractionRun --> "1" SoftwareAgent : prov∶wasAssociatedWith
     ExtractionRun --> "1" Prompt : prov∶used
 
+    Place --> "0..1" Geometry : gsp∶hasGeometry
     Taxon --> "0..1" AuthorityRecord : skos∶exactMatch | closeMatch | broadMatch (GBIF)
     HabitatConcept --> "0..1" AuthorityRecord : skos∶exactMatch | closeMatch | broadMatch (EUNIS)
     Place --> "0..2" AuthorityRecord : skos∶exactMatch | closeMatch (GeoNames, Wikidata)
@@ -150,7 +161,7 @@ classDiagram
     cssClass "ArchivalUnit,EntryRecord" abstract
     cssClass "DiaryVolume,DiaryPage,SourceRegion,MultimodalRegion" source
     cssClass "DiaryEntry,Observation" hub
-    cssClass "TravelEvent,TravelLeg,WeatherReport" detail
+    cssClass "TravelEvent,TravelLeg,WeatherReport,Geometry" detail
     cssClass "Taxon,Place,Person" entity
     cssClass "HabitatConcept" concept
     cssClass "ExtractionRun,SoftwareAgent,Prompt" prov

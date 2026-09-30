@@ -39,7 +39,9 @@ kind correspondence / retrospective / other: the last 1,200 characters of the
 text before them, where the
 diarist introduces a pasted report; shown to the extraction model as
 `context_before` together with a `segment_note` derived from `boundary_kind`,
-for attribution only). Entries added by a boundary keep the detector's `entry_uid`
+only to decide who wrote or observed the entry's records and to complete a
+missing date or place — never as a source of records, travel, persons or
+weather; prompt v4). Entries added by a boundary keep the detector's `entry_uid`
 derivation and get the `entry_id` of the entry before them plus a letter
 (`L05-e0123a`), so every existing `entry_uid` / `entry_id` is unchanged.
 Regions listed in `data/corpus_patches/masked_regions.csv` (unreliable or
@@ -83,9 +85,12 @@ catalogue v2 images/objects + selected text inserts, duplicate scans removed,
 `source`, `link_method`, `entry_uid_catalogue`). Fields consumed:
 `region_uid, page_uid, page_id, region_type, kind, entry_uid, volume, scan,
 crop, description, visible_text`. Join is by `entry_uid`: each region becomes a
-`lkg:MultimodalRegion` of its entry and a DwC-A multimedia row; `crop` is the
-image path used as the DwC-A media identifier and the region's
-`dcterms:identifier`. Marginal notes are not turned into regions.
+`lkg:MultimodalRegion` of its entry; `crop` is the image path, emitted as the
+region's `dcterms:identifier`. Once the crops are hosted (config
+`multimodal.image_base_url`), base URL + `crop` is the region's `schema:image`
+and the identifier of its DwC-A multimedia row; without a base URL the archive
+has no multimedia rows (a file path would be published as a broken link).
+Marginal notes are not turned into regions.
 
 ## 2. Index-linker interface (`links_long`)
 

@@ -9,17 +9,18 @@ flowchart TB
         A --> B --> R1 --> B2
     end
 
-    subgraph S2["Stage C — laubmann-kg · export-all · ontology 0.5.0"]
+    subgraph S2["Stage C — laubmann-kg · export-all · ontology 0.7.0"]
         direction LR
-        C(["LLM reading<br/>gemini · one call per entry<br/>date · place · kind · observations<br/>travel · persons · weather<br/>+ Ziel-1 space/time fields"])
+        C(["LLM reading<br/>gemini-3.8-flash · one call per entry (prompt v4, cached instructions)<br/>date · place · kind · observer · observations<br/>travel · persons · weather"])
         D["Mapper<br/>vocabulary membership · dates<br/>SHACL-safe legs"]
         Corr["Value corrections<br/>reviewer taxon/place fixes<br/>value_corrections.csv"]
         V["Volume coverage<br/>title-page spans · misfiled scans<br/>OCR-year repair from neighbours"]
         E["QA<br/>thresholds on model signals"]
+        Hm["Harmonise<br/>one reading per taxon name<br/>and per place"]
         F["Linking<br/>GBIF species/match · Wikidata · GND<br/>places: Nominatim · GeoNames · Wikidata"]
         X["Entity resolution<br/>same GBIF key · name rules<br/>orthographic variants · altLabels"]
         Y(["Habitat → EUNIS<br/>LLM per label · skos:*Match<br/>EUNIS classes + broader chain"])
-        G["RDF emit<br/>DwC-first · SKOS · PROV · Ziel 1"]
+        G["RDF emit<br/>DwC-first · SKOS · PROV · GeoSPARQL"]
         H["SHACL gate<br/>0 violations"]
         I["DwC-A<br/>event · occurrence · eMoF · media"]
         K1[("llm_cache")]
@@ -27,7 +28,7 @@ flowchart TB
         K3[("volume_coverage.yaml")]
         K4[("nominatim · geonames<br/>llm habitats cache")]
         R2{{"review CSVs<br/>qa_flags · value_corrections<br/>taxon/person/place links<br/>merges · habitat links"}}
-        C --> D --> Corr --> V --> E --> F --> X --> Y --> G --> H
+        C --> D --> Corr --> V --> E --> Hm --> F --> X --> Y --> G --> H
         Y --> I
         K4 <-.-> F
         K4 <-.-> Y

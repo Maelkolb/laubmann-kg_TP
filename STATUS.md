@@ -49,22 +49,24 @@ graph conforms.
 | Travel / route questions | blocked | travel extraction is future work |
 | Cross-dataset taxon IRIs | blocked | needs `links_long` (see INTERFACES.md) |
 
-## Ontology coverage (0.6.0)
+## Ontology coverage (0.7.0)
 
 Since 0.4.0 the ontology declares **only what the emitter produces**:
 `tests/test_ontology_alignment.py` fails if a declared `lkg:` class/property is
 never emitted, if the emitter uses an undeclared term, if a term has no SHACL
 shape, or if the JSON-LD context misses an emitted predicate. Hence there is no
 "not yet" row any more — every term below is populated by the full run;
-`partial` marks conditional population.
+`partial` marks conditional population. Every value is emitted only when the
+text states it (0.7.0 removed the template-driven fields).
 
 ### Classes (12 concrete `lkg:` + 2 grouping)
 
 | Class | Group | Status |
 |---|---|---|
-| `lkg:DiaryVolume`, `lkg:DiaryPage`, `lkg:DiaryEntry`, `lkg:SourceRegion`, `lkg:MultimodalRegion` (⊑ SourceRegion) | `lkg:ArchivalUnit` (⊑ rico:Record; not asserted in data) | populated; `dcterms:isPartOf` chain region → page → volume, entry → page; every body-text region an entry spans; multimodal regions from `multimodal_regions.jsonl` |
-| `lkg:Observation` (⊑ dwc:Occurrence), `lkg:TravelEvent`, `lkg:TravelLeg`, `lkg:WeatherReport` | `lkg:EntryRecord` (⊑ prov:Entity; not asserted) | populated; `prov:wasDerivedFrom` entry, `prov:wasGeneratedBy` run, `dcterms:isPartOf` entry (leg: its travel event) |
-| `lkg:Taxon`, `lkg:Place`, `lkg:Person` | shared referents | populated (coords partial; persons via mention edges + `dwciri:recordedBy`) |
+| `lkg:DiaryVolume` (⊑ rico:Record), `lkg:DiaryPage`, `lkg:DiaryEntry` (⊑ dwc:Event), `lkg:SourceRegion`, `lkg:MultimodalRegion` (⊑ SourceRegion) — page, entry and region ⊑ rico:RecordPart | `lkg:ArchivalUnit` (⊑ rico:RecordResource; not asserted in data) | populated; `dcterms:isPartOf` chain region → page → volume, entry → page; every body-text region an entry spans; multimodal regions from `multimodal_regions.jsonl` |
+| `lkg:Observation` (⊑ dwc:Occurrence), `lkg:TravelEvent` (no dwc:Event since 0.7.0), `lkg:TravelLeg`, `lkg:WeatherReport` (at most one per entry) | `lkg:EntryRecord` (⊑ prov:Entity; not asserted) | populated; `prov:wasDerivedFrom` entry, `prov:wasGeneratedBy` run, `dcterms:isPartOf` entry (leg: its travel event) |
+| `lkg:Taxon`, `lkg:Place` (⊑ gsp:Feature), `lkg:Person` | shared referents | populated (coords partial; persons via mention edges + `dwciri:recordedBy`) |
+| `gsp:Geometry` | point of a georeferenced place (`gsp:hasGeometry`) | partial (georeferenced places only) |
 | habitat nodes | `skos:Concept` in `lkg:habitatScheme` (no class) | populated, shared across observations |
 
 Removed in 0.4.0: `ObservationEvent` (→ Observation), `BirdCall` (→ Vocalisation),
@@ -74,22 +76,31 @@ Removed in 0.6.0: `RecordDetail`, `Vocalisation`, `hasVocalisation` (→
 `lkg:callType` / `lkg:callTranscription` on the Observation); `owl:sameAs` is no
 longer emitted (every external link is `skos:exactMatch/closeMatch/broadMatch`
 to an authority record in `lkg:authority_gbif|eunis|geonames|wikidata|gnd`).
+Removed in 0.7.0: `lkg:observationRadiusMeters`, `lkg:spatialConfidence`,
+`lkg:observationDurationMinutes`, `lkg:matchConfidence`, `lkg:daylightPhase`
+(→ `lkg:timeOfDay`, now dawn … dusk), `lkg:altitudeM` (→
+`dwc:minimumElevationInMeters` / `dwc:maximumElevationInMeters`), and
+`dwc:samplingProtocol` / `dwc:coordinateUncertaintyInMeters` on the
+Observation; the placeholders transportMode/taxonRank/placeKind "unknown",
+placeKind "route" and vitality "alive".
 
-### Properties (58 `lkg:` + standard terms)
+### Properties (52 `lkg:` + standard terms)
 
 | Group | Terms | Status |
 |---|---|---|
-| Partonomy | `containsObservation`, `containsTravelEvent`, `hasWeather`, `hasLeg` (all ⊑ `dcterms:hasPart`), `hasSourceRegion`, `hasMultimodalRegion` ⊑ `hasSourceRegion`; `dcterms:isPartOf` on every child | populated |
-| Multimodal region | `regionKind`, `visibleText`; `dcterms:type`, `dcterms:description`, `dcterms:identifier` | populated for the regions of `multimodal_regions.jsonl` |
-| Entry | `entryPlace`, `entryKind`, `datePlausible`; `dwc:eventDate`, `dwc:verbatimEventDate`, `dwc:fieldNotes`, `skos:note`, `dcterms:identifier` | populated |
+| Partonomy | `containsObservation`, `containsTravelEvent`, `hasWeather` (0..1), `hasLeg` (all ⊑ `dcterms:hasPart`), `hasSourceRegion`, `hasMultimodalRegion` ⊑ `hasSourceRegion`; `dcterms:isPartOf` on every child | populated |
+| Multimodal region | `regionKind`, `visibleText`; `dcterms:type`, `dcterms:description`, `dcterms:identifier`, `schema:image` (once the crops are hosted) | populated for the regions of `multimodal_regions.jsonl` |
+| Entry | `entryPlace`, `entryKind`, `datePlausible`; `dwc:eventDate`, `dwc:verbatimEventDate`, `dwc:verbatimLocality` (header wording), `dwc:fieldNotes`, `skos:note`, `dcterms:identifier` | populated |
 | Mentions | `mentionsPerson` ⊑ schema:mentions + `mentionsCompanion/Source/Collector/CitedAuthor/Other` | populated (role edge only when the model gave a role) |
-| Observation | `observedTaxon`, `observedAt`, `hasLocality`, `recordType`, `evidenceKind`, `countQualifier`, `individualCountMin/Max`, `breedingEvidence`, `movementKind`, `flightDirection`, `verbatimNotes`; `dwc:occurrenceStatus/individualCount/sex/lifeStage/vitality/reproductiveCondition/behavior/habitat/identificationQualifier/eventDate/eventTime/verbatimLocality/occurrenceRemarks/basisOfRecord/associatedReferences`, `dwciri:habitat`, `dwciri:recordedBy` | populated (each only when stated) |
+| Observation | `observedTaxon`, `observedAt`, `hasLocality`, `recordType`, `evidenceKind`, `countQualifier` (incl. maximum), `individualCountMin/Max`, `breedingEvidence`, `movementKind`, `flightDirection`, `verbatimNotes`; `dwc:occurrenceStatus/individualCount/sex/lifeStage/vitality/reproductiveCondition/behavior/habitat/identificationQualifier/verbatimIdentification/eventDate/verbatimLocality/occurrenceRemarks/basisOfRecord/associatedReferences`, `dwciri:habitat`, `dwciri:recordedBy` (0..n: diarist + companions, or the third-party observer) | populated (each only when stated; `eventDate` = own date/range, else the entry's date or interval) |
+| Time and space (on the Observation) | `timeOfDay` (`lkg:timeOfDayScheme`), `spatialContext`, `microhabitat`, `relativeElevation`; `dwc:eventTime`, `dwc:minimumElevationInMeters` / `dwc:maximumElevationInMeters` | partial (only when the text states them) |
 | What was heard (on the Observation) | `callType`, `callTranscription` | populated (type only when stated, transcription only when written) |
-| Travel | `departurePlace` (optional since 0.6.0: never invented), `arrivalPlace`, `viaPlace`, `departureTime`, `arrivalTime`, `transportMode` | populated |
-| Weather | `weatherVerbatim`, `temperatureValue`, `temperatureUnit`, `precipitation`, `wind`, `skyCondition` | populated (one report per entry today; several allowed) |
-| Place | `placeKind`; `dwc:verbatimLocality`, `geo:lat/long`, `dwc:decimalLatitude/Longitude`, `dwc:geodeticDatum`, `gsp:asWKT` | partial (coordinates only for gazetteer/georeferenced places) |
-| Taxon | `isBird`, `matchMethod`, `matchConfidence`, `gbifMatchType`; `dwc:vernacularName`, `dwc:scientificName`, `dwc:taxonRank`, `dwc:taxonID`, `dwc:kingdom…genus`, `skos:exactMatch/closeMatch/broadMatch` (GBIF authority record) | populated (classification only for GBIF-linked taxa) |
-| Authority links | `skos:exactMatch/closeMatch/broadMatch` → `skos:Concept` with `skos:inScheme lkg:authority_*`, `skos:notation`, `skos:prefLabel` (taxa → GBIF, habitats → EUNIS, places → GeoNames + Wikidata, persons → Wikidata + GND) | populated where linked |
+| Travel | `departurePlace` (optional since 0.6.0: never invented), `arrivalPlace`, `viaPlace`, `departureTime`, `arrivalTime`, `transportMode` (only when stated) | populated |
+| Weather | `weatherVerbatim`, `temperatureValue`, `temperatureUnit`, `precipitation`, `wind`, `skyCondition` | populated (at most one report per entry) |
+| Place | `placeKind` (settlement / locality / region); `rdfs:label`, `skos:altLabel`, `geo:lat/long`, `dwc:decimalLatitude/Longitude`, `dwc:geodeticDatum`, `gsp:hasGeometry` → `gsp:Geometry` (`gsp:asWKT`), `dwc:coordinateUncertaintyInMeters`, `dwc:georeferenceSources`, `dwc:minimum/maximumElevationInMeters` | partial (coordinates only for georeferenced places, elevation only when stated) |
+| Taxon | `isBird`, `matchMethod` (`lkg:matchMethodScheme`), `gbifMatchType`; `dwc:vernacularName`, `dwc:scientificName`, `dwc:taxonRank`, `dwc:taxonID`, `dwc:kingdom…genus`, `skos:exactMatch/closeMatch/broadMatch` (GBIF authority record) | populated (classification only for GBIF-linked taxa) |
+| Authority links | `skos:exactMatch/closeMatch/broadMatch` → `skos:Concept` with `skos:inScheme lkg:authority_*`, `skos:notation`, `skos:prefLabel` (taxa → GBIF, habitats → EUNIS, places → GeoNames + Wikidata, persons → Wikidata + GND); human review → exact, machine review → close | populated where linked |
+| Controlled values | literal = `skos:notation` of a concept (every concept has one); each controlled property `rdfs:seeAlso` its scheme | ontology-level |
 | PROV | `backend`; `prov:startedAtTime`, `prov:wasAssociatedWith`, `prov:used` | populated |
 
 ## Dedup toolchain (integrated 2026-08-10)
@@ -105,7 +116,30 @@ corpus: build → detect → decisions → apply → `export-jsonld` (SHACL: 0/0
 Remaining human step: adjudicate `review.html` for the full corpus and export
 `dedup_decisions.json` (see `notebooks/07_full_workflow_colab.ipynb`, stage B).
 
-## Current state (2026-08-19)
+## Current state (2026-09-30 evening)
+
+- **Ontology 0.7.0 and extraction prompt `observation_extraction` v4 are
+  final** (commits 2749f69, f5673fb; details in `CHANGELOG.md`): only what the
+  text states (template fields removed, `daylightPhase` folded into
+  `timeOfDay` with dawn/dusk, DwC elevation terms), record dates fall back to
+  the entry's date or interval, several `dwciri:recordedBy` (diarist +
+  co-observers; `entry_observer` / `observed_with` in the prompt),
+  `dwc:verbatimLocality` on the entry and the observation instead of the
+  shared place, GeoSPARQL geometry nodes, RiC alignment, `skos:notation` on
+  every concept, at most one WeatherReport per entry, shared taxon/place
+  nodes harmonised after QA; DwC-A with IRIs as IDs, per-occurrence
+  georeference and an eMoF row for every controlled value.
+- **Model `gemini-3.8-flash`** (`configs/full_llm.yaml`, context cache on;
+  the linking LLMs stay on 3.5 Flash so their Drive caches answer).
+- **A/B test** (68 entries, blind-judged): prompt v4 vs v3 25:12 wins, 98 vs
+  296 errors, attribution errors 0 vs 18; model 3.8 vs 3.5 on the same prompt
+  22:11 wins, 88 vs 150 errors, and 3.5 hit the 32k token cap on 6 of the 68
+  entries.
+- **Full re-extraction pending** — runbook `docs/rerun_full_extraction.md`
+  (patched corpus, 9,857 entries). Until it has run, the latest full export
+  is still `kg_exports_2026-08-19` (ontology 0.4.3, below).
+
+## Earlier state (2026-08-19)
 
 - **Volume coverage + date repair** (`configs/volume_coverage.yaml` from the
   34 title pages, `normalization/coverage.py`, config `qa.coverage`): misfiled
@@ -171,16 +205,16 @@ Remaining human step: adjudicate `review.html` for the full corpus and export
 
 ## Deferred / not done
 
-- Person/taxon variant merging inside the pipeline (today post hoc via
-  `HistOrniGraph_addons/kg_enrich/dedup_entities.py`); Nominatim georeferencing
-  as a `linking/places.py` stage (today post hoc `georef_places.py`).
+- Live Nominatim lookups inside the pipeline (places new in a run get GeoNames
+  only until `tools/prewarm_nominatim.py` has filled the cache; entity resolution
+  and place linking are pipeline stages since 2026-08-19).
 - w3id: namespace migrated in the repo (2026-08-18); the perma-id PR is pending until the ontology is final (`w3id/laubmann-kg/`). Existing exports: `tools/migrate_namespace.py`. Ontology docs: `docs/ontology/` (pyLODE).
 - Gemini structured output (`response_json_schema`) — would retire json-repair;
   needs a live A/B on ~50 entries.
 - Travel legs in the DwC-A (`parentEventID` sub-events); linking observations
   to the travel leg they occurred during (dropped from the ontology in 0.4.0
-  until the extraction can supply it); several weather reports per entry
-  (allowed by ontology/SHACL, needs the next prompt change).
+  until the extraction can supply it). Several weather reports per entry
+  are not planned any more: 0.7.0 allows at most one.
 - Avibase alignment (needs `links_long`).
 - `preprocess` / `detect-layout` / `transcribe` stages remain stubs (handled
   upstream by HistOrniGraph, per the task brief).

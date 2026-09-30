@@ -1,4 +1,4 @@
-"""Knowledge graph domain model mirroring ontologies/laubmann.ttl (0.6.0).
+"""Knowledge graph domain model mirroring ontologies/laubmann.ttl (0.7.0).
 
 The dataclasses are the contract between extraction and emission. Not every
 dataclass is a node in the graph: ``Evidence``, ``Behaviour`` and ``Habitat``

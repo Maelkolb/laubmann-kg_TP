@@ -6,7 +6,7 @@ table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{text-align:left;
 th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}nav{font-size:.86rem;color:#5F6E64;margin-bottom:1rem}nav a{color:#35608A;text-decoration:none;margin-right:10px}</style></head><body>
 <h1>Laubmann Knowledge Graph — controlled vocabularies</h1>
 <p class="meta">SKOS concept schemes in <code>https://w3id.org/laubmann-kg/ontology#</code>. The English <code>skos:prefLabel</code> is the literal value emitted in the data graph and checked by the SHACL shapes; the Python mirror is <code>normalization/vocabularies.py</code>. Source: <code>ontologies/controlled_vocabularies.ttl</code>. See also the <a href="index.html">ontology</a> and the <a href="shapes.html">SHACL shapes</a>.</p>
-<nav><a href="#callTypeScheme">Bird call types</a><a href="#breedingEvidenceScheme">Breeding evidence (atlas categories)</a><a href="#countQualifierScheme">Count qualifiers</a><a href="#entryKindScheme">Diary entry kinds</a><a href="#authority_eunis">EUNIS habitat classification (2012)</a><a href="#authority_gbif">GBIF Backbone Taxonomy</a><a href="#authority_geonames">GeoNames</a><a href="#habitatScheme">Habitats</a><a href="#authority_gnd">Integrated Authority File (GND)</a><a href="#lifeStageScheme">Life stages</a><a href="#movementKindScheme">Movement kinds</a><a href="#regionKindScheme">Multimodal region kinds</a><a href="#evidenceKindScheme">Observation evidence kinds</a><a href="#recordTypeScheme">Observation record types</a><a href="#occurrenceStatusScheme">Occurrence status</a><a href="#placeKindScheme">Place kinds</a><a href="#precipitationScheme">Precipitation types</a><a href="#sexScheme">Sex</a><a href="#skyConditionScheme">Sky conditions</a><a href="#taxonRankScheme">Taxon ranks (as named by the diarist)</a><a href="#temperatureUnitScheme">Temperature units</a><a href="#transportModeScheme">Transport modes</a><a href="#vitalityScheme">Vitality</a><a href="#authority_wikidata">Wikidata</a></nav>
+<nav><a href="#callTypeScheme">Bird call types</a><a href="#breedingEvidenceScheme">Breeding evidence (atlas categories)</a><a href="#countQualifierScheme">Count qualifiers</a><a href="#entryKindScheme">Diary entry kinds</a><a href="#authority_eunis">EUNIS habitat classification (2012)</a><a href="#authority_gbif">GBIF Backbone Taxonomy</a><a href="#authority_geonames">GeoNames</a><a href="#habitatScheme">Habitats</a><a href="#authority_gnd">Integrated Authority File (GND)</a><a href="#lifeStageScheme">Life stages</a><a href="#movementKindScheme">Movement kinds</a><a href="#regionKindScheme">Multimodal region kinds</a><a href="#evidenceKindScheme">Observation evidence kinds</a><a href="#recordTypeScheme">Observation record types</a><a href="#occurrenceStatusScheme">Occurrence status</a><a href="#placeKindScheme">Place kinds</a><a href="#precipitationScheme">Precipitation types</a><a href="#sexScheme">Sex</a><a href="#skyConditionScheme">Sky conditions</a><a href="#matchMethodScheme">Taxon name match methods</a><a href="#taxonRankScheme">Taxon ranks (as named by the diarist)</a><a href="#temperatureUnitScheme">Temperature units</a><a href="#timeOfDayScheme">Times of day</a><a href="#transportModeScheme">Transport modes</a><a href="#vitalityScheme">Vitality</a><a href="#authority_wikidata">Wikidata</a></nav>
 <h2 id="callTypeScheme">Bird call types <span style="color:#5F6E64;font-size:.85rem">· Lautäußerungstypen · <code>lkg:callTypeScheme</code></span></h2>
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
 <tr><td><code>lkg:call_alarm</code></td><td>alarm</td><td>Warnruf</td><td></td></tr>
@@ -36,13 +36,13 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}
 <tr><td><code>lkg:entrykind_retrospective</code></td><td>retrospective</td><td>Rückblick</td><td></td></tr>
 <tr><td><code>lkg:entrykind_species_digest</code></td><td>species-digest</td><td>Artenzusammenstellung</td><td></td></tr>
 </table>
-<h2 id="authority_eunis">EUNIS habitat classification (2012) <span style="color:#5F6E64;font-size:.85rem">·  · <code>lkg:authority_eunis</code></span></h2>
+<h2 id="authority_eunis">EUNIS habitat classification (2012) <span style="color:#5F6E64;font-size:.85rem">· EUNIS-Habitatklassifikation (2012) · <code>lkg:authority_eunis</code></span></h2>
 <p class="meta">Habitat concepts (lkg:habitatScheme). Grade from the model/reviewer judgement (exact, close, broad). EUNIS records also carry their skos:broader chain up to the level-1 group and rdfs:seeAlso to the Eionet Data Dictionary and BISE pages.</p>
 <p class="meta">Open scheme — concepts are minted in the data (no fixed list).</p>
-<h2 id="authority_gbif">GBIF Backbone Taxonomy <span style="color:#5F6E64;font-size:.85rem">·  · <code>lkg:authority_gbif</code></span></h2>
+<h2 id="authority_gbif">GBIF Backbone Taxonomy <span style="color:#5F6E64;font-size:.85rem">· GBIF-Backbone-Taxonomie · <code>lkg:authority_gbif</code></span></h2>
 <p class="meta">Taxa (lkg:Taxon). Grade: exactMatch = GBIF EXACT match at or above the configured confidence; closeMatch = FUZZY match or a name proposed by the LLM and verified in GBIF; broadMatch = HIGHERRANK (the name is anchored at genus level). Mirrored as dwc:taxonID (except broadMatch).</p>
 <p class="meta">Open scheme — concepts are minted in the data (no fixed list).</p>
-<h2 id="authority_geonames">GeoNames <span style="color:#5F6E64;font-size:.85rem">·  · <code>lkg:authority_geonames</code></span></h2>
+<h2 id="authority_geonames">GeoNames <span style="color:#5F6E64;font-size:.85rem">· GeoNames · <code>lkg:authority_geonames</code></span></h2>
 <p class="meta">Places (lkg:Place). Grade: exactMatch = the OpenStreetMap hit and the GeoNames record agree, or a reviewer confirmed the link; closeMatch = single-source name match (GeoNames alone, unique in the home region).</p>
 <p class="meta">Open scheme — concepts are minted in the data (no fixed list).</p>
 <h2 id="habitatScheme">Habitats <span style="color:#5F6E64;font-size:.85rem">· Lebensräume · <code>lkg:habitatScheme</code></span></h2>
@@ -101,9 +101,7 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
 <tr><td><code>lkg:placekind_locality</code></td><td>locality</td><td>Örtlichkeit / Flurname</td><td></td></tr>
 <tr><td><code>lkg:placekind_region</code></td><td>region</td><td>Region</td><td></td></tr>
-<tr><td><code>lkg:placekind_route</code></td><td>route</td><td>Strecke</td><td></td></tr>
 <tr><td><code>lkg:placekind_settlement</code></td><td>settlement</td><td>Siedlung</td><td></td></tr>
-<tr><td><code>lkg:placekind_unknown</code></td><td>unknown</td><td>unbekannt</td><td></td></tr>
 </table>
 <h2 id="precipitationScheme">Precipitation types <span style="color:#5F6E64;font-size:.85rem">· Niederschlagsarten · <code>lkg:precipitationScheme</code></span></h2>
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
@@ -129,6 +127,15 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}
 <tr><td><code>lkg:sky_partly_cloudy</code></td><td>partly-cloudy</td><td>wolkig</td><td></td></tr>
 <tr><td><code>lkg:sky_variable</code></td><td>variable</td><td>wechselnd</td><td></td></tr>
 </table>
+<h2 id="matchMethodScheme">Taxon name match methods <span style="color:#5F6E64;font-size:.85rem">· Zuordnungsmethoden der Taxonnamen · <code>lkg:matchMethodScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:matchmethod_gazetteer</code></td><td>gazetteer</td><td>Projekt-Namensliste</td><td></td></tr>
+<tr><td><code>lkg:matchmethod_llm</code></td><td>llm</td><td>Extraktionsmodell</td><td></td></tr>
+<tr><td><code>lkg:matchmethod_llm_gbif</code></td><td>llm+gbif</td><td>Modellvorschlag, in GBIF geprüft</td><td></td></tr>
+<tr><td><code>lkg:matchmethod_machine_review</code></td><td>machine-review</td><td>maschinelle Prüfung</td><td></td></tr>
+<tr><td><code>lkg:matchmethod_review</code></td><td>review</td><td>menschliche Prüfung</td><td></td></tr>
+<tr><td><code>lkg:matchmethod_unresolved</code></td><td>unresolved</td><td>nicht aufgelöst</td><td></td></tr>
+</table>
 <h2 id="taxonRankScheme">Taxon ranks (as named by the diarist) <span style="color:#5F6E64;font-size:.85rem">· Taxonomische Ränge (wie vom Tagebuchschreiber benannt) · <code>lkg:taxonRankScheme</code></span></h2>
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
 <tr><td><code>lkg:rank_family</code></td><td>family</td><td>Familie</td><td></td></tr>
@@ -136,13 +143,23 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}
 <tr><td><code>lkg:rank_group</code></td><td>group</td><td>informelle Gruppe</td><td></td></tr>
 <tr><td><code>lkg:rank_species</code></td><td>species</td><td>Art</td><td></td></tr>
 <tr><td><code>lkg:rank_subspecies</code></td><td>subspecies</td><td>Unterart</td><td></td></tr>
-<tr><td><code>lkg:rank_unknown</code></td><td>unknown</td><td>unbekannt</td><td></td></tr>
 </table>
 <h2 id="temperatureUnitScheme">Temperature units <span style="color:#5F6E64;font-size:.85rem">· Temperatureinheiten · <code>lkg:temperatureUnitScheme</code></span></h2>
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
 <tr><td><code>lkg:unit_C</code></td><td>C</td><td>Grad Celsius</td><td></td></tr>
 <tr><td><code>lkg:unit_F</code></td><td>F</td><td>Grad Fahrenheit</td><td></td></tr>
 <tr><td><code>lkg:unit_R</code></td><td>R</td><td>Grad Réaumur</td><td></td></tr>
+</table>
+<h2 id="timeOfDayScheme">Times of day <span style="color:#5F6E64;font-size:.85rem">· Tageszeiten · <code>lkg:timeOfDayScheme</code></span></h2>
+<table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
+<tr><td><code>lkg:timeofday_afternoon</code></td><td>afternoon</td><td>nachmittags</td><td></td></tr>
+<tr><td><code>lkg:timeofday_dawn</code></td><td>dawn</td><td>Morgendämmerung</td><td></td></tr>
+<tr><td><code>lkg:timeofday_dusk</code></td><td>dusk</td><td>Abenddämmerung</td><td></td></tr>
+<tr><td><code>lkg:timeofday_evening</code></td><td>evening</td><td>abends</td><td></td></tr>
+<tr><td><code>lkg:timeofday_forenoon</code></td><td>forenoon</td><td>vormittags</td><td></td></tr>
+<tr><td><code>lkg:timeofday_morning</code></td><td>morning</td><td>früh / morgens</td><td></td></tr>
+<tr><td><code>lkg:timeofday_night</code></td><td>night</td><td>nachts</td><td></td></tr>
+<tr><td><code>lkg:timeofday_noon</code></td><td>noon</td><td>mittags</td><td></td></tr>
 </table>
 <h2 id="transportModeScheme">Transport modes <span style="color:#5F6E64;font-size:.85rem">· Verkehrsmittel · <code>lkg:transportModeScheme</code></span></h2>
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
@@ -152,14 +169,12 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5F6E64}
 <tr><td><code>lkg:transport_carriage</code></td><td>carriage</td><td>Kutsche</td><td></td></tr>
 <tr><td><code>lkg:transport_foot</code></td><td>foot</td><td>zu Fuß</td><td></td></tr>
 <tr><td><code>lkg:transport_train</code></td><td>train</td><td>Zug</td><td></td></tr>
-<tr><td><code>lkg:transport_unknown</code></td><td>unknown</td><td>unbekannt</td><td></td></tr>
 </table>
 <h2 id="vitalityScheme">Vitality <span style="color:#5F6E64;font-size:.85rem">· Vitalität · <code>lkg:vitalityScheme</code></span></h2>
 <table><tr><th>concept</th><th>value (en, emitted)</th><th>de</th><th>definition</th></tr>
-<tr><td><code>lkg:vitality_alive</code></td><td>alive</td><td>lebend</td><td></td></tr>
 <tr><td><code>lkg:vitality_dead</code></td><td>dead</td><td>tot</td><td></td></tr>
 </table>
-<h2 id="authority_wikidata">Wikidata <span style="color:#5F6E64;font-size:.85rem">·  · <code>lkg:authority_wikidata</code></span></h2>
+<h2 id="authority_wikidata">Wikidata <span style="color:#5F6E64;font-size:.85rem">· Wikidata · <code>lkg:authority_wikidata</code></span></h2>
 <p class="meta">Places (same grade as the place&#x27;s georeference; the item comes from the OSM object&#x27;s wikidata tag or from GeoNames id P1566) and persons (exactMatch = reviewed; closeMatch = the only Wikidata human whose label or alias equals the name).</p>
 <p class="meta">Open scheme — concepts are minted in the data (no fixed list).</p>
 </body></html>

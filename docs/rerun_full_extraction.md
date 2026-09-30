@@ -118,6 +118,11 @@ robocopy data\cache\llm_v4 "G:\My Drive\HistOrniGraph_output\llm_cache_v4" /E
 robocopy data\cache\linking "G:\My Drive\HistOrniGraph_output\linking_cache" /E /XO
 ```
 
+Place labels that are new in this run are georeferenced from GeoNames only
+(the pipeline never calls Nominatim live). To add OpenStreetMap points, pre-warm
+the Nominatim cache for them (`tools/prewarm_nominatim.py`, 1 request/1.1 s)
+and re-run `export-all` — a cache replay, no Gemini cost.
+
 The cache makes the run reproducible: Gemini does not answer identically twice,
 but every later `export-all` with the same prompt replays these answers. Once the
 region crops are hosted, set `multimodal.image_base_url` and re-run `export-all`

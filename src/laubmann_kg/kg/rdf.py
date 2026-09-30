@@ -1,4 +1,4 @@
-"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.6.0.
+"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.7.0.
 
 Design notes
 - The data contract is ``kg/model.py``; this module only maps it onto triples.
