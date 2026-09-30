@@ -1156,3 +1156,124 @@ stop,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0124_L,r01,- <u>Gelesen</u>: 7; 11;
 stop,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0124_R,r01,- <u>Hartmann</u>:,,,,,register,,review,"index page, names garbled by OCR (Gelesen, Diktat, Primeln, Hempel...), page numbers 1-85 as in the species index; end matter"
 stop,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0125_L,r01,- <u>Berberbe</u>:,,,,,register,,review,species index with page numbers (end matter)
 stop,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0126_L,r01,Austria-,,,,,register,,review,"list of classical authors (Herodot, Platon, ...) on the back pages; end matter, not diary"
+start,10,c5861532-d7c2-43d7-b501-4ccd0d7499fd_0061_R,r03,14. <u>VI</u>. 1932. [illegible],1932-06-14,,,,other,medium,review-2026-09-30,"Datumszeile '14. VI. 1932.' am Ende, Text unleserlich; folgt auf Eintrag vom 13. Juni"
+start,18,d2b08619-52be-4938-8fbd-f73f92be22fb_0063_R,r05,8. - 10. Januar 1944. <u>Kaufbeuren</u>.,1944-01-08,1944-01-10,,Kaufbeuren,field-day,high,review-2026-09-30,"Datumszeile 8.-10. Januar 1944, Kaufbeuren"
+start,18,d2b08619-52be-4938-8fbd-f73f92be22fb_0091_L,r03,8. - 10. August 1944. <u>Kaufbeuren</u>.,1944-08-08,1944-08-10,,Kaufbeuren,field-day,high,review-2026-09-30,Datumszeile 8.-10. August 1944
+start,19,3184f72c-a9bc-40ef-b5c6-bc0b05582cb8_0004_R,r02,4. - 5. <u>Oktober 1944.</u>                                <u>Kaufbeuren.</u>,1944-10-04,1944-10-05,,Kaufbeuren,field-day,high,review-2026-09-30,Datumszeile 4.-5. Oktober 1944
+start,19,3184f72c-a9bc-40ef-b5c6-bc0b05582cb8_0008_L,r02,26.-28. Dezember 1944. Kaufbeuren.,1944-12-26,1944-12-28,,Kaufbeuren,field-day,high,review-2026-09-30,Datumszeile 26.-28. Dezember 1944
+start,19,3184f72c-a9bc-40ef-b5c6-bc0b05582cb8_0009_L,r04,23.-28. Februar 1945. <u>Kaufbeuren</u>.,1945-02-23,1945-02-28,,Kaufbeuren,field-day,high,review-2026-09-30,Datumszeile 23.-28. Februar 1945
+start,19,3184f72c-a9bc-40ef-b5c6-bc0b05582cb8_0059_L,r02,7.-9. Dezember 1946. <u>München - Kaufbeuren.</u>,1946-12-07,1946-12-09,,München - Kaufbeuren,field-day,high,review-2026-09-30,Datumszeile 7.-9. Dezember 1946
+start,21,e3cf5b4e-67c4-413c-84c6-69644317a668_0030_R,r04,27. - 28. November 1948. <u>Kaufbeuren.</u>,1948-11-27,1948-11-28,,Kaufbeuren,field-day,high,review-2026-09-30,Datumszeile 27.-28. November 1948
+start,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0064_R,r04,15. <u>II</u>. 1950.,1950-02-15,,,München (Botanischer Garten),other,medium,review-2026-09-30,separately dated note '15. II. 1950.' after a newspaper clipping
+start,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0098_R,r05,7.-9. Juni 1950. <u>München - Upsala.</u>,1950-06-07,1950-06-09,,München - Upsala,field-day,high,review-2026-09-30,heading '7.-9. Juni 1950. München - Upsala.' starts travel report
+start,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0026,r06,"I s m a n i n g,den 19.8.",1952-08-19,,,Ismaning,correspondence,high,review-2026-09-30,"heading 'Ismaning, den 19.8.' followed by excursion report"
+start,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0029,r05,"<u>Ismaning,den 7.9.</u>",1952-09-07,,,Ismaning,correspondence,high,review-2026-09-30,"heading 'Ismaning, den 7.9.' Bericht von E. Bezzel"
+start,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0040,r05,"<u>Ismaning,den 14.9.52.</u>",1952-09-14,,,Ismaning,correspondence,high,review-2026-09-30,"heading 'Ismaning, den 14.9.52.' followed by weather/report"
+start,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0090_R,r05,6. Februar - 1953. <u>München</u>.,1953-02-06,,,München,field-day,high,review-2026-09-30,Datumskopf 6. Februar 1953
+start,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0107_R,r03,23. Januar - 1954.                     <u>München.</u>,1954-01-23,,,München,field-day,high,review-2026-09-30,Datumskopf 23. Januar 1954
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0005_L,r03,26. Februar - 1954. <u>Münster.</u>,1954-02-26,,,München,field-day,high,review-2026-09-30,Datumskopf 26. Februar 1954 (Ort als Münster gelesen)
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0005_R,r04,28. Januar – 1954.                     <u>München</u>.,1954-02-28,,,München,field-day,high,review-2026-09-30,"Datumskopf 28. (Januar, OCR/Schreibfehler fuer Februar) 1954"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0047,r02,2. Nov.,1954-11-02,,,,field-day,medium,review-2026-09-30,2. Nov. Notiz (Karte/Randspalte) nach 30. Okt.
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0047,r02,4. Nov.,1954-11-04,,,,field-day,medium,review-2026-09-30,4. Nov. Notiz
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0050_R,r02,10. November-1954. <u>München</u>.,1954-11-10,,,München,field-day,high,review-2026-09-30,Datumskopf 10. November 1954
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0101,r01,   29.Dez.&4. Zusammen mit Heinz in den oberen FT und auf dem SD bis Turm.,1954-12-29,,,Süddamm bis Turm (Ismaning),field-day,medium,review-2026-09-30,"29.Dez. Exkursion mit Heinz, neuer Tag"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0132_R,r03,"21. Februar 1955, <u>München</u>.",1955-02-21,,,München,field-day,high,review-2026-09-30,Datumskopf 21. Februar 1955
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0142,r04,4. März [?],1955-03-04,,,,field-day,medium,review-2026-09-30,"4. März Notiz, Fragment"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0155_L,r03,23. März,1955-03-23,,,,field-day,medium,review-2026-09-30,"23. März Notiz, Fragment"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0025,r06,"20.VI.1955, 15.15 - 18.30 (E-Werk - E-Werk)",1955-06-20,,,Ismaninger Speichersee (E-Werk),correspondence,medium,review-2026-09-30,Separater datierter Bericht von Walter vom 20.VI.1955
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0030,r03,"Ismaning, den 9.6.55.",1955-06-09,,,Ismaning,correspondence,medium,review-2026-09-30,"Bericht 'Ismaning, den 9.6.55.'"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0063,r03,18. Juli,1955-07-18,,,,field-day,medium,review-2026-09-30,18. Juli Tagesnotiz (Wetter folgt)
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0063,r03,19. Juli,1955-07-19,,,,field-day,medium,review-2026-09-30,19. Juli Tagesnotiz
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0064,r03,17. Juni. Mit Heinz.,1955-06-17,,,,field-day,high,review-2026-09-30,17. Juni. Mit Heinz.
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0064,r03,25 Juni. Mit Heinz.,1955-06-25,,,,field-day,high,review-2026-09-30,25 Juni. Mit Heinz.
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0121_L,r04,"22. September 1955, [illegible] n.",1955-09-22,,,,field-day,high,review-2026-09-30,22. September 1955
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0148_L,r03,29. IX. 55: fahr. Kanal - <u>St. - Obersee - Nord</u>,1955-09-29,,,Föhr. Kanal - Obersee - Nord - Ismaning,field-day,medium,review-2026-09-30,29. IX. 55 Exkursionsnotiz
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0175,r03,"I s m a n i n g,den 2.XI.1955. Neufinsing-Süddamm-Turm/Tfb.-Ismaning.",1955-11-02,,,Ismaning,correspondence,medium,review-2026-09-30,"Bericht Ismaning, den 2.XI.1955"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0175,r03,"I s m a n i n g,den 5.XI.1955. 14,30-17 h.Föhr.Kanal-Ft.-Obersee-E.W.-",1955-11-05,,,Ismaning,correspondence,medium,review-2026-09-30,"Bericht Ismaning, den 5.XI.1955"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0181_L,r03,"30. November 1955, <u>München</u>",1955-11-30,,,München,field-day,high,review-2026-09-30,"30. November 1955, München"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0183,r04,"Ismaning, den 27.11.1955.",1955-11-27,,,Ismaning,correspondence,medium,review-2026-09-30,"Bericht Ismaning, den 27.11.1955"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0199,r05,"13.Nov.55,Sps.Eching/Moosburg.",1955-11-13,,,Eching/Moosburg,field-day,medium,review-2026-09-30,13.Nov.55 Sps. Eching/Moosburg
+start,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0044_L,r02,26. September. <u>Bovenden</u>.,1956-09-26,,,Bovenden,field-day,high,review-2026-09-30,26. September. Bovenden.
+start,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0027_L,r04,5. April bis 16. April 1960. <u>München</u>.,1960-04-05,1960-04-16,,München,field-day,high,review-2026-09-30,5. April bis 16. April 1960. München.
+start,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0069_R,r04,"26. Februar 1961, <u>München</u>.",1961-02-26,,,München,field-day,high,review-2026-09-30,"26. Februar 1961, München"
+start,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0081_R,r03,26. Mai. Bad-Berka.,1961-05-26,,,Bad Berka,field-day,high,review-2026-09-30,26. Mai. Bad-Berka.
+start,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0123_L,r04,16. November 1961; <u>München.</u>,1961-11-16,,,München,field-day,high,review-2026-09-30,16. November 1961; München.
+start,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0123_L,r04,22. November 1961; <u>München.</u>,1961-11-22,,,München,field-day,high,review-2026-09-30,22. November 1961; München.
+start,33,cde59c05-4063-40dd-84a0-a7873447632c_0048,r08,27. September,1962-09-27,,,,field-day,medium,review-2026-09-30,"27. September, Tagesnotiz (Haussperlinge ...)"
+start,33,cde59c05-4063-40dd-84a0-a7873447632c_0054_L,r01,30. Oktober,1962-10-30,,,,field-day,medium,review-2026-09-30,30. Oktober Überschrift
+start,33,cde59c05-4063-40dd-84a0-a7873447632c_0121,r01,18. Okt.,1963-10-18,,,,field-day,medium,review-2026-09-30,"18. Okt. Seitenanfang, Tagesnotiz"
+start,33,cde59c05-4063-40dd-84a0-a7873447632c_0121,r01,19. Oktober,1963-10-19,,,,field-day,medium,review-2026-09-30,19. Oktober Tagesnotiz
+start,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0028_R,r04,19. Septemb[?] [illegible],1964-09-19,,,,field-day,high,review-2026-09-30,19. Septemb[er] Tagesnotiz nach 18.9.
+start,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0029_R,r03,17. September,1964-09-17,,,,field-day,medium,review-2026-09-30,"17. September mit Wetterangaben, eigene Tagesnotiz"
+start,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0045_R,r02,| | 1901 | 1902 | 1903 | 1904 | 1905 | 1906 | 1907 | 1908 | 1909 | 1910 |,,,y,,species-digest,medium,review-2026-09-30,"table of first spring arrival dates per species, 1901-1910"
+start,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0047_L,r01,| | 1901 | 1902 | 1903 | 1904 |,,,y,,species-digest,medium,review-2026-09-30,"table of first arrival dates per species, 1901-1920 (continued)"
+start,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0050_L,r02,| | 1911 | 1912 | 1913 | 1914 | 1915 | 1916 | 1917 | 1918 | 1919 | 1920 |,,,y,,species-digest,medium,review-2026-09-30,"table of first arrival dates per species, 1911-1920"
+start,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0085,r01,| | 1921 | 1922 | 1923 | 1924 |,,,y,,species-digest,medium,review-2026-09-30,"table of first arrival dates per species, 1921-1930 (with weather notes)"
+start,5,9e6d0f52-4715-4042-a17f-2b0ffe8cf2d6_0079_L,r01,| Schulbezirk | Bauten Stärke? | Besetzt? | No? | Gärtner mann |,,,y,Schwaben (Schulbezirke),other,medium,review-2026-09-30,"stork nest survey by school district, teacher informants"
+start,5,9e6d0f52-4715-4042-a17f-2b0ffe8cf2d6_0082_L,r02,| Schulbezirk | Zahl | Wann? | Bemerkungen | Gewährsmann |,,,y,Schwaben (Schulbezirke),other,medium,review-2026-09-30,"stork nest survey: pairs, years, remarks per school district"
+start,9,9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0057_R,r02,| Tag | Beobachtung | Erklärung |,,,y,,other,medium,review-2026-09-30,table of dated Schwirl/Schlagschwirl records 1923 and 1931 with comments
+start,11,9891dcba-6f8a-4918-8e79-1c63da52a69b_0013_R,r01,| Nr. | Vor 1931 | 1931 | 1932 |,,,y,,other,medium,review-2026-09-30,"table of nest sites (Horst) 1931/1932, continues on following listed pages"
+start,11,9891dcba-6f8a-4918-8e79-1c63da52a69b_0027_R,r01,| Forstamt | Anzahl der Sichtungen | Art der Sichtungen | Bemerkungen |,,,y,,other,medium,review-2026-09-30,"table by Forstamt of nest/colony counts, continues on next page"
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0079_R,r02,x Linie 8 in Freimann zwischen zwischen,,,y,,field-day,medium,review-2026-09-30,"stark verrauschte Beobachtungsnotizen (Milan, Rohrweihe)"
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0080_R,r02,e [illegible] aus dem anderen Heft her:,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste (Bergpieper, Krickente, Kuckuck), verrauscht"
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0091_R,r02,"Langeoog, den 2",,,y,Langeoog,field-day,medium,review-2026-09-30,"Langeoog, Beobachtete Arten, Datum abgeschnitten"
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0112_R,r02,Ismaning abfliegend,,,y,Ismaning,field-day,medium,review-2026-09-30,"Teichgebiet-Notizen (Wb, Vkl, Ex.), verrauscht"
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0127_L,r02,.8.42,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste Winterteichen, Monat .8., Jahr unsicher"
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0130_R,r02,Leipziger Teichenten,1924-08-01,1924-08-31,,Leipzig,species-digest,medium,review-2026-09-30,"Leipziger Teichenten August 1924, Artenliste"
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0136_L,r02,.8. \ 29.8.42:,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,28./29.8. Artenliste
+start,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0152_R,r03,".1954, 9.15 - 1805 Uhr",,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Exkursion 1954, 9.15-18.05 Uhr, Speichersee"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0006_R,r02,Roßhaubentaucher: 21. 2/25. 1 im <u>Vkl</u>.,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste Vkl/Tafelberg, Beobachter Bezzel u.a."
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0009_L,r02,ein Teil <u>Vogelhüttensand</u> und <u>Hundshütte</u>,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"fragmentarische Beobachtungen (Raubmoewe, Meisen)"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0040_L,r02,27,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Notizen 14./15.XI, Meisen, Amseln, Schneebeere"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0074_L,r02,abgeändert.,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,Larus argentatus/canus am Teichgebiet
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0157_L,r02,83,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Wetter, Pegel, Zwergtaucher; Rest OCR-Schleife"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0168_L,r02,.grubsooM-gnitcE,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"gespiegelter Text, Artenzahlen"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0172_R,r02,21.VI.8.15 Uhr,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"548. Speichersee-Begehung, 21. (Monat unsicher)"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0175,r04,Ismaninger Teichgebiet.,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Raubvogel-/Artenbeobachtungen, verrauscht"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0177,r03,Ismaninger Teichgebiet- München,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste Teichgebiet/Isarkanal, ohne Datum"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0181,r03,"                 Kar-Fr. 8.IV.1955, 6.45 - 18.15 Uhr",1955-04-08,,,Ismaninger Teichgebiet,field-day,high,review-2026-09-30,549. Speichersee-Begehung Karfreitag 8.IV.1955
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0206,r02,"Amsel: S. Hirschau, ♂ 2. Insel, in der Lierstraße brütet das ♀ wieder",,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Mai 1955 (8.V. erwaehnt), Artenliste, Beringung"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0212,r03,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,species-digest,medium,review-2026-09-30,Jahresuebersicht Limikolen/Enten am DW mit Daten
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0213,r02,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste Fruehjahr, Huette, ohne Datum"
+start,28,733b37c0-686b-46c0-8cf8-59b030cee225_0220_L,r02,"63. 22. <u>67) Hanfling</u>, 1 am Bachsaumler.",,,y,,field-day,medium,review-2026-09-30,"Artenliste am See, 2. Insel (Seite 93)"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0013_R,r02,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,species-digest,medium,review-2026-09-30,Limikolen August Ismaning
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0016,r03,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste, Uferschnepfe 20.32 Uhr"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0018_L,r02,110,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 110, Wanderfalken von der Huette"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0033_R,r02,Laiminger Teichgebiet,,,y,Ismaninger Teichgebiet,species-digest,medium,review-2026-09-30,Artenliste Maerz
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0035_L,r03,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Lachmoewe, Bruchwasserlaeufer, 11.3."
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0042,r02,110,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 110 Forts., Huette, Stieglitzzug 20.35 Uhr"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0043,r03,Ismaninger Teichgebiet,1955-06-26,,,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste, Kuckuck/Lachmoewe am 26.6."
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0067,r02,ganuegen-gefehen:,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"gespiegelter Text, Vkl Beobachtungen"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0069,r04,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,verrauschte Artenliste
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0071_L,r02,T30,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite T30, Zwergtaucher, verrauscht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0072,r02,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,Artenliste Singvoegel NW-Teichgebiet/Isar
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0079_R,r03,<u>Lanninger Teichgebiet</u>,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste Enten, Zwergtaucher, Flussuferlaeufer"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0081,r04,Ismaninger Teichgebiet                                         135,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 135, Graureiher, Wanderfalke, 13.9."
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0082,r02,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste, Schnatterenten-Flugbalz"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0083,r02,"dann, wo ich einen neuen Fangplatz für",,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Fangplatz Obersee, Beobachtungen, verrauscht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0084,r03,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,Artenliste (Datum im OCR unsicher)
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0086,r03,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,Artenliste Herbstzug
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0096_R,r02,Termineckstrandläufer: mindestens,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,Limikolen 14./18. Maerz
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0128_L,r02,0 K3/26; 35 K3/27; 50 K3/29,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Zaehlungen K3-Teiche, verrauscht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0128_R,r02,Lemaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Artenliste mit Ortsangaben, verrauscht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0129,r02,Ismaninger Teichgebiet                                      145,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 145, Zaehlungen pro Teich, stark verrauscht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0137_L,r02,T20,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite T20, Wetter, Goldhaehnchen, 3.8."
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0143,r03,Ismaninger Teichgebiet                                                                   152,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 152, Beobachtungen Wb/Ft"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0156_R,r02,592. Speichersee-Begehung,,,y,Ismaninger Teichgebiet,field-day,high,review-2026-09-30,592. Speichersee-Begehung
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0158_L,r02,091,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Meisen, Huette, Wetter, verrauscht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0158_R,r01,22.10.1955,1955-10-22,,,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,22.10.1955 verrauschte Parallelfassung zu 3b_0162
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0178_L,r02,Temeninn--- m,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 195, Quardamm, Herold/Walther"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0185,r03,"im gebräuchlichen Weg durch die Hirschau, beim Aumeister vorbei über",,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Begehung Isarkanal/Sueddamm, Habicht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0200_R,r02,"1. 5. <u>neb.</u>, <u>Laminemai</u>",,,y,,field-day,medium,review-2026-09-30,"Fischadler am See, Artenliste"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0212_L,r03,(1892),,,y,Ismaninger Teichgebiet,retrospective,medium,review-2026-09-30,"Rueckblick mit Jahresangaben 1892/1893, Zaehlungen"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0217_L,r02,Dezember - Beric,,,y,Ismaninger Teichgebiet,species-digest,medium,review-2026-09-30,"Dezember-Bericht, Enten"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0221_L,r03,s Wb.,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Gaense von NO, Tafelenten, Wb"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0222_L,r02,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,species-digest,medium,review-2026-09-30,"Artenliste Jan-Maerz, verrauscht"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0223,r02,Ismaninger Teichgebiet                                              8,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 8, Mittelsaeger, Saatgans 16.25 h"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0235_L,r02,-2-,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite -2-, 24.IX. Bussard, Habicht, Wiesenpieper"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0270,r02,Ismaninger Teichgebiet,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"weisse Reiherenten, Lachmoewe"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0271,r02,Ismaninger Teichgebiet                                                               25,,,y,Ismaninger Teichgebiet,field-day,medium,review-2026-09-30,"Seite 25, Enten Geschlechterverhaeltnis"
+start,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0273,r02,Ismaninger Teichgebiet                                              26,,,y,Ismaninger Teichgebiet,field-day,high,review-2026-09-30,"Seite 26, Buntspecht am Poschinger Weiher u.a."
+start,33,cde59c05-4063-40dd-84a0-a7873447632c_0116_L,r02,| Species / Entry | Date | Location / Detail |,,,y,"Kopenhagen, Kiel, Gevninge, München",species-digest,medium,review-2026-09-30,table of spring arrival dates per species and place
+start,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0008_L,r03,"| | ""Frühlingserwachen 1967"" | |",,,y,"Inning, Karlsfeld",species-digest,medium,review-2026-09-30,table 'Frühlingserwachen 1967': first spring dates per species
+start,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0057_L,r02,| Column 1 | Column 2 | Column 3 |,,,y,"Ismaning, Karlsfeld",species-digest,medium,review-2026-09-30,table of spring arrival dates per species and place
