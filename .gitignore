@@ -26,6 +26,11 @@ data/cache/**/*
 !data/cache/**/.gitkeep
 data/corpus/**/*
 !data/corpus/**/.gitkeep
+# local corpus copies (Drive corpus_2026-07-21, corpus_2026-07-21_dedup, the patched corpus);
+# data/corpus_patches/ (reviewed boundary/mask/duplicate tables) IS tracked
+data/corpus_dedup/
+data/corpus_patched/
+data/corpus_20*/
 data/review/entries.csv
 
 # Explorer publication snapshot (34-volume payload; the shell is tools/explorer/index.html)

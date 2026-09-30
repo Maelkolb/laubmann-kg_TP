@@ -1,0 +1,78 @@
+volume,dropped_page,kept_page,relation,dedup_confidence,cluster_id,lost_header,date_iso
+8,L08:f27fdaf5-89b6-461f-948c-4c32a63e750e_0038_L,L08:f27fdaf5-89b6-461f-948c-4c32a63e750e_0037_L,same_page,0.8258,dup0445,20. April 1930.,1930-04-20
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0004_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,23. September 1930. <u>München.</u>,1930-09-23
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0004_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,26. September 1930. <u>München.</u>,1930-09-26
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0004_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,28. September 1930. <u>München.</u>,1930-09-28
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0004_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,29. September 1930. <u>München.</u>,1930-09-29
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0005_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,23. September 1930. <u>München</u>.,1930-09-23
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0005_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,26. September 1931. <u>München.</u>,1931-09-26
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0005_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,28. September 1930. <u>München.</u>,1930-09-28
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0005_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0007_R,same_page,0.968,dup0476,29. September 1930. <u>München</u>.,1930-09-29
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0060_R,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0062_L,containment,0.55,dup0635,6. Juni 1931: <u>München.</u>,1931-06-06
+9,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0061_full,L09:9ede15e2-4f17-4eeb-865e-8b60fb8811aa_0062_L,containment,0.55,dup0635,6. Juni 1931: <u>München</u>.,1931-06-06
+10,L10:c5861532-d7c2-43d7-b501-4ccd0d7499fd_0049_R,L10:c5861532-d7c2-43d7-b501-4ccd0d7499fd_0050,containment,0.48,dup0770,10. Mai 1932. <u>München</u>,1932-05-10
+10,L10:c5861532-d7c2-43d7-b501-4ccd0d7499fd_0076_R,L10:c5861532-d7c2-43d7-b501-4ccd0d7499fd_0077_R,same_page,0.8044,dup0816,17. August 1932. <u>Höllental-Anger</u>,1932-08-17
+12,L12:d63486a8-af98-462e-93f3-639bec77dcf7_0061_L,L12:d63486a8-af98-462e-93f3-639bec77dcf7_0064,same_page,0.9008,dup0244,1. Juli 1934. <u>München</u>.,1934-07-01
+12,L12:d63486a8-af98-462e-93f3-639bec77dcf7_0062,L12:d63486a8-af98-462e-93f3-639bec77dcf7_0064,same_page,0.9008,dup0244,1. Juli 1934. <u>München</u>.,1934-07-01
+14,L14:5c5374bc-f8be-4914-a42e-871f43c6ee2d_0036_L,L14:5c5374bc-f8be-4914-a42e-871f43c6ee2d_0033_R,same_page,1,dup0017,2. VI. 1936 E. Schuhmacher phot.,1936-06-02
+14,L14:5c5374bc-f8be-4914-a42e-871f43c6ee2d_0079_L,L14:5c5374bc-f8be-4914-a42e-871f43c6ee2d_0078_L,same_page,0.622,dup0451,1. November 1936. München.,1936-11-01
+15,L15:900847d2-aabe-4b16-b0e6-203b103bd1e1_0011_R,L01:900847d2-aabe-4b16-b0e6-203b103bd1e1_0011_R,same_page,0.9575,dup0051,8. Juni 1917. <u>Kaufbeuren</u>.,1917-06-08
+15,L15:a407c4d3-a505-44d6-97e4-a257b468f81c_0135_full,L15:a407c4d3-a505-44d6-97e4-a257b468f81c_0134_L,same_page,1,dup0305,30. September 1938. <u>München.</u>,1938-09-30
+15,L15:a407c4d3-a505-44d6-97e4-a257b468f81c_0136_L,L15:a407c4d3-a505-44d6-97e4-a257b468f81c_0134_L,same_page,1,dup0305,30. September 17.,1917-09-30
+16,L16:6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0140_R,L16:6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0141_R,same_page,0.74,dup0832,24. August 1940. <u>Wannsee</u>.,1940-08-24
+17,L17:6fed7034-959e-4f62-84fc-6d0ad540c4a8_0066_R,L17:6fed7034-959e-4f62-84fc-6d0ad540c4a8_0065_R,containment,0.59,dup0910,11. Dezember 1941. <u>München</u>.,1941-12-11
+17,L17:6fed7034-959e-4f62-84fc-6d0ad540c4a8_0111_R,L17:6fed7034-959e-4f62-84fc-6d0ad540c4a8_0112_R,same_page,0.8021,dup0537,16. Juni 1942. <u>Bernried</u>.,1942-06-16
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0049_R,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0050_R,same_page,0.8228,dup0448,6. Oktober 1943. <u>Mischchor.</u>,1943-10-06
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0059_L,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0060,same_page,0.371,dup0937,10. November 1943. <u>München.</u>,1943-11-10
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0065_R,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0066,containment,0.75,dup0641,28. Februar 1944. <u>Kaufbeuren</u>.,1944-02-28
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0065_R,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0066,containment,0.75,dup0641,28. Februar 1944. <u>München</u>.,1944-02-28
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0065_R,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0066,containment,0.75,dup0641,1. März 1944. München.,1944-03-01
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0065_R,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0066,containment,0.75,dup0641,8. März 1944. <u>München</u>.,1944-03-08
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0086_L,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0088_full,containment,0.536,dup0675,21. IV. 1901 1 Stück im Moos an der Amper; am 6. X.,1901-04-21
+18,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0092_R,L18:d2b08619-52be-4938-8fbd-f73f92be22fb_0093,containment,0.3634,dup0951,7. September 1944. <u>Lenggries</u>.,1944-09-07
+23,L23:755c1169-3cff-4295-80f8-48abac677fff_0020,L23:755c1169-3cff-4295-80f8-48abac677fff_0021,containment,0.4602,dup0811,27. September 1950. München.,1950-09-27
+23,L23:755c1169-3cff-4295-80f8-48abac677fff_0046_L,L23:755c1169-3cff-4295-80f8-48abac677fff_0047,same_page,0.536,dup0677,"3. Februar
+1851",1851-02-03
+23,L23:755c1169-3cff-4295-80f8-48abac677fff_0046_R,L23:755c1169-3cff-4295-80f8-48abac677fff_0047,same_page,0.536,dup0677,11. VI. 50 (siehe oben p. 45) schreibt mir Herr Dr.,1950-06-11
+23,L23:755c1169-3cff-4295-80f8-48abac677fff_0048,L23:755c1169-3cff-4295-80f8-48abac677fff_0047,same_page,0.536,dup0677,"3. Februar
+1851",1851-02-03
+23,L23:755c1169-3cff-4295-80f8-48abac677fff_0048,L23:755c1169-3cff-4295-80f8-48abac677fff_0047,same_page,0.536,dup0677,"3. Februar
+1951",1951-02-03
+23,L23:755c1169-3cff-4295-80f8-48abac677fff_0048,L23:755c1169-3cff-4295-80f8-48abac677fff_0047,same_page,0.536,dup0677,11.XI. 50 (siehe oben p. 45) schreibt mir Herr Dr.,1950-11-11
+25,L25:65e6387d-c1b4-49e0-80ad-5c8701ebe370_0022_L,L25:65e6387d-c1b4-49e0-80ad-5c8701ebe370_0021_L,same_page,0.7486,dup0651,28. August 1952. <u>Freiburg</u>.,1952-08-28
+25,L25:65e6387d-c1b4-49e0-80ad-5c8701ebe370_0077,L25:65e6387d-c1b4-49e0-80ad-5c8701ebe370_0078,containment,0.68,dup0776,13. September 1952.                      <u>München</u>.,1952-09-13
+27,L27:df300659-7845-4de6-aa0e-a53bce4c69ff_0144_R,L27:df300659-7845-4de6-aa0e-a53bce4c69ff_0146,same_page,0.5303,dup0693,16. September 1954. <u>Donnerstag.</u> (106),1954-09-16
+27,L27:df300659-7845-4de6-aa0e-a53bce4c69ff_0145,L27:df300659-7845-4de6-aa0e-a53bce4c69ff_0146,same_page,0.5303,dup0693,3. September 1954. <u>München</u>.,1954-09-03
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0036,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0038,same_page,0.708,dup0725,8. X. 54.,1954-10-08
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0036,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0038,same_page,0.708,dup0725,8. X. 54.,1954-10-08
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0053_L,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0055,same_page,0.6551,dup0815,10. November 1954.    <u>München.</u>,1954-11-10
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0083_L,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0085,containment,0.48,dup0781,17. Dezember 1954. <u>München</u>.,1954-12-17
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0104,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0105,same_page,0.694,dup0756,9. Januar 1955. <u>München.</u>,1955-01-09
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0119_L,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0121,same_page,0.6419,dup0837,24. Jan. 55. <u>Leopoldskronerweiher</u>: 2,1955-01-24
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0119_L,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0121,same_page,0.6419,dup0837,"30. Jan. 55. <u>Heuberg</u>: 1 Habicht, 100",1955-01-30
+28,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0120_L,L28:733b37c0-686b-46c0-8cf8-59b030cee225_0121,same_page,0.6419,dup0837,16. Jan. 55.,1955-01-16
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0004_R,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0005,same_page,0.555,dup0963,"31. Mai 55. Eichelhäher, 2 MM Piro",1955-05-31
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0023_L,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0025,same_page,0.6438,dup0784,21. Juni 1955. <u>München</u>.,1955-06-21
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0024,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0025,same_page,0.6438,dup0784,24. Juni 1955.                                München.,1955-06-24
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0033_L,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0034,containment,0.48,dup0785,25.IV.1955,1955-04-25
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0053,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0054,containment,0.55,dup0644,7. Juli 1955. <u>München.</u>,1955-07-07
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0111_R,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0113,same_page,0.9312,dup0569,17. September 1955.,1955-09-17
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0112,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0113,same_page,0.9312,dup0569,17. September 1955.,1955-09-17
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0116,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0115,same_page,0.6778,dup0793,19. September 1955. Lovran.,1955-09-19
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0179,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0180,containment,0.568,dup0942,15. November 1955.                    <u>München</u>.,1955-11-15
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0219,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0216_R,same_page,0.5715,dup0936,14. Januar 1956.                                  <u>München,1956-01-14
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0226_R,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0230,containment,0.75,dup0645,7. Februar 1956. <u>München</u>.,1956-02-07
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0226_R,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0230,containment,0.75,dup0645,12. Februar 1956. <u>München</u>.,1956-02-12
+29,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0229,L29:7896ddd3-74f8-4374-92f3-aba32dccf03b_0230,containment,0.75,dup0645,7. Februar 1956.	<u>München.</u>,1956-02-07
+31,L31:f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0057_L,L31:f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0058_L,same_page,0.7373,dup0913,16. November 1955. <u>München</u>.,1955-11-16
+31,L31:f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0058_R,L31:f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0056_L,same_page,0.8988,dup0650,18. November 1958. <u>München</u>.,1958-11-18
+32,L32:3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0035_L,L32:3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0034_L,same_page,0.7727,dup0595,16. Juni 1960. München.,1960-06-16
+32,L32:3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0042_R,L32:3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0043_R,same_page,0.7126,dup0717,5. September 1960.           München.,1960-09-05
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0010,L33:cde59c05-4063-40dd-84a0-a7873447632c_0011,same_page,0.576,dup0588,13. April 1962.                          <u>München</u>.,1962-04-13
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0049,L33:cde59c05-4063-40dd-84a0-a7873447632c_0048,same_page,0.5431,dup0659,27. September 1962. München.,1962-09-27
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0079,L33:cde59c05-4063-40dd-84a0-a7873447632c_0080,same_page,0.7089,dup0723,27. Mai 1963.                              He[?],1963-05-27
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0120_L,L33:cde59c05-4063-40dd-84a0-a7873447632c_0119_L,same_page,0.5927,dup0556,25. Oktober 1963. <u>München</u>.,1963-10-25
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0127,L33:cde59c05-4063-40dd-84a0-a7873447632c_0129,same_page,0.6791,dup0720,23. Februar 1964.                     München.,1964-02-23
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0127,L33:cde59c05-4063-40dd-84a0-a7873447632c_0129,same_page,0.6791,dup0720,24. Februar 1964.                     München.,1964-02-24
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0128_R,L33:cde59c05-4063-40dd-84a0-a7873447632c_0129,same_page,0.6791,dup0720,23. Februar 1964.                           München.,1964-02-23
+33,L33:cde59c05-4063-40dd-84a0-a7873447632c_0128_R,L33:cde59c05-4063-40dd-84a0-a7873447632c_0129,same_page,0.6791,dup0720,24. Februar 1964.                           München.,1964-02-24

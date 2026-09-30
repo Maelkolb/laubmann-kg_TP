@@ -1,12 +1,17 @@
-# Full 34-volume build against the DEDUPLICATED corpus, Gemini backend.
-# Point corpus.entries at the corpus_*_dedup/ produced by
-# HistOrniGraph_addons/dedup/apply_dedup.py (or pass --input-dir on the CLI).
+# Full 34-volume build against the DEDUPLICATED + PATCHED corpus, Gemini backend.
+# Corpus chain (HistOrniGraph_addons/, see README_corpus.md):
+#   corpus_2026-07-21 --apply_dedup.py--> corpus_dedup (Drive corpus_2026-07-21_dedup)
+#   --dedup/apply_entry_boundaries.py + data/corpus_patches/entry_boundaries.csv--> corpus_patched
+#   (missed entry headers, typed reports, register stops; entry_uids of corpus_dedup unchanged)
+#   --build_multimodal_regions.py--> corpus_patched/multimodal_regions.jsonl
+#   (catalogue v2 images/objects + selected text inserts, duplicates removed, relinked)
+# Or pass --input-dir data/corpus_patched on the CLI.
 # Requires: pip install -e ".[llm]"  and GOOGLE_API_KEY (or GEMINI_API_KEY).
 # Calls are cached (data/cache/llm) at temperature 0, so an interrupted run
 # resumes for free.
 corpus:
-  entries: data/corpus_dedup/entries.csv
-  multimodal: data/corpus_dedup/multimodal.md
+  entries: data/corpus_patched/entries.csv
+  multimodal: data/corpus_patched/multimodal_regions.jsonl
 
 # null = all volumes. Set to a number to restrict to one volume.
 sample:

@@ -27,6 +27,20 @@ month_source, year_form, loc_source
 
 `text_clean` is the extraction input; hyphenated line breaks are already joined.
 
+The **patched corpus** (`HistOrniGraph_addons/dedup/apply_entry_boundaries.py`,
+ontology 0.6.0; the corpus `configs/full_llm.yaml` points at) adds three columns:
+`source_regions` (JSON list of `{region_uid, page_uid, page_id, scan}` — every
+body-text region the entry's text runs through, header region first; read into
+`DiaryEntry.source_regions`, one `lkg:hasSourceRegion` each), `boundary_source`
+and `boundary_kind` (set on entries that start at a reviewed boundary:
+`review` / `auto-markup` / … and `field-day` / `correspondence` /
+`species-digest`). Entries added by a boundary keep the detector's `entry_uid`
+derivation and get the `entry_id` of the entry before them plus a letter
+(`L05-e0123a`), so every existing `entry_uid` / `entry_id` is unchanged.
+Regions listed in `data/corpus_patches/masked_regions.csv` (unreliable or
+irrelevant transcriptions) are blanked out of the entry text with offsets kept;
+the patched `corpus.json` still holds their text and marks them `masked`.
+
 A 34-volume dump belongs at `data/corpus/entries.csv` (gitignored), not in
 `data/review/` (that directory is the linking/QA decision tables). Subsets are
 selected in config, not by copying a second CSV:
@@ -57,10 +71,16 @@ writes `html/graph.json` for the explorer (`tools/Laubmann-KG_Explorer.html`).
 
 Delivered as `multimodal.md` (a Markdown catalogue; structured fields live in its
 `<!-- mm ... -->` HTML comments). The loader (`io/metadata.py`) also accepts a
-`multimodal.csv` per the frozen contract. Fields consumed:
-`region_uid, page_uid, region_type, reading_order, insert_id, insert_state,
-entry_uid, volume, scan, crop, description, visible_text`. Join to observations
-is by `entry_uid`; `crop` is the image path used as the DwC-A media identifier.
+`multimodal.csv` per the frozen contract and — preferred since ontology 0.6.0 —
+`multimodal_regions.jsonl` (`HistOrniGraph_addons/build_multimodal_regions.py`:
+catalogue v2 images/objects + selected text inserts, duplicate scans removed,
+`entry_uid` relinked to the corpus it was built against; extra fields `kind`,
+`source`, `link_method`, `entry_uid_catalogue`). Fields consumed:
+`region_uid, page_uid, page_id, region_type, kind, entry_uid, volume, scan,
+crop, description, visible_text`. Join is by `entry_uid`: each region becomes a
+`lkg:MultimodalRegion` of its entry and a DwC-A multimedia row; `crop` is the
+image path used as the DwC-A media identifier and the region's
+`dcterms:identifier`. Marginal notes are not turned into regions.
 
 ## 2. Index-linker interface (`links_long`)
 

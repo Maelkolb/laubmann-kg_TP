@@ -38,18 +38,22 @@ def _assign_entry_uids(pages: List[Dict[str, Any]], vol_num: int) -> None:
             pos += len(reg["text"]) + 2
 
 
-def build_stream(pages: List[Dict[str, Any]]
-                 ) -> Tuple[str, List[Dict[str, Any]], List[Dict[str, Any]]]:
+def build_stream(pages: List[Dict[str, Any]], with_stops: bool = False):
     """Concatenate scannable regions into one volume stream.
 
-    Returns (stream_text, units, starts).  ``units`` map stream offsets back to
-    the region that produced them.  ``starts`` are the region-level header hits
-    re-expressed with volume-stream offsets (reusing ``reg['starts']``), so the
-    header regex runs once per region, never again over the full stream.
+    Returns (stream_text, units, starts) — plus ``stops`` when ``with_stops``.
+    ``units`` map stream offsets back to the region that produced them.
+    ``starts`` are the region-level header hits re-expressed with volume-stream
+    offsets (reusing ``reg['starts']``), so the header regex runs once per
+    region, never again over the full stream. ``stops`` are the stream offsets
+    of ``reg['stops']`` (reviewed entry ends, e.g. the start of a volume's
+    register; see boundaries.py): the text from a stop to the next start
+    belongs to no entry.
     """
     chunks: List[str] = []
     units: List[Dict[str, Any]] = []
     starts: List[Dict[str, Any]] = []
+    stops: List[int] = []
     pos = 0
     for page in pages:
         for reg in page["regions"]:
@@ -68,8 +72,11 @@ def build_stream(pages: List[Dict[str, Any]]
                 sh["offset"] = pos + h["offset"]
                 sh["end"] = pos + h["end"]
                 starts.append(sh)
+            stops.extend(pos + off for off in reg.get("stops", []))
             chunks.append(text)
             pos += len(text) + 2
+    if with_stops:
+        return "\n\n".join(chunks), units, starts, sorted(stops)
     return "\n\n".join(chunks), units, starts
 
 
@@ -84,14 +91,18 @@ def segment_entries(vol_num: int, pages: List[Dict[str, Any]]
                     ) -> List[Dict[str, Any]]:
     """Segment the volume stream into entries using the pre-scanned starts.
 
-    Requires ``annotate_pages`` to have run (reads ``reg['starts']``)."""
-    vol_text, units, starts = build_stream(pages)
+    Requires ``annotate_pages`` to have run (reads ``reg['starts']`` and the
+    optional ``reg['stops']``). An entry runs to the next start or stop,
+    whichever comes first. Each entry lists every scannable region its text
+    runs through (``source_regions``: the header region first)."""
+    vol_text, units, starts, stops = build_stream(pages, with_stops=True)
     if not units:
         return []
     entries: List[Dict[str, Any]] = []
     for i, h in enumerate(starts):
         seg_start = h["offset"]
         seg_end = starts[i + 1]["offset"] if i + 1 < len(starts) else len(vol_text)
+        seg_end = min([seg_end] + [s for s in stops if seg_start < s < seg_end])
         raw = vol_text[seg_start:seg_end].strip()
         clean = strip_markup(raw)
         u = _unit_for_offset(units, seg_start) or {}
@@ -119,6 +130,12 @@ def segment_entries(vol_num: int, pages: List[Dict[str, Any]]
             "loc_source": h.get("loc_source"),
             "stream_start": seg_start,
             "stream_end": seg_end,
+            "source_regions": [
+                {"region_uid": x["region_uid"], "page_uid": x["page_uid"],
+                 "page_id": x["page_id"], "scan": x["scan"]}
+                for x in units
+                if x["start"] < seg_end and x["end"] > seg_start
+                and vol_text[max(seg_start, x["start"]):min(seg_end, x["end"])].strip()],
             "n_chars": len(clean),
             "n_words": len(clean.split()),
             "text_raw": raw,

@@ -1,0 +1,145 @@
+region_uid,duplicate_of,method,hamming,decision,note
+r_0e50eb3c823e,r_01a6e8a770da,auto-dhash,4,y,vol 17 scan 43/44
+r_132b09a15927,r_fa6e5dd00744,auto-dhash,3,y,vol 30 scan 121/122
+r_23ced3e032bd,r_d99f5e2ec2b9,auto-dhash,0,y,vol 27 scan 87/88
+r_2efa1d404e20,r_80afa2703b95,auto-dhash,7,y,vol 27 scan 94/96
+r_3b08cb7aa158,r_466bfbf2448a,auto-dhash,0,y,vol 27 scan 87/88
+r_3f305ac59f41,r_b2cef48e6315,auto-dhash,2,y,vol 14 scan 58/59
+r_4470829f2266,r_4399d6590e4b,auto-dhash,4,y,vol 15 scan 82/83
+r_4b3bd71c11bc,r_948050cb13ae,auto-dhash,0,y,vol 31 scan 114/115
+r_4d23f25209dd,r_fc651217d23f,auto-dhash,0,y,vol 32 scan 140/140
+r_5f64f500016e,r_d569c2b9e684,auto-dhash,0,y,vol 17 scan 49/51
+r_5f799810c866,r_c42e4da80514,auto-dhash,1,y,vol 17 scan 76/77
+r_ab89e3516990,r_5e5a86130231,auto-dhash,1,y,vol 34 scan 25/26
+r_ca3478e72981,r_5f799810c866,auto-dhash,2,y,vol 17 scan 77/79
+r_e3ee236b4ad5,r_b17a4513f050,auto-dhash,2,y,vol 11 scan 68/70
+r_f01445ddddfe,r_52e17d4731b0,auto-dhash,1,y,vol 15 scan 82/83
+r_0168164280e8,r_b9348c7d98ae,auto-dhash+rescan,2,y,vol 32 scan 107/108
+r_01a6e8a770da,r_ce01f9f3533b,auto-dhash+rescan,0,y,vol 17 scan 42/43
+r_0de01bf2c7fc,r_ba09e4dd1187,auto-dhash+rescan,0,y,vol 22 scan 51/52
+r_0e50eb3c823e,r_ce01f9f3533b,auto-dhash+rescan,4,y,vol 17 scan 42/44
+r_14fc187742eb,r_75238693ad91,auto-dhash+rescan,3,y,vol 20 scan 74/75
+r_19824e16020a,r_eedcb156ec3f,auto-dhash+rescan,6,y,vol 17 scan 106/107
+r_1b6953453ebb,r_a1cca3a8d69f,auto-dhash+rescan,8,y,vol 15 scan 92/93
+r_1c46899e3258,r_46cf61e7e862,auto-dhash+rescan,4,y,vol 16 scan 25/26
+r_1c891d6e8ebc,r_9be42b66260c,auto-dhash+rescan,13,y,vol 13 scan 96/97
+r_1f1c5dc1d6e3,r_cbe9ed1f640d,auto-dhash+rescan,2,y,vol 33 scan 108/109
+r_2205223b2753,r_6ae996518c4f,auto-dhash+rescan,2,y,vol 20 scan 5/6
+r_24f112a60c4f,r_0dfb8d774d0b,auto-dhash+rescan,13,y,vol 31 scan 97/98
+r_2708c4371301,r_422568ba9ab9,auto-dhash+rescan,0,y,vol 34 scan 6/7
+r_2858ec744049,r_fa6e5dd00744,auto-dhash+rescan,4,y,vol 30 scan 121/123
+r_2858ec744049,r_132b09a15927,auto-dhash+rescan,7,y,vol 30 scan 122/123
+r_29c398b4c0f9,r_2fa61e2576c0,auto-dhash+rescan,7,y,vol 16 scan 56/57
+r_2c913463ab70,r_b178dc6c28f6,auto-dhash+rescan,6,y,vol 15 scan 28/29
+r_2f3a9b6a7fe0,r_d4d6f11d331e,auto-dhash+rescan,0,y,vol 32 scan 119/120
+r_33de7e4294a2,r_d3c1ae060325,auto-dhash+rescan,0,y,vol 17 scan 70/71
+r_3520cfd4c584,r_8423c141cc67,auto-dhash+rescan,4,y,vol 5 scan 6/7
+r_3e091bfc80dc,r_dcdf514411df,auto-dhash+rescan,14,y,vol 33 scan 22/23
+r_3e49c851135b,r_c52fd4aa5ed2,auto-dhash+rescan,7,y,vol 5 scan 23/24
+r_3fbe7110db28,r_5226d643c1df,auto-dhash+rescan,15,y,vol 8 scan 14/15
+r_3fbe7110db28,r_7199a89a6deb,auto-dhash+rescan,1,y,vol 8 scan 14/15
+r_4365e81fd269,r_028d0a131f95,auto-dhash+rescan,3,y,vol 10 scan 12/13
+r_45c747004920,r_7b654b683547,auto-dhash+rescan,0,y,vol 29 scan 117/118
+r_48627f80470d,r_b0a3124aaf0c,auto-dhash+rescan,8,y,vol 9 scan 51/52
+r_49882d22a93e,r_967da3c15b51,auto-dhash+rescan,2,y,vol 17 scan 96/97
+r_4d59c96d4349,r_7b778bc00f74,auto-dhash+rescan,9,y,vol 29 scan 111/113
+r_5231919492aa,r_b01ba23d3bfd,auto-dhash+rescan,4,y,vol 21 scan 78/79
+r_55ac0e125cd8,r_04f6a6ba1d49,auto-dhash+rescan,2,y,vol 19 scan 60/61
+r_5a9f6ea1cf86,r_b161bd50bd80,auto-dhash+rescan,3,y,vol 24 scan 11/12
+r_5aeca288c0da,r_65794f291155,auto-dhash+rescan,3,y,vol 16 scan 39/40
+r_5b4dcb68f6d4,r_7197cf0ced7d,auto-dhash+rescan,0,y,vol 16 scan 101/102
+r_5d853a8c6525,r_5e5a86130231,auto-dhash+rescan,15,y,vol 34 scan 25/27
+r_5d853a8c6525,r_ab89e3516990,auto-dhash+rescan,14,y,vol 34 scan 26/27
+r_5f64f500016e,r_9b30aa5f4a85,auto-dhash+rescan,1,y,vol 17 scan 50/51
+r_67d2f1fa318d,r_0dfb8d774d0b,auto-dhash+rescan,11,y,vol 31 scan 97/98
+r_6ba326809e74,r_fcd0c980d1d2,auto-dhash+rescan,9,y,vol 27 scan 85/86
+r_6de76c95b53a,r_165cac884b9b,auto-dhash+rescan,6,y,vol 5 scan 40/41
+r_6f3ae126934d,r_1571b6146b4e,auto-dhash+rescan,9,y,vol 4 scan 60/62
+r_6f3ae126934d,r_4cb2fb827b7a,auto-dhash+rescan,14,y,vol 4 scan 61/62
+r_70044c1ffb0f,r_ce54c5cde205,auto-dhash+rescan,2,y,vol 25 scan 113/114
+r_703ddedb12e2,r_7f3d3f1d45b8,auto-dhash+rescan,15,y,vol 7 scan 100/101
+r_7386710d1554,r_d0267ccc9ab5,auto-dhash+rescan,6,y,vol 32 scan 109/110
+r_7ae42f0b66f8,r_6b51964bde85,auto-dhash+rescan,3,y,vol 20 scan 72/73
+r_8080d850e9d9,r_7b6f8f48dcc2,auto-dhash+rescan,6,y,vol 24 scan 6/7
+r_813744ba8bc5,r_1d650b70b31a,auto-dhash+rescan,2,y,vol 31 scan 101/102
+r_8550aeb0e71d,r_9f1a8111c031,auto-dhash+rescan,0,y,vol 33 scan 81/82
+r_88cd3a1c6aa1,r_2cd10d25a6f3,auto-dhash+rescan,6,y,vol 22 scan 29/30
+r_8974980f9d41,r_d950e7c69deb,auto-dhash+rescan,4,y,vol 32 scan 52/53
+r_89fe27a2d540,r_7f1b1b54c064,auto-dhash+rescan,3,y,vol 32 scan 82/83
+r_8d0d0b77d9be,r_70483327e8fe,auto-dhash+rescan,1,y,vol 11 scan 35/36
+r_911873b2e5f2,r_f27305316bc5,auto-dhash+rescan,13,y,vol 16 scan 134/135
+r_91b0a0dfc1e0,r_9bc0888818c2,auto-dhash+rescan,9,y,vol 7 scan 53/53
+r_9205407cbd2e,r_b2cef48e6315,auto-dhash+rescan,10,y,vol 14 scan 58/60
+r_9205407cbd2e,r_3f305ac59f41,auto-dhash+rescan,10,y,vol 14 scan 59/60
+r_9507229fb551,r_5a4dfabd7135,auto-dhash+rescan,0,y,vol 11 scan 112/113
+r_9660dd045bf1,r_9d755cc97cf5,auto-dhash+rescan,2,y,vol 25 scan 115/116
+r_970b4e9f4838,r_90f67f729bc7,auto-dhash+rescan,3,y,vol 12 scan 14/15
+r_98cd326ab840,r_c4540e27d7b4,auto-dhash+rescan,4,y,vol 13 scan 114/115
+r_9b30aa5f4a85,r_d569c2b9e684,auto-dhash+rescan,1,y,vol 17 scan 49/50
+r_9d2c3c37f6dc,r_75ff8768000e,auto-dhash+rescan,3,y,vol 16 scan 69/70
+r_a12ffff31e3d,r_95264bee1d3c,auto-dhash+rescan,8,y,vol 8 scan 21/22
+r_a1d59ae6dc3b,r_42a964962b4c,auto-dhash+rescan,7,y,vol 16 scan 56/57
+r_a3a6bcf0e2d3,r_e09f01d881ef,auto-dhash+rescan,1,y,vol 30 scan 95/96
+r_a4e33a49bf8a,r_a40b3bbaba4f,auto-dhash+rescan,1,y,vol 16 scan 116/117
+r_a52d7ccc95f6,r_5e1079692d11,auto-dhash+rescan,0,y,vol 11 scan 21/22
+r_a558d9b0ce02,r_b9b2b6616bb8,auto-dhash+rescan,1,y,vol 20 scan 50/51
+r_a574e1d228a9,r_a5d1514e0852,auto-dhash+rescan,0,y,vol 33 scan 42/43
+r_a9bca30d6670,r_548332829acd,auto-dhash+rescan,1,y,vol 33 scan 20/21
+r_aa303c450f33,r_b9f89290602f,auto-dhash+rescan,1,y,vol 18 scan 53/54
+r_b02c53b0ac49,r_39e16f906780,auto-dhash+rescan,2,y,vol 15 scan 84/86
+r_b1f61dd0c90d,r_cc36ab1e0384,auto-dhash+rescan,0,y,vol 15 scan 106/107
+r_b38fd861414c,r_939c911b37ce,auto-dhash+rescan,10,y,vol 17 scan 94/95
+r_ba2be98b3dd9,r_356ccc2aede5,auto-dhash+rescan,3,y,vol 33 scan 28/29
+r_bb69693d3949,r_52d2dcb2a215,auto-dhash+rescan,1,y,vol 33 scan 83/84
+r_c03536535980,r_ad4d3e40ae6d,auto-dhash+rescan,10,y,vol 34 scan 23/24
+r_c133d5547966,r_11eb1c5f049f,auto-dhash+rescan,4,y,vol 12 scan 10/11
+r_c20d8b7067e5,r_0dbd41e69db6,auto-dhash+rescan,0,y,vol 17 scan 113/114
+r_c3b0b3315f07,r_e96122a71a78,auto-dhash+rescan,7,y,vol 13 scan 109/110
+r_c4f6bed67d46,r_3e8a66737bbc,auto-dhash+rescan,1,y,vol 34 scan 30/32
+r_cfb78c4755ad,r_3334d6067f39,auto-dhash+rescan,5,y,vol 8 scan 5/6
+r_d7b34cfab608,r_396b6bb12c45,auto-dhash+rescan,2,y,vol 33 scan 40/41
+r_d8902da48a8f,r_4f71d419998a,auto-dhash+rescan,1,y,vol 18 scan 53/54
+r_dd4735a7b4e5,r_12268b06d8da,auto-dhash+rescan,7,y,vol 26 scan 55/56
+r_ea7f5dd15b89,r_cac2c9c59c06,auto-dhash+rescan,4,y,vol 15 scan 116/117
+r_ebb12fecf45d,r_0d57b2685f17,auto-dhash+rescan,3,y,vol 31 scan 92/93
+r_edf73b198d2a,r_c1d772d8ef31,auto-dhash+rescan,0,y,vol 22 scan 115/116
+r_ef114033f87f,r_c2d87a459296,auto-dhash+rescan,3,y,vol 29 scan 114/115
+r_f79f44ff75a4,r_1fee0df961f2,auto-dhash+rescan,1,y,vol 33 scan 106/107
+r_f890a00fed57,r_d9f5d0625a9e,auto-dhash+rescan,0,y,vol 14 scan 53/55
+r_faff48d9e93c,r_126657fe9dca,auto-dhash+rescan,3,y,vol 22 scan 107/108
+r_fca7ec5895d6,r_1ddd90470004,auto-dhash+rescan,0,y,vol 33 scan 46/47
+r_fda80ceaccb6,r_720eed2b4199,auto-dhash+rescan,6,y,vol 17 scan 91/92
+r_ffa2b251c1b5,r_c6d053fc448f,auto-dhash+rescan,11,y,vol 15 scan 122/123
+r_17264d61a7f7,r_e0bb8e78f001,insert-review,,y,"one-line fragment 'Gry MW 2, Türkentauben 2, Feldlerchen 7' repeating the Freising line of insert 320"
+r_1806b7d74612,r_f42111b2658b,insert-review,,y,"same Ismaning report of 2.6.55 as insert 255 on the next scan, but only the first paragraph is transcribed"
+r_1da9876fb169,r_01513ac00c99,insert-review,,y,only the heading and weather of the Ismaning report of 25.6.55; the full report is on the next scan (insert 273)
+r_2eb57a536cbb,r_42bf26bd69fc,insert-review,,y,same church notice as insert 329 on the same scan
+r_4938820acccf,r_ffcb4b8b0940,insert-review,,y,same inn invitation as insert 166 (reverse of the same clipping seen again)
+r_4dc05c73d5d8,r_220c6f07b929,insert-review,,y,left-cut end of Peter Kuhlemann's article on buzzard shooting; the complete article is on the next scan (insert 400)
+r_4fca7aeb2547,r_e862ca9dd26c,insert-review,,y,"right-cut, garbled copy of the Ismaning report 27.6.54 (Rathmayer, Schnell, Remold) that is fully readable in insert 174"
+r_775cae7c5ddf,r_ebc6a232758e,insert-review,,y,same workshop-to-let classified as insert 167
+r_a5df480caa36,r_1fa57d72eb8f,insert-review,,y,"same continuation page of the 23.III.1955 report as insert 240 on the next scan, but with lines missing and two entries garbled together; only extra is the heading 'Bericht von Walter Wüst'"
+r_0b5b7398f26a,r_4073e66da6a7,manual-visual,13,y,vol 17 scan 66/67 (contact-sheet check 2026-09-30)
+r_0c7072c2a25a,r_b0546a0b04b0,manual-visual,15,y,vol 11 scan 49/51 (contact-sheet check 2026-09-30)
+r_1b344c18e02d,r_e2db0a31dafb,manual-visual,13,n,vol 13 scan 7/7 (contact-sheet check 2026-09-30)
+r_1bdf39d44c10,r_37e98bae7187,manual-visual,20,y,vol 7 scan 100/101 (contact-sheet check 2026-09-30)
+r_1fa137ec81dd,r_d1da676b9511,manual-visual,14,y,vol 16 scan 141/143 (contact-sheet check 2026-09-30)
+r_201146e58fa8,r_4825fb56c040,manual-visual,11,y,vol 16 scan 141/143 (contact-sheet check 2026-09-30)
+r_2153ce6ab2d9,r_4bc25bf4bc2f,manual-visual,16,y,vol 11 scan 74/75 (contact-sheet check 2026-09-30)
+r_32965ebf178f,r_950c5df7995f,manual-visual,18,y,vol 15 scan 95/96 (contact-sheet check 2026-09-30)
+r_3ac298a4075d,r_9d806d2ee57d,manual-visual,22,y,vol 8 scan 56/57 (contact-sheet check 2026-09-30)
+r_4cb2fb827b7a,r_1571b6146b4e,manual-visual,11,y,vol 4 scan 60/61 (contact-sheet check 2026-09-30)
+r_4d23f25209dd,r_e27bf9fb6095,manual-visual,10,y,vol 32 scan 139/140 (contact-sheet check 2026-09-30)
+r_57845cfc5893,r_0b6bba3bc9c5,manual-visual,22,y,vol 30 scan 124/125 (contact-sheet check 2026-09-30)
+r_703ddedb12e2,r_9a29336a34d0,manual-visual,25,y,vol 7 scan 100/101 (contact-sheet check 2026-09-30)
+r_7199a89a6deb,r_5226d643c1df,manual-visual,14,n,vol 8 scan 14/14 (contact-sheet check 2026-09-30)
+r_859366f7c262,r_25330fe3b9ee,manual-visual,24,y,vol 33 scan 87/88 (contact-sheet check 2026-09-30)
+r_90fbbdcbb2a6,r_5b1df9332fac,manual-visual,27,y,vol 31 scan 45/46 (contact-sheet check 2026-09-30)
+r_93aa57a6d2ce,r_98a003cae71c,manual-visual,17,y,vol 3 scan 138/139 (contact-sheet check 2026-09-30)
+r_beeed3fe0aa1,r_5008155fab89,manual-visual,26,y,vol 7 scan 5/6 (contact-sheet check 2026-09-30)
+r_c1e922e8db59,r_c42e4da80514,manual-visual,19,y,vol 17 scan 76/78 (contact-sheet check 2026-09-30)
+r_c1e922e8db59,r_5f799810c866,manual-visual,20,y,vol 17 scan 77/78 (contact-sheet check 2026-09-30)
+r_d2655e918f0b,r_0d6e7d0499b0,manual-visual,8,n,vol 13 scan 8/8 (contact-sheet check 2026-09-30)
+r_d50d4651fca2,r_2efa1d404e20,manual-visual,8,y,vol 27 scan 96/97 (contact-sheet check 2026-09-30)
+r_fc651217d23f,r_e27bf9fb6095,manual-visual,10,y,vol 32 scan 139/140 (contact-sheet check 2026-09-30)
+r_ffffebfcc083,r_2ea3d6866f32,manual-visual,14,n,vol 31 scan 138/139 (contact-sheet check 2026-09-30)

@@ -1,0 +1,550 @@
+region_uid,volume,page_id,region_id,reason,note
+r_5563c6867bf3,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0067,r03,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_ceda49232318,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0134,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_a6786241ab0a,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0139_L,r05,unreliable-transcription,visual:fragment_strip
+r_1e189ae6717a,3,0ed30b8b-6194-418e-998b-092352aa1ed5_0149_L,r01,unreliable-transcription,visual:blank_json;rule:json_artifact;rule:repetition_loop;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_5d04490c1c97,4,52b78822-8d1b-4cb0-968b-072d61b066df_0018_R,r04,picture-not-text,reclassified as postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_89d3fa0a686e,4,52b78822-8d1b-4cb0-968b-072d61b066df_0019,r01,picture-not-text,reclassified as panorama in the multimodal cleaning; the transcription is a reading of a picture
+r_f84316fb4f41,6,1949bf9d-92aa-4170-b4df-dd04c79bf039_0020,r04,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_78fb61fc7097,6,1949bf9d-92aa-4170-b4df-dd04c79bf039_0075_R,r03,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_5008155fab89,7,5adcdacc-d4e4-4cc9-b4fb-cb164a265227_0005,r01,picture-not-text,reclassified as panorama in the multimodal cleaning; the transcription is a reading of a picture
+r_9f043f2e212c,7,5adcdacc-d4e4-4cc9-b4fb-cb164a265227_0012,r04,unreliable-transcription,visual:blank_page_hallucinated_list
+r_73797218e6b0,8,f27fdaf5-89b6-461f-948c-4c32a63e750e_0032,r01,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_ac6a1ec7978a,8,f27fdaf5-89b6-461f-948c-4c32a63e750e_0080,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_45529e0b634d,8,f27fdaf5-89b6-461f-948c-4c32a63e750e_0082,r03,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_b07863236fec,10,c5861532-d7c2-43d7-b501-4ccd0d7499fd_0051_L,r03,irrelevant-insert,"local-news: brewery suppliers / beer price reduction, reverse of clipping"
+r_17bc2c7fe174,10,c5861532-d7c2-43d7-b501-4ccd0d7499fd_0051_L,r04,irrelevant-insert,fragment: heading stub 'An alle Münch'
+r_7e26ee9ba671,10,c5861532-d7c2-43d7-b501-4ccd0d7499fd_0068_L,r03,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_4bc25bf4bc2f,11,9891dcba-6f8a-4918-8e79-1c63da52a69b_0074_L,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_c8bb0e1c3e16,11,9891dcba-6f8a-4918-8e79-1c63da52a69b_0095_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_0cf38ba42623,11,9891dcba-6f8a-4918-8e79-1c63da52a69b_0098_R,r01,picture-not-text,reclassified as painting_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_40eb71591e8b,11,9891dcba-6f8a-4918-8e79-1c63da52a69b_0103,r04,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_17d215a9972a,12,d63486a8-af98-462e-93f3-639bec77dcf7_0024,r07,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_ffa8f2d315d5,12,d63486a8-af98-462e-93f3-639bec77dcf7_0063,r04,irrelevant-insert,other: printed railway car list Hoek van Holland/Vlissingen; only a stub of a handwritten gull note ('Lachm
+r_43a8756860da,12,d63486a8-af98-462e-93f3-639bec77dcf7_0069,r05,picture-not-text,reclassified as map_refusal_text in the multimodal cleaning; the transcription is a reading of a picture
+r_27e55f7bfd6a,12,d63486a8-af98-462e-93f3-639bec77dcf7_0074,r01,picture-not-text,reclassified as postcard_engraving in the multimodal cleaning; the transcription is a reading of a picture
+r_0370e2e097ec,12,d63486a8-af98-462e-93f3-639bec77dcf7_0078,r01,unreliable-transcription,visual:blank_postcard_back
+r_ad4dfabc2df4,12,d63486a8-af98-462e-93f3-639bec77dcf7_0079,r01,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_9168466d96fb,13,2d651ff5-a447-4791-a1b3-5f41525971bd_0014_R,r03,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_fda0913bf011,13,2d651ff5-a447-4791-a1b3-5f41525971bd_0019_R,r02,unreliable-transcription,visual:gutter_sliver;rule:json_artifact;rule:repetition_loop;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_9be42b66260c,13,2d651ff5-a447-4791-a1b3-5f41525971bd_0096_L,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_e96122a71a78,13,2d651ff5-a447-4791-a1b3-5f41525971bd_0109_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_c4540e27d7b4,13,2d651ff5-a447-4791-a1b3-5f41525971bd_0114_L,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_9c7474356924,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0049_R,r03,irrelevant-insert,fragment: column stubs (Wendelstein / Erlangen university celebration)
+r_3e0bd08c722f,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0050,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_4eceb01960b1,14,5c5374bc-f8be-4914-a42e-871f43c6ee2d_0054_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_62fd51572370,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0010_L,r03,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_e0c0c24aba51,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0038,r01,picture-not-text,reclassified as photos_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_4d5672a51dab,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0039,r04,unreliable-transcription,visual:blank_grid_hallucinated;rule:repetition_loop;rule:dup_lines;rule:low_vocab;rule:overdense
+r_6482cd368813,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0076,r03,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_224ef4416dfc,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0078,r01,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_6d2490ca6e8c,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0080,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_1e2130bb81bb,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0085,r03,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_7377c77e3be9,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0088,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_b1f61dd0c90d,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0107_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_3f0fa907c449,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0110_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_8f5aa0d788d7,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0134_R,r03,picture-not-text,reclassified as map_print in the multimodal cleaning; the transcription is a reading of a picture
+r_505db3052fd9,15,a407c4d3-a505-44d6-97e4-a257b468f81c_0137,r01,picture-not-text,reclassified as map_print in the multimodal cleaning; the transcription is a reading of a picture
+r_ad4c8644f782,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0021_L,r01,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_d1919cfba9f2,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0050,r05,picture-not-text,reclassified as panorama in the multimodal cleaning; the transcription is a reading of a picture
+r_09ac3797f07f,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0050,r06,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_899c3c47a5b9,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0050,r07,picture-not-text,reclassified as panorama in the multimodal cleaning; the transcription is a reading of a picture
+r_6622651514a6,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0050,r03,irrelevant-insert,other: boat timetable Konstanz-Schaffhausen
+r_afa996d6cbb2,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0055_L,r03,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_8575eb555969,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0066,r01,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_9f2450e13835,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0074,r01,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_f3a7c4d6d2e9,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0077_R,r01,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_ef039130c959,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0086,r01,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_2874d64b4ffc,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0092,r06,irrelevant-insert,"local-news: reverse page: manslaughter case, film review"
+r_7197cf0ced7d,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0101_L,r02,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_6e4228f3b44e,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0104_L,r03,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_3cb4ea53bd33,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0104_R,r04,picture-not-text,reclassified as photo_json in the multimodal cleaning; the transcription is a reading of a picture
+r_94fd69ba85ba,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0105,r01,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_a40b3bbaba4f,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0116_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_0dcd26f13f03,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0127_L,r03,picture-not-text,reclassified as panorama_map in the multimodal cleaning; the transcription is a reading of a picture
+r_f436a4f9f9e8,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0140_L,r02,picture-not-text,reclassified as painting_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_a57b47d0fdb6,16,6bd9f0f9-328c-4b8c-a9f1-4e5b0994c50c_0141_R,r03,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_6a47436b28d7,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0078,r03,irrelevant-insert,local-news: Bamberg newspaper page: short folklore on March thunderstorms plus HJ notices and local news; not a 
+r_0b4274cbaf4d,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0082,r02,unreliable-transcription,rule:repetition_loop;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_720eed2b4199,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0091_L,r02,picture-not-text,reclassified as panorama_map in the multimodal cleaning; the transcription is a reading of a picture
+r_9625404e47b1,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0100,r01,picture-not-text,reclassified as map_loop_text in the multimodal cleaning; the transcription is a reading of a picture
+r_be74be5df540,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0103,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_d90ea12298a9,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0105,r05,irrelevant-insert,"fragment: right-cut road-route description (Zirler Berg, Fernpass, Nassereith); travel text, no natural-histor"
+r_19824e16020a,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0107_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_0dbd41e69db6,17,6fed7034-959e-4f62-84fc-6d0ad540c4a8_0113_L,r02,picture-not-text,reclassified as painting_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_9c7efeb5180c,19,3184f72c-a9bc-40ef-b5c6-bc0b05582cb8_0089,r01,irrelevant-insert,"other: NSDAP Ortsgruppe Ludwigstraße meeting reminder (political circular, likely reused paper)"
+r_e556134b630f,20,dd88cd86-9bb9-4f84-a7f7-882fbe142313_0012_L,r04,picture-not-text,reclassified as map_sketch in the multimodal cleaning; the transcription is a reading of a picture
+r_b9b2b6616bb8,20,dd88cd86-9bb9-4f84-a7f7-882fbe142313_0050_R,r02,picture-not-text,reclassified as painting_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_14fc187742eb,20,dd88cd86-9bb9-4f84-a7f7-882fbe142313_0075_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_93854f8ed5d6,21,e3cf5b4e-67c4-413c-84c6-69644317a668_0017_L,r01,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_99aa0e5affa6,21,e3cf5b4e-67c4-413c-84c6-69644317a668_0017_R,r01,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_42f3dd37d0a8,21,e3cf5b4e-67c4-413c-84c6-69644317a668_0056_R,r03,irrelevant-insert,"other: article on porcelain history (Nymphenburg, Bustelli, Hutschenreuther); only the last line starts 'De"
+r_bd8cc4ddabd5,21,e3cf5b4e-67c4-413c-84c6-69644317a668_0085,r02,picture-not-text,reclassified as panorama_map in the multimodal cleaning; the transcription is a reading of a picture
+r_ddc3a8e92717,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0026,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_0de01bf2c7fc,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0052_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_cb57493d94cc,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0063,r02,irrelevant-insert,"other: end of a feuilleton on folk dancing (Effi Horn), reverse/neighbour of kept clipping"
+r_43a1b906dc16,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0063,r03,irrelevant-insert,other: crossword puzzle clues
+r_8d158f1e221d,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0083,r02,irrelevant-insert,"other: film production article ('Liebe auf Eis', Kurt Meisel)"
+r_faff48d9e93c,22,295b59c0-7525-4593-8422-aa70fb6e83b3_0108_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_6c05dd8c3aef,23,755c1169-3cff-4295-80f8-48abac677fff_0045_L,r02,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_beb71a56bade,23,755c1169-3cff-4295-80f8-48abac677fff_0057,r09,unreliable-transcription,visual:black_illegible
+r_5e5de603d6eb,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0008_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_2fc6161f3d69,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0071,r06,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_ade621d39689,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0084,r05,picture-not-text,reclassified as map_sketch in the multimodal cleaning; the transcription is a reading of a picture
+r_6c13f698dfa5,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0092,r07,unreliable-transcription,bleedthrough_duplicate_of:r_eb4832db1516(0.516)
+r_99fe90d56242,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0093,r04,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_9bf47a887937,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0100_L,r03,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_5b962f35d9ce,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0101_L,r03,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_a3e6a2249f0d,24,75a0a317-0bd6-48f7-9b6d-ff2e589ac79e_0101_R,r03,unreliable-transcription,rule:gibberish
+r_b08ccda5858b,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0016_L,r03,unreliable-transcription,visual:blank_faint_hallucinated_list
+r_95782293bdb1,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0025_R,r03,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense;rule:illegible
+r_3f29ba09651c,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0038_L,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_e474645af0bc(j=0.27)
+r_e5d1a446eb17,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0044_R,r02,unreliable-transcription,visual:faint_hallucinated_words
+r_98a734ee54c6,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0055,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_1262f8e56db3,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0060_R,r02,unreliable-transcription,visual:faint_hallucinated_content
+r_ee4b635fbcee,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0067_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_9316e29ee880,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0071,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_0ddc52d63b87,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0072,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_17ebc7d4e83b(j=0.25)
+r_15dacbbd3595,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0073,r06,unreliable-transcription,rule:ngram_loop;rule:illegible
+r_f8cfc628d073,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0074_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_26c6542723c0,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0075,r05,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_edb31de4c3d4,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0078,r06,unreliable-transcription,visual:faint_hallucinated_words
+r_0e07d9c38bd7,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0080_L,r02,picture-not-text,reclassified as painting_bird in the multimodal cleaning; the transcription is a reading of a picture
+r_6e8b7609457c,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0083,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_897b3f097217,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0086_L,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_129d65578fce(j=0.28)
+r_71d25f35f2f0,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0089,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_f391a0d4e69f,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0097,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_551719cf3581,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0102_L,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_6fda5e800115(j=0.31)
+r_06aefa662027,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0106,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_f155b3aa2439(j=0.41)
+r_6ade7a9795a2,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0106,r05,unreliable-transcription,rule:repetition_loop
+r_826504d03aec,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0107,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_f155b3aa2439(j=0.25)
+r_21f2028abf78,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0107,r05,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_4bbb351dbc20(j=0.27)
+r_ce54c5cde205,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0113_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_549136720203,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0117_R,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_7058cbc6d88d,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0120_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_e8fbf8c6e220,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0121,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_143d53ee031f,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0124,r07,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_af18c056c16a(j=0.25)
+r_103e8944ebef,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0126_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_20564646c2c6,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0126_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_a74b83dc5117,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0127,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_d6c6e3b7f151,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0127,r04,irrelevant-insert,fragment: column strip of word stubs from the edge of a typed Ismaning report; nothing readable
+r_1460bcdb791f,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0129,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_42e9137f23b4,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0129,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_cd13833301c2,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0141,r07,unreliable-transcription,rule:repetition_loop;rule:ngram_loop;rule:low_vocab;rule:overdense;rule:gibberish;rule:weird_tokens
+r_b4cf12f9120f,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0143_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_68a9a28ec934,25,65e6387d-c1b4-49e0-80ad-5c8701ebe370_0144,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_b0bdb4c9fbb8,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0010_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_af2955093e91,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0016_L,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_13d19480da07(j=0.26)
+r_01b226e8de18,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0017,r03,unreliable-transcription,bleedthrough_duplicate_of:r_13d19480da07(0.623)
+r_db000f69dcc9,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0021_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_9f5d303f63f5,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0022,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_7985e528122f,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0027,r05,picture-not-text,reclassified as drawing_sketch in the multimodal cleaning; the transcription is a reading of a picture
+r_8d00de7631fc,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0028_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_a1f563c9e9e9,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0029,r06,unreliable-transcription,rule:repetition_loop;rule:low_vocab
+r_59506916a18d,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0036_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_2e9d963e5ba4,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0042_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_73e4919918ca,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0043,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_b67bff214820,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0063_L,r02,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_acc33e87d305,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0069,r03,irrelevant-insert,other: local history articles: Zwiefalten abbey and Tübingen university founding
+r_dfaf1d087e5a,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0071_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_c2e0b95a6304,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0071_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_c63474f38adf(j=0.26)
+r_c4fea3552d7d,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0072_L,r02,unreliable-transcription,rule:gibberish
+r_86f343412ad6,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0072_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_3d18a6404e34,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0077_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_ac9e8a3edf8a(j=0.25)
+r_67c389074af4,26,55851137-ef99-4b8a-8ce9-c5c8728855f5_0078,r03,unreliable-transcription,rule:repetition_loop;rule:low_vocab;rule:weird_tokens
+r_45ba93cc2be9,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0020_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_87e45096aa7f,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0021,r05,unreliable-transcription,rule:low_vocab
+r_ca22602eb328,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0023_R,r02,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:low_vocab
+r_4177750d816a,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0024,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_ebf95df6d3aa,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0025_L,r02,unreliable-transcription,visual:faint_hallucinated_words
+r_cb56396c7465,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0029,r03,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_3cefe9267990,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0030,r03,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_6f05f45183e6,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0030,r07,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_f7befb71757b,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0035,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_672cbcea2604(j=0.42)
+r_88b94a29513e,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0037,r03,unreliable-transcription,rule:repetition_loop;rule:low_vocab
+r_d4592f43c52e,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0039_R,r02,irrelevant-insert,other: banking notice on Pfandbriefe for old savers (business)
+r_db3dc5576ebb,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0039_R,r04,irrelevant-insert,other: Hannover industry fair report (business)
+r_70b456951c63,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0043,r05,unreliable-transcription,rule:weird_tokens
+r_6a8b57ab9f34,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0047_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_0475ace45c75,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0054,r02,irrelevant-insert,"other: Basel city map legend (banks, stations, museums) - tourist material"
+r_b54074917394,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0055,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_0010ef02b2c3,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0061,r06,unreliable-transcription,rule:ngram_loop
+r_512dda62ef44,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0063,r01,picture-not-text,reclassified as autograph_card in the multimodal cleaning; the transcription is a reading of a picture
+r_8404db8b9fae,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0064,r03,unreliable-transcription,visual:sliver_duplicate
+r_f03e1366076f,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0067_L,r02,unreliable-transcription,visual:faint_fragments
+r_f87df6849f9c,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0069_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_7f279c410018,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0069_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_c4b90922f135,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0070,r02,unreliable-transcription,rule:repetition_loop;rule:ngram_loop;rule:low_vocab;rule:overdense;rule:gibberish;rule:weird_tokens
+r_18f0c9b03117,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0072,r04,unreliable-transcription,rule:repetition_loop;rule:quote_run;rule:overdense
+r_ffcb4b8b0940,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0075_L,r02,irrelevant-insert,"ad: inn invitation (Gasthaus Deutsches Haus Kaufbeuren) and livestock classifieds, reverse of clipping"
+r_ebc6a232758e,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0075_L,r03,irrelevant-insert,"ad: Allgäuer classifieds (workshops to let, vehicles)"
+r_d16558c39a11,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0075_R,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_2bc445e9c6fb(j=0.29)
+r_4938820acccf,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0078,r02,irrelevant-insert,ad: same inn invitation as insert 166 (reverse of the same clipping seen again)
+r_775cae7c5ddf,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0078,r03,irrelevant-insert,ad: same workshop-to-let classified as insert 167
+r_b4da2ec50582,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0079_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_9bb9d7a8d0c8,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0079_R,r02,unreliable-transcription,rule:gibberish
+r_01048e0365ad,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0080_L,r02,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_dc1cda5fe3b9,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0080_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_398a2ca39a35,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0082,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_0a3e73b8f11a,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0083_L,r04,unreliable-transcription,visual:strip_fragments
+r_6ba326809e74,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0086_L,r02,picture-not-text,reclassified as painting_postcard_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_4fca7aeb2547,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0091_R,r02,irrelevant-insert,"duplicate: right-cut, garbled copy of the Ismaning report 27.6.54 (Rathmayer, Schnell, Remold) that is fully re"
+r_85b356d5aa16,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0092,r03,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_609d06f5cd66,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0094_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_eb3775760aa7,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0095_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_efe5f2d9854c,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0095_R,r01,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_36812445e73d,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0096,r06,unreliable-transcription,bleedthrough_reading_unreliable
+r_39b164b9f7c3,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0099_R,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_0466be80dafd(j=0.33)
+r_adaae74b42b9,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0105_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_6c996dbc9d53,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0111_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_478d51968c6a,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0112_R,r02,unreliable-transcription,rule:line_repeat
+r_f1e6bf2dfa0c,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0114,r03,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:low_vocab;rule:overdense
+r_fef7559d882a,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0114,r05,unreliable-transcription,rule:repetition_loop;rule:dup_lines;rule:low_vocab;rule:overdense;rule:weird_tokens
+r_2afcf3e8469a,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0121_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_2f016b99f24e,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0125,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_060946607961,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0127_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_32d2d0c35f3c,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0128,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_02e9baf1ef9f,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0130_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_c1e195c2c1b0,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0136_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_be12ca71feb3,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0137,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_7f1be2476c13,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0140_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_623f92ac70ea,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0144_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_82ce1ae77a3b,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0148_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_d57c4daadb77,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0151_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_8c2fd3ebdc9d(j=0.37)
+r_493a32424655,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0152_R,r02,unreliable-transcription,rule:weird_tokens
+r_9609d4651bad,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0152_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_a42d29d1269b,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0156_L,r04,unreliable-transcription,visual:faint_hallucinated_words
+r_89c3d6d7bb3e,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0156_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_4f4f7cb5ec38,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0157,r03,unreliable-transcription,rule:gibberish
+r_5de82c56b03c,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0158,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_8c461a95259a,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0158,r06,unreliable-transcription,bleedthrough_reading_unreliable
+r_187f3fbbeaf6,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0160_L,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_fd49bc1afc42,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0160_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_073941abae2b,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0162_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_3186b96dd2c9,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0163_L,r02,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_9e8a367d6fa7,27,df300659-7845-4de6-aa0e-a53bce4c69ff_0163_R,r03,unreliable-transcription,visual:strip_fragments
+r_e4e73836f6e6,28,733b37c0-686b-46c0-8cf8-59b030cee225_0006_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_b85181abbe92,28,733b37c0-686b-46c0-8cf8-59b030cee225_0007,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_6166c710edd6,28,733b37c0-686b-46c0-8cf8-59b030cee225_0009_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_a2e1e7bc6dcf,28,733b37c0-686b-46c0-8cf8-59b030cee225_0009_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_d02e7526ebf8,28,733b37c0-686b-46c0-8cf8-59b030cee225_0010,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_bb3d4ae34ef8,28,733b37c0-686b-46c0-8cf8-59b030cee225_0014,r03,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_417bfc107bd8,28,733b37c0-686b-46c0-8cf8-59b030cee225_0016,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_45e670ee6e37,28,733b37c0-686b-46c0-8cf8-59b030cee225_0018,r02,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_b9dea473826c,28,733b37c0-686b-46c0-8cf8-59b030cee225_0018,r04,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_e4468d64984e(j=0.43)
+r_e56c647eeb3f,28,733b37c0-686b-46c0-8cf8-59b030cee225_0019,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_3913d853c30b,28,733b37c0-686b-46c0-8cf8-59b030cee225_0026_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_373423276010,28,733b37c0-686b-46c0-8cf8-59b030cee225_0028_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_bd1907a81178,28,733b37c0-686b-46c0-8cf8-59b030cee225_0028_R,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_a6232ddb27fa(j=0.25)
+r_7374dcf3e89f,28,733b37c0-686b-46c0-8cf8-59b030cee225_0031,r02,unreliable-transcription,visual:faint_garbled_fragments
+r_1ff36640964f,28,733b37c0-686b-46c0-8cf8-59b030cee225_0032,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_679fd122b8c4,28,733b37c0-686b-46c0-8cf8-59b030cee225_0035_R,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_d7f543ef01df,28,733b37c0-686b-46c0-8cf8-59b030cee225_0038,r08,unreliable-transcription,bleedthrough_reading_unreliable
+r_6e41ec0afa69,28,733b37c0-686b-46c0-8cf8-59b030cee225_0040_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_a0638850bfb4,28,733b37c0-686b-46c0-8cf8-59b030cee225_0040_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_276760002950(j=0.27)
+r_cb87dd88b897,28,733b37c0-686b-46c0-8cf8-59b030cee225_0041,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_34130e54785b,28,733b37c0-686b-46c0-8cf8-59b030cee225_0044_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_f039cd5126a8,28,733b37c0-686b-46c0-8cf8-59b030cee225_0046_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_731153e74488,28,733b37c0-686b-46c0-8cf8-59b030cee225_0047,r03,unreliable-transcription,rule:repetition_loop;rule:low_vocab
+r_c8cfad5a6acb,28,733b37c0-686b-46c0-8cf8-59b030cee225_0050_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_53278aaf5da1,28,733b37c0-686b-46c0-8cf8-59b030cee225_0051,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_43c278a572a6,28,733b37c0-686b-46c0-8cf8-59b030cee225_0053_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_e5ef85f15ca8,28,733b37c0-686b-46c0-8cf8-59b030cee225_0056_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_2f98f2b2e736,28,733b37c0-686b-46c0-8cf8-59b030cee225_0057,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_45a1291b7bbe,28,733b37c0-686b-46c0-8cf8-59b030cee225_0059_R,r02,unreliable-transcription,visual:faint_garbled_fragments
+r_21a95990b8fa,28,733b37c0-686b-46c0-8cf8-59b030cee225_0061_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_4865ef968bb6,28,733b37c0-686b-46c0-8cf8-59b030cee225_0061_R,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_bdb1392e24de,28,733b37c0-686b-46c0-8cf8-59b030cee225_0062_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_af9378ed5c36,28,733b37c0-686b-46c0-8cf8-59b030cee225_0065,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_fe174a3d63c1,28,733b37c0-686b-46c0-8cf8-59b030cee225_0065,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_59740121a5cb,28,733b37c0-686b-46c0-8cf8-59b030cee225_0066,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_55ce0d7da5ad,28,733b37c0-686b-46c0-8cf8-59b030cee225_0068,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_4200c1eaa242,28,733b37c0-686b-46c0-8cf8-59b030cee225_0068,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_79e7cfd00b11,28,733b37c0-686b-46c0-8cf8-59b030cee225_0069,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_188664bde1d9,28,733b37c0-686b-46c0-8cf8-59b030cee225_0072_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_ceee7680e1cb,28,733b37c0-686b-46c0-8cf8-59b030cee225_0074_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_4433081fd9cb,28,733b37c0-686b-46c0-8cf8-59b030cee225_0074_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_cdf2c3de6baf(j=0.32)
+r_100d749616f1,28,733b37c0-686b-46c0-8cf8-59b030cee225_0075,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_13d795e4f266,28,733b37c0-686b-46c0-8cf8-59b030cee225_0078_R,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_2003cb1d9495(j=0.29)
+r_907f8666d255,28,733b37c0-686b-46c0-8cf8-59b030cee225_0081_R,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_781c38f37ebc(j=0.28)
+r_ac01ddac2549,28,733b37c0-686b-46c0-8cf8-59b030cee225_0083_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_f254cd1e657f,28,733b37c0-686b-46c0-8cf8-59b030cee225_0084,r03,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_da6e0e49947e,28,733b37c0-686b-46c0-8cf8-59b030cee225_0084,r06,unreliable-transcription,bleedthrough_reading_unreliable
+r_6a5e8ee09e5d,28,733b37c0-686b-46c0-8cf8-59b030cee225_0086,r07,unreliable-transcription,bleedthrough_reading_unreliable
+r_607b1b1a0de9,28,733b37c0-686b-46c0-8cf8-59b030cee225_0088_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_1e1472344335,28,733b37c0-686b-46c0-8cf8-59b030cee225_0088_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_708dbb03cddb,28,733b37c0-686b-46c0-8cf8-59b030cee225_0089,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_29a8fa5467a6,28,733b37c0-686b-46c0-8cf8-59b030cee225_0093,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_8aa59dfb7873,28,733b37c0-686b-46c0-8cf8-59b030cee225_0096,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_c6123df0052e,28,733b37c0-686b-46c0-8cf8-59b030cee225_0099_L,r03,unreliable-transcription,rule:line_repeat
+r_1a855b1ec6e9,28,733b37c0-686b-46c0-8cf8-59b030cee225_0107_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_a9e0df83d8c1,28,733b37c0-686b-46c0-8cf8-59b030cee225_0110_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_b518398a47bd,28,733b37c0-686b-46c0-8cf8-59b030cee225_0113_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_7345ba7d301a,28,733b37c0-686b-46c0-8cf8-59b030cee225_0114,r05,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_4182ecce8c18,28,733b37c0-686b-46c0-8cf8-59b030cee225_0117_L,r02,irrelevant-insert,ad: housing and room-to-let advertisements (Münchner Merkur)
+r_ae21a15e82e9,28,733b37c0-686b-46c0-8cf8-59b030cee225_0120_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_dfa943a9ce4a,28,733b37c0-686b-46c0-8cf8-59b030cee225_0122,r04,unreliable-transcription,visual:strip_fragments
+r_03f35bf91fcd,28,733b37c0-686b-46c0-8cf8-59b030cee225_0122,r07,unreliable-transcription,bleedthrough_reading_unreliable
+r_62ed099f1b9c,28,733b37c0-686b-46c0-8cf8-59b030cee225_0124_L,r02,unreliable-transcription,visual:mirrored_reversed_text
+r_f9055b1433bd,28,733b37c0-686b-46c0-8cf8-59b030cee225_0124_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_3935c7299df3,28,733b37c0-686b-46c0-8cf8-59b030cee225_0125,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_38e746696beb(j=0.26)
+r_d78fe89345c7,28,733b37c0-686b-46c0-8cf8-59b030cee225_0129_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_9ed13f399973,28,733b37c0-686b-46c0-8cf8-59b030cee225_0130,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_f2d2b97f15cc,28,733b37c0-686b-46c0-8cf8-59b030cee225_0132_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_bb64d151e249,28,733b37c0-686b-46c0-8cf8-59b030cee225_0132_R,r04,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_d0285ec4526a(j=0.32)
+r_6882a0df8298,28,733b37c0-686b-46c0-8cf8-59b030cee225_0135,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_29685fb95a9e,28,733b37c0-686b-46c0-8cf8-59b030cee225_0137_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_97b5847c74b0,28,733b37c0-686b-46c0-8cf8-59b030cee225_0141_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_ffb831aebe0d,28,733b37c0-686b-46c0-8cf8-59b030cee225_0142,r03,unreliable-transcription,visual:clipping_fragment_dup
+r_104224c5f977,28,733b37c0-686b-46c0-8cf8-59b030cee225_0142,r07,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_f35ce36a466a(j=0.28)
+r_f026476144fd,28,733b37c0-686b-46c0-8cf8-59b030cee225_0147,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_13d0d3dff1d9,28,733b37c0-686b-46c0-8cf8-59b030cee225_0149_L,r02,irrelevant-insert,"fragment: left-cut, heavily garbled strip of a typed Ismaning report; only word stubs and broken half-lines"
+r_2c06f44d3b4a,28,733b37c0-686b-46c0-8cf8-59b030cee225_0149_R,r02,unreliable-transcription,rule:repetition_loop;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_4fb2cdc6585c,28,733b37c0-686b-46c0-8cf8-59b030cee225_0154_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_9f4ab56f999e,28,733b37c0-686b-46c0-8cf8-59b030cee225_0155_L,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_4e3056ed512d,28,733b37c0-686b-46c0-8cf8-59b030cee225_0155_R,r03,unreliable-transcription,visual:mirrored_garbled;rule:line_repeat
+r_20149329e4f9,28,733b37c0-686b-46c0-8cf8-59b030cee225_0157_L,r02,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_a5df480caa36,28,733b37c0-686b-46c0-8cf8-59b030cee225_0162,r03,irrelevant-insert,"duplicate: same continuation page of the 23.III.1955 report as insert 240 on the next scan, but with lines miss"
+r_e8650f938811,28,733b37c0-686b-46c0-8cf8-59b030cee225_0165_R,r03,unreliable-transcription,rule:gibberish;rule:mirrored;rule:weird_tokens
+r_119b77f37f75,28,733b37c0-686b-46c0-8cf8-59b030cee225_0166,r07,unreliable-transcription,bleedthrough_duplicate_of:r_87b6a84d0da8(0.651)
+r_d0633ba8b64e,28,733b37c0-686b-46c0-8cf8-59b030cee225_0168_L,r02,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_b0f923e5ee53,28,733b37c0-686b-46c0-8cf8-59b030cee225_0172_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_81a0c5c11d02,28,733b37c0-686b-46c0-8cf8-59b030cee225_0175,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_ba2b1961a47c,28,733b37c0-686b-46c0-8cf8-59b030cee225_0177,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_3a22caca8e74,28,733b37c0-686b-46c0-8cf8-59b030cee225_0183_L,r03,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_940c52638df1,28,733b37c0-686b-46c0-8cf8-59b030cee225_0188_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_d8877a2c04f9,28,733b37c0-686b-46c0-8cf8-59b030cee225_0188_R,r02,unreliable-transcription,visual:blank_formulaic_list
+r_5205ef7bddf4,28,733b37c0-686b-46c0-8cf8-59b030cee225_0194,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_00be268de340,28,733b37c0-686b-46c0-8cf8-59b030cee225_0197,r03,unreliable-transcription,visual:blank_page_english_hallucination
+r_92a4d25ab144,28,733b37c0-686b-46c0-8cf8-59b030cee225_0206,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_fdfac4da3db5,28,733b37c0-686b-46c0-8cf8-59b030cee225_0209,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_765fc89da007,28,733b37c0-686b-46c0-8cf8-59b030cee225_0212,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_f7a1294ee416,28,733b37c0-686b-46c0-8cf8-59b030cee225_0220_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_7ccc11725460,28,733b37c0-686b-46c0-8cf8-59b030cee225_0220_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_3dd0fb47c551,28,733b37c0-686b-46c0-8cf8-59b030cee225_0223,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_972dfdb77de1,28,733b37c0-686b-46c0-8cf8-59b030cee225_0227,r02,unreliable-transcription,visual:faint_garbled
+r_772a1149ab5c,28,733b37c0-686b-46c0-8cf8-59b030cee225_0231,r04,unreliable-transcription,visual:blank_page_hallucinated_letter
+r_1806b7d74612,28,733b37c0-686b-46c0-8cf8-59b030cee225_0232,r02,irrelevant-insert,"duplicate: same Ismaning report of 2.6.55 as insert 255 on the next scan, but only the first paragraph is trans"
+r_9bdce0013d32,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0005,r04,unreliable-transcription,rule:weird_tokens
+r_304101721784,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0007,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_d0dc03f6864c(j=0.26)
+r_3ab35c4f0642,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0013_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_51e4b3f12005,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0013_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_6ae4e1f92935,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0014,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_796c4a28e47e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0016,r03,unreliable-transcription,rule:line_repeat;rule:dup_lines;rule:illegible
+r_ca5fee7f5d26,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0018_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_2091d322aabc,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0023_R,r03,unreliable-transcription,rule:weird_tokens
+r_bf8ba6fb9a5a,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0028_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_f01921299589,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0028_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_efb293a73a19(j=0.29)
+r_5d41e7a286d0,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0029,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_2fdf61508669,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0033_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_e6295173a62f,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0035_L,r03,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop
+r_b9b271cbb03b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0035_R,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_e4b38541f0dd,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0040_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_e60c40ead333,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0042,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_5d308aa6c056,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0042,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_6932d1d48f67,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0043,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_a56c3abf1d59,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0045,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_b73d254c47f9,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0045,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_f09b1e5a1d61,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0046,r02,unreliable-transcription,rule:illegible
+r_db72cc80182e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0052_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_addd425029f2,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0057_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_9e400c20942e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0057_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_1da9876fb169,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0058,r04,irrelevant-insert,duplicate: only the heading and weather of the Ismaning report of 25.6.55; the full report is on the next scan 
+r_a541f5083f16,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0060,r03,unreliable-transcription,rule:illegible
+r_152b2c11a48b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0062_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_e161e52a123b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0063,r07,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_fb386d490d4f(j=0.36)
+r_a18fe0d995ee,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0066,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_fa02af846b84(j=0.34)
+r_4755849746ae,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0066,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_d3d26b498ec1,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0067,r02,unreliable-transcription,rule:gibberish
+r_fc226ddd33fa,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0069,r04,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_65f3e9da2700,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0071_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_d86fc51ce2a7,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0072,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_94667a6e8f3f,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0075,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_b769dcd1ab31,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0076_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_720b1abd5e5b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0077,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_1685d47c2126,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0079_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_efe491fddfd5,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0079_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_585a04c49266,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0081,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_8dc8af158b97,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0083,r02,unreliable-transcription,visual:faint_garbled
+r_daae658fedd5,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0083,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_0fa65ed42124,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0084,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_0722ef992e3b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0086,r03,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_49faa2d63039(j=0.28)
+r_337bbec91f2a,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0088,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_0dc7fda0173f,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0091,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_24c3c93cf8b6,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0093_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_9d325e347862,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0096_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_9d2811ddc56e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0098,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_872f62c4de95,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0100,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_8cc1fb83e663,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0102_R,r03,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:low_vocab;rule:overdense
+r_50b6037b4dbd,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0104,r07,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_38ed067e2577(j=0.30)
+r_dc009f06906b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0107,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_7b654b683547,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0117_L,r02,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_116cc18b7b90,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0126_R,r02,picture-not-text,reclassified as photo_postcard_leaf in the multimodal cleaning; the transcription is a reading of a picture
+r_e00df45c9a6e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0128_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_82fe97d29bde,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0128_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_bb30342b6f53,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0129,r02,unreliable-transcription,rule:gibberish;rule:weird_tokens
+r_14890a233026,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0131,r02,unreliable-transcription,visual:strip_fragments
+r_88bb3fb7194c,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0131,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_12dad2ca226f,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0135,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_d3df55f50aec,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0137_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_a6e8e4f89aba,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0138,r06,unreliable-transcription,rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:illegible
+r_9a13a0a7cd0a,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0140,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_b68ee539330e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0143,r03,unreliable-transcription,rule:repetition_loop;rule:line_repeat
+r_f825ef3f7121,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0148_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_10d5dc6bdb35,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0149,r06,unreliable-transcription,rule:repetition_loop
+r_ba98a1b62308,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0151_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_9f549c52b6e0(j=0.32)
+r_219317542bff,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0152,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_ff02742d6226,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0156_R,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_cfd9c7a4bd65(j=0.26)
+r_293669fce98d,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0158_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_d42c1c9344d9,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0158_R,r01,unreliable-transcription,bleedthrough_reading_unreliable
+r_14dcf5eff7c6,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0159,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_91ce029ad251(j=0.27)
+r_8b2c1da1adfc,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0163_R,r05,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_8f3241f533f7(j=0.38)
+r_b963191c6e6d,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0166_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_1dcf16b574cb,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0168,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_a85300a5c710,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0170_R,r04,unreliable-transcription,visual:blank_page_hallucination_kathmandu;rule:gibberish
+r_3d9294f39550,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0171,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_55027985bbb8,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0174_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_c06cfcf9e813,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0176,r05,unreliable-transcription,bleedthrough_reading_unreliable
+r_90e92a10822e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0178_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_e61d3be32443,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0181_L,r04,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_7630091aa3d8(j=0.25)
+r_be836184405b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0182,r04,unreliable-transcription,visual:refusal_blank
+r_f69a42509eec,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0185,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_2d8f47df5737,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0188_R,r02,unreliable-transcription,rule:repetition_loop;rule:low_vocab
+r_717e33da94cb,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0190_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_9b2da403c04e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0190_R,r02,unreliable-transcription,rule:repetition_loop;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_559900fd194d,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0191,r02,unreliable-transcription,rule:illegible
+r_48bdf060fdd6,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0193,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_58324650b18d,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0195_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_18c3a03069e6,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0195_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_1ccb7eb48d1e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0196_L,r03,unreliable-transcription,visual:faint_garbled
+r_306013ca1e97,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0198,r03,unreliable-transcription,visual:strip_fragments;rule:gibberish
+r_45eac6c3008a,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0198,r04,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_cf374bef218b(j=0.25)
+r_a09923d76593,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0200_L,r02,unreliable-transcription,rule:repetition_loop;rule:low_vocab
+r_35a4f970f5d6,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0200_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_6b83a0efdc79,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0205,r04,unreliable-transcription,rule:line_repeat;rule:dup_lines;rule:ngram_loop
+r_e158c047baee,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0207,r03,unreliable-transcription,bleedthrough_duplicate_of:r_3db8a6806a98(0.749)
+r_4862a70b792a,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0209_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_9a4842a26f10,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0212_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_5bb0de5a4b2b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0213,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_066d9e81c00a,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0216_R,r05,unreliable-transcription,visual:hallucinated_menu
+r_176ad28b4224,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0217_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_aac26e18466b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0217_R,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_9af096036f72,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0221_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_abe1b41ca64e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0222_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_605b22b0553b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0223,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_91e34e40d175,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0224_R,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_c48dae1fad7f,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0226_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_4fcce6f23f3e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0227,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_82d043b55ec0,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0230,r08,unreliable-transcription,bleedthrough_reading_unreliable
+r_40eea789479e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0233,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_61e02a54054e,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0235_L,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_e7ae0d28776c,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0237,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_ed33a2d9d7e4,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0243,r02,unreliable-transcription,rule:repetition_loop;rule:line_repeat;rule:dup_lines;rule:ngram_loop;rule:low_vocab;rule:overdense
+r_17264d61a7f7,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0243,r06,irrelevant-insert,"duplicate: one-line fragment 'Gry MW 2, Türkentauben 2, Feldlerchen 7' repeating the Freising line of insert 32"
+r_019417221aa4,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0250,r07,unreliable-transcription,bleedthrough_reading_unreliable
+r_e2cb6ee6ec0d,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0252_L,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_f4b4e5f3ab05,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0253,r03,unreliable-transcription,bleedthrough_reading_unreliable
+r_6fec140421c3,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0254,r01,irrelevant-insert,fragment: cut stub of a note ('Mündorf … im tiefer Winter … Bericht … vom 11. III.')
+r_20dbeaa985af,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0255,r04,unreliable-transcription,bleedthrough_reading_unreliable
+r_42bf26bd69fc,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0261,r03,irrelevant-insert,"local-news: church service times (Beichtgelegenheit, Kolpingsfamilie)"
+r_2eb57a536cbb,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0261,r05,irrelevant-insert,duplicate: same church notice as insert 329 on the same scan
+r_cbbb020ac203,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0268,r06,unreliable-transcription,bleedthrough_reading_unreliable
+r_1ed87ee2618b,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0270,r02,irrelevant-insert,fragment: Ismaninger Teichgebiet page whose transcription is garbled throughout (invented species names like '
+r_7b794f0c1e21,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0271,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_8b499fc6d36c,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0273,r02,unreliable-transcription,bleedthrough_reading_unreliable;probable_front_side:r_04330f3f7bf6(j=0.28)
+r_03a0c6efe1c7,29,7896ddd3-74f8-4374-92f3-aba32dccf03b_0274_L,r03,unreliable-transcription,rule:repetition_loop;rule:ngram_loop;rule:low_vocab
+r_618419caf8cc,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0034_R,r02,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_ea83b847f1a0,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0037_L,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_5b13ed343b3b,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0038_L,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_57740ac05740,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0040_L,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_ec7719c6cf7c,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0041_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_73912d841e8e,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0043_L,r03,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_3c406b05ef7b,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0045_L,r02,picture-not-text,reclassified as photo_postcard_leaf in the multimodal cleaning; the transcription is a reading of a picture
+r_7a06d25750c2,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0046_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_e72e4ea94f56,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0048_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_a76d893b713f,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0054_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_e1f42ed22224,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0057_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_6ca587376217,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0071,r01,picture-not-text,reclassified as map_sketch in the multimodal cleaning; the transcription is a reading of a picture
+r_33de80539ce6,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0088_R,r03,irrelevant-insert,"local-news: housing-policy report (II. Wohnungsbaugesetz, Siedlerbund); only a stray 'Rebhühner, Fasanen' from a"
+r_b5a82d408613,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0097_R,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_19a7fc2a5705,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0117,r02,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_2978ee286601,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0117,r01,irrelevant-insert,other: Silvretta-Hochalpenstraße liability notice (travel leaflet)
+r_76465d837de4,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0118,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_570a88e4485f,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0118,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_d9813ce592ba,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0119,r01,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_0b6bba3bc9c5,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0124,r09,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_57845cfc5893,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0125_L,r01,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_ad3e36afd2bb,30,47da93ac-0d31-49eb-8313-32e7777b78c3_0125_L,r02,unreliable-transcription,visual:clipping_fragment
+r_6cef01a28529,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0014_R,r04,irrelevant-insert,"other: serialised novel excerpt (Greta Sanden, Timmendorf)"
+r_44cce39e9c34,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0036_L,r03,picture-not-text,reclassified as map_print in the multimodal cleaning; the transcription is a reading of a picture
+r_7bfaa5e5623b,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0041_R,r02,picture-not-text,reclassified as painting_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_cc496080833e,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0048_L,r02,picture-not-text,reclassified as painting_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_10a2ace7cc7a,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0059_L,r03,irrelevant-insert,"local-news: Munich market prices (vegetables, fish, poultry, game); only the headline of the weather item, which"
+r_d6b78a37483c,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0072_L,r02,unreliable-transcription,visual:refusal_blank
+r_a4c5b73d0e4e,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0074,r01,picture-not-text,reclassified as map_sketch in the multimodal cleaning; the transcription is a reading of a picture
+r_a607afcd5517,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0091,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_2a03023d891c,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0094,r06,picture-not-text,reclassified as leaf_object in the multimodal cleaning; the transcription is a reading of a picture
+r_6a68577ca7a7,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0096_L,r02,picture-not-text,reclassified as leaf_object in the multimodal cleaning; the transcription is a reading of a picture
+r_1d650b70b31a,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0101_L,r02,picture-not-text,reclassified as photo_postcard_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_aeed5a9fc2d1,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0110_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_b4ec070bff9d,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0111,r04,picture-not-text,reclassified as map in the multimodal cleaning; the transcription is a reading of a picture
+r_4b3bd71c11bc,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0115_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_512c6da1a1bf,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0118_L,r02,picture-not-text,reclassified as photo_postcard_leaf in the multimodal cleaning; the transcription is a reading of a picture
+r_8056bc4bc8c1,31,f3e30fe2-1d10-4e73-9ea2-17275ed8cf18_0124_L,r02,picture-not-text,reclassified as leaf_object in the multimodal cleaning; the transcription is a reading of a picture
+r_cecd862995ff,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0011_L,r02,picture-not-text,reclassified as newspaper_photo in the multimodal cleaning; the transcription is a reading of a picture
+r_69afe3239e65,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0012_L,r02,picture-not-text,reclassified as newspaper_photo in the multimodal cleaning; the transcription is a reading of a picture
+r_8261ce3a1ff2,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0029_L,r02,picture-not-text,reclassified as print_illustration in the multimodal cleaning; the transcription is a reading of a picture
+r_5f50352269fc,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0046_R,r01,picture-not-text,reclassified as map_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_cd74c5a4ae94,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0047_L,r02,picture-not-text,reclassified as map_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_eab62076a46d,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0050_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_d950e7c69deb,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0052_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_8974980f9d41,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0053_L,r02,picture-not-text,reclassified as photo_postcard_leaf in the multimodal cleaning; the transcription is a reading of a picture
+r_62662f12ada7,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0060_R,r02,irrelevant-insert,"local-news: housing policy report (Lücke plan, rent control)"
+r_98aa3c039e12,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0063_L,r02,irrelevant-insert,"local-news: Lohr local news: birthdays, registry office, cinema mix-up"
+r_095e16ecef33,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0069_L,r02,irrelevant-insert,other: ballroom dancing championship report
+r_a2b65c1b7ad8,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0070,r02,picture-not-text,reclassified as newspaper_photo in the multimodal cleaning; the transcription is a reading of a picture
+r_01f2cb012319,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0093_L,r02,unreliable-transcription,visual:clipping_strip_fragment
+r_81ed3a9ac29b,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0105_L,r02,picture-not-text,reclassified as map_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_ff0db9a6accc,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0115_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_d4d6f11d331e,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0119_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_2f3a9b6a7fe0,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0120_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_cdf0d1d681b3,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0122_L,r02,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_9e814a37e0d6,32,3d0bed8e-a198-4c4e-89d2-0908c9b3aada_0123_R,r03,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_dcdf514411df,33,cde59c05-4063-40dd-84a0-a7873447632c_0022_L,r02,picture-not-text,reclassified as map_panorama in the multimodal cleaning; the transcription is a reading of a picture
+r_3e091bfc80dc,33,cde59c05-4063-40dd-84a0-a7873447632c_0023,r02,picture-not-text,reclassified as map_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_356ccc2aede5,33,cde59c05-4063-40dd-84a0-a7873447632c_0028_R,r02,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_fd62f39ab4d7,33,cde59c05-4063-40dd-84a0-a7873447632c_0038_L,r02,picture-not-text,reclassified as map_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_a574e1d228a9,33,cde59c05-4063-40dd-84a0-a7873447632c_0043_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_1ddd90470004,33,cde59c05-4063-40dd-84a0-a7873447632c_0046_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_f403a7ab7aa4,33,cde59c05-4063-40dd-84a0-a7873447632c_0050_R,r02,irrelevant-insert,other: television programme listing
+r_c16c61ed563b,33,cde59c05-4063-40dd-84a0-a7873447632c_0050_R,r03,irrelevant-insert,other: cut radio programme listing
+r_339d3c72681c,33,cde59c05-4063-40dd-84a0-a7873447632c_0061,r06,picture-not-text,reclassified as print_illustration in the multimodal cleaning; the transcription is a reading of a picture
+r_52d2dcb2a215,33,cde59c05-4063-40dd-84a0-a7873447632c_0083_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_bb69693d3949,33,cde59c05-4063-40dd-84a0-a7873447632c_0084_L,r02,picture-not-text,reclassified as photo_refusal in the multimodal cleaning; the transcription is a reading of a picture
+r_96949f154128,33,cde59c05-4063-40dd-84a0-a7873447632c_0086,r02,picture-not-text,reclassified as map_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_b72c42f3436a,33,cde59c05-4063-40dd-84a0-a7873447632c_0092_L,r03,unreliable-transcription,visual:clipping_strip_fragment
+r_182ed32867a7,33,cde59c05-4063-40dd-84a0-a7873447632c_0092_L,r02,irrelevant-insert,"ad: Welt am Sonntag classified advertisements (lawn mowers, books, violin)"
+r_1fee0df961f2,33,cde59c05-4063-40dd-84a0-a7873447632c_0106_L,r02,picture-not-text,reclassified as photo_postcard in the multimodal cleaning; the transcription is a reading of a picture
+r_7f0688ff719e,33,cde59c05-4063-40dd-84a0-a7873447632c_0119_R,r04,irrelevant-insert,other: essay on Protestant church history
+r_f2e308ba5743,33,cde59c05-4063-40dd-84a0-a7873447632c_0120_R,r04,irrelevant-insert,other: left-cut continuation of the church-history essay
+r_4dc05c73d5d8,33,cde59c05-4063-40dd-84a0-a7873447632c_0120_R,r05,irrelevant-insert,duplicate: left-cut end of Peter Kuhlemann's article on buzzard shooting; the complete article is on the next s
+r_5f3334953ead,33,cde59c05-4063-40dd-84a0-a7873447632c_0133_R,r02,unreliable-transcription,bleedthrough_reading_unreliable
+r_cc3da3cce889,33,cde59c05-4063-40dd-84a0-a7873447632c_0134,r01,unreliable-transcription,visual:strip_fragments
+r_eb47746f12c7,33,cde59c05-4063-40dd-84a0-a7873447632c_0134,r02,irrelevant-insert,"fragment: column strip of word stubs from a travel diary (Sargans, 29./30. Mai …)"
+r_422568ba9ab9,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0006_L,r02,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_2708c4371301,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0007_L,r02,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_ad4d3e40ae6d,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0023_L,r02,picture-not-text,reclassified as photo in the multimodal cleaning; the transcription is a reading of a picture
+r_c03536535980,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0024_L,r02,picture-not-text,reclassified as photo_leaf in the multimodal cleaning; the transcription is a reading of a picture
+r_5d853a8c6525,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0027_L,r02,picture-not-text,reclassified as photo_leaf in the multimodal cleaning; the transcription is a reading of a picture
+r_c4f6bed67d46,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0032_L,r03,picture-not-text,reclassified as photo_leaf in the multimodal cleaning; the transcription is a reading of a picture
+r_7295db15da5f,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0040_L,r02,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_79cf35fc6b8a,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0041_R,r03,picture-not-text,reclassified as newspaper_photo in the multimodal cleaning; the transcription is a reading of a picture
+r_54a9acba993b,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0045_L,r02,picture-not-text,reclassified as painting_card_duerer in the multimodal cleaning; the transcription is a reading of a picture
+r_2fe48be0a9b3,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0060_R,r02,irrelevant-insert,local-news: 15-year-old girl riding from Konstanz to Nürnberg (Immenstadt report)
+r_c543a9b7a1ae,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0063_R,r02,irrelevant-insert,fragment: cut headline stubs of a Kaufbeuren local page (Tänzelfest police briefing)
+r_d0f3b6e9ef1c,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0064,r04,irrelevant-insert,local-news: photo caption of police officers preparing the Kaufbeuren Tänzelfest parade
+r_bb03555c853e,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0065,r04,picture-not-text,reclassified as newspaper_photo in the multimodal cleaning; the transcription is a reading of a picture
+r_ffdd20977621,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0065,r05,irrelevant-insert,"local-news: Kaufbeuren local news: rents, funeral, cinema, Tänzelfest traffic arrangements"
+r_81b87df890d0,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0069,r03,picture-not-text,reclassified as newspaper_photo in the multimodal cleaning; the transcription is a reading of a picture
+r_6a4afd9b205d,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0070_L,r01,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture
+r_9e3912b6279d,34,23578f25-8410-4677-aaf2-b29aec37e7b5_0070_L,r02,picture-not-text,reclassified as painting_card in the multimodal cleaning; the transcription is a reading of a picture

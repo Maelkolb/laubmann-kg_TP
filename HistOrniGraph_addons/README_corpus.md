@@ -19,6 +19,9 @@ laubmann_corpus/
   multimodal.py  non-body-text catalogue driver
   report.py      per-volume coverage report
   ids.py         content-addressed page_uid / region_uid / entry_uid
+  boundaries.py  reviewed entry boundaries (missed headers, register stops)
+dedup/apply_entry_boundaries.py   CLI: corpus_dedup + boundary CSV -> patched corpus
+build_multimodal_regions.py       CLI: multimodal_regions.jsonl for the KG (lkg:MultimodalRegion)
 ```
 
 Import surface for downstream tools:
@@ -108,3 +111,58 @@ inside running prose are rejected. Normalization returns provenance
 (`month_source`, `year_form`, `loc_source`) alongside the final `date_norm` /
 `location_raw`, so ambiguous headers can be reviewed later. `--loose` also
 accepts headers without a year (higher recall, lower precision).
+
+
+## Patched corpus (ontology 0.6.0)
+
+The date-anchored detector misses entries and glues every volume's register
+onto its last entry. `data/corpus_patches/entry_boundaries.csv` (repo root)
+records reviewed boundaries on top of the deduplicated corpus:
+
+| action | source | rows | what |
+|---|---|---|---|
+| `start` | `review` | 260 | missed headers found by reading all 2,096 half-pages that had no detected header (the "Seiten ohne Eintrag" list): numeric-dated typed reports (Bezzel, Wüst, Remold …), day ranges, year-less and OCR-damaged dates, digest sections; 34 of them sit in masked text (below) and are not applied, 1 line was not found |
+| `start` | `review-resumption` | 1 | the 26 May 1936 entry resumes after the interleaved life list (Vol. 14) |
+| `start` | `auto-markup` | 107 | day headers the detector misses because `<u>` sits inside the date (`27. <u>December 1938.</u>`), header-shaped lines only, Roman-month digest lines excluded (1 in masked text) |
+| `start` | `auto-dropped-copy` | 6 | headers read cleanly on a page the dedup dropped, mapped to the kept copy's line |
+| `stop` | `review` | 751 | register / index / end matter pages |
+| `stop` | `review-duplicate` | 16 | repeat photographs of a typed report or a day page (the best copy stays an entry) |
+| `stop` | `auto-register`, `auto-junk` | 16 | the register begins on the last entry's own page; a page of `[illegible]` placeholders before it |
+
+`data/corpus_patches/masked_regions.csv` blanks 549 body-text regions out of
+the entry text (offsets unchanged): the 347 regions the multimodal cleaning v2
+removed as unreliable (239 faint bleed-through readings of folded typed
+reports — corrupted dates and names —, loops, gibberish, hallucinations), the
+151 paragraphs that are really maps/photographs (their "transcription" is a
+reading of a picture) and 51 irrelevant inserts (clipping backsides: ads,
+local news; duplicates) — text the extraction model no longer reads.
+
+```bash
+python HistOrniGraph_addons/dedup/apply_entry_boundaries.py --corpus-dir data/corpus_dedup \
+    --boundaries data/corpus_patches/entry_boundaries.csv \
+    --mask data/corpus_patches/masked_regions.csv --out-dir data/corpus_patched
+python HistOrniGraph_addons/build_multimodal_regions.py --corpus-dir data/corpus_patched \
+    --catalogue-dir <multimodal_catalogue_v2_2026-08-18> \
+    --reading-order data/corpus_dedup/multimodal_clean.md \
+    --insert-decisions data/corpus_patches/text_insert_decisions.csv \
+    --duplicates data/corpus_patches/multimodal_duplicates.csv \
+    --catalogue-entries <corpus_2026-07-21>/entries.csv \
+    --out data/corpus_patched/multimodal_regions.jsonl
+```
+
+Result (2026-09-30): 9,527 → 9,857 entries — 338 new (166 field days, 158
+typed reports/letters, 13 digest sections, 1 other; every existing `entry_uid`
+and `entry_id` kept, new entries are `L05-e0123a` …), 8 dropped (entries whose
+header lies in a bleed-through reading, i.e. unreliable duplicates of a
+report), 549 existing entries shorter (register cut off, missed day split off,
+masked text); entry text 9.10M → 7.81M characters. `source_regions` lists
+every body-text region an entry runs through (3,257 entries span several).
+Multimodal: 1,299 image/object regions after removing 121 duplicate scans
+(`multimodal_duplicates.csv`: dHash of the catalogue thumbnails on adjacent
+scans, looser when the text dedup paired the scans as rescans, plus a visual
+check of the borderline pairs) and 375 of 426 paragraph/list inserts
+(`text_insert_decisions.csv`, marginalia never); 1,626 regions linked to an
+entry (1,253 images/objects, 373 inserts; 88 links taken from the catalogue
+where the dedup had moved the facing text page). `data/corpus_patches/dedup_lost_headers.csv` lists 74 headers that only
+exist on a page the dedup dropped (its kept twin is a partial capture) — those
+days are missing from the corpus until the dedup decision is revisited.

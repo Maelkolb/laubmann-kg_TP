@@ -1,0 +1,427 @@
+region_uid,volume,scan,decision,category,duplicate_of,note
+r_5745e21051ce,3,68,keep,clipping-bird,,"Nebelkrähe article (Robien, Naturwiss. Wochenschrift)"
+r_ac536b701f74,3,79,keep,clipping-bird,,hatching behaviour of thrushes (Perrycoste)
+r_0b3520b1f335,3,79,keep,clipping-nature,,precipitation climatology of Bavaria (weather); right edge cut but readable
+r_88b3271a0c14,3,81,keep,clipping-nature,,"Lewitz bird reserve in danger, Vogelwarte Helgoland (Weigold)"
+r_12b35f53aec7,4,51,keep,literature,,field marks Baumfalke vs Turmfalke after L. v. Boxberger
+r_620914340ba9,4,75,keep,letter,,"heron/bittern report from Staltach, G. Traunberger 29.6.25"
+r_079c929aeb22,4,76,keep,letter,,postcard to Dr. Laubmann: Rohrweihe with 3 young at Ostersee
+r_268c1f413b1c,5,42,keep,clipping-bird,,"Der Waldvogel im Käfig, signed Dr. L."
+r_6b21349af1f3,6,20,keep,clipping-bird,,"Schutz den Staren, hunting association petition"
+r_2e9da5b8e7a4,8,22,keep,clipping-bird,,Steinadler attacks customs officer's dog at Plansee
+r_b9a65aa678d7,8,68,keep,table,,Dutch list of breeding birds of Texel (J. Drijver) with German annotations
+r_1bfee7f3dc8f,9,62,keep,clipping-bird,,"left-cut column on bird sanctuary near Moosaurach (swallows, 4000 birds), Dr. Dorothea Eckardt; damaged but key statements survive"
+r_4393973535ce,10,48,keep,letter,,letter from Potsdam 1.V.32 to Laubmann about chicks hatched from his eggs
+r_9aa5e1cef4b3,10,50,keep,clipping-bird,,Die Mauersegler sind wieder da! by Dr. Rudolf Kreß; start left-cut
+r_b07863236fec,10,51,drop,local-news,,"brewery suppliers / beer price reduction, reverse of clipping"
+r_17bc2c7fe174,10,51,drop,fragment,,heading stub 'An alle Münch'
+r_ee00ed6e45d6,11,6,keep,clipping-nature,,"court case on cat killings by the Garmisch Vogelwarte (Dr. Haenel, bird protection)"
+r_bc379d464a8d,11,25,keep,notice,,"Ornithologische Gesellschaft in Bayern call for contributions to 'Die Vogelwelt Bayerns' (Laubmann, Wüst)"
+r_257bd390c483,11,65,keep,letter,,"note/letter excerpt on Sturmtaucher (Puffinus kuhli borealis) specimen caught alive, measurements; OCR partly garbled"
+r_ffa8f2d315d5,12,63,drop,other,,printed railway car list Hoek van Holland/Vlissingen; only a stub of a handwritten gull note ('Lachmöwe. Hinter Eindhoven …')
+r_fe6b56578796,12,86,keep,caption,,Old Ashmolean postcards 'The Dodo' captions (Oxford trip 1934)
+r_c67323e58d89,13,10,keep,clipping-bird,,Der Storch in der Statistik by Dr. H. Scharnke
+r_cc68060a2724,13,25,keep,notice,,hunting season for Auer-/Birk-/Rackelhähne extended to 31 May (Bavaria)
+r_09739b695264,13,48,keep,clipping-bird,,thousands of storks died in Egyptian desert heatwave
+r_51ccec2209ab,13,58,keep,notice,,"ornithological lecture programme 4-5 July 1935 (Rüppell, Geyr, Drost, Schüz, Wüst etc.)"
+r_9c7474356924,14,49,drop,fragment,,column stubs (Wendelstein / Erlangen university celebration)
+r_92d424fe50a8,14,61,keep,caption,,label 'Am Attersee 25. VIII. 36 Ardea cinerea!'
+r_1528fcf74d18,14,91,keep,clipping-bird,,Eiderente as winter guest near Basel (E. Ae.)
+r_1e8f795fd1d3,15,36,keep,caption,,sketch-map legend with exact locations for Jost Franz's Weißrückenspecht paper (Jachenau)
+r_0e93c5b5f739,15,55,keep,letter,,Stahl reports Schnee-Eule at Stallberg 4.1.38
+r_34fae5d8c674,15,75,keep,other,,"short botanical note: originally only Prunus padus, Crataegus, Sambucus nigra, Sorbus, Rosa"
+r_f2b0b3573592,15,79,keep,letter,,"address side only: to Prof. Laubmann, Wernsdorf/Spree, from Oskar Hirrlinger (5.38)"
+r_52daf35de650,15,98,keep,letter,,"Karl Otto Beckmann, Kiel: Zwergfliegenschnäpper near Hohenwestedt; forwarded to Dr. Meise"
+r_55379798c4d6,15,104,keep,letter,,"Helmut Sick, Heidelberg 17.VI.38: Netta rufina at Mettnau, Bonelli's warbler etc."
+r_70d9aaa76ff0,15,126,keep,field-report,,"observation list Grafrath/Stegen moor 1930-32 (Weißflügelseeschwalbe, Tüpfelsumpfhuhn …)"
+r_d758764b5774,15,136,keep,clipping-nature,,"Rußweiher (Eschenbach, Oberpfalz) proposed nature reserve; left edge cut but readable"
+r_a84aa84593fe,15,141,keep,letter,,letter 'Walter' (Starnberg 30.IX.1938) to Laubmann asking to borrow Ornis fennica
+r_36525ae4d0d0,16,15,keep,field-report,,"M. Stark report: Steinkauz, possible Uhu breeding in Bärental (Röthenbach 30.XII.1938)"
+r_4d9fe1f55491,16,24,keep,clipping-bird,,French article: fire at Château de Clères (Delacour's bird collection)
+r_6622651514a6,16,50,drop,other,,boat timetable Konstanz-Schaffhausen
+r_70a781be8dd9,16,51,keep,caption,,"photo caption 'Im Wollmatinger Ried 6. VI. 1939, Gauch phot.' (OCR: IX)"
+r_6416351408ba,16,52,keep,caption,,"photo caption, same wording as insert 40 on next scan (Wollmatinger Ried 1939, Gauch phot.); likely a second photo of the series, possibly a double scan"
+r_c9408560f91c,16,59,keep,letter,,end of letter from K. Lamber: many woodpecker skins found near Uhu eyrie
+r_2d64b412199c,16,73,keep,caption,,"photo caption: white orchid in oak wood, descent from Goblacker to Kappel, 28.VI.1939, E. Laubmann phot."
+r_96293bcd511e,16,75,keep,caption,,"photo caption: descent to Kappel 28.VI.1939, E. Laubmann phot.; Bluthänfling auf Wacholder"
+r_af8c289475c2,16,89,keep,letter,,"postcard from F. Steinbacher, Den Burg (Texel) 2.8.1939: Griend tern colony counts etc."
+r_3a8400b598dc,16,90,keep,clipping-bird,,region mixes a political item (Italian trade employees in Augsburg) with the end of the article on storks visiting Kaufbeuren; kept for the stork part
+r_7fb3f81e7a36,16,92,keep,clipping-bird,,Storchenbesuch in Kaufbeuren 16.8.39 with photo caption (Aufn. Kutter)
+r_2874d64b4ffc,16,92,drop,local-news,,"reverse page: manslaughter case, film review"
+r_246e656c213a,16,98,keep,clipping-nature,,"'Und dann kam der Mensch' - decline of moor birds (Lechseeschwalbe, Kiebitz, Fischreiher)"
+r_2c5d2d564afa,16,106,keep,caption,,"photo caption: bei Zell am See, Weg zum Gletscher-Blick, E. Laubmann phot. Jan. 1940"
+r_7c0f261ed7b4,16,141,keep,caption,,"photo caption 28.VIII.1940, view into valley"
+r_dbc8702ff083,16,142,keep,caption,,"photo caption 28.VIII.1940 Hinteranger Tal: Birkwild, Auerhahn"
+r_d7742d66b8a4,17,62,keep,notice,,"nature-reserve ordinance Maisinger See 27.8.1941 (bird protection, Ornith. Gesellschaft in Bayern)"
+r_6a47436b28d7,17,78,drop,local-news,,Bamberg newspaper page: short folklore on March thunderstorms plus HJ notices and local news; not a weather report
+r_c31643588c19,17,79,keep,clipping-bird,,"Rothalsgans shot at Bischberg, given to Bamberg Naturalienkabinett; right edge cut but readable"
+r_44a75382481a,17,83,keep,field-report,,"Ismaninger Teichgebiet 22 March 1942 species list, copy sent to Laubmann"
+r_c5cf7ff77f7d,17,90,keep,clipping-nature,,Bund Naturschutz in Bayern AGM and excursion to Bernrieder Filz (Fischadler; Laubmann gave explanations)
+r_d90ea12298a9,17,105,drop,fragment,,"right-cut road-route description (Zirler Berg, Fernpass, Nassereith); travel text, no natural-history content"
+r_42102b3cb6a9,17,118,keep,clipping-bird,,Weißkopfgeier roost in the Salzburg Alps (Franz Pimpl)
+r_ab82bfdd3409,18,52,keep,field-report,,Walter Wüst excursion report Ismaninger Teichgebiet 21.10.1943 with covering note to Laubmann
+r_9070c19452fa,18,60,keep,caption,,"child's label: ptarmigan feather found near Schrecksee above 2000 m, for Papa"
+r_c33ef96b81a3,18,66,keep,clipping-bird,,"Verleumdete Vogelarten (Mauersegler, Steinkauz, Seidenschwanz folklore)"
+r_f24f698b4b51,18,93,keep,clipping-bird,,"Maisinger See hidden bird paradise, Starnberg 28 Aug"
+r_5cbfaf987a8f,19,79,keep,table,,species index with volume/page references (Drosselrohrsänger …)
+r_249ccdc7cc3d,19,82,keep,table,,species index with volume/page references (Kampfläufer …)
+r_525fc19b1bbb,19,87,keep,table,,species index with volume/page references (Stockente …)
+r_9c7efeb5180c,19,89,drop,other,,"NSDAP Ortsgruppe Ludwigstraße meeting reminder (political circular, likely reused paper)"
+r_0e6700849ff6,19,90,keep,table,,species index with volume/page references (Gartenbaumläufer …)
+r_49b9a5d99656,20,40,keep,clipping-nature,,"weather: 'Tropische Temperaturen', Munich 35.1 °C on 29 July (1947), temperature records"
+r_19d3adc623a2,21,55,keep,table,,"table of bird flight speeds and wing-beat data, compiled by Mario Muck"
+r_42f3dd37d0a8,21,56,drop,other,,"article on porcelain history (Nymphenburg, Bustelli, Hutschenreuther); only the last line starts 'Dem Vogelkundigen …', no bird content survives"
+r_52737e3c56fc,21,57,keep,field-report,,"handwritten spring-arrival notes (first Kiebitz, Brachvogel, Bachstelze, Rauchschwalbe); right edge cut"
+r_d70be15ce5cc,21,57,keep,clipping-bird,,article on decline of swallows (and songbird netting in Italy); right half of lines cut but content readable
+r_a24bce330a56,21,81,keep,notice,,"Vogelwarte Radolfzell circular on the 1949 meeting (Schüz, Kuhk, v. Bodman)"
+r_29d1bb2fd4e0,21,82,keep,notice,,programme of 4th meeting of Vogelwarte Radolfzell 13-16 May 1949
+r_2454ce9105c6,22,16,keep,field-report,,"annual report Naturschutzgebiet Wollmatinger Ried 1949 (plants, bird protection), part 1"
+r_a97df805b87c,22,17,keep,field-report,,"annual report Wollmatinger Ried 1949 part 2: breeding counts, signed Dr. Belzer, Konstanz 20.8.1949"
+r_63aa2505f42e,22,58,keep,letter,,"letter Franz Deßloch, Gröbenzell 27.1.1950, part 1 (his bird garden)"
+r_ea6274d827da,22,59,keep,letter,,letter Franz Deßloch part 2: Karmingimpel caught and released
+r_c0c41a3fce94,22,62,keep,clipping-nature,,"'Paradies zwischen Röhricht und Sumpf' - plea to save the Ampermoos, Dr. H. Engel (birds and plants)"
+r_cb57493d94cc,22,63,drop,other,,"end of a feuilleton on folk dancing (Effi Horn), reverse/neighbour of kept clipping"
+r_43a1b906dc16,22,63,drop,other,,crossword puzzle clues
+r_084f0dcfeb23,22,63,keep,clipping-bird,,'Eine Taube erobert Europa' - Türkentaube breeding in Nürnberg (E. Gebhardt) with photo caption
+r_0e66c819c8e1,22,69,keep,clipping-bird,,'Der Vogelmord auf dem Bodensee' - coot shooting on the Untersee (K. F. Finus)
+r_938ea84dc506,22,75,keep,clipping-bird,,'Fremdling aus Indien' - Türkentaube spread (Hans Taubenberger)
+r_06599f7b3442,22,75,keep,clipping-bird,,"'Tauben aus dem Orient' - Türkentaube colony in Nürnberg, Stresemann quoted (Bernhard Krüger)"
+r_aa4c51983db9,22,78,keep,notice,,Vogelwarte Helgoland/Radolfzell form: recording arrival of migrants and song onset
+r_8d158f1e221d,22,83,drop,other,,"film production article ('Liebe auf Eis', Kurt Meisel)"
+r_031f7be23f3c,22,86,keep,clipping-bird,,"'Vogelparadies vor Münchens Toren' by Dr. H. Engel, 22./23.4.1950; only heading and a few broken lines transcribed"
+r_ca5571a33b5c,23,15,keep,clipping-bird,,"region mixes Swiss/Italian news columns (Lyceum clubs, Winterthur power contract, Geneva) with the end of 'Wandlungen bei Vögeln' (Huia, Galapagos woodpecker finch, David Lack); kept for the bird part"
+r_c9dc78169f71,23,16,keep,clipping-bird,,"'Wandlungen bei Vögeln' (H. Fr., NZZ): island evolution, pseudo-woodpeckers"
+r_aebacf7a4162,23,21,keep,clipping-bird,,'Türkentauben in Bayern' by Joseph Thomas
+r_79f1d418289f,23,42,keep,clipping-bird,,'Isarspatzen' humorous feuilleton on sparrows at a hemp feeder (W. F. Kloeck)
+r_1be2a00f3706,23,47,keep,obituary,,"centenary tribute to Lina Hähnle, founder of the Bund für Vogelschutz"
+r_093d4175ba4a,24,5,keep,clipping-bird,,"stork resting on St. Margaret church tower, Sendling"
+r_7665f77c1cd1,24,33,keep,clipping-bird,,"two Fischreiher shot at Leinau, call for bounties (Kaufbeuren)"
+r_30569671d2aa,24,49,keep,notice,,invitation Zürich 20.3.1952: lecture by Prof. Laubmann on birds of Ismaninger Teichgebiet
+r_16d591ea1c9e,24,59,keep,field-report,,Ismaninger Teichgebiet observations 11.4. and 18.4.1952
+r_ad2931063b64,24,65,keep,clipping-bird,,"Allgäuer/Kaufbeurer Tagblatt 3.4.52: first swallows, Uhu calling again near Lauchdorf"
+r_6a35971fefdc,24,65,keep,clipping-bird,,"4.4.52 Jordanweiher: new swan female, Tafelente joined"
+r_d2c49681eb3c,24,70,keep,literature,,"map legend from Wüst, 'Das Ismaninger Teichgebiet' (Verh. Orn. Ges. Bay.)"
+r_0ae1e524d902,24,82,keep,clipping-bird,,"Fischadler caught in fishing net at Walchensee, Stockholm ring"
+r_eb4832db1516,24,94,keep,field-report,,"Ismaning excursion report 12.VI.1952, 61 species"
+r_32e7b28091d9,24,97,keep,field-report,,"Ismaning excursion report 22.VI.1952, 63 species (different date from insert 103, not a duplicate)"
+r_4f4816e22955,24,102,keep,field-report,,"Ismaning excursion report 29.VI.1952, 70 species"
+r_1d663eb06b0b,24,105,keep,clipping-bird,,Habicht attacks child near Paderborn (dpa)
+r_b3be8a4b9b80,24,117,keep,table,,index of Ampermoos observations by diary volume/page (XX-XXIII)
+r_4c7f8092ca02,25,10,keep,field-report,,Ismaning excursion report 22./23.VII.1952
+r_f06767a3634a,25,17,keep,field-report,,"tail of an Ismaning species list (nos. 66-72: Bekassine, Trauerseeschwalbe …), Aug 1952"
+r_5a9da1b0c862,25,26,keep,field-report,,"Ismaning excursion 19.8.1952 with Werner Rathmayer (Schreiadler, Seggenrohrsänger)"
+r_61f5b63b823b,25,29,keep,field-report,,"Ismaning excursion 7.9.1952 (Sanderling, Sichelstrandläufer, Moorente)"
+r_e474645af0bc,25,40,keep,field-report,,"Ismaning excursion report 14.9.1952 (Temminckstrandläufer, Raubseeschwalbe)"
+r_af18c056c16a,25,46,keep,field-report,,"Ismaning excursion 28.9.1952 with H. Remold, waterfowl counts"
+r_a592dc0c05f3,25,47,keep,clipping-bird,,Lohrer Zeitung 26.7.1952: 250 pairs of Uferschwalben in Lohr sand pits
+r_200b805bca05,25,52,keep,field-report,,Ismaning excursion 12.10.1952
+r_511836111b2b,25,57,keep,field-report,,"Ismaning excursion 19.10.1952 with Dr. Wüst (Ohrentaucher, Zwergschnepfe)"
+r_0902d0233194,25,62,keep,field-report,,"Ismaning excursion Nov 1952 with Wüst, Mergentaler, Rathmayer, Remold"
+r_187641eeaa2c,25,65,keep,clipping-bird,,"Freiburg bird discoveries 1952 (Alpensegler, Zaunammer; Dr. Knecht, Dr. Schnetter)"
+r_256609152dec,25,69,keep,field-report,,"Ismaning excursion 16.11.1952 with Wüst, Bernecker, Remold; signed Einhard Bezzel"
+r_40cae12b3727,25,70,keep,clipping-bird,,Pfaffenhausen: about 15 storks gathering before departure
+r_17ebc7d4e83b,25,73,keep,field-report,,Ismaning excursion 30.11.1952 (Kernbeißer first record for Ismaning)
+r_01dcf25ad6b2,25,79,keep,field-report,,"Ismaning excursion 14.12.1952 (Samtente, Sterntaucher)"
+r_aa88726a0e47,25,84,keep,field-report,,Ismaning excursion 27.12.1952 with Dr. Wüst
+r_69d8953102d4,25,86,keep,caption,,photo caption 27.I.53: Blaumeisen (OCR 'Flaunmeisen') at feeder
+r_129d65578fce,25,88,keep,field-report,,"Ismaning excursion 18.1.1953 with Bernecker (waterfowl count, Wanderfalke hunting)"
+r_c47f34c13427,25,91,keep,clipping-bird,,"Bamberg: starlings on Aurach meadows, presumably displaced by the 1953 flood in Holland/Belgium"
+r_4f4a0d0d665b,25,92,keep,clipping-bird,,several Seeadler wintering near Rain am Lech
+r_687302a74c7a,25,94,keep,field-report,,Ismaning excursion 8.2.1953 (frozen reservoir)
+r_701e4159c5f5,25,99,keep,field-report,,Ismaning excursion 22.2.1953 with Dr. Wüst
+r_6fda5e800115,25,103,keep,field-report,,Ismaning excursion 8.3.1953 with Remold and Rathmayer (Merlin?)
+r_f155b3aa2439,25,108,keep,field-report,,"Ismaning excursion 15.3.1953 with Wüst, Remold, Bezzel (earliest Bavarian Flussuferläufer date)"
+r_4bbb351dbc20,25,109,keep,field-report,,"Ismaning excursion 19.3.1953 with Remold, Rathmayer, Seibold; with closing greeting"
+r_b3e9af3f1f00,25,112,keep,clipping-nature,,weather: 'Der Frühling hat begonnen' - Munich winter temperature/snow records
+r_341c550390bb,25,119,keep,field-report,,"Ismaning excursion 28.3.1953, signed Einhard Bezzel (Beutelmeisen)"
+r_d6c6e3b7f151,25,127,drop,fragment,,column strip of word stubs from the edge of a typed Ismaning report; nothing readable
+r_d7bcfc80c3a5,25,142,keep,field-report,,"Ismaning excursion 26.4.1953 with H. Remold, additions by Dr. Wüst, signed E. Bezzel"
+r_c49d873a77bd,26,9,keep,clipping-bird,,"'Familienidyll der Buchloer Störche 1952' - storks on Buchloe court building, former breeding sites"
+r_4a2c294622d3,26,12,keep,field-report,,"Ismaning 10.V.1953: observation from tower in snow showers, nest checks (Nachtreiher)"
+r_13d19480da07,26,18,keep,field-report,,"Ismaning 17.5.1953 nest search, Weißbartseeschwalben; signed E. Bezzel"
+r_9747b8cde51d,26,37,keep,field-report,,"continuation of Ismaning report 21./22.6.1953 (duck broods, moult migration, partridge chicks)"
+r_48d7d3a8441f,26,38,keep,field-report,,"Ismaning report 21./22.6.1953 with Remold, Rathmayer, Wüst (Löffler, Türkentaube new for area)"
+r_86ede1690485,26,44,keep,field-report,,Ismaning excursion 5.7.1953 (brood counts)
+r_acc33e87d305,26,69,drop,other,,local history articles: Zwiefalten abbey and Tübingen university founding
+r_336a8c5f46a8,26,70,keep,obituary,,65th-birthday tribute to ornithologist Prof. Dr. Franz Groebbels ('Der Vogel')
+r_b1425dd96086,26,73,keep,field-report,,"Ismaning excursion 20.9.1953 with waterfowl count (Knutt, Silberreiher), E. Bezzel"
+r_c63474f38adf,26,75,keep,field-report,,"Ismaning excursion Sept 1953 plus notable records (early Schellente, Rothalstaucher), E. Bezzel"
+r_ac9e8a3edf8a,26,79,keep,field-report,,"Ismaning excursion 1.10.1953 (Große Raubmöwe new for the reservoir), E. Bezzel"
+r_1691a939fe2f,26,96,keep,clipping-nature,,"weather: 'Der nebelgraue November' - dry, foggy November 1953 in Munich"
+r_6cb7499f28a3,26,97,keep,clipping-nature,,"weather part (Zugspitze snow, dry November 1953 in Bavaria, continues in insert 150) together with a local item on Munich tram switches"
+r_8d0cc7ad8bed,26,98,keep,clipping-nature,,weather: 'Die wärmsten Tage seit 1880' - record warmth end of November 1953
+r_be8df13228ee,26,109,keep,literature,,"Orn. Mitteilungen V,7,1953: rook colonies of Würzburg (Dr. Herbert Bruns)"
+r_d2a705bb1de0,26,110,keep,clipping-bird,,Erlangen: large numbers of Seidenschwänze
+r_a61a47856ce7,26,114,keep,clipping-bird,,"female eagle (2.15 m span) shot near Reutte, Tirol"
+r_b40c62ce5375,27,6,keep,clipping-bird,,Aschaffenburg: flocks of Bergfinken in the Hochspessart
+r_97c58cf3c301,27,9,keep,clipping-bird,,'Nur noch fünf Adlerhorste in Bayerns Bergen' - IUCN meeting Salzburg
+r_479cd3c6a70b,27,26,keep,field-report,,"19 April 1954 Baggersee and Speichersee observations (Polartaucher, Waldohreule at nest)"
+r_9f55624d888a,27,31,keep,field-report,,"Ismaning 22.4.1954 with A. Gauckler, Lischka, Rathmayer; E. Bezzel"
+r_672cbcea2604,27,36,keep,field-report,,"Ismaning 29.4.1954 evening, plus Gfällach (Erdinger Moos); E. Bezzel"
+r_b378b345fea3,27,38,keep,field-report,,"Ismaning 5.5.1954 (Purpurreiher, Storch, Temminckstrandläufer)"
+r_d4592f43c52e,27,39,drop,other,,banking notice on Pfandbriefe for old savers (business)
+r_db3dc5576ebb,27,39,drop,other,,Hannover industry fair report (business)
+r_2956a14c6bfc,27,41,keep,clipping-bird,,"Münchner Merkur 6.V.1954: poisoned tits in letter boxes, pesticide E 605 (Dr. Diesselhorst); a shampoo ad is embedded"
+r_511d2259fda6,27,48,keep,field-report,,"Ismaning 9 May 1954 species list, signed Heinz Remold"
+r_0475ace45c75,27,54,drop,other,,"Basel city map legend (banks, stations, museums) - tourist material"
+r_e9bfa3b34e06,27,74,keep,clipping-bird,,Kolkraben breed near Isny for the first time
+r_ffcb4b8b0940,27,75,drop,ad,,"inn invitation (Gasthaus Deutsches Haus Kaufbeuren) and livestock classifieds, reverse of clipping"
+r_ebc6a232758e,27,75,drop,ad,,"Allgäuer classifieds (workshops to let, vehicles)"
+r_eb4772ea9705,27,76,keep,clipping-bird,,why tits were missing at feeders: E 605 spraying experiments
+r_52c5865899b6,27,76,keep,clipping-bird,,"acoustic distress calls used to disperse 20,000 starlings (Frings & Jumber; Ludwig Koch); left edge cut"
+r_4938820acccf,27,78,drop,ad,r_ffcb4b8b0940,same inn invitation as insert 166 (reverse of the same clipping seen again)
+r_775cae7c5ddf,27,78,drop,ad,r_ebc6a232758e,same workshop-to-let classified as insert 167
+r_2bc445e9c6fb,27,78,keep,field-report,,"Ismaning 13.6. (1954) plus Erdinger Moos, heron colony check in Isarauen; E. Bezzel"
+r_4fca7aeb2547,27,91,drop,duplicate,r_e862ca9dd26c,"right-cut, garbled copy of the Ismaning report 27.6.54 (Rathmayer, Schnell, Remold) that is fully readable in insert 174"
+r_e862ca9dd26c,27,93,keep,field-report,,"Ismaning 27.6.1954 with W. Rathmayer, A. Schnell, H. Remold (Raubseeschwalbe, stork nest)"
+r_2b3886185fe0,27,97,keep,field-report,,"Ismaning 20. and 27. June 1954, signed Heinz Remold"
+r_0466be80dafd,27,101,keep,field-report,,Ismaning 11.7.1954 diving-duck count; E. Bezzel
+r_fe8f8e1a996d,27,104,keep,clipping-bird,,SZ 22.7.54: young storks killed by weeks of rain in Landkreis Erding
+r_b01045b43066,27,107,keep,field-report,,Ismaning 24./25.7.1954 two-day count (55 Flussuferläufer); E. Bezzel
+r_428a63b203e8,27,108,keep,clipping-nature,,weather: July 1954 wettest July in Munich since 1881
+r_00116cc62e53,27,112,keep,field-report,,"handwritten observation list (Föhringer Kanal, mention of Dieter Burckhardt); several lines garbled by HTR"
+r_c49cfb161dba,27,117,keep,field-report,,Ismaninger Teichgebiet / Hirschau observation list with weather (Aug 1954)
+r_1acc88ef0cbc,27,117,keep,field-report,,"Ismaning 3.VIII.1954 with Irmgard, Dr. H. Dathe; met Kramer-Hagen (7 storks, Schwarzer Milan)"
+r_fb6fca741b07,27,118,keep,clipping-nature,,'Nebel gegen Mücken' - chemical mosquito fogging of reed belt at Chiemsee (Feldwieser Bucht)
+r_d914af0fd649,27,119,keep,field-report,,Ismaninger Teichgebiet list page 3 with weather (Aug 1954)
+r_db006c71af2a,27,120,keep,clipping-bird,,nine storks circling over Laim railway grounds
+r_fbe2895c590c,27,123,keep,field-report,,"527. Speichersee-Begehung 19.VIII.1954 with Rossmann, Hans and Martin Decker (Steinwälzer, Teichwasserläufer)"
+r_a909a181af06,27,131,keep,field-report,,"528. Speichersee-Begehung 29.VIII.1954 with Wolfgang Schnetter; met Bezzel, Rathmayer, Gugg etc."
+r_257f6b4b0aed,27,135,keep,field-report,,"end of Ismaning list, weather; 30.VIII.1954 colour-ringed nuthatches at his Munich feeder"
+r_2473775fb347,27,141,keep,field-report,,"Ismaning 28.-31. August 1954 (Sumpfläufer, Odinshühnchen, 1500 Schafstelzen roost), signed Heinz Remold"
+r_0ab8b477d789,27,146,keep,field-report,,"Ismaning 5.9.1954 with mist-net ringing (Buntspecht, Eisvogel), 1900 Blässhühner"
+r_000d4b219011,27,150,keep,field-report,,"Ismaning 11./12.9.1954 with Remold, Pinkernelle, night in the hut (Knutt); E. Bezzel"
+r_e5f592c87e1d,27,153,keep,field-report,,531. Speichersee-Begehung 18.IX.1954 (5 juv. Rothalstaucher)
+r_8c2fd3ebdc9d,27,154,keep,field-report,,"second page of the 18.IX.1954 list (54 species, weather; colour-ringed nuthatches Lierstraße)"
+r_92305cc23039,27,159,keep,field-report,,532. Speichersee-Begehung 26.IX.1954 duck count with Einhard Bezzel (2721 Anatiden); greeting 'Dein Walther'
+r_cd4d22fcfc85,27,164,keep,field-report,,"Ismaning 26.9.1954 duck counts, met Dr. Wüst; E. Bezzel"
+r_4fc3ebcb42d7,28,11,keep,field-report,,second part of an Oct 1954 Ismaning list (95 migrating Eichelhäher = new maximum; ringing by Bezzel)
+r_fb1b3f444b74,28,17,keep,field-report,,"534. Speichersee-Begehung 10.X.1954 with Prof. Hamp and Amann; met Remold, Fröhlich, Unterberger"
+r_e4468d64984e,28,21,keep,field-report,,"right-cut tail of an Ismaning list (finches, 61 species, weather); damaged but species entries readable"
+r_239f6d0e7817,28,22,keep,clipping-bird,,8.I.54 'Der Adlerraub' - Alpine Steinadler population about 400; right edge cut but readable
+r_664d89188583,28,22,keep,clipping-bird,,Helmstedt: stork widow gets new protector after mate killed by young storks
+r_a6232ddb27fa,28,30,keep,field-report,,535. Speichersee-Begehung 18.X.1954 (reported Purpurreiher not found)
+r_8f43a7cf559e,28,34,keep,field-report,,"last page (26) of an Ismaning list Oct 1954, 63 species, weather"
+r_5d363f6a3241,28,39,keep,field-report,,"536. Speichersee-Begehung 24.X.1954 duck census with Einhard Bezzel, mist-netting"
+r_276760002950,28,43,keep,field-report,,"last page (28) of the 24.X.1954 list, 69 species, weather"
+r_7f8e17af46e1,28,45,keep,field-report,,"Ismaning 24.X.1954 species list, signed Heinz Remold"
+r_87ea7dac39d3,28,52,keep,field-report,,"Ismaning 6.11.1954 with A. Gauckler, mist-net ringing; additions by Gauckler (Merlin)"
+r_62af848bdb84,28,55,keep,field-report,,"Ismaning 7. and 14. November 1954 (Dreizehenmöwe third record), signed Heinz Remold"
+r_ce9d44fe6dfd,28,63,keep,field-report,,"Ismaning 13.11.1954 (19 Graugänse, Wanderfalke on gull)"
+r_09cf991e43f7,28,64,keep,field-report,,"538. Speicherseebegehung 21.XI.1954 duck census with Remold, Bezzel, Rathmayer, Friderici, Gauckler (Sterntaucher)"
+r_6b8e9ec71f11,28,73,keep,field-report,,"539. Speichersee-Begehung 29.XI.1954 (duck behaviour, artillery disturbance)"
+r_cdf2c3de6baf,28,77,keep,field-report,,"last page (37) of an Ismaning list, 51 species, weather; signature read as 'Walter Müller'"
+r_112d3889862a,28,79,keep,field-report,,"Ismaning 28.XI.1954 species list, signed H. Remold with Rathmayer"
+r_2003cb1d9495,28,80,keep,field-report,,"Ismaning 22.XI.1954 species list, signed Adolf Müller"
+r_b9b21e6ec588,28,80,keep,notice,,"news briefs: Wertachauen south of Kaufbeuren placed under nature protection; the other briefs (Studienstiftung, car accident) are unrelated"
+r_4f607b3c4e48,28,81,keep,clipping-bird,,"Siberian Tannenhäher invasion birds tested for radioactivity (dpa, Neumünster)"
+r_781c38f37ebc,28,82,keep,field-report,,"Ismaning 9.XII.1954 species list, signed Adolf Müller"
+r_6802a18150e8,28,85,keep,field-report,,"Ismaning 11.12.1954 (Raben-/Nebelkrähe hybrid, dead magpie with bill deformity)"
+r_7630091aa3d8,28,91,keep,field-report,,"Ismaning 12.XII.1954 species list, signed H. Remold with Rathmayer"
+r_517efa3b79fa,28,100,keep,field-report,,"December 1954 observation notes (Erlenzeisige, Stieglitze, Sperber at the tower); first lines overlap with the 29 Dec entry of insert 220, rest differs - possibly a garbled transcription"
+r_f35ce36a466a,28,101,keep,field-report,,"'Dezember Beobachtungen Sps. Ismaning' 5., 12., 26., 29. Dec 1954 with Heinz (2 Zwergschwäne)"
+r_14dae2b7aaad,28,102,keep,field-report,,"other December 1954 observations: Speichersee Moosburg/Eching (Seeadler, Samtenten), Tannenhäher in Freising garden"
+r_4ff201a7d6ac,28,105,keep,field-report,,"Ismaning 4.1.1955, refers to Laubmann's report of 3.1.; E. Bezzel"
+r_6f6ec6e554da,28,106,keep,other,,"short handwritten personal note: June 1955 Munich, first two weeks of August in Nice, 'überaus strapaziös … Lärm!'"
+r_e657584a0bfa,28,112,keep,field-report,,"Ismaning 6.1.1955, 48 species, pipits ringed; E. Bezzel"
+r_4182ecce8c18,28,117,drop,ad,,housing and room-to-let advertisements (Münchner Merkur)
+r_4820bc47d036,28,117,keep,clipping-nature,,"27.I.55 oil slick off the Elbe mouth kills thousands of gulls, ducks, seabirds on Sylt/Amrum"
+r_7ad99436d814,28,118,keep,caption,,dpa photo caption: stork family wintering on a ruin chimney near Nürnberg
+r_97969d461548,28,121,keep,field-report,,January 1955 observations at Speichersee Eching/Moosburg; Seeadler and Rauhfußbussard near Freising
+r_0005171b1630,28,123,keep,field-report,,"543. Speichersee-Begehung 2.II.1955, met Dr. Schulte; wintering Beutelmeisen, Saatgans leg colour"
+r_38e746696beb,28,126,keep,field-report,,"continuation (p. 54) of the 2.II.1955 report: Beutelmeise overwintering proven, weather"
+r_7a8808cc14f6,28,131,keep,field-report,,"Ismaning 5.2.1955 (Sperber attacks Sturmmöwe, 45 Zwergsäger); E. Bezzel"
+r_d0285ec4526a,28,136,keep,field-report,,"544. Speichersee-Begehung 20.II.1955 with Bezzel and Remold, 1400 Anatiden"
+r_98c740977b30,28,138,keep,field-report,,"continuation (p. 59) of the 20.II.1955 report: starlings on ice in reed, mammals, weather"
+r_4152b2d67251,28,140,keep,field-report,,supplementary reports by Heinz Remold for 6. and 13.II.1955 (Blässgans)
+r_fbb017615c29,28,141,keep,clipping-bird,,reader's letter: feeding starlings and Bergfinken in Großhadern during late winter 1955
+r_13d0d3dff1d9,28,149,drop,fragment,,"left-cut, heavily garbled strip of a typed Ismaning report; only word stubs and broken half-lines"
+r_1c6b02636358,28,156,keep,field-report,,"546. Speichersee-Begehung 20.III.1955 with Remold and Rathmayer, full duck census"
+r_fb9e22370b4f,28,161,keep,field-report,,"547. Speichersee-Begehung 23.III.1955 with engineer Faltenbacher, site for new hut (part 1)"
+r_a5df480caa36,28,162,drop,duplicate,r_1fa57d72eb8f,"same continuation page of the 23.III.1955 report as insert 240 on the next scan, but with lines missing and two entries garbled together; only extra is the heading 'Bericht von Walter Wüst'"
+r_1fa57d72eb8f,28,163,keep,field-report,,continuation of 547. Speichersee-Begehung 23.III.1955 (complete version; the double scan in insert 239 is headed 'Bericht von Walter Wüst')
+r_87b6a84d0da8,28,167,keep,field-report,,"'März-Bericht Speichersee Ismaning' 20. and 27.III.1955 with Heinz (Heidelerchen, Fischadler display); line starts partly cut"
+r_b7a5aa166fa0,28,170,keep,field-report,,"March 1955 observations Speichersee Moosburg/Eching (Seeadler, Singschwan, starving Heidelerchen), Türkentauben in Freising"
+r_f63140bf6afd,28,172,keep,clipping-bird,,2.4.55 Buchloe: 'Der Storch ist da!' - stork returns to court-house nest
+r_b229d29f16ef,28,173,keep,field-report,,"548. Speichersee-Begehung 6.IV.1955, met Rathmayer and Remold, Beutelmeisen, new hut construction"
+r_d75edb07ed6f,28,176,keep,field-report,,"p. 75 of an April 1955 Ismaning report (Tafel x Reiherente hybrid, Mittelspecht in the Hirschau)"
+r_26b70b911f36,28,182,keep,field-report,,"p. 78 of an April 1955 Ismaning report, 63 species, weather and water level"
+r_3b53e6cabbc0,28,185,keep,field-report,,"550. Speichersee-Begehung 14.IV.1955 with Tilo and Gerhard Prückner, Rainer; met Dr. Neubaur, Prof. Strempel, Prof. Gartner"
+r_9a2aeebd3de7,28,186,keep,field-report,,"p. 81, continuation of the 14.IV.1955 report (24 starlings in one nest box during late winter)"
+r_d1adfdc59b32,28,189,keep,field-report,,"Ismaning 5.IV.1955 incl. Gfällach and Zengermoos (Grauammer, Rotdrosseln)"
+r_63a9b4b20de7,28,190,keep,field-report,,"Ismaning 7./8.April 1955 (Aschheimer Wäldchen), Waldschnepfen near Kufstein, Feldmoching 18.4.; Heinz Remold"
+r_2e3f4ec9b0b1,28,195,keep,field-report,,"April 1955 observations Eching and Moosburg, Gfällach, Zengermoos, Freising (Seeadler, Rotmilan)"
+r_a6acae6ab76c,28,202,keep,field-report,,"551. Speichersee-Begehung 29.IV.1955 (Kiebitz nest, Kolbenenten)"
+r_f8377244972f,28,211,keep,field-report,,553. Speicherseebegehung 8./9.V.1955 beginning (overnight in the hut; mallard nest with stones)
+r_1806b7d74612,28,232,drop,duplicate,r_f42111b2658b,"same Ismaning report of 2.6.55 as insert 255 on the next scan, but only the first paragraph is transcribed"
+r_f42111b2658b,28,233,keep,field-report,,"Ismaning 2.6.1955 with W. Kraus, Nachtigall, E. Winkler; nest data and ringing (complete version)"
+r_059729c25539,28,235,keep,field-report,,"Ismaning 5.6.1955, met Dr. Wüst with students; ringing, nests"
+r_2e277bfa88a4,29,6,keep,field-report,,"May 1955 observations at Eching/Moosburg (1., 9., 19., 27./28., 31. May; Rotkehlpieper, thunbergi)"
+r_d0dc03f6864c,29,8,keep,field-report,,"'Beobachtungen von Mai, Ismaning' 8. and 15./22.5.1955 with Heinz (550 Kampfläufer, Teichwasserläufer, Weißflügelseeschwalbe)"
+r_4e13d0c330a7,29,22,keep,field-report,,"p. 111 of a June 1955 Ismaning report (night at the hut), 59 species, weather"
+r_c6e39c719b16,29,25,keep,field-report,,"20.VI.1955 visit with three Swedes (Bengt Henrikson, Filip Josefson)"
+r_a20af481a020,29,27,keep,field-report,,"p. 113 of a June 1955 Ismaning report (Beutelmeisen, Blaukehlchen), weather"
+r_984ebddd2778,29,30,keep,field-report,,"Ismaning 9.6.1955 with H. Altner and Hantge (Kolbenente copulation, Beutelmeisen, ringed Fitis recovered)"
+r_efb293a73a19,29,31,keep,field-report,,Ismaning 17.6.1955 with E. Winkler and H. Altner (Rallenreiher); list breaks off
+r_bb663972d14d,29,34,keep,field-report,,"557. Speichersee-Begehung 25./26.VI.1955, night with Helmut Altner (immature Purpurreiher)"
+r_54617603aa35,29,38,keep,field-report,,"Ismaninger Teichgebiet list 29 June 1955 with weather; transcription badly garbled, several species names (Rotgans, Brachschwalbe, Fischmöwe …) unreliable"
+r_b305323f412a,29,41,keep,field-report,,"558. Speichersee-Begehung 29./30.VI.1955 (juv. Purpurreiher, two Nachtreiher at night)"
+r_f7be2e87c8f6,29,49,keep,field-report,,"p. 121, end of the 29./30.VI.1955 report with weather and roe deer note, signed W. Wüst"
+r_367640630256,29,49,keep,field-report,,559. Sps.-Begehung 2.VII.1955 with 2/Lt. Aubrey S. Messenger and Bezzel
+r_2a83a26cbf65,29,50,keep,field-report,,"p. 122, continuation of the 2.VII.1955 report (Beutelmeisen, Blaukehlchen)"
+r_f05d38708c34,29,54,keep,field-report,,"Achenmündung/Chiemsee 6.VII.1955 with Erich Franck, Otto v. Frisch, Gerstein: two Purpurreiher nests, young ringed B 3321-3328"
+r_a2a977cfa21c,29,56,keep,field-report,,"p. 124, Chiemsee (Achenmündung) 6.VII.1955 continuation: Schlagschwirl, weather"
+r_1da9876fb169,29,58,drop,duplicate,r_01513ac00c99,only the heading and weather of the Ismaning report of 25.6.55; the full report is on the next scan (insert 273)
+r_01513ac00c99,29,59,keep,field-report,,"Ismaning 25.6.1955, 68 species, broods (complete version)"
+r_fb386d490d4f,29,64,keep,field-report,,"'Juni-Beobachtungen am Sps. Ismaning' 1., 12., 17., 25. June 1955 with Heinz and Hantge (Seidenreiher, Rallenreiher, Nachtreiher)"
+r_fa02af846b84,29,68,keep,field-report,,"560. Speichersee-Begehung 23./24.VII.1955 with Frl. Jungmeyer and Szaffraniez, night in the hut (Nachtreiher)"
+r_cb92eaefb807,29,75,keep,field-report,,"typed note 31 July 1955 Munich: Distelfinken, garden birds; Heinz Demelt reports Weißrückenspechte and Steinadler at Reichenhall"
+r_275875637d8c,29,75,keep,clipping-bird,,"ringed Silbermöwen from Vogelwarte Wilhelmshaven return and breed at Hellabrunn zoo, also visit Ismaning"
+r_5dd633c89067,29,78,keep,field-report,,"Ismaning 30.8.1955 duck count (Schmarotzerraubmöwe, cuckoo chick ringed)"
+r_8d5a9289d3bc,29,80,keep,field-report,,"561. Speichersee-Begehung 12./13.VIII.1955 beginning (met Waller, Unterberger, Egerer)"
+r_49faa2d63039,29,87,keep,field-report,,"p. 137, continuation of the 12./13.VIII.1955 report (Schnatterente autumn courtship, Obersee waders)"
+r_064d77520303,29,97,keep,field-report,,"end of an Ismaning species list (nos. 53-68), Aug 1955"
+r_eac5dc12061b,29,103,keep,field-report,,"Ismaning 30./31.VIII. and 3./4.IX.1955, signed Remold & Rathmayer"
+r_38ed067e2577,29,105,keep,field-report,,"'Beobachtungen im Juli' 1955 Sps. Ismaning with Heinz (Purpurreiher, Nachtreiher, 7000 gulls roost); Gadener Moos and Eching 17 July"
+r_ae9d543b17a6,29,134,keep,field-report,,"p. 147 of a late-Sept 1955 Ismaning report, 77 species, weather"
+r_2d4053ff5fc6,29,139,keep,field-report,,"p. 150 of an Ismaning report Sept/Oct 1955 with ringing numbers (G 80454/5, H 220723/4)"
+r_5cf81240bda8,29,142,keep,field-report,,"566. Speichersee-Begehung 2.X.1955: O.G.i.B. excursion with 32 participants (list of names), Oktoberfest balloon scares ducks"
+r_e68dc270a416,29,146,keep,field-report,,"p. 153 of an Oct 1955 Ismaning report, 71 species, weather"
+r_1db6e355bf00,29,150,keep,field-report,,"568. Speichersee-Begehung 16.X.1955 duck census with Christian Walther, Bezzel, Remold (1511 Anatiden, Saatgänse fabalis)"
+r_9f549c52b6e0,29,154,keep,field-report,,"p. 158, end of the 16.X.1955 report, 78 species, weather; handwritten addition on a Weidenlaubvogel"
+r_43d059d5b982,29,155,keep,clipping-bird,,"'Storchenheimat in Schwaben' - stork nests by river valley, 45 occupied nests (Dr. Steinbacher)"
+r_cfd9c7a4bd65,29,157,keep,field-report,,"569. Speichersee-Begehung 24.X.1955, first visit of the new hut on the 2. Insel; 17 Kormorane entry in hut book"
+r_91ce029ad251,29,160,keep,field-report,,"p. 160, continuation of the 24.X.1955 report, 56 species, weather, start of fish harvest"
+r_8e36a505b4e5,29,161,keep,field-report,,"Ismaning 22.10.1955 with Rathmayer and Remold, first use of the new tower (Mornellregenpfeifer, Mantelmöwe 'am AKI')"
+r_fc0a2227e937,29,164,keep,field-report,,"Ismaning 27.Oktober 1955, 44 species, signed A. K. Müller"
+r_8f3241f533f7,29,165,keep,field-report,,"25 Sept 1955 with Heinz, SD to QD (Zaungrasmücke, Beutelmeise), page 1"
+r_49c6ae9cc6c4,29,167,keep,field-report,,"page 2 of the 25 Sept 1955 report (4000 Blässhühner, waders at Obersee)"
+r_adfdc8a66f38,29,169,keep,field-report,,570. Speichersee-Begehung 7.XI.1955 (Rauhfußbussard; 3000 Tafelenten per Ra/Re hut book); greeting line from Müller above
+r_76403d01eabe,29,173,keep,field-report,,"Ismaning 6.November 1955 with Rathmayer and Walther (8000 Saatkrähen/Dohlen, Fichtenkreuzschnabel, Mittelsäger), signed Heinz Remold"
+r_237f5253bff5,29,175,keep,field-report,,"Ismaning 2.XI. and 5.XI.1955 (Beutelmeise calls), signed A. Müller"
+r_de2fdc112839,29,180,keep,field-report,,"p. 165 of a Nov 1955 Ismaning report, 55 species, weather; Hantge saw Knutts 7.XI."
+r_d50c7e361851,29,183,keep,field-report,,"Ismaning 27.11.1955 (grebe courtship in winter plumage, 980 Tafelenten, 83 Saatgänse)"
+r_65d69a3b617b,29,187,keep,field-report,,"p. 169, early Dec 1955 report: Gartenbaumläufer and Singdrossel new for December; weather"
+r_6fea0c5992f7,29,189,keep,field-report,,"Ismaning 11.XII.1955 plus 8.XII. records by Walther and Rathmayer (Polartaucher, Sterntaucher), signed Heinz Remold"
+r_2f65afc3ce62,29,192,keep,field-report,,"Ismaning duck count 11.12.1955 by Remold, Gauckler, Walther (3487-3517 Anatiden, Sterntaucher); transcript"
+r_51ab77fcf91c,29,197,keep,field-report,,"1. and 6. Nov 1955 with Heinz (Graugänse among Saatgänse, 7000 Saatkrähen, 3000 Tafelenten)"
+r_c1803523a2cc,29,201,keep,field-report,,"Ismaning 23.December 1955 (Samtenten, 200 Gänsesäger), signed Adolf Müller"
+r_56eb50560578,29,206,keep,field-report,,"574. Speicherseebegehung 4.I.1956 (Rothalstaucher, Samtente, duck courtship)"
+r_3db8a6806a98,29,208,keep,field-report,,"p. 2 of the 4.I.1956 report: first winter record of Girlitz, weather, 43 species"
+r_ec6df8e4a676,29,210,keep,field-report,,"Ismaning 12.I.1956 '349. Tour' (122-125 Saatgänse, Rothalstaucher), signed Adolf Müller"
+r_d99aed3514ba,29,211,keep,field-report,,"575. Speicherseebegehung 15.I.1956 with Bezzel, Remold, Walther, Hantge, Gauckler; Waldbaumläufer found by Dr. H. Schulte; duck counts"
+r_927de04a4c36,29,214,keep,field-report,,"p. 5 of the 15.I.1956 report: Blässgans among Saatgänse (discussion citing Scott in Delacour), 5709 Anatiden, Rauhfußbussard"
+r_d2e6ed796bff,29,215,keep,field-report,,"p. 6 of the 15.I.1956 report: 51 species (January record), Ohrentaucher, weather; Dr. Egerer promises shot ducks"
+r_cf374bef218b,29,218,keep,field-report,,"'Dezember-Bericht Sps. Ismaning' 8. and 26.Dec 1955 (Prachttaucher, Sterntaucher, Samtenten), Eching/Moosburg 18.12., Merlin at Freising; W. Rathmayer"
+r_be067d82454e,29,220,keep,field-report,,576. Speichersee-Begehung 23.I.1956 (Bergente; shot Pfeifente given to preparator Gabel)
+r_9c38ce70045a,29,225,keep,field-report,,"Ismaning 3.II.1956 in hard frost (124 Saatgänse, coot frozen into ice), Adolf Müller"
+r_7879d51eb46f,29,231,keep,field-report,,"577. Speichersee-Begehung 12.II.1956 at -12 °C (duck count west basin, Feldlerche track in snow); right edge slightly cut"
+r_68db032d17c3,29,236,keep,field-report,,"p. 2 of a Jan 1956 Ismaning report (Rathmayer) plus Eching/Moosburg counts 4. and 15.I.1956, Türkentauben in Freising"
+r_b0addd8e5128,29,241,keep,field-report,,"note 'Lieber Alfred!' 28.Feb.1956 plus 578. Speichersee-Begehung 26./27.II.1956 (Rothalstaucher new for February, mallard courtship flight)"
+r_17264d61a7f7,29,243,drop,duplicate,r_e0bb8e78f001,"one-line fragment 'Gry MW 2, Türkentauben 2, Feldlerchen 7' repeating the Freising line of insert 320"
+r_e0bb8e78f001,29,245,keep,field-report,,"Eching/Moosburg 12. and 26.II.1956 (110 Zwergtaucher, Seeadler, Graugänse), Freising 12.II."
+r_f09e92aa5c20,29,247,keep,field-report,,"'Februar-Beobachtungen Sps. Ismaning' 5.II.1956 with Heinz, Gauckler, Hantge, Walther (frozen reservoir, 137 Saatgänse)"
+r_11f141374ead,29,247,keep,field-report,,"short note 3. März 1956 München: storm and rain, Amsel singing in the garden; right edge cut"
+r_dff3b04b8b7b,29,251,keep,field-report,,"left-cut strip of a species list (Pfeif-/Tafel-/Schell-/Gänsesäger counts, Kiebitze, Bachstelzen), line starts, date and observer lost; half-lines still readable"
+r_0dc71fd69fbd,29,251,keep,field-report,,"Ismaning late Feb/1 March 1956 to Kraftwerk Finsing, 43 species (Rothalstaucher new for March, 70 Zwergsäger)"
+r_6fec140421c3,29,254,drop,fragment,,cut stub of a note ('Mündorf … im tiefer Winter … Bericht … vom 11. III.')
+r_c8c668fa22b8,29,254,keep,field-report,,"letter 'Lieber Alfred! … Immer Dein Walter' 12.3.1956 thanking for a songbird book, with 579. Speichersee-Begehung 11.III.1956"
+r_a5a055b348a2,29,257,keep,clipping-bird,,'Wildenten vor der Kälte geflüchtet' - 5000 of 6000 ducks left Ismaning in the cold spell (Prof. Dr. Walter Wüst)
+r_ea367bf07b64,29,257,keep,clipping-nature,,"weather: 'Heute ist Frühlingsanfang' - winter 1955/56 review, -30 °C at Riem, February all ice days"
+r_42bf26bd69fc,29,261,drop,local-news,,"church service times (Beichtgelegenheit, Kolpingsfamilie)"
+r_2eb57a536cbb,29,261,drop,duplicate,r_42bf26bd69fc,same church notice as insert 329 on the same scan
+r_be18c436c010,29,263,keep,clipping-bird,,'Hungertod der Bläßhühner' on the Lech during the cold spell; swans fed by power station staff
+r_f9dad36fe4de,29,263,keep,field-report,,580. Speichersee-Begehung 27.III.1956 with Rainer and pupil Helmut Labenski
+r_425b102d9d70,29,265,keep,field-report,,"p. 24 of the 27.III.1956 report: first Rauchschwalbe, weather"
+r_a7e1e6d02338,29,266,keep,field-report,,"right-cut strip of an Ismaning duck list (Schnatter-/Knäk-/Krick-/Stockente, Zwergtaucher); end lines garbled"
+r_1ed87ee2618b,29,270,drop,fragment,,"Ismaninger Teichgebiet page whose transcription is garbled throughout (invented species names like 'Glanzbruch', 'Hormfpeuke'); no reliable statement survives"
+r_04330f3f7bf6,29,272,keep,field-report,,"right-cut list page of an Ismaning report spring 1956 (Blaukehlchen, Heckenbraunellen, Isarauen); species names intact"
+r_b44dbd695253,29,275,keep,field-report,,"25.III.1956 with Heinz, full count (1401 Reiherenten, 147 Saatgänse, Habicht with grass snake)"
+r_5ac6f9ecaff5,30,24,keep,clipping-nature,,aerial-photo caption: new Bärensee reservoir near Kaufbeuren-Hirschzell; nature-protection officer's plans for planting and a closed island
+r_b187b3a8a736,30,30,keep,clipping-bird,,Türkentaube reaches Kreis Mindelheim
+r_ac7437fb4d13,30,58,keep,clipping-bird,,"hundreds of cranes roost near Grünwald/Harlaching on All Saints' Day, some shot"
+r_39b767d8174c,30,60,keep,clipping-bird,,Kaiseradler attacks a French family's car near Aosta
+r_220392cb12be,30,65,keep,clipping-bird,,first storks back two months early near Stade
+r_47a59aad8bbd,30,84,keep,letter,,"letter 29.5.57 to 'Herr Professor': storks roosting on a poplar, invitation to watch"
+r_29da038a53e2,30,84,keep,clipping-bird,,"Helgoland-ringed Singschwan recovered near Gorki, Soviet Academy report (T. Schewarewa)"
+r_3d00a753e067,30,87,keep,clipping-bird,,Buchloer Stadtchronik: three young storks on the court-house nest
+r_33de80539ce6,30,88,drop,local-news,,"housing-policy report (II. Wohnungsbaugesetz, Siedlerbund); only a stray 'Rebhühner, Fasanen' from another column"
+r_90178be95d2a,30,89,keep,clipping-nature,,weather: Münchner Merkur 8.VII.57 'Heißer als Afrika' - 35 °C in Munich
+r_2978ee286601,30,117,drop,other,,Silvretta-Hochalpenstraße liability notice (travel leaflet)
+r_9b76eae554ec,30,122,keep,caption,,"picture caption: Silvrettastausee, Hotel Silvrettasee 2040 m (trip Sept 1957)"
+r_627d3bea9c84,30,126,keep,letter,,"holiday greeting postcard 17.9.56 from friends/relatives ('Euer Trudeich', 'E. J.'); personal, no ornithological content"
+r_5f0bac13fff4,30,126,keep,clipping-bird,,"Buchloe: 51 storks gathered, departure night 16./17. August 1957"
+r_0bba1a2889e6,31,9,keep,clipping-bird,,Siberian Seidenschwanz invasion in N and W Germany (dpa Paderborn)
+r_f8a8af5156b1,31,11,keep,clipping-bird,,first storks arrive in southern Spain (dpa Madrid)
+r_a92830c64f53,31,11,keep,clipping-bird,,"'Störche unter Naturschutz' - Vogelschutzstation Lüneburg (H. Makowski), international stork census, shooting in France/Spain"
+r_a030d02a7c1f,31,12,keep,clipping-bird,,'Adlerschütze weckt Empörung' - Steinadler shot at Eurishofen (Lkr. Kaufbeuren)
+r_3b827baa50a3,31,13,keep,clipping-bird,,"first starlings arrived (readers' reports, Trostberger Straße, Grünwald)"
+r_ddbfcb413e13,31,14,keep,clipping-bird,,Bergwacht and Heimatpfleger demand prosecution of hunter Max Schmid for shooting a Steinadler
+r_6cef01a28529,31,14,drop,other,,"serialised novel excerpt (Greta Sanden, Timmendorf)"
+r_0a85201797b3,31,15,keep,clipping-bird,,'Jäger erlegt einen Königsadler' 12.2.58 - original report of the Eurishofen eagle
+r_12ac13024f10,31,19,keep,clipping-bird,,"follow-up on the Eurishofen Steinadler: hunter's statement, bird probably from the Balkans; right column cut"
+r_b0362f350871,31,22,keep,clipping-bird,,hunter fined 120 DM for shooting the Steinadler (AG Buchloe); Bussard attacks man at Thiersheim
+r_09269190821c,31,51,keep,clipping-bird,,thousands of starlings roosting at the Stachus
+r_10a2ace7cc7a,31,59,drop,local-news,,"Munich market prices (vegetables, fish, poultry, game); only the headline of the weather item, which is complete in insert 364"
+r_913d0e3bb00f,31,60,keep,clipping-nature,,"weather: 'Polarluft und ein wenig Schnee' - cold air reaches Munich, Dec 1958"
+r_a5a8c1f0a3c5,31,67,keep,clipping-bird,,SZ 14.2.59 'Friedensvertrag für das Vogelreich' - Aschheim hunters and Ornithologische Gesellschaft in Bayern agree no waterfowl shooting in the east of the Ismaning reservoir (Prof. Wüst; Graubruststrandläufer)
+r_624004f05a04,31,84,keep,clipping-bird,,Buchloe stork pair with five young again (1959)
+r_1f84e7631553,31,88,keep,clipping-bird,,Allgäuer 20./21.6.1959: storks at Salgen throw out three young after cold spell
+r_d098b21e9a76,31,88,keep,clipping-bird,,"'Musterung der jungen Störche' - ringing the Buchloe storks for Vogelwarte Radolfzell, ring recoveries in Switzerland, Swabian stork population"
+r_e5a740ba0035,31,107,keep,clipping-bird,,'Zu Unrecht verrufen' - Fischreiher at the Singold (Bronnen) defended
+r_6728cddb20fd,31,107,keep,clipping-bird,,stork with plaster leg at Hirschau (Oberpfalz)
+r_ac6b7e7583c7,32,8,keep,clipping-bird,,"only 20 Uhu pairs left in the Thuringian Forest, protection areas (dpa/ADN)"
+r_0d480c63c326,32,15,keep,clipping-bird,,12.11.59 Steinadler seen by school pupils near Aufkirch (Allgäu)
+r_f9c0aa0df70c,32,17,keep,clipping-bird,,"Steinadler shot under licence at Mittelberg, Kleines Walsertal"
+r_797d6d797178,32,23,keep,clipping-bird,,"starlings back at the Stachus, Tierschutzverein opposes new eviction"
+r_78a900a968b5,32,30,keep,clipping-nature,,"'Das Ampermoos wird unter Wasser gesetzt' - planned weir at Grafrath, Ampermoos as flood retention (waterbird paradise)"
+r_240fd3e713a4,32,30,keep,field-report,,"short note May 1960: Lisl hears a Wendehals, first Gelbspötter singing in the maples"
+r_62662f12ada7,32,60,drop,local-news,,"housing policy report (Lücke plan, rent control)"
+r_98aa3c039e12,32,63,drop,local-news,,"Lohr local news: birthdays, registry office, cinema mix-up"
+r_c9ea3ddd2ca2,32,64,keep,clipping-bird,,"avifauna of a protected Main oxbow lake near Lohr (Uferschwalben colony since c. 1890, Mittelspecht, Kolkrabe 1958)"
+r_095e16ecef33,32,69,drop,other,,ballroom dancing championship report
+r_2ab3e7171fb5,32,72,keep,field-report,,"Maisinger See 27.II.1961 with Irmgard (duck counts, Jugendherberge Jägersbrunn), p. 27"
+r_fe9adeb3e24b,32,94,keep,clipping-bird,,'Ismaninger Vogeltheater' feuilleton by Jürgen von Hollander
+r_65e40db6e058,32,102,keep,clipping-bird,,"failed stork reintroduction at Katzensee (Switzerland), fatal fights"
+r_7ca9e05f7c72,32,124,keep,clipping-bird,,Augsburg zoo-reared young storks shot and eaten near Milan (Vogelwarte Radolfzell ring reports); right edge cut
+r_6414cdc2d542,33,5,keep,clipping-bird,,"2.5 million birds ringed by Vogelwarte Helgoland (Goethe, Wilhelmshaven)"
+r_5beb194741e5,33,11,keep,clipping-bird,,Rauhfußkauz calling near Azendorf (Kulmbach)
+r_9c1d0ea05381,33,17,keep,clipping-bird,,"'Viele Nester stehen leer' - one third fewer songbirds after the cold summer 1961 (Vogelschutzwarte Frankfurt, W. Keil)"
+r_40a6b6d108a7,33,34,keep,clipping-bird,,46 storks disoriented over Hof by a thunderstorm (and radar)
+r_f403a7ab7aa4,33,50,drop,other,,television programme listing
+r_c16c61ed563b,33,50,drop,other,,cut radio programme listing
+r_ceb2bc7826cb,33,58,keep,clipping-bird,,SZ 3.I.1963: coot with Moscow ring shot on the Tegernsee
+r_62c7ff5e5be1,33,61,keep,clipping-bird,,'Der Waldrapp kehrt zurück' - plan to reintroduce the bald ibis in Switzerland (Basel zoo); end cut
+r_6488f1285921,33,64,keep,obituary,,"Lohrer Zeitung 14.1.63: memorial for Dr. med. Hans Stadler, Lohr (ornithologist, bird voices, Romberg reserve)"
+r_cfec93e28aef,33,71,keep,clipping-bird,,"seven Singschwäne on the Riburg reservoir (Möhlin, Switzerland)"
+r_182d0b203b8e,33,80,keep,letter,,personal letter Hagnau 8.8.65 to 'Lisl' and 'Fredl' about a Lake Constance holiday; no ornithological content
+r_182ed32867a7,33,92,drop,ad,,"Welt am Sonntag classified advertisements (lawn mowers, books, violin)"
+r_7f0688ff719e,33,119,drop,other,,essay on Protestant church history
+r_f2e308ba5743,33,120,drop,other,,left-cut continuation of the church-history essay
+r_4dc05c73d5d8,33,120,drop,duplicate,r_220c6f07b929,left-cut end of Peter Kuhlemann's article on buzzard shooting; the complete article is on the next scan (insert 400)
+r_220c6f07b929,33,121,keep,clipping-bird,,"'Fliegende Räuber, die keine sind' by Peter Kuhlemann (buzzard/kestrel shooting, mouse plagues); interleaved with garbled handwritten Oct 1963 notes (Kormoran, Starschwärme)"
+r_2fd8fbabb74d,33,129,keep,clipping-bird,,"'Von der Mangfall nach Marokko' - bird ringer Adolf Peschke, Bruckmühl reserve, 6552 birds ringed, recoveries"
+r_eb47746f12c7,33,134,drop,fragment,,"column strip of word stubs from a travel diary (Sargans, 29./30. Mai …)"
+r_36a481f51040,33,134,keep,letter,,"letter from Herzog Albrecht von Bayern to Prof. Laubmann, Berg 31.3.1964: 5 Kormorane at Berg, Blauracke near Dietfurt c. 1960"
+r_56fcf0204d39,34,12,keep,obituary,,"death notice of Franz Murr, painter and natural-history illustrator (1887-1964)"
+r_5ecc0bb4d2e4,34,14,keep,clipping-bird,,"Buchloe: five young storks on the church tower, ringed"
+r_53662b0343a6,34,16,keep,clipping-nature,,SZ: 60 animal species threatened with extinction in the USA (AP)
+r_181e30c5f09b,34,34,keep,obituary,,"death notice of Dr. phil. Sigmund Loeweneck, Oberstudienrat i. R., Munich 15.9.1964 (member of the diarist's circle)"
+r_de247f8444c9,34,48,keep,clipping-bird,,'Skelett eines Fischadlers im Rücken eines Karpfens' part 1 (osprey grip reflex)
+r_d2df39a82d48,34,48,keep,field-report,,handwritten note Jan 1965: gendarme saw a Kolkrabe at the railway embankment at Eichbühel
+r_6124fb112df4,34,48,keep,clipping-bird,,"part 2 of the osprey-skeleton-in-carp article by Otto Koke, photo Niestlé"
+r_1fac2523c30d,34,51,keep,clipping-bird,,Siberian Schwarzkehldrossel at a feeder on the Upper Rhine (Freiburg)
+r_027baeea3fad,34,52,keep,clipping-bird,,Buchloe: female stork returned eight days after the male
+r_8b2516219749,34,53,keep,clipping-bird,,"Fischreiher ringed in Stockholm shot at Marktgraitz, 1000 km"
+r_8a857bda4ef4,34,54,keep,clipping-bird,,"photo caption 10./11.4.1965: Buchloe stork on its nest, jackdaws below"
+r_2fe48be0a9b3,34,60,drop,local-news,,15-year-old girl riding from Konstanz to Nürnberg (Immenstadt report)
+r_a13b36bf69ab,34,62,keep,clipping-bird,,"'Da brat' mir einer einen Storch' - stork family at Lauben (Lkr. Memmingen), ringing by Vogelwarte Radolfzell; Dr. Oskar Bachlehner"
+r_c543a9b7a1ae,34,63,drop,fragment,,cut headline stubs of a Kaufbeuren local page (Tänzelfest police briefing)
+r_d0f3b6e9ef1c,34,64,drop,local-news,,photo caption of police officers preparing the Kaufbeuren Tänzelfest parade
+r_76ce038b2f20,34,65,keep,clipping-bird,,about 30 Lachmöwen on the flooded Lau-Wiesen near Lauchdorf
+r_ffdd20977621,34,65,drop,local-news,,"Kaufbeuren local news: rents, funeral, cinema, Tänzelfest traffic arrangements"
+r_4d4b85918068,34,66,keep,clipping-bird,,"'Einem Kaufbeurer Vogelfänger auf die Finger geschaut' - ringer Viktor Zeihe for Vogelwarte Radolfzell, recoveries (with photo caption)"
+r_816f03600707,34,67,keep,clipping-bird,,SZ 23.8.65: stork family from Leonhardiweg rescued and taken to Hellabrunn (with zoo visitor figures)
+r_6c9fccdc690d,34,67,keep,clipping-bird,,swallows ringed in Durban recovered near Novosibirsk and in Kazakhstan (dpa)
+r_f97c35035b1e,34,68,keep,clipping-nature,,photo caption: Bergwacht and Bundeswehr build a hut for the Edelweißposten (nature-protection guards) on the Laufbacher Eck
+r_4b3fde799234,34,72,keep,obituary,,"death notice of Prof. Dr. Alfred Laubmann, Hauptkonservator i. R. (20.10.1886 - 18.10.1965), by Elisabeth Laubmann"
