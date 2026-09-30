@@ -1,20 +1,24 @@
 # Full re-extraction with Gemini (ontology 0.7.0, prompt v4, patched corpus)
 
-Runbook for one unattended run of the whole pipeline — extraction → value
-corrections → coverage/QA → harmonisation → linking → entity resolution →
-EUNIS → RDF/JSON-LD + SHACL → Darwin Core Archive — on the patched corpus
-(9,857 entries). Written for a Claude Code session on Windows that orchestrates
-the run (every step is one PowerShell command with literal paths; shell
-variables do not survive between tool calls). Prompt `observation_extraction`
-v4 is new: every entry is a live Gemini call, except the 76 entries of the
-2026-09-30 A/B sample already in the cache.
+Runbook for one unattended run of the whole pipeline — visual reading →
+extraction → value corrections → coverage/QA → harmonisation → linking →
+entity resolution → EUNIS → RDF/JSON-LD + SHACL → Darwin Core Archive — on the
+patched corpus (9,909 entries after the entry-detection pass of 2026-09-30).
+Written for a Claude Code session on Windows that orchestrates the run (every
+step is one PowerShell command with literal paths; shell variables do not
+survive between tool calls). Every entry is a live Gemini call in both passes.
 
-Model and cost (A/B test 2026-09-30, 68 entries, blind-judged): `gemini-3.8-flash`
-(fewer errors than 3.5 Flash, no runaway generations, ~5x cheaper per call) with
-explicit context caching of the prompt's instructions. Expected: ~$40 for the
-extraction (~9.4M output tokens at $3.75/M, prompt tokens ~95 % cached), a
-few dollars for the linking LLMs (3.5 Flash, mostly cached), 1–1.5 h extraction
-at concurrency 16, then linking, SHACL (15–30 min) and the archive.
+- Visual reading (`reading`, prompts/transcript_reading.md): the entry's page
+  scan(s) + transcription → transcript quality and corrections, applied to the
+  text the extraction reads; listed in `review/transcript_corrections.csv`.
+  Pilot: 71 of 75 entries corrected, ~0.3 ct per entry → ~$25–30.
+- Extraction (prompt `observation_extraction` v4, text only): A/B test
+  2026-09-30, 68 entries blind-judged: `gemini-3.8-flash` (fewer errors than
+  3.5 Flash, no runaway generations, ~5x cheaper per call) with explicit
+  context caching of the instructions → ~$40 (~9.4M output tokens at $3.75/M).
+- Linking LLMs (3.5 Flash, mostly cached): a few dollars. Time: reading and
+  extraction ~1–1.5 h each at concurrency 16, then linking, SHACL (15–30 min),
+  the archive.
 
 ## 1. Repository and environment
 
@@ -22,7 +26,7 @@ at concurrency 16, then linking, SHACL (15–30 min) and the archive.
 # the final branch (worktree of the laubmann-kg clone); after the merge: upstream main
 cd C:\Users\totom\Projects\laubmann-kg_final
 git log --oneline -3                                   # final-0.6: ontology 0.7.0 / prompt v4
-.venv\Scripts\python.exe -m pytest -q                  # must be green (293 tests)
+.venv\Scripts\python.exe -m pytest -q                  # must be green (298 tests)
 ```
 
 `.env` holds `GOOGLE_API_KEY=…` (git-ignored). Write it from Bash
@@ -33,16 +37,23 @@ the loader does not read.
 
 | what | Drive | local |
 |---|---|---|
-| patched corpus | `corpus_2026-09-30_patched/` | `data\corpus_patched\` |
+| patched corpus | `corpus_2026-10-01_patched/` | `data\corpus_patched\` |
 | linking caches (GBIF, Wikidata, Nominatim, GeoNames, taxon + EUNIS LLM) | `linking_cache/` | `data\cache\linking\` |
+| page scans (JPEG, for the visual reading) | `Laubmann_NN_gemini/pages/*.png` | `data\pages_jpg\` |
 
 ```powershell
-robocopy "G:\My Drive\HistOrniGraph_output\corpus_2026-09-30_patched" data\corpus_patched /E /XF desktop.ini
+robocopy "G:\My Drive\HistOrniGraph_output\corpus_2026-10-01_patched" data\corpus_patched /E /XF desktop.ini
 robocopy "G:\My Drive\HistOrniGraph_output\linking_cache" data\cache\linking /E /XF desktop.ini
+.venv\Scripts\python.exe tools\export_page_images.py --corpus data\corpus_patched\corpus.json --source "G:\My Drive\HistOrniGraph_output" --out data\pages_jpg
 ```
 
-Check: `data\corpus_patched\boundaries_summary.json` says `"output_entries": 9857,
-"lost_entries": 0`; `multimodal_regions.jsonl` has 1,674 lines.
+Check: `data\corpus_patched\boundaries_summary.json` says `"output_entries": 9909,
+"lost_entries": 0`; `multimodal_regions.jsonl` has 1,674 lines; `data\pages_jpg`
+holds one JPEG per page (~6,735, 2.9 GB).
+
+The patched corpus is rebuilt from the dedup corpus and the reviewed patches
+in `data/corpus_patches/` (deterministic, seconds) — see section "Rebuild" of
+`HistOrniGraph_addons/README_corpus.md` / `apply_entry_boundaries.py`.
 
 ## 3. Config
 
@@ -78,8 +89,8 @@ Start-Process -FilePath .venv\Scripts\laubmann-kg.exe -WorkingDirectory C:\Users
 Watch it:
 
 ```powershell
-Get-Content data\exports\kg_exports_2026-10-01.log -Tail 5            # "[i/9857] L..-e.... -> n observations"
-.venv\Scripts\python.exe tools\llm_cost.py data\cache\llm_v4            # calls, tokens, USD so far
+Get-Content data\exports\kg_exports_2026-10-01.log -Tail 5            # "reading [i/9909]", then "[i/9909] L..-e.... -> n observations"
+.venv\Scripts\python.exe tools\llm_cost.py data\cache\reading_v1 data\cache\llm_v4   # calls, tokens, USD so far
 Get-Process laubmann-kg -ErrorAction SilentlyContinue                    # still running?
 ```
 
@@ -100,7 +111,9 @@ a few hours): fill the cache through the Gemini Batch API, then run the same
 
 ## 5. Checks
 
-- log: `pipeline: 9857 entries (<k> empty, 0 failed)`; `harmonize:` and
+- log: `reading: {checked, corrected, quality, corrections, unmatched}`;
+  `review/transcript_corrections.csv` lists every correction (validation UI)
+- log: `pipeline: 9909 entries (<k> empty, 0 failed)`; `harmonize:` and
   `linking:` summaries; QA flags in `review/qa_flags.csv` (watch
   `truncated_output`, `literature_without_citation`, `absent_with_count`)
 - stdout: `SUMMARY: 0 Violation(s)`; warnings are mostly entries without records
@@ -115,6 +128,7 @@ a few hours): fill the cache through the Gemini Batch API, then run the same
 ```powershell
 robocopy data\exports\kg_exports_2026-10-01 "G:\My Drive\HistOrniGraph_output\kg_exports_2026-10-01" /E
 robocopy data\cache\llm_v4 "G:\My Drive\HistOrniGraph_output\llm_cache_v4" /E
+robocopy data\cache\reading_v1 "G:\My Drive\HistOrniGraph_output\reading_cache_v1" /E
 robocopy data\cache\linking "G:\My Drive\HistOrniGraph_output\linking_cache" /E /XO
 ```
 

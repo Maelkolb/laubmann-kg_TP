@@ -13,6 +13,8 @@ called live then.
     python tools/batch_extract.py status  --work data/batch/2026-10-01
     python tools/batch_extract.py collect --config configs/local_full.yaml --work data/batch/2026-10-01
 
+With ``reading.enabled`` the visual reading runs (live, or from its cache) in
+``prepare`` so the batch prompts carry the corrected text, as a live run's do.
 Each step is idempotent: ``prepare`` skips prompts already in the cache,
 ``collect`` never overwrites a cached answer.
 """
@@ -60,6 +62,14 @@ def prepare(args) -> None:
     cache = LLMCache(Path(extraction["cache_dir"]))
     prompts = PromptLibrary(Path(extraction.get("prompt_dir", "prompts")))
     entries, _ = load_entries(config, Path(args.input_dir) if args.input_dir else None)
+    reading = config.get("reading") or {}
+    if reading.get("enabled"):
+        # the extraction reads the corrected transcription: run (or replay from
+        # its cache) the visual reading first, exactly as the pipeline does
+        from laubmann_kg.extraction.reading import run_reading
+        from laubmann_kg.pipeline import page_image_loader
+        load_dotenv()
+        print("reading:", run_reading(entries, reading, page_image_loader(reading)))
     work = Path(args.work)
     work.mkdir(parents=True, exist_ok=True)
     gen = _generation_config(extraction)
