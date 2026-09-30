@@ -1,4 +1,4 @@
-"""RDF emission of the full kg/model.py contract (ontology v0.4.0).
+"""RDF emission of the full kg/model.py contract (ontology v0.7.0).
 
 Builds one entry with every field populated, emits the graph, checks the
 predicates/datatypes (Darwin-Core-first, explicit partonomy, flattened
@@ -17,6 +17,7 @@ from rdflib.namespace import DCTERMS, OWL, PROV, RDF, RDFS, SKOS, XSD
 
 from laubmann_kg.kg.jsonld import DEFAULT_CONTEXT, write_jsonld
 from laubmann_kg.kg.model import (
+    GEOREF_SOURCES,
     Behaviour,
     DiaryEntry,
     Evidence,
@@ -51,7 +52,8 @@ PROVENANCE = {
 
 def _full_entry() -> DiaryEntry:
     entry_place = Place("Erlangen", canonical="Erlangen", lat=49.5897, long=11.0039,
-                        kind="settlement")
+                        kind="settlement", elevation_m=279.0, coordinate_uncertainty_m=2000,
+                        georef_source="gazetteer")
     own = Place("Dechsendorfer Weiher", canonical="Dechsendorfer Weiher", kind="locality")
     stork = Taxon("Storch", scientific_name="Ciconia ciconia", match_method="gazetteer",
                   confidence=0.98, rank="species", is_bird=True,
@@ -69,23 +71,20 @@ def _full_entry() -> DiaryEntry:
         date_plausible=True, date_note="Datum aus Kontext korrigiert",
         header_date="1919-04-11",
     )
+    kiefer = Person("Kiefer", role="companion")
     absence = Observation(
         entry_uid="e_rdf1", taxon=stork, verbatim_notes="Keine Störche mehr am Weiher",
         place=own, locality=own, individual_count=0, occurrence_status="absent",
         index=0, event_date="1919-04-13", event_time="07:30",
         sex="mixed", life_stage="adult", breeding_evidence="probable",
-        vitality="alive", movement_kind="departing", flight_direction="NO→SW",
+        vitality="dead", movement_kind="departing", flight_direction="NO→SW",
         identification_qualifier="wohl", count_min=3, count_max=4,
         spatial_context="vom Ufer des Weihers",
         microhabitat="Teichufer",
         relative_elevation="in mäßiger Höhe",
         altitude_m=280.0,
         time_of_day="morning",
-        daylight_phase="day",
-        sampling_protocol="Ansitz",
-        estimated_radius_m=300,
-        spatial_confidence="medium",
-        observation_duration_minutes=45,
+        co_observers=[kiefer],                  # observed WITH the diarist
         evidence=[Evidence("auditory", "Lautäußerung", is_call=True, call_type="call"),
                   Evidence("visual", "Sichtbeobachtung")],
         behaviour=[Behaviour("balzend")],
@@ -98,7 +97,7 @@ def _full_entry() -> DiaryEntry:
                         evidence=[Evidence("auditory", "Lautäußerung", is_call=True,
                                            call_type="song", call_transcription="zirr zirr")])
     entry.observations = [absence, plain, heard]
-    entry.persons = [Person("Kiefer", role="companion"), Person("Naumann", role="cited-author"),
+    entry.persons = [kiefer, Person("Naumann", role="cited-author"),
                      Person("Unbekannt"),                       # no role -> generic edge only
                      Person("Wüst", role="source"), Person("Kiel", role="collector"),
                      Person("Frau Laubmann", role="other")]
@@ -150,28 +149,35 @@ def test_observation_detail_predicates() -> None:
     # demography / hedge / movement
     assert graph.value(node, DWC.sex) == Literal("mixed")
     assert graph.value(node, DWC.lifeStage) == Literal("adult")
-    assert graph.value(node, DWC.vitality) == Literal("alive")
+    assert graph.value(node, DWC.vitality) == Literal("dead")      # only a stated death (0.7.0)
     assert graph.value(node, DWC.identificationQualifier) == Literal("wohl")
     assert graph.value(node, LKG.breedingEvidence) == Literal("probable")
-    assert graph.value(node, DWC.reproductiveCondition) == Literal("breeding")
+    # 0.7.0: only confirmed breeding evidence is a reproductive condition
+    assert graph.value(node, DWC.reproductiveCondition) is None
     assert graph.value(node, LKG.movementKind) == Literal("departing")
     assert graph.value(node, LKG.flightDirection) == Literal("NO→SW", lang="de")
 
-    # own date/time vs. inherited entry date
+    # own date/time vs. inherited entry date (a multi-day entry: its interval)
     assert graph.value(node, DWC.eventDate) == Literal("1919-04-13", datatype=XSD.date)
     assert graph.value(node, DWC.eventTime) == Literal("07:30")
     assert graph.value(node, LKG.timeOfDay) == Literal("morning")
-    assert graph.value(node, LKG.daylightPhase) == Literal("day")
     assert graph.value(node, LKG.spatialContext) == Literal("vom Ufer des Weihers", lang="de")
     assert graph.value(node, LKG.microhabitat) == Literal("Teichufer", lang="de")
     assert graph.value(node, LKG.relativeElevation) == Literal("in mäßiger Höhe", lang="de")
-    assert graph.value(node, LKG.altitudeM).toPython() == Decimal("280.0")
-    assert graph.value(node, LKG.observationRadiusMeters) == Literal(300, datatype=XSD.integer)
-    assert graph.value(node, DWC.coordinateUncertaintyInMeters) == Literal(300, datatype=XSD.integer)
-    assert graph.value(node, LKG.spatialConfidence) == Literal("medium")
-    assert graph.value(node, DWC.samplingProtocol) == Literal("Ansitz", lang="de")
-    assert graph.value(node, LKG.observationDurationMinutes) == Literal(45, datatype=XSD.integer)
-    assert graph.value(DATA[plain.uid], DWC.eventDate) == Literal("1919-04-12", datatype=XSD.date)
+    # own elevation -> Darwin Core elevation pair (xsd:decimal), no lkg:altitudeM
+    assert graph.value(node, DWC.minimumElevationInMeters).toPython() == Decimal("280.0")
+    assert graph.value(node, DWC.maximumElevationInMeters).toPython() == Decimal("280.0")
+    assert graph.value(node, DWC.minimumElevationInMeters).datatype == XSD.decimal
+    # removed in 0.7.0 (template-driven, never stated in the text)
+    for removed in (LKG.daylightPhase, LKG.altitudeM, LKG.observationRadiusMeters,
+                    LKG.spatialConfidence, LKG.observationDurationMinutes, DWC.samplingProtocol):
+        assert list(graph.triples((None, removed, None))) == [], removed
+    # the coordinate uncertainty belongs to the place (centroid radius), not the record
+    for obs in entry.observations:
+        assert graph.value(DATA[obs.uid], DWC.coordinateUncertaintyInMeters) is None
+    assert graph.value(DATA[entry.place.uid], DWC.coordinateUncertaintyInMeters) == \
+        Literal(2000, datatype=XSD.integer)
+    assert graph.value(DATA[plain.uid], DWC.eventDate) == Literal("1919-04-12/1919-04-13")   # plain literal
     assert graph.value(DATA[plain.uid], DWC.eventTime) is None
 
     # own locality vs. inherited entry place
@@ -182,9 +188,12 @@ def test_observation_detail_predicates() -> None:
     assert graph.value(DATA[plain.uid], LKG.hasLocality) is None
     assert graph.value(DATA[plain.uid], LKG.observedAt) == DATA[entry.place.uid]
 
-    # attribution: dwciri:recordedBy only (lkg:observedBy is gone)
-    diarist = graph.value(node, DWCIRI.recordedBy)
-    assert graph.value(diarist, SCHEMA.name) == Literal("Alfred Laubmann")
+    # attribution: dwciri:recordedBy only (lkg:observedBy is gone); 0.7.0: the
+    # diarist AND the companion who observed with him
+    recorders = {str(graph.value(p, SCHEMA.name)) for p in graph.objects(node, DWCIRI.recordedBy)}
+    assert recorders == {"Alfred Laubmann", "Kiefer"}
+    assert [graph.value(p, SCHEMA.name) for p in graph.objects(DATA[plain.uid], DWCIRI.recordedBy)] == \
+        [Literal("Alfred Laubmann")]
     assert graph.value(node, LKG.observedBy) is None
 
     # behaviour flattened to dwc:behavior literals (no BehaviourNote node)
@@ -241,8 +250,7 @@ def test_taxon_place_entry_page_predicates() -> None:
     assert graph.value(stork, DWC.taxonRank) == Literal("species")
     assert graph.value(stork, LKG.isBird) == Literal(True, datatype=XSD.boolean)
     assert graph.value(stork, LKG.matchMethod) == Literal("gazetteer")
-    conf = graph.value(stork, LKG.matchConfidence)
-    assert conf.datatype == XSD.decimal and conf.toPython() == Decimal("0.98")
+    assert graph.value(stork, LKG.matchConfidence) is None        # removed in 0.7.0
     assert graph.value(stork, LKG.gbifMatchType) == Literal("EXACT")
     assert (stork, SKOS.exactMatch, URIRef("https://www.gbif.org/species/2480962")) in graph
     # GBIF higher classification
@@ -258,21 +266,34 @@ def test_taxon_place_entry_page_predicates() -> None:
 
     place = DATA[entry.place.uid]
     assert graph.value(place, LKG.placeKind) == Literal("settlement")
-    assert graph.value(place, DWC.verbatimLocality) == Literal("Erlangen")
+    # 0.7.0: the wording of a use stays on the use (entry / observation), not the shared Place
+    assert graph.value(place, DWC.verbatimLocality) is None
     assert graph.value(place, LKG.verbatimLocality) is None
     lat = graph.value(place, GEO.lat)
     assert lat.datatype == XSD.decimal and lat.toPython() == Decimal("49.5897")
     assert graph.value(place, DWC.decimalLatitude) == lat
     assert graph.value(place, DWC.decimalLongitude) == graph.value(place, GEO.long)
     assert graph.value(place, DWC.geodeticDatum) == Literal("WGS84")
-    wkt = graph.value(place, GSP.asWKT)
+    assert graph.value(place, DWC.georeferenceSources) == Literal(GEOREF_SOURCES["gazetteer"])
+    # stated place elevation -> dwc:minimum/maximumElevationInMeters on the Place
+    assert graph.value(place, DWC.minimumElevationInMeters).toPython() == Decimal("279.0")
+    assert graph.value(place, DWC.maximumElevationInMeters).toPython() == Decimal("279.0")
+    assert graph.value(place, LKG.altitudeM) is None
+    # GeoSPARQL: the Place is a feature with a point geometry node
+    assert graph.value(place, GSP.asWKT) is None
+    geometry = graph.value(place, GSP.hasGeometry)
+    assert geometry == DATA[f"geometry_{entry.place.uid}"]
+    assert (geometry, RDF.type, GSP.Geometry) in graph
+    wkt = graph.value(geometry, GSP.asWKT)
     assert wkt.datatype == GSP.wktLiteral and str(wkt) == "POINT(11.0039 49.5897)"   # lon lat
     own = DATA[entry.observations[0].locality.uid]
-    assert graph.value(own, GSP.asWKT) is None                     # no coordinates -> no WKT
+    assert graph.value(own, GSP.hasGeometry) is None               # no coordinates -> no geometry
+    assert graph.value(own, GSP.asWKT) is None
 
     node = DATA[entry.uid]
     assert graph.value(node, DCTERMS.identifier) == Literal("L03-e0001")
     assert graph.value(node, LKG.entryPlace) == place
+    assert graph.value(node, DWC.verbatimLocality) == Literal("Erlangen")   # header wording
     assert graph.value(node, LKG.entryKind) == Literal("field-day")
     # dates: dwc:eventDate only (interval string for multi-day entries)
     assert graph.value(node, DWC.eventDate) == Literal("1919-04-12/1919-04-13")
@@ -282,7 +303,7 @@ def test_taxon_place_entry_page_predicates() -> None:
     assert graph.value(node, LKG.datePlausible) == Literal(True, datatype=XSD.boolean)
     assert graph.value(node, SKOS.note) == Literal("Datum aus Kontext korrigiert", lang="de")
     assert graph.value(node, LKG.dateNote) is None
-    assert graph.value(node, DWC.fieldNotes) == Literal("Text.")
+    assert graph.value(node, DWC.fieldNotes) == Literal("Text.", lang="de")
     assert graph.value(node, LKG.rawText) is None
 
     # partonomy: entry -> page -> volume, region -> page
@@ -402,6 +423,13 @@ def test_jsonld_default_context_is_repo_relative(tmp_path, monkeypatch) -> None:
     assert obs["occurrenceStatus"] == "absent"
     assert obs["hasLocality"] == "data:" + entry.observations[0].locality.uid
     assert obs["wasGeneratedBy"].startswith("data:run_")
+    assert len(obs["recordedBy"]) == 2                            # diarist + companion
+    # 0.7.0 context terms: dcType (dcterms:type), hasGeometry, elevation pair
+    assert nodes["data:region_r_rdf_map"]["dcType"] == "dcmitype:StillImage"
+    place = nodes["data:" + entry.place.uid]
+    assert place["hasGeometry"] == "data:geometry_" + entry.place.uid
+    assert place["minimumElevationInMeters"] == place["maximumElevationInMeters"] == "279.0"
+    assert "asWKT" in nodes["data:geometry_" + entry.place.uid]
 
 
 def test_competency_queries_run() -> None:
@@ -436,15 +464,26 @@ def test_hand_written_fixture_conforms() -> None:
     assert (None, RDF.type, LKG.MultimodalRegion) in g
     assert (None, LKG.callTranscription, None) in g
     assert (None, RDF.type, LKG.Vocalisation) not in g
+    # 0.7.0 shape: WKT on geometry nodes, wording on the uses, several recorders
+    for place in g.subjects(RDF.type, LKG.Place):
+        assert g.value(place, GSP.asWKT) is None and g.value(place, DWC.verbatimLocality) is None
+    assert (None, GSP.hasGeometry, None) in g
+    assert all(g.value(o, DWC.eventDate) is not None for o in g.subjects(RDF.type, LKG.Observation))
+    assert any(len(set(g.objects(o, DWCIRI.recordedBy))) == 2
+               for o in g.subjects(RDF.type, LKG.Observation))
 
 
 def test_ontology_axioms_and_vocabularies_parse() -> None:
     onto = Graph().parse(str(ONTOLOGY), format="turtle")
     onto_iri = URIRef("https://w3id.org/laubmann-kg/ontology")
-    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.6.0")
-    # grouping hierarchy
-    RICO = URIRef("https://www.ica.org/standards/RiC/ontology#Record")
-    assert (LKG.ArchivalUnit, RDFS.subClassOf, RICO) in onto
+    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.7.0")
+    assert onto.value(onto_iri, OWL.priorVersion) == URIRef("https://w3id.org/laubmann-kg/ontology/0.6.0")
+    # grouping hierarchy (0.7.0: Records in Contexts alignment)
+    RICO = "https://www.ica.org/standards/RiC/ontology#"
+    assert (LKG.ArchivalUnit, RDFS.subClassOf, URIRef(RICO + "RecordResource")) in onto
+    assert (LKG.DiaryVolume, RDFS.subClassOf, URIRef(RICO + "Record")) in onto
+    for cls in ("DiaryPage", "DiaryEntry", "SourceRegion"):
+        assert (LKG[cls], RDFS.subClassOf, URIRef(RICO + "RecordPart")) in onto, cls
     assert (LKG.EntryRecord, RDFS.subClassOf, PROV.Entity) in onto
     for cls in ("DiaryVolume", "DiaryPage", "DiaryEntry", "SourceRegion"):
         assert (LKG[cls], RDFS.subClassOf, LKG.ArchivalUnit) in onto, cls
@@ -456,6 +495,8 @@ def test_ontology_axioms_and_vocabularies_parse() -> None:
         assert (LKG[name], None, None) not in onto, name
     assert (LKG.Observation, RDFS.subClassOf, DWC.Occurrence) in onto
     assert (LKG.DiaryEntry, RDFS.subClassOf, DWC.Event) in onto
+    assert (LKG.TravelEvent, RDFS.subClassOf, DWC.Event) not in onto   # 0.7.0: the entry is the event
+    assert (LKG.Place, RDFS.subClassOf, GSP.Feature) in onto
     assert (LKG.observedTaxon, RDFS.subPropertyOf, DWCIRI.toTaxon) in onto
     assert (LKG.observedAt, RDFS.subPropertyOf, DWCIRI.inDescribedPlace) not in onto
     # partonomy: containment properties are sub-properties of dcterms:hasPart
@@ -471,7 +512,10 @@ def test_ontology_axioms_and_vocabularies_parse() -> None:
                  "derivedFromEntry", "hasVolume", "hasPage", "entryDate", "entryDateEnd",
                  "rawText", "dateNote", "vernacularNameDE", "scientificName", "individualCount",
                  "verbatimLocality", "observedBy", "hasRoute", "routePoint", "routeOrder",
-                 "hasTimeEstimate", "observedDuring", "hasAnnotation", "placeName"):
+                 "hasTimeEstimate", "observedDuring", "hasAnnotation", "placeName",
+                 # removed in 0.7.0
+                 "matchConfidence", "observationRadiusMeters", "spatialConfidence",
+                 "daylightPhase", "observationDurationMinutes", "altitudeM"):
         assert (LKG[name], None, None) not in onto, name
     # the habitat scheme is declared in controlled_vocabularies.ttl (see below), not in the ontology
     assert (LKG.habitatScheme, RDF.type, SKOS.ConceptScheme) not in onto
@@ -479,43 +523,75 @@ def test_ontology_axioms_and_vocabularies_parse() -> None:
                  "individualCountMin", "individualCountMax", "breedingEvidence", "movementKind",
                  "flightDirection", "evidenceKind", "callType", "callTranscription",
                  "hasSourceRegion", "hasMultimodalRegion", "regionKind", "visibleText",
-                 "matchMethod", "matchConfidence", "gbifMatchType", "isBird", "placeKind",
+                 "matchMethod", "gbifMatchType", "isBird", "placeKind",
                  "recordType", "backend", "spatialContext", "microhabitat", "relativeElevation",
-                 "observationRadiusMeters", "spatialConfidence", "timeOfDay", "daylightPhase",
-                 "observationDurationMinutes", "altitudeM"):
+                 "timeOfDay"):
         assert (LKG[prop], RDFS.label, None) in onto, prop
+    # every controlled datatype property names its scheme (0.7.0)
+    for prop, scheme in (("timeOfDay", "timeOfDayScheme"), ("matchMethod", "matchMethodScheme"),
+                         ("transportMode", "transportModeScheme"), ("placeKind", "placeKindScheme"),
+                         ("evidenceKind", "evidenceKindScheme"), ("recordType", "recordTypeScheme")):
+        assert (LKG[prop], RDFS.seeAlso, LKG[scheme]) in onto, prop
 
     from laubmann_kg.normalization import vocabularies as vocab
     vocabs = Graph().parse(str(REPO_ROOT / "ontologies" / "controlled_vocabularies.ttl"),
                            format="turtle")
+    assert vocabs.value(URIRef("https://w3id.org/laubmann-kg/vocabularies"), OWL.versionInfo) == \
+        Literal("0.7.0")
 
     def _values(scheme: URIRef) -> set[str]:
-        return {str(label) for concept in vocabs.subjects(SKOS.inScheme, scheme)
-                for label in vocabs.objects(concept, SKOS.prefLabel) if label.language == "en"}
+        """The literal values of a scheme: the skos:notation of its concepts."""
+        return {str(n) for concept in vocabs.subjects(SKOS.inScheme, scheme)
+                for n in vocabs.objects(concept, SKOS.notation)}
 
+    # every concept of a project scheme carries skos:notation = its literal value
+    for concept in vocabs.subjects(RDF.type, SKOS.Concept):
+        if str(concept).startswith(str(LKG)):
+            assert vocabs.value(concept, SKOS.notation) is not None, concept
     assert _values(LKG.occurrenceStatusScheme) == set(vocab.OCCURRENCE_STATUS)
     assert _values(LKG.sexScheme) == set(vocab.SEXES)
     assert _values(LKG.lifeStageScheme) == set(vocab.LIFE_STAGES)
     assert _values(LKG.breedingEvidenceScheme) == set(vocab.BREEDING_EVIDENCE)
-    assert _values(LKG.vitalityScheme) == set(vocab.VITALITY)
+    assert _values(LKG.vitalityScheme) == set(vocab.VITALITY) == {"dead"}
     assert _values(LKG.movementKindScheme) == set(vocab.MOVEMENT_KINDS)
     assert _values(LKG.taxonRankScheme) == set(vocab.TAXON_RANKS)
     assert _values(LKG.placeKindScheme) == set(vocab.PLACE_KINDS)
     assert _values(LKG.callTypeScheme) == set(vocab.EMITTED_CALL_TYPES)
     assert _values(LKG.regionKindScheme) == set(vocab.REGION_KINDS)
+    assert _values(LKG.transportModeScheme) == set(vocab.TRANSPORT_MODES)
+    assert _values(LKG.timeOfDayScheme) == set(vocab.TIME_OF_DAY)
+    assert _values(LKG.matchMethodScheme) == set(vocab.MATCH_METHODS)
+    assert _values(LKG.recordTypeScheme) == set(vocab.RECORD_TYPES)
+    assert _values(LKG.countQualifierScheme) == set(vocab.COUNT_QUALIFIERS)
     for key, (prefix, scheme) in __import__("laubmann_kg.kg.authority", fromlist=["AUTHORITIES"]).AUTHORITIES.items():
         assert (LKG[scheme], RDF.type, SKOS.ConceptScheme) in vocabs, key
     assert _values(LKG.entryKindScheme) == set(vocab.ENTRY_KINDS)
     assert _values(LKG.evidenceKindScheme) == set(vocab.EVIDENCE_KINDS)
     assert (LKG.habitatScheme, RDF.type, SKOS.ConceptScheme) in vocabs
+    # placeholders removed in 0.7.0
+    for gone in ("transport_unknown", "rank_unknown", "placekind_route", "placekind_unknown",
+                 "vitality_alive"):
+        assert (LKG[gone], None, None) not in vocabs, gone
+    assert "unknown" not in vocab.TRANSPORT_MODES + vocab.TAXON_RANKS + vocab.PLACE_KINDS
+    assert not hasattr(vocab, "DAYLIGHT_PHASE") and not hasattr(vocab, "SPATIAL_CONFIDENCE")
 
 
 def test_shapes_encode_relaxed_constraints() -> None:
     # Warning-severity regressions would not fail run_shacl_validation, so pin
     # the load-bearing shape changes on the shapes graph itself.
+    from rdflib.collection import Collection
     from rdflib.namespace import SH
+
+    from laubmann_kg.normalization.vocabularies import TIME_OF_DAY
     shapes = Graph().parse(str(SHAPES), format="turtle")
-    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.6.0")
+    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.7.0")
+
+    def _prop(shape: URIRef, path: URIRef) -> URIRef:
+        return next(p for p in shapes.objects(shape, SH.property) if shapes.value(p, SH.path) == path)
+
+    def _count(prop: URIRef, which: URIRef):
+        value = shapes.value(prop, which)
+        return None if value is None else value.toPython()
     call = next(shapes.subjects(SH.path, LKG.callTranscription))
     assert shapes.value(call, SH.minCount) is None                # optional transcription
     assert shapes.value(call, SH.maxCount) is None                # several calls on one observation
@@ -532,12 +608,40 @@ def test_shapes_encode_relaxed_constraints() -> None:
             LKG.movementKind, LKG.hasLocality, LKG.individualCountMin, DWC.eventDate,
             DWC.eventTime, LKG.countQualifier, DWCIRI.habitat, DWCIRI.recordedBy,
             LKG.callType, LKG.callTranscription, DWC.behavior, LKG.spatialContext, LKG.microhabitat,
-            LKG.relativeElevation, LKG.timeOfDay, LKG.daylightPhase,
-            LKG.observationRadiusMeters, LKG.spatialConfidence,
-            LKG.observationDurationMinutes, LKG.altitudeM} <= obs_paths
-    # weather: several reports per entry allowed (no maxCount on hasWeather)
+            LKG.relativeElevation, LKG.timeOfDay,
+            DWC.minimumElevationInMeters, DWC.maximumElevationInMeters} <= obs_paths
+    # removed in 0.7.0
+    assert not {LKG.daylightPhase, LKG.observationRadiusMeters, LKG.spatialConfidence,
+                LKG.observationDurationMinutes, LKG.altitudeM, DWC.samplingProtocol,
+                LKG.matchConfidence} & set(shapes.objects(None, SH.path))
+    # 0.7.0: date, record type, basis of record and status are required on every observation
+    for path in (DWC.eventDate, LKG.recordType, DWC.basisOfRecord, DWC.occurrenceStatus):
+        prop = _prop(LKG.ObservationShape, path)
+        assert _count(prop, SH.minCount) == 1 and _count(prop, SH.maxCount) == 1, path
+    date = _prop(LKG.ObservationShape, DWC.eventDate)
+    assert shapes.value(date, SH.datatype) is None and shapes.value(date, SH["or"]) is not None   # day | interval
+    assert shapes.value(date, SH.severity) == SH.Violation
+    # several recorders (the diarist and his companions)
+    recorded = _prop(LKG.ObservationShape, DWCIRI.recordedBy)
+    assert _count(recorded, SH.maxCount) is None and shapes.value(recorded, SH["class"]) == LKG.Person
+    # the uncertainty radius belongs to the place, never the observation
+    assert _count(_prop(LKG.ObservationShape, DWC.coordinateUncertaintyInMeters), SH.maxCount) == 0
+    time_of_day = _prop(LKG.ObservationShape, LKG.timeOfDay)
+    assert {str(v) for v in Collection(shapes, shapes.value(time_of_day, SH["in"]))} == set(TIME_OF_DAY)
+    # weather: at most one report per entry (0.7.0)
     weather = next(shapes.subjects(SH.path, LKG.hasWeather))
-    assert shapes.value(weather, SH.maxCount) is None
+    assert _count(weather, SH.maxCount) == 1
+    # place: wording on the use, WKT on a geometry node
+    assert _count(_prop(LKG.PlaceShape, DWC.verbatimLocality), SH.maxCount) == 0
+    assert _count(_prop(LKG.PlaceShape, GSP.asWKT), SH.maxCount) == 0
+    assert shapes.value(_prop(LKG.PlaceShape, GSP.hasGeometry), SH["class"]) == GSP.Geometry
+    assert (LKG.GeometryShape, SH.targetClass, GSP.Geometry) in shapes
+    wkt = _prop(LKG.GeometryShape, GSP.asWKT)
+    assert _count(wkt, SH.minCount) == 1 and shapes.value(wkt, SH.datatype) == GSP.wktLiteral
+    # travel: the transport mode is optional and has no "unknown"
+    mode = _prop(LKG.TravelLegShape, LKG.transportMode)
+    assert _count(mode, SH.minCount) is None
+    assert "unknown" not in {str(v) for v in Collection(shapes, shapes.value(mode, SH["in"]))}
     # partonomy is a Violation-level requirement for every entry record
     assert {LKG.Observation, LKG.TravelEvent, LKG.WeatherReport} <= \
         set(shapes.objects(LKG.EntryRecordShape, SH.targetClass))
@@ -605,6 +709,8 @@ def test_authority_links_share_one_pattern() -> None:
         assert (target, RDF.type, SKOS.Concept) in graph
         assert graph.value(target, SKOS.inScheme) == LKG[scheme]
         assert graph.value(target, SKOS.notation) == Literal(notation)
+    assert graph.value(LKG.authority_gnd, SKOS.prefLabel) == \
+        Literal("Integrated Authority File (GND)", lang="en")
     # EUNIS keeps its hierarchy; GBIF keeps the Darwin Core mirror
     assert (URIRef("http://eunis.eea.europa.eu/eunishabitats/C3.21"), SKOS.broader,
             URIRef("http://eunis.eea.europa.eu/eunishabitats/C3.2")) in graph

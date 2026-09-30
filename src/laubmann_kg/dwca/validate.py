@@ -11,8 +11,8 @@ from laubmann_kg.dwca.meta_xml import DWC, ROW_TYPES
 
 logger = logging.getLogger(__name__)
 
-REQUIRED = ["meta.xml", "event.txt", "occurrence.txt", "multimedia.txt",
-            "measurementorfact.txt"]
+REQUIRED = ["meta.xml", "event.txt", "occurrence.txt", "measurementorfact.txt"]
+OPTIONAL = ["multimedia.txt"]        # only with hosted region crops (multimodal.image_base_url)
 
 _DWCA_NS = "{http://rs.tdwg.org/dwc/text/}"
 _EMOF_ROW_TYPE = ROW_TYPES["measurement_or_fact"]
@@ -75,6 +75,8 @@ def validate_archive(archive_dir: Path) -> list[str]:
         problems.append("event.txt has duplicate eventID values")
 
     for ext in ("occurrence.txt", "measurementorfact.txt", "multimedia.txt"):
+        if not (archive_dir / ext).exists():
+            continue
         _, rows = _read_tsv(archive_dir / ext)
         dangling = {r.get("eventID", "") for r in rows} - event_ids
         if dangling:

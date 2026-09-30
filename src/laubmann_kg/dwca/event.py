@@ -5,6 +5,9 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Optional
 
+from laubmann_kg.kg.model import GEOREF_SOURCES, data_iri
+from laubmann_kg.normalization.dates import event_date  # noqa: F401  (re-exported for the writers)
+
 if TYPE_CHECKING:
     from laubmann_kg.pipeline import ExtractionResult
 
@@ -25,30 +28,29 @@ GEOREF_PROTOCOL = "gazetteer match on the diary's place name (GeoNames / OpenStr
 def georef_columns(place) -> dict:
     """The georeference columns of a place (empty strings when unknown)."""
     has = place is not None and place.lat is not None and place.long is not None
+    source = getattr(place, "georef_source", None) if has else None
     return {
         "coordinateUncertaintyInMeters": str(place.coordinate_uncertainty_m) if has and getattr(place, "coordinate_uncertainty_m", None) else "",
-        "georeferenceSources": _GEOREF_SOURCES.get(getattr(place, "georef_source", None), getattr(place, "georef_source", None) or "") if has else "",
-        "georeferenceProtocol": GEOREF_PROTOCOL if has and getattr(place, "georef_source", None) else "",
+        "georeferenceSources": GEOREF_SOURCES.get(source, source or "") if source else "",
+        "georeferenceProtocol": GEOREF_PROTOCOL if source else "",
         "locationID": f"https://sws.geonames.org/{place.geonames_id}/" if place is not None and getattr(place, "geonames_id", None) else "",
     }
 
 
-_GEOREF_SOURCES = {
-    "gazetteer": "built-in gazetteer (normalization/places.py)",
-    "osm+geonames": "OpenStreetMap/Nominatim name match confirmed by GeoNames",
-    "osm": "OpenStreetMap/Nominatim name match",
-    "geonames": "GeoNames name match (unique in home region)",
-    "reviewed": "reviewed place_link_review.csv",
-}
-
-
-def event_date(entry) -> str:
-    """ISO date, or the ISO interval ``start/end`` for multi-day entries."""
-    start = entry.entry_date or ""
-    end = getattr(entry, "entry_date_end", None)
-    if start and end and end != start:
-        return f"{start}/{end}"
-    return start
+def coordinates_safe(entry) -> bool:
+    """May the event row carry the entry place's point? GBIF fills an empty
+    occurrence field from its event, so a record at ANOTHER place without
+    coordinates would silently take the entry's point. The occurrence rows
+    carry their own place's georeference; the event keeps the point only when
+    no record of the entry could inherit it wrongly."""
+    place = entry.place
+    for obs in entry.observations:
+        other = obs.place
+        if other is None or (place is not None and other.uid == place.uid):
+            continue
+        if other.lat is None or other.long is None:
+            return False
+    return True
 
 
 def build_events(result: "ExtractionResult") -> list[dict]:
@@ -57,9 +59,12 @@ def build_events(result: "ExtractionResult") -> list[dict]:
         if not entry.entry_date:
             continue
         place = entry.place            # the model's (or gazetteer's) reading of the header
-        has_coords = place is not None and place.lat is not None and place.long is not None
+        # the entry's georeference only when no record could inherit it wrongly
+        safe = coordinates_safe(entry)
+        has_coords = safe and place is not None and place.lat is not None and place.long is not None
+        geo = georef_columns(place if safe else None)
         rows.append({
-            "eventID": entry.entry_uid,
+            "eventID": data_iri(entry.uid),
             "eventDate": event_date(entry),
             "verbatimEventDate": entry.verbatim_event_date or "",
             "locality": place.name if place is not None else "",
@@ -68,9 +73,9 @@ def build_events(result: "ExtractionResult") -> list[dict]:
             "samplingProtocol": "diary observation",
             "fieldNumber": entry.entry_id,
             "fieldNotes": (entry.text_clean or "").replace("\n", " ").replace("\t", " "),
-            "verbatimLocality": entry.location_raw or "",
+            "verbatimLocality": (entry.location_raw or "").replace("\t", " ").replace("\n", " "),
             "geodeticDatum": "WGS84" if has_coords else "",
-            **georef_columns(place),
+            **geo,
             "eventRemarks": " ".join(entry.weather.verbatim.split()) if entry.weather else "",
             "dynamicProperties": _dynamic_properties(entry),
         })

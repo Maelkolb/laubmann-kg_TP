@@ -40,7 +40,7 @@ from laubmann_kg.kg import authority
 from laubmann_kg.kg.authority import AuthorityLink
 from laubmann_kg.kg.model import (
     DATA_NS,
-    DIARIST,
+    GEOREF_SOURCES,
     DiaryEntry,
     DiaryPage,
     DiaryVolume,
@@ -53,6 +53,7 @@ from laubmann_kg.kg.model import (
     Taxon,
     TravelEvent,
 )
+from laubmann_kg.normalization.dates import event_date, obs_event_date
 from laubmann_kg.normalization import vocabularies as vocab
 from laubmann_kg.normalization.vocabularies import basis_of_record, reproductive_condition
 
@@ -88,7 +89,7 @@ _AUTHORITY_LABELS = {
     "authority_eunis": "EUNIS habitat classification (2012)",
     "authority_geonames": "GeoNames",
     "authority_wikidata": "Wikidata",
-    "authority_gnd": "Gemeinsame Normdatei (GND)",
+    "authority_gnd": "Integrated Authority File (GND)",
 }
 # MultimodalRegion.kind -> DCMI type of what the region shows
 _DCMI_TYPES = {"object": DCMITYPE.PhysicalObject, "text-insert": DCMITYPE.Text, "list": DCMITYPE.Text}
@@ -192,8 +193,6 @@ def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
             graph.add((node, term, Literal(name)))
     # match provenance (how the vernacular was resolved)
     graph.add((node, LKG.matchMethod, Literal(taxon.match_method)))
-    if taxon.confidence is not None:
-        graph.add((node, LKG.matchConfidence, _decimal(taxon.confidence)))
     if taxon.gbif_match_type:
         graph.add((node, LKG.gbifMatchType, Literal(taxon.gbif_match_type)))
     links = authority.taxon_links(taxon)
@@ -208,37 +207,35 @@ def _add_taxon(graph: Graph, taxon: Taxon) -> URIRef:
 def _add_place(graph: Graph, place: Place) -> URIRef:
     node = _uri(place.uid)
     if (node, RDF.type, LKG.Place) not in graph:
+        # the wording of a particular use stays on that use (dwc:verbatimLocality
+        # of the entry or observation); the shared node carries names only
         graph.add((node, RDF.type, LKG.Place))
         graph.add((node, RDFS.label, Literal(place.name, lang=DE)))
-        graph.add((node, DWC.verbatimLocality, Literal(place.verbatim)))
         for alt in place.alt_names:
             graph.add((node, SKOS.altLabel, Literal(alt, lang=DE)))
         if place.kind:
             graph.add((node, LKG.placeKind, Literal(place.kind)))
+        if place.elevation_m is not None:
+            graph.add((node, DWC.minimumElevationInMeters, _decimal(place.elevation_m)))
+            graph.add((node, DWC.maximumElevationInMeters, _decimal(place.elevation_m)))
         if place.lat is not None and place.long is not None:
             graph.add((node, GEO.lat, _decimal(place.lat)))
             graph.add((node, GEO.long, _decimal(place.long)))
             graph.add((node, DWC.decimalLatitude, _decimal(place.lat)))
             graph.add((node, DWC.decimalLongitude, _decimal(place.long)))
             graph.add((node, DWC.geodeticDatum, Literal("WGS84")))
-            graph.add((node, GSP.asWKT, _wkt_point(place.lat, place.long)))
+            # GeoSPARQL: the place is a feature with a point geometry
+            geometry = _uri(f"geometry_{place.uid}")
+            graph.add((node, GSP.hasGeometry, geometry))
+            graph.add((geometry, RDF.type, GSP.Geometry))
+            graph.add((geometry, GSP.asWKT, _wkt_point(place.lat, place.long)))
             if place.coordinate_uncertainty_m:
                 graph.add((node, DWC.coordinateUncertaintyInMeters, Literal(int(place.coordinate_uncertainty_m), datatype=XSD.integer)))
             if place.georef_source:
-                graph.add((node, DWC.georeferenceSources, Literal(_GEOREF_SOURCES.get(place.georef_source, place.georef_source))))
+                graph.add((node, DWC.georeferenceSources, Literal(GEOREF_SOURCES.get(place.georef_source, place.georef_source))))
         # gazetteer identity (linking/places.py): GeoNames feature, Wikidata item
         _add_authority_links(graph, node, authority.place_links(place))
     return node
-
-
-_GEOREF_SOURCES = {
-    "gazetteer": "built-in gazetteer (normalization/places.py)",
-    "osm+geonames": "OpenStreetMap/Nominatim name match, confirmed by GeoNames (point = GeoNames feature)",
-    "osm": "OpenStreetMap/Nominatim name match",
-    "geonames": "GeoNames name match (unique in home region)",
-    "reviewed": "reviewed place_link_review.csv",
-    "machine-review": "machine review of the place link (LLM subagents, validation tools)",
-}
 
 
 def _add_person(graph: Graph, person: Person) -> URIRef:
@@ -342,7 +339,8 @@ def _add_travel_event(graph: Graph, entry_node: URIRef, event: TravelEvent,
         graph.add((node, LKG.arrivalPlace, _add_place(graph, leg.arrival_place)))
         for via in leg.via_places:
             graph.add((node, LKG.viaPlace, _add_place(graph, via)))
-        graph.add((node, LKG.transportMode, Literal(leg.transport_mode)))
+        if leg.transport_mode:
+            graph.add((node, LKG.transportMode, Literal(leg.transport_mode)))
         if leg.departure_time:
             graph.add((node, LKG.departureTime,
                        Literal(leg.departure_time, datatype=XSD.dateTime)))
@@ -376,6 +374,12 @@ def _add_weather(graph: Graph, entry_node: URIRef, entry: DiaryEntry,
     _add_record_links(graph, node, entry_node, run)
 
 
+def _date_literal(value: str) -> Literal:
+    """xsd:date for a day, a plain ISO interval "start/end" otherwise (Darwin
+    Core eventDate)."""
+    return Literal(value) if "/" in value else Literal(value, datatype=XSD.date)
+
+
 def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
                      entry_date: Optional[str] = None,
                      run: Optional[URIRef] = None) -> Optional[URIRef]:
@@ -401,18 +405,16 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
         graph.add((node, LKG.hasLocality, _add_place(graph, obs.locality)))
         graph.add((node, DWC.verbatimLocality, Literal(obs.locality.verbatim)))
 
-    # --- when: the record's own date/time, else the entry date -----------
-    event_date = obs.event_date or entry_date
+    # --- when: the record's own date (or range), else the entry's date or interval
+    event_date = obs_event_date(obs, entry_date or "")
     if event_date:
-        graph.add((node, DWC.eventDate, Literal(event_date, datatype=XSD.date)))
+        graph.add((node, DWC.eventDate, _date_literal(event_date)))
     if obs.event_time:
         graph.add((node, DWC.eventTime, Literal(obs.event_time)))
     if obs.time_of_day:
         graph.add((node, LKG.timeOfDay, Literal(obs.time_of_day)))
-    if obs.daylight_phase:
-        graph.add((node, LKG.daylightPhase, Literal(obs.daylight_phase)))
 
-    # --- Ziel 1: vantage, microhabitat, radius / uncertainty ---------------
+    # --- where exactly: vantage, position, flight height, own elevation ------
     if obs.spatial_context:
         graph.add((node, LKG.spatialContext, Literal(obs.spatial_context, lang=DE)))
     if obs.microhabitat:
@@ -420,18 +422,8 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
     if obs.relative_elevation:
         graph.add((node, LKG.relativeElevation, Literal(obs.relative_elevation, lang=DE)))
     if obs.altitude_m is not None:
-        graph.add((node, LKG.altitudeM, _decimal(obs.altitude_m)))
-    if obs.estimated_radius_m is not None:
-        radius = Literal(int(obs.estimated_radius_m), datatype=XSD.integer)
-        graph.add((node, LKG.observationRadiusMeters, radius))
-        graph.add((node, DWC.coordinateUncertaintyInMeters, radius))
-    if obs.spatial_confidence:
-        graph.add((node, LKG.spatialConfidence, Literal(obs.spatial_confidence)))
-    if obs.sampling_protocol:
-        graph.add((node, DWC.samplingProtocol, Literal(obs.sampling_protocol, lang=DE)))
-    if obs.observation_duration_minutes is not None:
-        graph.add((node, LKG.observationDurationMinutes,
-                   Literal(int(obs.observation_duration_minutes), datatype=XSD.integer)))
+        graph.add((node, DWC.minimumElevationInMeters, _decimal(obs.altitude_m)))
+        graph.add((node, DWC.maximumElevationInMeters, _decimal(obs.altitude_m)))
 
     # --- what: status, counts, demography ---------------------------------
     graph.add((node, DWC.occurrenceStatus, Literal(obs.occurrence_status)))
@@ -466,14 +458,14 @@ def _add_observation(graph: Graph, obs: Observation, entry_node: URIRef,
     # --- record provenance ------------------------------------------------
     graph.add((node, LKG.recordType, Literal(obs.record_type)))
     graph.add((node, DWC.basisOfRecord,
-               Literal(basis_of_record(obs.record_type, (e.kind for e in obs.evidence)))))
-    # Unattributed third-party/literature records get NO recordedBy — never
-    # fabricate attribution.
-    observer = obs.observer or (DIARIST if obs.record_type == "field-observation" else None)
-    if observer is not None:
-        graph.add((node, DWCIRI.recordedBy, _add_person(graph, observer)))
+               Literal(basis_of_record(obs.record_type, (e.kind for e in obs.evidence),
+                                       bool(obs.literature_citation)))))
+    # the diarist (and companions) for his own records, the observer for a
+    # third-party record; unattributed reports and citations get NO recordedBy
+    for person in obs.recorders:
+        graph.add((node, DWCIRI.recordedBy, _add_person(graph, person)))
     if obs.literature_citation:
-        graph.add((node, DWC.associatedReferences, Literal(obs.literature_citation, lang=DE)))
+        graph.add((node, DWC.associatedReferences, Literal(obs.literature_citation)))
 
     # --- how: evidence kinds, what was heard, behaviour, habitat -----------
     for evidence in obs.evidence:
@@ -558,11 +550,8 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, vo
     graph.add((node, RDFS.label, Literal(entry.label, lang=DE)))
     if entry.entry_id:
         graph.add((node, DCTERMS.identifier, Literal(entry.entry_id)))
-    if entry.entry_date_end:
-        # DwC interval notation for multi-day entries
-        graph.add((node, DWC.eventDate, Literal(f"{entry.entry_date}/{entry.entry_date_end}")))
-    else:
-        graph.add((node, DWC.eventDate, Literal(entry.entry_date, datatype=XSD.date)))
+    # xsd:date, or the DwC interval "start/end" for a multi-day entry
+    graph.add((node, DWC.eventDate, _date_literal(event_date(entry))))
     if entry.verbatim_event_date:
         graph.add((node, DWC.verbatimEventDate, Literal(entry.verbatim_event_date)))
     if entry.date_plausible is not None:
@@ -576,8 +565,11 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, vo
         graph.add((node, LKG.entryKind, Literal(entry.entry_kind)))
     if entry.place is not None:
         graph.add((node, LKG.entryPlace, _add_place(graph, entry.place)))
+    if entry.location_raw:
+        # the header's place wording as written (the Place node carries names only)
+        graph.add((node, DWC.verbatimLocality, Literal(entry.location_raw)))
     if entry.text_clean:
-        graph.add((node, DWC.fieldNotes, Literal(entry.text_clean)))
+        graph.add((node, DWC.fieldNotes, Literal(entry.text_clean, lang=DE)))
 
     volume = DiaryVolume(entry.volume)
     volume_node = _uri(volume.uid)
@@ -610,7 +602,7 @@ def _add_entry(graph: Graph, entry: DiaryEntry, run: Optional[URIRef] = None, vo
         _add_multimodal_region(graph, node, mm, volume_node, image_base_url)
 
     for obs in entry.observations:
-        obs_node = _add_observation(graph, obs, node, entry.entry_date, run)
+        obs_node = _add_observation(graph, obs, node, event_date(entry), run)
         if obs_node is not None:
             graph.add((node, LKG.containsObservation, obs_node))
     for event in entry.travel_events:

@@ -1,84 +1,244 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "EntryExtraction",
-  "description": "Full structured reading of one diary entry: the entry's own date and place, its kind, observations, travel events, mentioned persons, and weather. The observation item schema is injected at load time from observation.schema.json (single source of truth). Deliberately tolerant: the model may emit a travel event either as {legs: [...]} or as a bare leg object; type-level correctness (vocabularies, time consistency, required endpoints) is enforced by the mapper, not here. Entry-level weather is one optional object (or bare verbatim string); provenance fields (record_type/observer/literature_citation) live on each observation.",
+  "description": "Full structured reading of one diary entry (prompt observation_extraction v4): the entry's own date and place, its kind, observations, travel events, mentioned persons and weather. The observation item schema is injected at load time from observation.schema.json. Deliberately tolerant: the model omits empty keys and defaults, may emit a travel event as {legs: [...]} or as a bare leg, and extra keys are ignored; vocabularies, time consistency and required endpoints are enforced by the mapper.",
   "type": "object",
-  "required": ["observations"],
-  "additionalProperties": false,
   "$defs": {
     "leg": {
       "type": "object",
       "properties": {
-        "departure_place": {"type": ["string", "null"]},
-        "arrival_place": {"type": ["string", "null"]},
-        "via_places": {"type": ["array", "string", "null"], "items": {"type": "string"}},
-        "transport_mode": {"type": ["string", "null"]},
-        "departure_time": {"type": ["string", "null"]},
-        "arrival_time": {"type": ["string", "null"]},
-        "verbatim": {"type": ["string", "null"]}
+        "departure_place": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "arrival_place": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "via_places": {
+          "type": [
+            "array",
+            "string",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "transport_mode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "departure_time": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "arrival_time": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verbatim": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     }
   },
   "properties": {
     "entry_date": {
-      "type": ["object", "string", "null"],
+      "type": [
+        "object",
+        "string",
+        "null"
+      ],
       "properties": {
-        "iso": {"type": ["string", "null"]},
-        "end_iso": {"type": ["string", "null"]},
-        "plausible": {"type": ["boolean", "string", "null"]},
-        "note": {"type": ["string", "null"]}
+        "iso": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "end_iso": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "plausible": {
+          "type": [
+            "boolean",
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
     "entry_place": {
-      "type": ["object", "string", "null"],
+      "type": [
+        "object",
+        "string",
+        "null"
+      ],
       "properties": {
-        "name": {"type": ["string", "null"]},
-        "verbatim": {"type": ["string", "null"]},
-        "kind": {"type": ["string", "null"]}
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verbatim": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "altitude_m": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        }
       }
     },
-    "entry_kind": {"type": ["string", "null"]},
-    "observations": {"type": "array", "items": {}},
+    "entry_kind": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observations": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {}
+    },
     "travel_events": {
-      "type": ["array", "null"],
+      "type": [
+        "array",
+        "null"
+      ],
       "items": {
         "anyOf": [
           {
             "type": "object",
-            "required": ["legs"],
+            "required": [
+              "legs"
+            ],
             "properties": {
               "legs": {
                 "type": "array",
-                "items": {"$ref": "#/$defs/leg"}
+                "items": {
+                  "$ref": "#/$defs/leg"
+                }
               },
-              "verbatim": {"type": ["string", "null"]}
+              "verbatim": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
             }
           },
-          {"$ref": "#/$defs/leg"}
+          {
+            "$ref": "#/$defs/leg"
+          }
         ]
       }
     },
     "persons": {
-      "type": ["array", "null"],
+      "type": [
+        "array",
+        "null"
+      ],
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
-          "name": {"type": "string", "minLength": 1},
-          "role": {"type": ["string", "null"]},
-          "verbatim": {"type": ["string", "null"]}
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         }
       }
     },
     "weather": {
-      "type": ["object", "string", "null"],
+      "type": [
+        "object",
+        "string",
+        "null"
+      ],
       "properties": {
-        "verbatim": {"type": ["string", "null"]},
-        "temperature_value": {"type": ["number", "string", "null"]},
-        "temperature_unit": {"type": ["string", "null"]},
-        "precipitation": {"type": ["string", "null"]},
-        "wind": {"type": ["string", "null"]},
-        "sky": {"type": ["string", "null"]}
+        "verbatim": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "temperature_value": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "temperature_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "precipitation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "wind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sky": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     }
   }

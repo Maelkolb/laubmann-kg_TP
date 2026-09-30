@@ -1,76 +1,265 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Observation",
-  "description": "One natural-history (normally bird) record extracted from a diary entry. Tolerant envelope: enum-valued fields are validated by the mapper (normalization/vocabularies.py), which is the enforcer; optional keys may be omitted by the model.",
+  "description": "One natural-history (normally bird) record extracted from a diary entry (prompt observation_extraction v4). Tolerant envelope: enum values are checked by the mapper (normalization/vocabularies.py), which is the enforcer; optional keys are omitted by the model when empty or at their default.",
   "type": "object",
-  "required": ["vernacular_de"],
-  "additionalProperties": false,
+  "required": [
+    "vernacular_de"
+  ],
   "properties": {
-    "vernacular_de": {"type": "string", "minLength": 1},
-    "taxon_rank": {"type": ["string", "null"]},
-    "scientific_name": {"type": ["string", "null"]},
-    "is_bird": {"type": ["boolean", "string", "null"]},
-    "verbatim_notes": {"type": ["string", "null"]},
-    "individual_count": {"type": ["integer", "string", "null"]},
-    "count_min": {"type": ["integer", "string", "null"]},
-    "count_max": {"type": ["integer", "string", "null"]},
-    "count_qualifier": {
-      "type": ["string", "null"],
-      "enum": ["exact", "minimum", "maximum", "approximate", "plural-unspecified", null]
+    "vernacular_de": {
+      "type": "string",
+      "minLength": 1
     },
-    "occurrence_status": {"type": ["string", "null"]},
+    "taxon_rank": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scientific_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "is_bird": {
+      "type": [
+        "boolean",
+        "string",
+        "null"
+      ]
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "string",
+        "null"
+      ]
+    },
+    "verbatim_notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "individual_count": {
+      "type": [
+        "integer",
+        "string",
+        "null"
+      ]
+    },
+    "count_min": {
+      "type": [
+        "integer",
+        "string",
+        "null"
+      ]
+    },
+    "count_max": {
+      "type": [
+        "integer",
+        "string",
+        "null"
+      ]
+    },
+    "count_qualifier": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "occurrence_status": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "evidence": {
-      "type": ["array", "string", "null"],
+      "type": [
+        "array",
+        "string",
+        "null"
+      ],
       "items": {
-        "type": "object",
-        "required": ["kind"],
+        "type": [
+          "object",
+          "string"
+        ],
         "properties": {
-          "kind": {"type": "string"},
-          "call_type": {"type": ["string", "null"]},
-          "call_transcription": {"type": ["string", "null"]}
+          "kind": {
+            "type": "string"
+          },
+          "call_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "call_transcription": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         }
       }
     },
-    "behaviour": {"type": ["array", "string", "null"], "items": {"type": "string"}},
-    "breeding_evidence": {"type": ["string", "null"]},
-    "habitat": {"type": ["string", "null"]},
-    "locality": {
-      "type": ["object", "string", "null"],
-      "properties": {
-        "name": {"type": ["string", "null"]},
-        "verbatim": {"type": ["string", "null"]}
+    "behaviour": {
+      "type": [
+        "array",
+        "string",
+        "null"
+      ],
+      "items": {
+        "type": "string"
       }
     },
-    "sex": {"type": ["string", "null"]},
-    "life_stage": {"type": ["string", "null"]},
-    "vitality": {"type": ["string", "null"]},
-    "movement_kind": {"type": ["string", "null"]},
-    "flight_direction": {"type": ["string", "null"]},
-    "identification_qualifier": {"type": ["string", "null"]},
-    "confidence": {"type": ["number", "string", "null"]},
-    "event_date": {"type": ["string", "null"]},
-    "event_time": {"type": ["string", "null"]},
-    "record_type": {"type": ["string", "null"]},
-    "observer": {"type": ["string", "object", "array", "null"]},
-    "literature_citation": {"type": ["string", "null"]},
-    "spatial_context": {"type": ["string", "null"]},
-    "microhabitat": {"type": ["string", "null"]},
-    "relative_elevation": {"type": ["string", "null"]},
-    "altitude_m": {"type": ["number", "string", "null"]},
+    "breeding_evidence": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "movement_kind": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "flight_direction": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sex": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "life_stage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "vitality": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "identification_qualifier": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "locality": {
+      "type": [
+        "object",
+        "string",
+        "null"
+      ],
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verbatim": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "habitat": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "microhabitat": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "spatial_context": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "relative_elevation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "altitude_m": {
+      "type": [
+        "number",
+        "string",
+        "null"
+      ]
+    },
     "time_of_day": {
-      "type": ["string", "null"],
-      "enum": ["morning", "forenoon", "noon", "afternoon", "evening", "night", null]
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    "daylight_phase": {
-      "type": ["string", "null"],
-      "enum": ["dawn", "day", "dusk", "night", null]
+    "event_time": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    "sampling_protocol": {"type": ["string", "null"]},
-    "estimated_radius_m": {"type": ["integer", "string", "null"]},
-    "spatial_confidence": {
-      "type": ["string", "null"],
-      "enum": ["high", "medium", "low", "inferred", null]
+    "event_date": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    "observation_duration_minutes": {"type": ["integer", "string", "null"]}
+    "event_date_end": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "record_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observer": {
+      "type": [
+        "string",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "observed_with": {
+      "type": [
+        "array",
+        "string",
+        "null"
+      ]
+    },
+    "literature_citation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
   }
 }

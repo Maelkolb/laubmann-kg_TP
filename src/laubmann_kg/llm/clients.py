@@ -35,6 +35,13 @@ class TruncatedOutput(RuntimeError):
         self.text = text or ""
 
 
+class TruncatedText(str):
+    """A partial answer returned by ``CachedClient`` when the model hit
+    max_output_tokens: usable text (the JSON repair may salvage a prefix) that
+    carries ``truncated = True`` so the caller can flag the entry for QA."""
+    truncated = True
+
+
 class OfflineClient:
     """Deterministic, network-free client. Returns a canned response per prompt
     (looked up by content hash); unknown prompts return an empty JSON array,
@@ -91,7 +98,7 @@ class CachedClient:
             logger.warning("truncated output for prompt %s (%d chars): returned "
                            "to caller, NOT cached", key[:12], len(exc.text))
             self.cache.log_usage(key, self.model, _last_usage(self.client), truncated=True)
-            return exc.text
+            return TruncatedText(exc.text)
         usage = _last_usage(self.client)
         self.cache.log_usage(key, self.model, usage)
         self.cache.set(key, self._request(prompt), response, usage=usage)
@@ -129,6 +136,9 @@ def _build_provider(backend: str, config: dict) -> LLMClient:  # pragma: no cove
             max_output_tokens=int(config.get("max_output_tokens", 4096)),
             timeout_s=float(config.get("timeout", 120)),
             thinking_level=config.get("thinking_level"),
+            context_cache_marker=(config.get("context_cache_marker", "\n## Entry\n")
+                                  if config.get("context_cache") else None),
+            context_cache_ttl_s=int(config.get("context_cache_ttl_s", 10800)),
         )
     raise NotImplementedError(
         f"LLM backend '{backend}' is not configured. Supported: offline, google/gemini. "
@@ -145,12 +155,22 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
     to the model's hard token ceiling (which is slow, costly, and yields the
     truncated JSON the repair pass then has to salvage). ``timeout_s`` bounds each
     request so a stalled call fails instead of hanging the whole run.
+
+    ``context_cache_marker``: explicit context caching of the prompt's constant
+    part. The text up to and including the marker (the instructions; the entry
+    follows it) is stored once as a Gemini CachedContent and billed at the
+    cached-input price on every call; only the rest is sent per request. The
+    model sees the same text, and the LLM cache key (sha256 of model + full
+    prompt) is unchanged. Without the marker in a prompt, or if the provider
+    refuses the cache, calls are sent whole.
     """
 
     def __init__(self, model: str, api_key_env: str = "GOOGLE_API_KEY",
                  temperature: float = 0.0, max_output_tokens: int = 4096,
                  timeout_s: float = 120,
-                 thinking_level: Optional[str] = None) -> None:
+                 thinking_level: Optional[str] = None,
+                 context_cache_marker: Optional[str] = None,
+                 context_cache_ttl_s: int = 10800) -> None:
         self.model = model
         self._api_key_env = api_key_env
         # public generation params: CachedClient records them in the cache entry
@@ -161,6 +181,10 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
         self._impl: Optional[tuple[str, object]] = None
         self._lock = threading.Lock()
         self._local = threading.local()      # per-thread usage of the last call
+        self._cache_marker = context_cache_marker
+        self._cache_ttl_s = context_cache_ttl_s
+        self._contexts: dict[str, str] = {}  # sha256(prefix) -> cachedContents/… name
+        self._context_lock = threading.Lock()
 
     def last_usage(self) -> Optional[dict]:
         return getattr(self._local, "usage", None)
@@ -219,11 +243,24 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
             if self.thinking_level:
                 cfg_kwargs["thinking_config"] = types.ThinkingConfig(
                     thinking_level=self.thinking_level)
-            resp = obj.models.generate_content(  # type: ignore[attr-defined]
-                model=self.model,
-                contents=prompt,
-                config=types.GenerateContentConfig(**cfg_kwargs),
-            )
+            contents = prompt
+            context = self._context_for(obj, prompt)
+            if context is not None:
+                name, rest = context
+                cfg_kwargs["cached_content"] = name
+                contents = rest
+            try:
+                resp = obj.models.generate_content(  # type: ignore[attr-defined]
+                    model=self.model,
+                    contents=contents,
+                    config=types.GenerateContentConfig(**cfg_kwargs),
+                )
+            except Exception:
+                if context is not None:
+                    # an expired or deleted cache: forget it, the retry creates a new one
+                    with self._context_lock:
+                        self._contexts = {k: v for k, v in self._contexts.items() if v != context[0]}
+                raise
         else:
             resp = obj.generate_content(  # type: ignore[attr-defined]
                 prompt,
@@ -234,6 +271,37 @@ class GeminiClient:  # pragma: no cover - needs credentials + network
             )
         self._local.usage = usage_of(resp)
         return check_response(resp, self.model)
+
+    def _context_for(self, client, prompt: str) -> Optional[tuple[str, str]]:
+        """(cached-content name, rest of the prompt), or None to send the prompt whole."""
+        marker = self._cache_marker
+        if not marker or marker not in prompt:
+            return None
+        cut = prompt.index(marker) + len(marker)
+        prefix, rest = prompt[:cut], prompt[cut:]
+        import hashlib
+
+        digest = hashlib.sha256(prefix.encode("utf-8")).hexdigest()
+        with self._context_lock:
+            if digest in self._contexts:
+                name = self._contexts[digest]
+                return (name, rest) if name else None
+            from google.genai import types
+            try:
+                cached = client.caches.create(  # type: ignore[attr-defined]
+                    model=self.model,
+                    config=types.CreateCachedContentConfig(
+                        contents=[types.Content(role="user", parts=[types.Part(text=prefix)])],
+                        ttl=f"{self._cache_ttl_s}s",
+                        display_name=f"laubmann-prompt-{digest[:12]}"))
+            except Exception as exc:  # noqa: BLE001 - fall back to whole prompts
+                logger.warning("context cache unavailable (%s); sending whole prompts", exc)
+                self._contexts[digest] = ""
+                return None
+            self._contexts[digest] = cached.name
+            logger.info("context cache %s created for the prompt prefix (%d chars, ttl %ds)",
+                        cached.name, len(prefix), self._cache_ttl_s)
+            return cached.name, rest
 
 
 _USAGE_FIELDS = ("prompt_token_count", "cached_content_token_count", "candidates_token_count",

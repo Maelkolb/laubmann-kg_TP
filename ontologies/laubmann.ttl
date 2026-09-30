@@ -3,6 +3,33 @@
 # Project Ontology  /  ontologies/laubmann.ttl
 # Namespace: https://w3id.org/laubmann-kg/ontology#   (w3id folder prepared in w3id/laubmann-kg/, PR pending)
 #
+# v0.7.0 (2026-09-30) — final review before the full re-extraction (prompt v4)
+#   - Only what the text states: the template-driven lkg:observationRadiusMeters,
+#     lkg:spatialConfidence, lkg:observationDurationMinutes and dwc:samplingProtocol
+#     on Observation are removed (the viewing radius was never stated in the
+#     diaries and was published as dwc:coordinateUncertaintyInMeters of a
+#     settlement centroid); lkg:daylightPhase is folded into lkg:timeOfDay
+#     (dawn … dusk, one scale, lkg:timeOfDayScheme); lkg:altitudeM gives way to
+#     dwc:minimumElevationInMeters / dwc:maximumElevationInMeters (on the Place
+#     for a stated place elevation, on the Observation for its own site);
+#     lkg:matchConfidence is removed (it mixed four confidences on a shared node).
+#   - Record dates: an Observation's dwc:eventDate is its own date or date range,
+#     else the entry's date or interval (multi-day entries no longer give their
+#     records a falsely precise start day).
+#   - dwciri:recordedBy may be several persons: the diarist and the companions
+#     the text says observed with him.
+#   - Per-use wording stays on the use: dwc:verbatimLocality is emitted on the
+#     DiaryEntry (header wording) and the Observation (own locality), no longer
+#     on the shared Place; lkg:placeKind is settlement | locality | region.
+#   - GeoSPARQL as specified: Place ⊑ gsp:Feature, gsp:hasGeometry → gsp:Geometry
+#     with gsp:asWKT (asWKT on the Place made every place a Geometry under RDFS).
+#   - Placeholders removed: transportMode "unknown" (the leg omits the mode),
+#     taxonRank "unknown", placeKind "route"/"unknown", vitality "alive".
+#   - Alignment: ArchivalUnit ⊑ rico:RecordResource (DiaryVolume ⊑ rico:Record;
+#     page, entry and region ⊑ rico:RecordPart); TravelEvent is no dwc:Event (it
+#     is never published as one). Every controlled datatype property points to
+#     its scheme (rdfs:seeAlso); every concept carries skos:notation = the literal
+#     used in the data. At most one WeatherReport per entry.
 # v0.6.0 (2026-09-30) — one link pattern, flat vocalisations, multimodal regions
 #   - External authority links are represented the same way for all five
 #     authorities (GBIF, EUNIS, GeoNames, Wikidata, GND): a SKOS mapping
@@ -111,11 +138,11 @@
     a owl:Ontology ;
     dcterms:title "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
     rdfs:label "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
-    dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Two grouping classes structure the model: archival units (volume, page, entry, layout region — body-text regions and multimodal regions such as drawings, photographs, mounted objects and inserted texts) and entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events and their legs, weather reports); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat. Every link to an external authority — GBIF (taxa), EUNIS (habitats), GeoNames and Wikidata (places), Wikidata and GND (persons) — uses the same pattern (ontology 0.6.0): skos:exactMatch / skos:closeMatch / skos:broadMatch to the authority's IRI, which is described as a skos:Concept with skos:inScheme lkg:authority_<name>, skos:notation and skos:prefLabel. Version 0.5.0 adds fine-grained spatial and temporal qualifications on Observation (Ziel 1: vantage-point context, microhabitat, relative elevation, qualitative time of day / daylight phase, estimated observation radius mirrored as dwc:coordinateUncertaintyInMeters, dwc:samplingProtocol) for GBIF-grade Darwin Core archives. The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, call type, entry kind, weather, travel, mention roles, spatial/temporal qualification, region kind). Controlled values are SKOS concept schemes in the same namespace; the data graph is validated with SHACL."@en ;
+    dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Two grouping classes structure the model: archival units (volume, page, entry, layout region — body-text regions and multimodal regions such as drawings, photographs, mounted objects and inserted texts) and entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events and their legs, weather reports); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat. Every link to an external authority — GBIF (taxa), EUNIS (habitats), GeoNames and Wikidata (places), Wikidata and GND (persons) — uses the same pattern (ontology 0.6.0): skos:exactMatch / skos:closeMatch / skos:broadMatch to the authority's IRI, which is described as a skos:Concept with skos:inScheme lkg:authority_<name>, skos:notation and skos:prefLabel. Observations carry the spatial and temporal detail the text states (vantage point, microhabitat, flight height, own elevation, qualitative time of day, clock time, own date or date range). The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, call type, entry kind, weather, travel, mention roles, spatial/temporal qualification, region kind). Controlled values are literals: each is the skos:notation of a concept in a SKOS concept scheme of the same namespace (the property's rdfs:seeAlso); the data graph is validated with SHACL."@en ;
     rdfs:comment "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat). External links (GBIF, EUNIS, GeoNames, Wikidata, GND) all use skos:exactMatch / closeMatch / broadMatch to an authority record in one of the lkg:authority_* schemes."@en ;
-    owl:versionInfo "0.6.0" ;
-    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.6.0> ;
-    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.5.0> ;
+    owl:versionInfo "0.7.0" ;
+    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.7.0> ;
+    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.6.0> ;
     vann:preferredNamespacePrefix "lkg" ;
     vann:preferredNamespaceUri "https://w3id.org/laubmann-kg/ontology#" ;
     dcterms:creator [ a foaf:Agent ; foaf:name "Laubmann KG Project" ; foaf:homepage <https://github.com/Maelkolb/laubmann-kg_TP> ] ;   # TODO: replace with the author's name/ORCID before publication
@@ -138,8 +165,8 @@
 lkg:ArchivalUnit
     a owl:Class ;
     rdfs:label "Archival Unit"@en , "Archivalische Einheit"@de ;
-    rdfs:comment "A unit of the digitised source: a diary volume, a scanned page, a dated entry or a layout region on a page (body text or multimodal). Grouping class only (not asserted as rdf:type in the data); the units are connected by dcterms:isPartOf (region → page → volume, entry → page)."@en ;
-    rdfs:subClassOf rico:Record .
+    rdfs:comment "A unit of the digitised source: a diary volume, a scanned page, a dated entry or a layout region on a page (body text or multimodal). Grouping class only (not asserted as rdf:type in the data); the units are connected by dcterms:isPartOf (region → page → volume, entry → page). In Records in Contexts terms a volume is a Record and the others are parts of it."@en ;
+    rdfs:subClassOf rico:RecordResource .
 
 lkg:EntryRecord
     a owl:Class ;
@@ -152,26 +179,26 @@ lkg:EntryRecord
 lkg:DiaryVolume
     a owl:Class ;
     rdfs:label "Diary Volume"@en , "Tagebuchband"@de ;
-    rdfs:comment "A single bound volume of the field journal (34 volumes, 1917–1965)."@en ;
-    rdfs:subClassOf lkg:ArchivalUnit .
+    rdfs:comment "A single bound volume of the field journal (34 volumes, 1917–1965); dcterms:temporal gives the span its title page names (\"YYYY-MM/YYYY-MM\")."@en ;
+    rdfs:subClassOf lkg:ArchivalUnit , rico:Record .
 
 lkg:DiaryPage
     a owl:Class ;
     rdfs:label "Diary Page"@en , "Tagebuchseite"@de ;
     rdfs:comment "A scanned page of a volume; dcterms:isPartOf links it to its DiaryVolume."@en ;
-    rdfs:subClassOf lkg:ArchivalUnit .
+    rdfs:subClassOf lkg:ArchivalUnit , rico:RecordPart .
 
 lkg:DiaryEntry
     a owl:Class ;
     rdfs:label "Diary Entry"@en , "Tagebucheintrag"@de ;
-    rdfs:comment "The primary semantic unit: a dated, located entry written by the observer — the diarist's day. It is the Darwin Core Event (dwc:eventDate, dwc:verbatimEventDate, dwc:fieldNotes; eventID = entry_uid in the DwC-A) and dcterms:hasPart its observations, travel events and weather reports. dcterms:isPartOf its DiaryPage (or the volume when the page is unknown)."@en ;
-    rdfs:subClassOf lkg:ArchivalUnit , dwc:Event .
+    rdfs:comment "The primary semantic unit: a dated, located entry written by the observer — the diarist's day. The node stands both for the text (a part of the volume) and for the day it records: it is the Darwin Core Event (dwc:eventDate, dwc:verbatimEventDate, dwc:verbatimLocality, dwc:fieldNotes; its IRI is the eventID of the DwC-A) and dcterms:hasPart its observations, travel events and weather report. dcterms:isPartOf its DiaryPage (or the volume when the page is unknown)."@en ;
+    rdfs:subClassOf lkg:ArchivalUnit , rico:RecordPart , dwc:Event .
 
 lkg:SourceRegion
     a owl:Class ;
     rdfs:label "Source Region"@en , "Quellregion"@de ;
     rdfs:comment "A detected layout region on a scanned page (HistOrniGraph layout stage) that belongs to a diary entry; dcterms:isPartOf its DiaryPage. Asserted as lkg:SourceRegion for the body-text regions an entry's text was read from (an entry that runs over several pages has several), as lkg:MultimodalRegion for the pictorial, physical and inserted-text regions placed with the entry."@en ;
-    rdfs:subClassOf lkg:ArchivalUnit .
+    rdfs:subClassOf lkg:ArchivalUnit , rico:RecordPart .
 
 lkg:MultimodalRegion
     a owl:Class ;
@@ -184,19 +211,19 @@ lkg:MultimodalRegion
 lkg:Observation
     a owl:Class ;
     rdfs:label "Observation"@en , "Beobachtung"@de ;
-    rdfs:comment "One taxon record read from a diary entry: a Darwin Core Occurrence (dwc:occurrenceStatus, dwc:individualCount, dwc:sex, dwc:lifeStage, dwc:eventDate, dwciri:recordedBy, dwciri:habitat …) plus the project detail (record type, count qualifier and range, breeding evidence, movement, evidence kinds, vocalisations). An entry with several taxa has several Observations; the DiaryEntry is the event they belong to."@en ;
+    rdfs:comment "One taxon record read from a diary entry: a Darwin Core Occurrence (dwc:occurrenceStatus, dwc:individualCount, dwc:sex, dwc:lifeStage, dwc:eventDate, dwciri:recordedBy, dwciri:habitat …) plus the project detail (record type, count qualifier and range, breeding evidence, movement, evidence kinds, call type and transcription). An entry with several taxa has several Observations; the DiaryEntry is the event they belong to."@en ;
     rdfs:subClassOf lkg:EntryRecord , dwc:Occurrence .
 
 lkg:TravelEvent
     a owl:Class ;
     rdfs:label "Travel Event"@en , "Reiseereignis"@de ;
-    rdfs:comment "A journey described in a diary entry, made of one or more TravelLegs (train, foot, boat …)."@en ;
-    rdfs:subClassOf lkg:EntryRecord , dwc:Event .
+    rdfs:comment "A journey of the diarist described in a diary entry, made of one or more TravelLegs (train, foot, boat …). Not a Darwin Core Event: the entry is the event, the journey a part of it."@en ;
+    rdfs:subClassOf lkg:EntryRecord .
 
 lkg:WeatherReport
     a owl:Class ;
     rdfs:label "Weather Report"@en , "Wetterbericht"@de ;
-    rdfs:comment "Weather as recorded in the diary entry. The verbatim wording (lkg:weatherVerbatim) is primary; structured values are optional normalisations and never unit-converted (historical entries may use Réaumur). An entry may carry several reports (e.g. morning and evening, distinguished by dwc:eventTime)."@en ;
+    rdfs:comment "Weather as recorded in the diary entry (at most one report per entry). The verbatim wording (lkg:weatherVerbatim) is primary; structured values are optional normalisations and never unit-converted (historical entries may use Réaumur)."@en ;
     rdfs:subClassOf lkg:EntryRecord .
 
 lkg:TravelLeg
@@ -216,8 +243,8 @@ lkg:Taxon
 lkg:Place
     a owl:Class ;
     rdfs:label "Place"@en , "Ort"@de ;
-    rdfs:comment "A named location: settlement, locality, region, station, river or route point (dwc:verbatimLocality as written, rdfs:label cleaned, merged spellings as skos:altLabel). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude and gsp:asWKT, and link to their GeoNames feature and Wikidata item (skos:exactMatch / closeMatch, authority schemes lkg:authority_geonames, lkg:authority_wikidata). Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme."@en ;
-    rdfs:subClassOf geo:SpatialThing , dcterms:Location .
+    rdfs:comment "A named location shared by every entry, record and journey that names it: a settlement, a named site or a region (lkg:placeKind). rdfs:label is the modern name, merged spellings are skos:altLabel; the wording of a particular use stays on that use (dwc:verbatimLocality of the entry or observation). Georeferenced places carry geo:lat/geo:long, dwc:decimalLatitude/Longitude, dwc:coordinateUncertaintyInMeters (centroid radius), a gsp:hasGeometry point, and link to their GeoNames feature and Wikidata item (skos:exactMatch / closeMatch, authority schemes lkg:authority_geonames, lkg:authority_wikidata); a stated elevation is dwc:minimumElevationInMeters / dwc:maximumElevationInMeters. Habitats are NOT places: they are skos:Concepts in lkg:habitatScheme."@en ;
+    rdfs:subClassOf geo:SpatialThing , dcterms:Location , gsp:Feature .
 
 lkg:Person
     a owl:Class ;
@@ -254,7 +281,7 @@ lkg:containsTravelEvent
 lkg:hasWeather
     a owl:ObjectProperty ;
     rdfs:label "has weather"@en , "hat Wetter"@de ;
-    rdfs:comment "Entry → weather report(s); several per entry are possible."@en ;
+    rdfs:comment "Entry → its weather report (at most one)."@en ;
     rdfs:domain lkg:DiaryEntry ;
     rdfs:range lkg:WeatherReport ;
     rdfs:subPropertyOf dcterms:hasPart .
@@ -291,6 +318,7 @@ lkg:hasMultimodalRegion
 
 lkg:regionKind
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:regionKindScheme ;
     rdfs:label "region kind"@en , "Regionsart"@de ;
     rdfs:comment "What a multimodal region shows: drawing, photograph, map, print, object, text-insert, list (lkg:regionKindScheme)."@en ;
     rdfs:domain lkg:MultimodalRegion ;
@@ -306,7 +334,8 @@ lkg:visibleText
 # --- Entry-level reading ----------------------------------------------------
 # Standard terms used on the entry (not redeclared here): dwc:eventDate
 # (xsd:date, or "start/end" for multi-day entries), dwc:verbatimEventDate,
-# dwc:fieldNotes (the transcribed entry text), skos:note (date note),
+# dwc:verbatimLocality (the header's place wording), dwc:fieldNotes (the
+# transcribed entry text, @de), skos:note (date, reading and filing notes),
 # dcterms:identifier, dcterms:isPartOf.
 
 lkg:entryPlace
@@ -318,6 +347,7 @@ lkg:entryPlace
 
 lkg:entryKind
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:entryKindScheme ;
     rdfs:label "entry kind"@en , "Eintragsart"@de ;
     rdfs:comment "Kind of diary entry: field-day, species-digest, retrospective, correspondence, other (lkg:entryKindScheme)."@en ;
     rdfs:domain lkg:DiaryEntry ;
@@ -374,10 +404,14 @@ lkg:mentionsOther
 # Standard terms used on the observation (not redeclared here):
 # dwc:verbatimIdentification (taxon name as written when resolution merged it),
 # dwc:occurrenceStatus, dwc:individualCount, dwc:sex, dwc:lifeStage,
-# dwc:vitality, dwc:reproductiveCondition, dwc:behavior, dwc:habitat,
-# dwciri:habitat, dwc:identificationQualifier, dwc:eventDate, dwc:eventTime,
-# dwc:verbatimLocality, dwc:occurrenceRemarks, dwc:basisOfRecord,
-# dwciri:recordedBy, dwc:associatedReferences, dcterms:isPartOf,
+# dwc:vitality, dwc:reproductiveCondition (confirmed breeding), dwc:behavior,
+# dwc:habitat, dwciri:habitat, dwc:identificationQualifier, dwc:eventDate (own
+# date or range, else the entry's date or interval), dwc:eventTime,
+# dwc:verbatimLocality (own locality as written), dwc:minimumElevationInMeters /
+# dwc:maximumElevationInMeters (stated elevation of its own site),
+# dwc:occurrenceRemarks (reviewer notes), dwc:basisOfRecord, dwciri:recordedBy
+# (the diarist and his companions, or the third-party observer; absent for an
+# unattributed report or citation), dwc:associatedReferences, dcterms:isPartOf,
 # prov:wasDerivedFrom, prov:wasGeneratedBy.
 
 lkg:observedTaxon
@@ -403,6 +437,7 @@ lkg:hasLocality
 
 lkg:recordType
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:recordTypeScheme ;
     rdfs:label "record type"@en , "Nachweistyp"@de ;
     rdfs:comment "Provenance category of the record: field-observation (the diarist's own sighting), third-party-report (reported to the diarist in person or by letter), literature-record (digested from a publication or card index) — lkg:recordTypeScheme. Deliberately NOT a sub-property of dwc:basisOfRecord (different value spaces); the derived basisOfRecord (HumanObservation / PreservedSpecimen / MaterialCitation) is emitted as dwc:basisOfRecord."@en ;
     rdfs:domain lkg:Observation ;
@@ -410,8 +445,9 @@ lkg:recordType
 
 lkg:evidenceKind
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:evidenceKindScheme ;
     rdfs:label "evidence kind"@en , "Belegart"@de ;
-    rdfs:comment "How the organism was detected: visual, auditory, nest, specimen (lkg:evidenceKindScheme; the value is the concept's English prefLabel, like every controlled value of the ontology). Only emitted when the text says how; an observation may have none or several. What was heard is on the same observation: lkg:callType and lkg:callTranscription."@en ;
+    rdfs:comment "How the organism was detected: visual (seen), auditory (heard), nest (nest, eggs or young found), specimen (collected or preserved) — the skos:notation of a concept in lkg:evidenceKindScheme, like every controlled value of the ontology. Only emitted when the text says how; an observation may have none or several. What was heard is on the same observation: lkg:callType and lkg:callTranscription."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
@@ -431,6 +467,7 @@ lkg:individualCountMax
 
 lkg:countQualifier
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:countQualifierScheme ;
     rdfs:label "count qualifier"@en , "Zahlenqualifikator"@de ;
     rdfs:comment "Qualifier for the count: exact, minimum (\"mindestens\", \"über\"), maximum (\"höchstens\", \"bis zu\"), approximate, plural-unspecified (lkg:countQualifierScheme)."@en ;
     rdfs:domain lkg:Observation ;
@@ -438,13 +475,15 @@ lkg:countQualifier
 
 lkg:breedingEvidence
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:breedingEvidenceScheme ;
     rdfs:label "breeding evidence"@en , "Brutnachweis"@de ;
-    rdfs:comment "Atlas-style breeding evidence category: confirmed, probable, possible (lkg:breedingEvidenceScheme). confirmed/probable are co-emitted as dwc:reproductiveCondition \"breeding\"."@en ;
+    rdfs:comment "Atlas-style breeding evidence category: confirmed, probable, possible (lkg:breedingEvidenceScheme). confirmed is co-emitted as dwc:reproductiveCondition \"breeding\"."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
 lkg:movementKind
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:movementKindScheme ;
     rdfs:label "movement kind"@en , "Bewegungsart"@de ;
     rdfs:comment "Kind of movement stated: migrating, passing-over, arriving, departing, resting, roosting (lkg:movementKindScheme)."@en ;
     rdfs:domain lkg:Observation ;
@@ -457,70 +496,41 @@ lkg:flightDirection
     rdfs:domain lkg:Observation ;
     rdfs:range rdf:langString .
 
-# --- Ziel 1 (v0.5.0): spatial, temporal and methodological qualification ---
+# --- Spatial and temporal detail stated in the text (0.5.0, tightened 0.7.0) ---
 
 lkg:spatialContext
     a owl:DatatypeProperty ;
     rdfs:label "spatial context description"@en , "räumlicher Beobachtungskontext"@de ;
-    rdfs:comment "Verbatim description of the observer's vantage point or immediate context (e.g. 'aus dem Fenster meiner Wohnung', 'am Wegrand')."@en ;
+    rdfs:comment "The observer's vantage as written (e.g. 'vom Fenster meiner Wohnung', 'vom Zug aus', 'vom Beobachtungsschirm')."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range rdf:langString .
 
 lkg:microhabitat
     a owl:DatatypeProperty ;
     rdfs:label "microhabitat"@en , "Mikrohabitat"@de ;
-    rdfs:comment "Specific fine-grained microhabitat structure (e.g. 'Baumkrone', 'Teichufer', 'Fenstersims'). Distinct from the habitat type on dwc:habitat / dwciri:habitat."@en ;
+    rdfs:comment "Where on or in its habitat the bird was, as written (e.g. 'Baumkrone', 'Teichufer', 'Fenstersims', 'Telegraphendraht'). Distinct from the habitat type on dwc:habitat / dwciri:habitat."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range rdf:langString .
 
 lkg:relativeElevation
     a owl:DatatypeProperty ;
     rdfs:label "relative elevation"@en , "relative Höhe / Flughöhe"@de ;
-    rdfs:comment "Verbatim or normalised relative height above ground (e.g. 'in mäßiger Höhe', 'hoch kreisend')."@en ;
+    rdfs:comment "Flight height above ground as written (e.g. 'in mäßiger Höhe', 'sehr hoch'). Absolute elevations are dwc:minimumElevationInMeters / dwc:maximumElevationInMeters."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range rdf:langString .
 
-lkg:altitudeM
-    a owl:DatatypeProperty ;
-    rdfs:label "altitude in meters"@en , "Höhe ü. NN (m)"@de ;
-    rdfs:comment "Absolute elevation in meters above sea level, when the diary states one."@en ;
-    rdfs:domain [ owl:unionOf ( lkg:Observation lkg:Place ) ] ;
-    rdfs:range xsd:decimal .
 
-lkg:observationRadiusMeters
-    a owl:DatatypeProperty ;
-    rdfs:label "observation radius in meters"@en , "Beobachtungsradius (m)"@de ;
-    rdfs:comment "Estimated maximum viewing distance/radius from the observation point (e.g. 100 for a window watch). Mirrored as dwc:coordinateUncertaintyInMeters on the Observation."@en ;
-    rdfs:domain lkg:Observation ;
-    rdfs:range xsd:integer .
 
-lkg:spatialConfidence
-    a owl:DatatypeProperty ;
-    rdfs:label "spatial confidence"@en , "Zuverlässigkeit der Georeferenzierung"@de ;
-    rdfs:comment "Confidence of the spatial localisation: high, medium, low, inferred."@en ;
-    rdfs:domain lkg:Observation ;
-    rdfs:range xsd:string .
 
-lkg:observationDurationMinutes
-    a owl:DatatypeProperty ;
-    rdfs:label "observation duration in minutes"@en , "Beobachtungsdauer (Min.)"@de ;
-    rdfs:comment "Stated or clearly implied duration of the watch, in minutes."@en ;
-    rdfs:domain lkg:Observation ;
-    rdfs:range xsd:integer .
 
 lkg:timeOfDay
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:timeOfDayScheme ;
     rdfs:label "time of day"@en , "Tageszeit"@de ;
-    rdfs:comment "Qualitative time of day: morning, forenoon, noon, afternoon, evening, night."@en ;
-    rdfs:domain [ owl:unionOf ( lkg:Observation lkg:DiaryEntry lkg:WeatherReport ) ] ;
-    rdfs:range xsd:string .
-
-lkg:daylightPhase
-    a owl:DatatypeProperty ;
-    rdfs:label "daylight phase"@en , "Lichtphase"@de ;
-    rdfs:comment "Daylight phase: dawn, day, dusk, night."@en ;
+    rdfs:comment "Qualitative time of day of the record, when stated: dawn, morning, forenoon, noon, afternoon, evening, dusk, night (lkg:timeOfDayScheme). A stated clock time is dwc:eventTime."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
+
 
 lkg:verbatimNotes
     a owl:DatatypeProperty ;
@@ -533,15 +543,16 @@ lkg:verbatimNotes
 
 lkg:callType
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:callTypeScheme ;
     rdfs:label "call type"@en , "Lautäußerungstyp"@de ;
-    rdfs:comment "Type of vocalisation heard: song, call, alarm, drumming (lkg:callTypeScheme). Only when the text says which; an observation heard singing and calling has two values. Implies lkg:evidenceKind lkg:evidence_auditory, which is always asserted alongside (an auditory record without a stated type has the evidence kind only). Replaces the lkg:Vocalisation node of 0.4–0.5 and the dwc:behavior copies (\"singend\", \"ruft\")."@en ;
+    rdfs:comment "Type of vocalisation heard: song, call, alarm, drumming (lkg:callTypeScheme). Only when the text says which; an observation heard singing and calling has two values. Implies lkg:evidenceKind \"auditory\", which is always asserted alongside (an auditory record without a stated type has the evidence kind only). Replaces the lkg:Vocalisation node of 0.4–0.5 and the dwc:behavior copies (\"singend\", \"ruft\")."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
 lkg:callTranscription
     a owl:DatatypeProperty ;
     rdfs:label "call transcription"@en , "Lautschrift"@de ;
-    rdfs:comment "Phonetic rendering of the call as written in the diary (\"zich zich\", \"Tlü-hit\"). Only when the diarist wrote one (no placeholder); several values when he wrote several."@en ;
+    rdfs:comment "Phonetic rendering of the call as written in the diary (\"zich zich\", \"Tlü-hit\"). Only when the diarist wrote one (no placeholder); several values when he wrote several. With several call types and transcriptions on one observation, which transcription renders which type is not recorded (see lkg:verbatimNotes)."@en ;
     rdfs:domain lkg:Observation ;
     rdfs:range xsd:string .
 
@@ -582,23 +593,26 @@ lkg:arrivalTime
 
 lkg:transportMode
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:transportModeScheme ;
     rdfs:label "transport mode"@en , "Verkehrsmittel"@de ;
-    rdfs:comment "train, foot, boat, car, carriage, bicycle, unknown (lkg:transportModeScheme)."@en ;
+    rdfs:comment "How the leg was travelled, when stated: train, foot, boat, car, carriage, bicycle (lkg:transportModeScheme)."@en ;
     rdfs:domain lkg:TravelLeg ;
     rdfs:range xsd:string .
 
 # --- Place ------------------------------------------------------------------
-# Standard terms used on the place: rdfs:label (cleaned name), dwc:verbatimLocality
-# (as written), geo:lat / geo:long, dwc:decimalLatitude / dwc:decimalLongitude,
-# dwc:geodeticDatum, gsp:asWKT ("POINT(lon lat)"^^gsp:wktLiteral, asserted
-# directly on the Place — the flat GeoSPARQL idiom, no separate Geometry node),
-# dwc:coordinateUncertaintyInMeters, dwc:georeferenceSources, and the authority
-# links (skos:exactMatch / closeMatch → GeoNames feature, Wikidata item).
+# Standard terms used on the place: rdfs:label (modern name), skos:altLabel
+# (merged spellings), geo:lat / geo:long, dwc:decimalLatitude /
+# dwc:decimalLongitude, dwc:geodeticDatum, gsp:hasGeometry (→ gsp:Geometry with
+# gsp:asWKT "POINT(lon lat)"^^gsp:wktLiteral), dwc:coordinateUncertaintyInMeters
+# (centroid radius), dwc:georeferenceSources, dwc:minimumElevationInMeters /
+# dwc:maximumElevationInMeters (stated elevation), and the authority links
+# (skos:exactMatch / closeMatch → GeoNames feature, Wikidata item).
 
 lkg:placeKind
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:placeKindScheme ;
     rdfs:label "place kind"@en , "Ortsart"@de ;
-    rdfs:comment "settlement, locality, region, route, unknown (lkg:placeKindScheme)."@en ;
+    rdfs:comment "settlement (town, village, district), locality (a named site: lake, moor, mountain, hut, park, station) or region (landscape, valley, mountain range) — lkg:placeKindScheme; absent when not read."@en ;
     rdfs:domain lkg:Place ;
     rdfs:range xsd:string .
 
@@ -607,7 +621,9 @@ lkg:placeKind
 # written), dwc:scientificName, dwc:taxonRank, dwc:taxonID, dwc:kingdom,
 # dwc:phylum, dwc:class, dwc:order, dwc:family, dwc:genus (GBIF backbone
 # classification of the linked taxon), skos:exactMatch / closeMatch /
-# broadMatch (GBIF authority record), skos:note (unresolved names).
+# broadMatch (GBIF authority record), skos:note (unresolved names). dwc:taxonRank
+# uses the project's rank scheme (lkg:taxonRankScheme: species, subspecies,
+# genus, family, group — the last for informal groups such as "Limikolen").
 
 lkg:isBird
     a owl:DatatypeProperty ;
@@ -618,22 +634,17 @@ lkg:isBird
 
 lkg:matchMethod
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:matchMethodScheme ;
     rdfs:label "match method"@en , "Zuordnungsmethode"@de ;
-    rdfs:comment "How the vernacular name was resolved to a scientific name / GBIF key: gazetteer, llm, llm+gbif, review, unresolved …"@en ;
+    rdfs:comment "How the vernacular name was tied to a scientific name / GBIF record: gazetteer (project seed list), llm (the extraction model), llm+gbif (the folk-name proposer, verified in GBIF), review (a reviewer), machine-review (the machine review), unresolved — lkg:matchMethodScheme."@en ;
     rdfs:domain lkg:Taxon ;
     rdfs:range xsd:string .
 
-lkg:matchConfidence
-    a owl:DatatypeProperty ;
-    rdfs:label "match confidence"@en , "Zuordnungskonfidenz"@de ;
-    rdfs:comment "Confidence of the name resolution in [0,1] when the resolver reports one."@en ;
-    rdfs:domain lkg:Taxon ;
-    rdfs:range xsd:decimal .
 
 lkg:gbifMatchType
     a owl:DatatypeProperty ;
     rdfs:label "GBIF match type"@en , "GBIF-Trefferart"@de ;
-    rdfs:comment "GBIF backbone match type: EXACT, FUZZY, HIGHERRANK. Determines the SKOS mapping predicate (exactMatch / closeMatch / broadMatch)."@en ;
+    rdfs:comment "GBIF backbone match type of the name: EXACT, FUZZY, HIGHERRANK. Together with lkg:matchMethod it grades the GBIF link: HIGHERRANK → skos:broadMatch; FUZZY or an LLM-mediated name (llm+gbif, machine-review) → skos:closeMatch; otherwise skos:exactMatch."@en ;
     rdfs:domain lkg:Taxon ;
     rdfs:range xsd:string .
 
@@ -677,12 +688,14 @@ lkg:temperatureValue
 
 lkg:temperatureUnit
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:temperatureUnitScheme ;
     rdfs:label "temperature unit"@en , "Temperatureinheit"@de ;
     rdfs:comment "C (Celsius), R (Réaumur), or F (Fahrenheit) — lkg:temperatureUnitScheme."@en ;
     rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
 
 lkg:precipitation
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:precipitationScheme ;
     rdfs:label "precipitation"@en , "Niederschlag"@de ;
     rdfs:comment "Controlled term: rain, snow, sleet, hail, drizzle, fog, thunderstorm, none (lkg:precipitationScheme)."@en ;
     rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .
@@ -695,6 +708,7 @@ lkg:wind
 
 lkg:skyCondition
     a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:skyConditionScheme ;
     rdfs:label "sky condition"@en , "Himmelszustand"@de ;
     rdfs:comment "Controlled term: clear, partly-cloudy, overcast, variable (lkg:skyConditionScheme)."@en ;
     rdfs:domain lkg:WeatherReport ; rdfs:range xsd:string .

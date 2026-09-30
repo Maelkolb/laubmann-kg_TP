@@ -185,6 +185,8 @@ def _build_extractor(config: dict) -> tuple:
         "max_output_tokens": extraction.get("max_output_tokens", 4096),
         "timeout": extraction.get("timeout", 120),
         "thinking_level": extraction.get("thinking_level"),
+        "context_cache": extraction.get("context_cache", False),
+        "context_cache_ttl_s": extraction.get("context_cache_ttl_s", 10800),
         "retry_attempts": extraction.get("retry_attempts", 3),
         "retry_backoff": extraction.get("retry_backoff", 2.0),
     })
@@ -209,16 +211,33 @@ def _build_extractor(config: dict) -> tuple:
         entry, client, resolver, place, prompts, schema)), provenance
 
 
+def load_entries(config: dict, input_dir: Optional[Path] = None) -> tuple[list[DiaryEntry], list]:
+    """The entries a run extracts, exactly as the model will read them: the
+    corpus rows of the configured sample, with the reviewed readings
+    (``review.text_corrections``) applied to their texts. Returns (entries,
+    reading flags). Shared by run_pipeline and tools/batch_extract.py, so both
+    render byte-identical prompts (the LLM cache key)."""
+    from laubmann_kg.review.readings import apply_readings, load_readings
+    entries_csv, _ = _resolve_corpus(config, input_dir)
+    sample = config.get("sample", {}) or {}
+    volume = sample.get("volume")
+    rows = read_entries(entries_csv, volume=int(volume) if volume is not None else None)
+    rows = select_sample_rows(rows, sample)
+    built = [build_entry(row) for row in rows]
+    review_cfg = config.get("review") or {}
+    reading_flags = apply_readings(built, load_readings(review_cfg.get("text_corrections")))
+    return built, reading_flags
+
+
 def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionResult:
     load_dotenv()
-    entries_csv, multimodal_path = _resolve_corpus(config, input_dir)
+    _, multimodal_path = _resolve_corpus(config, input_dir)
     sample = config.get("sample", {}) or {}
     volume = sample.get("volume")
     extract, provenance = _build_extractor(config)
 
-    rows = read_entries(entries_csv, volume=int(volume) if volume is not None else None)
-    rows = select_sample_rows(rows, sample)
-    total = len(rows)
+    built, reading_flags = load_entries(config, input_dir)
+    total = len(built)
     extraction_cfg = config.get("extraction", {})
     backend = (extraction_cfg.get("backend") or "offline").lower()
     concurrency = max(1, int(extraction_cfg.get("concurrency", 1)))
@@ -239,14 +258,11 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     # reviewed identities are read by the corrections, linking and resolution stages.
     review_cfg = config.get("review") or {}
     from laubmann_kg.review.identities import Identities
-    from laubmann_kg.review.readings import apply_readings, load_readings
     # machine review (tools/validation_ui/machine_review): fills the forms nobody reviewed;
     # a human row in identities.csv always wins, machine rows need confidence + agreement
     machine_cfg = review_cfg.get("machine") or {}
     result.identities = Identities.load_layers(review_cfg.get("identities"), machine_cfg.get("identities") if machine_cfg.get("enabled", True) else None,
                                               float(machine_cfg.get("min_confidence", 0.9)), int(machine_cfg.get("min_agreement", 2)))
-    built = [build_entry(row) for row in rows]
-    reading_flags = apply_readings(built, load_readings(review_cfg.get("text_corrections")))
 
     # Sequential prep. The gazetteer/regex reading of the header is only the
     # FALLBACK place: the LLM extractor replaces it with the model's own reading
@@ -324,6 +340,12 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
                     before - len(kept), before)
     else:
         result.qa_flags = correction_flags + coverage_flags
+
+    # One reading per shared node: every record of a vernacular name gets the
+    # same Taxon, every use of a place name the same Place (before linking,
+    # which enriches that single node; RDF and DwC-A then agree).
+    from laubmann_kg.normalization.harmonize import harmonize
+    logger.info("harmonize: %s", harmonize(result))
 
     # Places actually referenced by the surviving entries (entry places and
     # per-record localities); travel places are added by the RDF emitter.

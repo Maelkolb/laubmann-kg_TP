@@ -333,6 +333,13 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
                 if obs.observer.name in mapping:
                     merged += 1
                 obs.observer = canonical_person(obs.observer.name, obs.observer)
+            companions = []
+            for p in obs.co_observers:
+                if p.name in mapping or p.name in alts or ids.link("persons", p.name):
+                    p = canonical_person(p.name, p)
+                if p not in companions and p != obs.observer:
+                    companions.append(p)
+            obs.co_observers = companions
     logger.info("persons: %d names merged into %d persons (%d references re-pointed)",
                 len(mapping), len(alts), merged)
     return len(mapping), rows

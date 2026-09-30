@@ -70,12 +70,15 @@ def test_prompt_carries_verbatim_date_and_header():
 def test_entry_place_from_model_replaces_header_heuristics():
     entry, obs, _ = _run({
         "entry_place": {"name": "Kaufbeuren", "verbatim": "München - Kaufbeuren 843 m (Kiefer)",
-                        "kind": "route"},
+                        "kind": "route", "altitude_m": 843},
         "entry_kind": "field-day",
         "observations": [_item()],
     })
     assert entry.place is not None
-    assert entry.place.name == "Kaufbeuren" and entry.place.kind == "route"
+    # 0.7.0: no "route" kind (settlement | locality | region); a value outside the
+    # vocabulary falls back to the default, never guessed
+    assert entry.place.name == "Kaufbeuren" and entry.place.kind == "settlement"
+    assert entry.place.elevation_m == 843.0                # stated header elevation
     assert entry.place.verbatim == "München - Kaufbeuren 843 m (Kiefer)"
     assert entry.place.lat is not None                 # gazetteer only adds coordinates
     assert entry.entry_kind == "field-day"
@@ -87,12 +90,15 @@ def test_entry_place_null_means_no_place_and_legacy_response_uses_fallback():
     fallback = Place(verbatim="München", canonical="München")
     entry, obs, _ = _run({"entry_place": None, "observations": [_item()]}, fallback_place=fallback)
     assert entry.place is None and obs[0].place is None
-    # kind unknown == no usable place
-    entry, _, _ = _run({"entry_place": {"name": "Rauchschwalben", "kind": "unknown"},
-                        "observations": []}, fallback_place=fallback)
-    assert entry.place is None
-    # legacy response without the key keeps the caller's fallback
+    # prompt v4 omits empty keys: a dict response WITHOUT entry_place = no place
     entry, obs, _ = _run({"observations": [_item()]}, fallback_place=fallback)
+    assert entry.place is None and obs[0].place is None
+    # no special "kind unknown" rule any more: a named place is a place
+    entry, _, _ = _run({"entry_place": {"name": "Ismaning", "kind": "unknown"},
+                        "observations": []}, fallback_place=fallback)
+    assert entry.place is not None and entry.place.name == "Ismaning" and entry.place.kind == "settlement"
+    # only the legacy bare-array response (pre-2026-08 caches) keeps the caller's fallback
+    entry, obs, _ = _run([_item()], fallback_place=fallback)
     assert entry.place is fallback and obs[0].place is fallback
 
 
@@ -126,6 +132,8 @@ def test_entry_date_end_and_plausibility():
                        "1949-06-11")
     assert d == {"iso": "1949-06-11", "end_iso": "1949-06-13", "plausible": False, "note": None}
     assert map_entry_date({"iso": "1949-06-13", "end_iso": "1949-06-11"}, "1949-06-13")["end_iso"] is None
+    # an end equal to the start is no multi-day entry (end must be AFTER the start)
+    assert map_entry_date({"iso": "1949-06-13", "end_iso": "1949-06-13"}, "1949-06-13")["end_iso"] is None
     assert map_entry_date("1949-06-11", None)["iso"] == "1949-06-11"
     assert map_entry_date(None, "1949-06-11")["iso"] == "1949-06-11"
 
@@ -180,7 +188,7 @@ def test_enum_fields_membership_only_never_guessed():
     assert (b.sex, b.life_stage, b.breeding_evidence, b.vitality, b.movement_kind) == \
         (None, None, None, None, None)
     assert b.event_date is None and b.event_time is None
-    assert b.taxon.rank == "unknown"                    # said something, but not a rank we know
+    assert b.taxon.rank is None                         # not a rank we know: dropped, no "unknown"
     assert b.taxon.is_bird is True                      # "ja" is an unambiguous boolean
 
 

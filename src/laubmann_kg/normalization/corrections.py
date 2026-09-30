@@ -276,6 +276,9 @@ def _apply_person(e: DiaryEntry, c: Correction) -> int:
             if o.observer is not None and _same(o.observer.name, c.old):
                 o.observer = None              # not a person: the record is the diarist's
                 n += 1
+            kept = [p for p in o.co_observers if not _same(p.name, c.old)]
+            n += len(o.co_observers) - len(kept)
+            o.co_observers = kept
         return n
     persons = []
     for p in e.persons:
@@ -288,6 +291,13 @@ def _apply_person(e: DiaryEntry, c: Correction) -> int:
         if o.observer is not None and _same(o.observer.name, c.old):
             o.observer = dataclasses.replace(o.observer, name=c.new, wikidata_iri=None, gnd_iri=None, alt_names=())
             n += 1
+        renamed = []
+        for p in o.co_observers:
+            if _same(p.name, c.old):
+                p = dataclasses.replace(p, name=c.new, wikidata_iri=None, gnd_iri=None, alt_names=())
+                n += 1
+            renamed.append(p)
+        o.co_observers = renamed
     return n
 
 

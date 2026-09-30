@@ -1,7 +1,21 @@
 # =============================================================
 # HistOrniGraph / Laubmann Knowledge Graph
 # SHACL Validation Shapes  –  ontologies/shacl_shapes.ttl
-# Validates instance data against ontologies/laubmann.ttl (v0.6.0)
+# Validates instance data against ontologies/laubmann.ttl (v0.7.0)
+#
+# v0.7.0 (2026-09-30) — Observation: dwc:eventDate Pflicht (xsd:date oder
+#        Intervall), recordType/basisOfRecord/occurrenceStatus Pflicht,
+#        recordedBy mehrwertig (Diarist + Begleiter), timeOfDay mit dawn/dusk;
+#        entfallen: daylightPhase, altitudeM, observationRadiusMeters,
+#        coordinateUncertaintyInMeters und samplingProtocol an der Observation,
+#        spatialConfidence, observationDurationMinutes, matchConfidence;
+#        Höhe als dwc:minimum/maximumElevationInMeters. Place: gsp:hasGeometry
+#        (GeometryShape), kein dwc:verbatimLocality mehr (steht am Eintrag bzw.
+#        an der Observation), placeKind ohne route/unknown, geodeticDatum WGS84.
+#        TravelLeg: transportMode optional, ohne "unknown". Höchstens ein
+#        WeatherReport pro Eintrag. hasSourceRegion akzeptiert auch
+#        MultimodalRegion ohne Inferenz. Einheitliche Severity: falsche
+#        Zielklassen und Datentypen sind Violations, Vokabularwerte Warnings.
 #
 # v0.6.0 (2026-09-30) — VocalisationShape entfällt (callType/callTranscription
 #        jetzt an der Observation, callType ohne "unknown"); TravelLeg trägt
@@ -66,10 +80,10 @@
 <https://w3id.org/laubmann-kg/shapes>
     a owl:Ontology , sh:ShapesGraph ;
     dcterms:title "Laubmann Knowledge Graph — SHACL shapes"@en ;
-    dcterms:description "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology 0.6.0). Run with inference=none: shapes target the concrete classes only (grouping superclasses are not materialised in the data). Every child node must carry dcterms:isPartOf (partonomy). Vocabulary/completeness checks are sh:Warning, datatype and cardinality checks sh:Violation."@en ;
+    dcterms:description "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology 0.7.0). Run with inference=none: shapes target the concrete classes only (grouping superclasses are not materialised in the data). Every child node must carry dcterms:isPartOf (partonomy). Vocabulary/completeness checks are sh:Warning; datatype, cardinality and target-class checks sh:Violation."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:modified "2026-09-30"^^xsd:date ;
-    owl:versionInfo "0.6.0" ;
+    owl:versionInfo "0.7.0" ;
     rdfs:seeAlso <https://w3id.org/laubmann-kg/ontology> .
 
 
@@ -156,7 +170,7 @@ lkg:MultimodalRegionShape
         sh:maxCount 1 ;
         sh:in ( "drawing" "photograph" "map" "print" "object" "text-insert" "list" ) ;
         sh:message "MultimodalRegion trägt genau eine lkg:regionKind aus lkg:regionKindScheme." ;
-        sh:severity sh:Violation ;
+        sh:severity sh:Warning ;
     ] ;
     sh:property [
         sh:path dcterms:type ;
@@ -231,10 +245,17 @@ lkg:DiaryEntryShape
         sh:severity sh:Violation ;
     ] ;
     # 0.6.0: ein Eintrag über mehrere Seiten hat mehrere Quellregionen
+    # ohne Inferenz: eine MultimodalRegion ist nicht als SourceRegion materialisiert
     sh:property [
         sh:path lkg:hasSourceRegion ;
-        sh:class lkg:SourceRegion ;
-        sh:message "hasSourceRegion zeigt auf lkg:SourceRegion-Knoten." ;
+        sh:or ( [ sh:class lkg:SourceRegion ] [ sh:class lkg:MultimodalRegion ] ) ;
+        sh:message "hasSourceRegion zeigt auf lkg:SourceRegion- oder lkg:MultimodalRegion-Knoten." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path dwc:verbatimLocality ;
+        sh:maxCount 1 ;
+        sh:message "Höchstens ein dwc:verbatimLocality (Ortsangabe der Kopfzeile im Wortlaut) pro DiaryEntry." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [
@@ -255,11 +276,11 @@ lkg:DiaryEntryShape
         sh:message "containsTravelEvent muss auf lkg:TravelEvent-Knoten zeigen." ;
         sh:severity sh:Violation ;
     ] ;
-    # mehrere Wetterberichte pro Eintrag erlaubt (Morgen/Abend)
     sh:property [
         sh:path lkg:hasWeather ;
+        sh:maxCount 1 ;
         sh:class lkg:WeatherReport ;
-        sh:message "hasWeather muss auf lkg:WeatherReport-Knoten zeigen." ;
+        sh:message "hasWeather zeigt auf höchstens einen lkg:WeatherReport." ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [
@@ -285,9 +306,8 @@ lkg:DiaryEntryShape
     ] ;
     sh:property [
         sh:path skos:note ;
-        sh:maxCount 1 ;
         sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
-        sh:message "Höchstens eine skos:note (Datumsnotiz) pro DiaryEntry." ;
+        sh:message "skos:note (Datums-, Lese- und Ablagenotizen) ist ein Literal." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [
@@ -308,31 +328,31 @@ lkg:DiaryEntryShape
         sh:path lkg:mentionsCompanion ;
         sh:class lkg:Person ;
         sh:message "mentionsCompanion muss auf lkg:Person-Knoten zeigen." ;
-        sh:severity sh:Warning ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path lkg:mentionsSource ;
         sh:class lkg:Person ;
         sh:message "mentionsSource muss auf lkg:Person-Knoten zeigen." ;
-        sh:severity sh:Warning ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path lkg:mentionsCollector ;
         sh:class lkg:Person ;
         sh:message "mentionsCollector muss auf lkg:Person-Knoten zeigen." ;
-        sh:severity sh:Warning ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path lkg:mentionsCitedAuthor ;
         sh:class lkg:Person ;
         sh:message "mentionsCitedAuthor muss auf lkg:Person-Knoten zeigen." ;
-        sh:severity sh:Warning ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path lkg:mentionsOther ;
         sh:class lkg:Person ;
         sh:message "mentionsOther muss auf lkg:Person-Knoten zeigen." ;
-        sh:severity sh:Warning ;
+        sh:severity sh:Violation ;
     ] ;
 
     sh:or (
@@ -513,6 +533,7 @@ lkg:ObservationShape
 
     sh:property [
         sh:path dwc:occurrenceStatus ;
+        sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:in ( "present" "absent" ) ;
         sh:message "dwc:occurrenceStatus muss present oder absent sein." ;
@@ -535,8 +556,8 @@ lkg:ObservationShape
     sh:property [
         sh:path dwc:vitality ;
         sh:maxCount 1 ;
-        sh:in ( "alive" "dead" ) ;
-        sh:message "dwc:vitality muss alive oder dead sein." ;
+        sh:in ( "dead" ) ;
+        sh:message "dwc:vitality wird nur als dead (tot gefunden, erlegt) erfasst." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [
@@ -581,9 +602,13 @@ lkg:ObservationShape
 
     sh:property [
         sh:path dwc:eventDate ;
+        sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:datatype xsd:date ;
-        sh:message "dwc:eventDate auf der Observation muss genau ein xsd:date sein (eigenes Datum oder Eintragsdatum)." ;
+        sh:or (
+            [ sh:datatype xsd:date ]
+            [ sh:datatype xsd:string ; sh:pattern "^[0-9]{4}-[0-9]{2}-[0-9]{2}/[0-9]{4}-[0-9]{2}-[0-9]{2}$" ]
+        ) ;
+        sh:message "Observation muss genau ein dwc:eventDate tragen: eigenes Datum bzw. Zeitraum, sonst Datum oder Intervall des Eintrags." ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [
@@ -596,6 +621,7 @@ lkg:ObservationShape
 
     sh:property [
         sh:path lkg:recordType ;
+        sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:in ( "field-observation" "third-party-report" "literature-record" ) ;
         sh:message "recordType muss field-observation, third-party-report oder literature-record sein." ;
@@ -603,13 +629,13 @@ lkg:ObservationShape
     ] ;
     sh:property [
         sh:path dwciri:recordedBy ;
-        sh:maxCount 1 ;
         sh:class lkg:Person ;
-        sh:message "dwciri:recordedBy muss auf höchstens eine lkg:Person zeigen (Attribution wird nie erfunden)." ;
-        sh:severity sh:Warning ;
+        sh:message "dwciri:recordedBy zeigt auf lkg:Person-Knoten (Diarist und Begleiter bzw. Gewährsperson; Attribution wird nie erfunden)." ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path dwc:basisOfRecord ;
+        sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:in ( "HumanObservation" "PreservedSpecimen" "MaterialCitation" ) ;
         sh:message "basisOfRecord muss HumanObservation, PreservedSpecimen oder MaterialCitation sein." ;
@@ -622,19 +648,12 @@ lkg:ObservationShape
         sh:severity sh:Warning ;
     ] ;
 
-    # --- Ziel 1 (v0.5.0): Zeit-, Raum- und Methodik-Qualifikation ---
+    # --- Zeit- und Raumangaben, nur wenn der Text sie nennt (0.5.0, 0.7.0) ---
     sh:property [
         sh:path lkg:timeOfDay ;
         sh:maxCount 1 ;
-        sh:in ( "morning" "forenoon" "noon" "afternoon" "evening" "night" ) ;
-        sh:message "lkg:timeOfDay muss morning, forenoon, noon, afternoon, evening oder night sein." ;
-        sh:severity sh:Warning ;
-    ] ;
-    sh:property [
-        sh:path lkg:daylightPhase ;
-        sh:maxCount 1 ;
-        sh:in ( "dawn" "day" "dusk" "night" ) ;
-        sh:message "lkg:daylightPhase muss dawn, day, dusk oder night sein." ;
+        sh:in ( "dawn" "morning" "forenoon" "noon" "afternoon" "evening" "dusk" "night" ) ;
+        sh:message "lkg:timeOfDay muss ein Wert aus lkg:timeOfDayScheme sein (dawn … night)." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [
@@ -656,42 +675,23 @@ lkg:ObservationShape
         sh:severity sh:Warning ;
     ] ;
     sh:property [
-        sh:path lkg:altitudeM ;
+        sh:path dwc:minimumElevationInMeters ;
         sh:maxCount 1 ;
         sh:datatype xsd:decimal ;
+        sh:message "dwc:minimumElevationInMeters: höchstens ein xsd:decimal (Höhe des eigenen Fundorts)." ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [
-        sh:path lkg:observationRadiusMeters ;
+        sh:path dwc:maximumElevationInMeters ;
         sh:maxCount 1 ;
-        sh:datatype xsd:integer ;
-        sh:minInclusive 1 ;
+        sh:datatype xsd:decimal ;
+        sh:message "dwc:maximumElevationInMeters: höchstens ein xsd:decimal (Höhe des eigenen Fundorts)." ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path dwc:coordinateUncertaintyInMeters ;
-        sh:maxCount 1 ;
-        sh:datatype xsd:integer ;
-        sh:minInclusive 1 ;
-        sh:severity sh:Violation ;
-    ] ;
-    sh:property [
-        sh:path lkg:spatialConfidence ;
-        sh:maxCount 1 ;
-        sh:in ( "high" "medium" "low" "inferred" ) ;
-        sh:severity sh:Warning ;
-    ] ;
-    sh:property [
-        sh:path dwc:samplingProtocol ;
-        sh:maxCount 1 ;
-        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
-        sh:severity sh:Warning ;
-    ] ;
-    sh:property [
-        sh:path lkg:observationDurationMinutes ;
-        sh:maxCount 1 ;
-        sh:datatype xsd:integer ;
-        sh:minInclusive 1 ;
+        sh:maxCount 0 ;
+        sh:message "Die Observation trägt keine eigene Koordinatenunsicherheit: sie gehört zum Ort (lkg:observedAt)." ;
         sh:severity sh:Violation ;
     ] .
 
@@ -749,11 +749,10 @@ lkg:TravelLegShape
     ] ;
     sh:property [
         sh:path lkg:transportMode ;
-        sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:datatype xsd:string ;
-        sh:in ( "train" "foot" "boat" "car" "carriage" "bicycle" "unknown" ) ;
-        sh:message "TravelLeg sollte ein bekanntes transportMode-Vokabular verwenden." ;
+        sh:in ( "train" "foot" "boat" "car" "carriage" "bicycle" ) ;
+        sh:message "transportMode (wenn genannt) aus lkg:transportModeScheme." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [
@@ -799,9 +798,9 @@ lkg:PlaceShape
     ] ;
     sh:property [
         sh:path dwc:verbatimLocality ;
-        sh:maxCount 1 ;
-        sh:message "Höchstens ein dwc:verbatimLocality (Ortsname im Wortlaut) pro Place." ;
-        sh:severity sh:Warning ;
+        sh:maxCount 0 ;
+        sh:message "Der Wortlaut einer Ortsangabe gehört an den Eintrag bzw. die Observation, nicht an den geteilten Place." ;
+        sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path geo:lat ;
@@ -840,18 +839,41 @@ lkg:PlaceShape
         sh:severity sh:Violation ;
     ] ;
     sh:property [
-        sh:path gsp:asWKT ;
+        sh:path gsp:hasGeometry ;
         sh:maxCount 1 ;
-        sh:datatype gsp:wktLiteral ;
-        sh:pattern "^POINT\\(" ;
-        sh:message "gsp:asWKT muss höchstens ein gsp:wktLiteral der Form POINT(lon lat) sein." ;
+        sh:class gsp:Geometry ;
+        sh:message "Ein Place hat höchstens eine gsp:Geometry (Punkt)." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path gsp:asWKT ;
+        sh:maxCount 0 ;
+        sh:message "gsp:asWKT steht an der gsp:Geometry (gsp:hasGeometry), nicht am Place." ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path dwc:geodeticDatum ;
+        sh:maxCount 1 ;
+        sh:in ( "WGS84" ) ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path dwc:minimumElevationInMeters ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path dwc:maximumElevationInMeters ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
         sh:severity sh:Violation ;
     ] ;
     sh:property [
         sh:path lkg:placeKind ;
         sh:maxCount 1 ;
-        sh:in ( "settlement" "locality" "region" "route" "unknown" ) ;
-        sh:message "placeKind muss settlement, locality, region, route oder unknown sein." ;
+        sh:in ( "settlement" "locality" "region" ) ;
+        sh:message "placeKind muss settlement, locality oder region sein." ;
         sh:severity sh:Warning ;
     ] ;
     # 0.6.0: Normdaten wie überall als skos:exactMatch/closeMatch (GeoNames, Wikidata; je höchstens einer)
@@ -897,6 +919,20 @@ lkg:PlaceShape
         sh:datatype xsd:string ;
         sh:message "Höchstens eine dwc:georeferenceSources-Angabe pro Place." ;
         sh:severity sh:Warning ;
+    ] .
+
+# GeoSPARQL-Punkt eines Place
+lkg:GeometryShape
+    a sh:NodeShape ;
+    sh:targetClass gsp:Geometry ;
+    sh:property [
+        sh:path gsp:asWKT ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype gsp:wktLiteral ;
+        sh:pattern "^POINT\\(" ;
+        sh:message "Eine gsp:Geometry trägt genau ein gsp:wktLiteral der Form POINT(lon lat)." ;
+        sh:severity sh:Violation ;
     ] .
 
 # Habitat-Knoten sind skos:Concepts in lkg:habitatScheme (keine eigene Klasse):
@@ -1032,8 +1068,8 @@ lkg:TaxonShape
     sh:property [
         sh:path dwc:taxonRank ;
         sh:maxCount 1 ;
-        sh:in ( "species" "subspecies" "genus" "family" "group" "unknown" ) ;
-        sh:message "dwc:taxonRank muss species, subspecies, genus, family, group oder unknown sein." ;
+        sh:in ( "species" "subspecies" "genus" "family" "group" ) ;
+        sh:message "dwc:taxonRank muss species, subspecies, genus, family oder group sein (lkg:taxonRankScheme)." ;
         sh:severity sh:Warning ;
     ] ;
     # GBIF-Klassifikation des verlinkten Taxons: je Rang höchstens ein Wert
@@ -1055,16 +1091,8 @@ lkg:TaxonShape
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:datatype xsd:string ;
-        sh:message "Taxon sollte genau eine lkg:matchMethod tragen (gazetteer, llm, llm+gbif, review, unresolved …)." ;
-        sh:severity sh:Warning ;
-    ] ;
-    sh:property [
-        sh:path lkg:matchConfidence ;
-        sh:maxCount 1 ;
-        sh:datatype xsd:decimal ;
-        sh:minInclusive 0 ;
-        sh:maxInclusive 1 ;
-        sh:message "lkg:matchConfidence muss xsd:decimal in [0, 1] sein." ;
+        sh:in ( "gazetteer" "llm" "llm+gbif" "review" "machine-review" "unresolved" ) ;
+        sh:message "Taxon trägt genau eine lkg:matchMethod aus lkg:matchMethodScheme." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [

@@ -13,7 +13,7 @@ from rdflib.namespace import OWL, RDF, SKOS
 import laubmann_kg.linking.habitats as habitats_mod
 from laubmann_kg.dwca.event import build_events
 from laubmann_kg.dwca.measurement_or_fact import build_measurements
-from laubmann_kg.kg.model import DiaryEntry, Habitat, Observation, Place, Taxon
+from laubmann_kg.kg.model import DiaryEntry, Habitat, Observation, Place, Taxon, data_iri
 from laubmann_kg.kg.rdf import DATA, DWC, LKG, build_graph, serialize_turtle
 from laubmann_kg.kg.shacl_validate import run_shacl_validation
 from laubmann_kg.linking.cache import JsonCache
@@ -117,7 +117,15 @@ def test_link_places_applies_links_writes_review_and_emits_rdf(tmp_path, monkeyp
     assert graph.value(node, DWC.coordinateUncertaintyInMeters).toPython() == 2000
     assert graph.value(node, DWC.georeferenceSources) is not None
     assert _shacl_ok(graph, tmp_path)
+    # a record of the entry sits at Nirgendwo (no coordinates): GBIF would fill its
+    # empty occurrence point from the event, so the event row drops Ismaning's point
+    # (coordinates_safe); the occurrence rows carry their own place's georeference
     ev = build_events(result)[0]
+    assert ev["locality"] == "Ismaning"
+    assert ev["decimalLatitude"] == ev["coordinateUncertaintyInMeters"] == ev["georeferenceProtocol"] == ""
+    e1.observations = e1.observations[:1]                  # only the Ismaning record left
+    ev = build_events(result)[0]
+    assert ev["decimalLatitude"] == "48.2333"
     assert ev["coordinateUncertaintyInMeters"] == "2000" and ev["locationID"] == "https://sws.geonames.org/2895643/" and ev["georeferenceProtocol"]
 
 
@@ -166,6 +174,11 @@ def test_link_habitats_with_fake_proposer_emits_skos_matches_and_emof(tmp_path, 
     assert _shacl_ok(graph, tmp_path)
     mof = [r for r in build_measurements(result) if r["measurementType"].startswith("habitat type")]
     assert len(mof) == 3 and mof[0]["measurementValueID"] == str(eunis) and mof[0]["measurementValue"].startswith("G1.2 ")
+    # 0.7.0: the maintained Eionet vocabulary as type, honest method wording, IRI identifiers
+    assert mof[0]["measurementTypeID"] == "https://dd.eionet.europa.eu/vocabulary/biodiversity/eunishabitats/"
+    assert mof[0]["measurementMethod"] == "exact match of the diary habitat label 'Auwald' (LLM-assisted classification)"
+    assert mof[0]["occurrenceID"] == data_iri(e.observations[0].uid)
+    assert mof[0]["measurementID"] == f"{data_iri(e.observations[0].uid)}:habitatEUNIS:0"
 
 
 def test_link_habitats_reviewed_csv_overrides(tmp_path, monkeypatch) -> None:

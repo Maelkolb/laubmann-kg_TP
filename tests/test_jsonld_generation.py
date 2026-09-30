@@ -44,3 +44,22 @@ def test_export_all_runs_the_pipeline_once_for_rdf_and_dwca(sample_config, tmp_p
     assert summary["shacl_conforms"] is True and summary["dwca"]["valid"] is True
     assert summary["dwca"]["counts"]["occurrence.txt"] == summary["observations"]
     assert (tmp_path / "rdf" / "laubmann_sample.ttl").exists() and Path(summary["dwca"]["zip"]).exists()
+
+
+def test_export_all_writes_the_dwca_before_reporting_shacl_violations(sample_config, tmp_path: Path,
+                                                                     monkeypatch) -> None:
+    """A failing graph must not cost the archive of a multi-hour run: RDF,
+    JSON-LD and DwC-A are all written, THEN the SHACL failure is raised."""
+    import pytest
+
+    import laubmann_kg.kg as kg
+    monkeypatch.setattr(kg, "run_shacl_validation", lambda **kw: False)
+    with pytest.raises(SystemExit, match="DwC-A were written"):
+        kg.export_all(sample_config, None, tmp_path, validate=True)
+    assert (tmp_path / "rdf" / "laubmann_sample.ttl").exists()
+    assert (tmp_path / "jsonld" / "laubmann_sample.jsonld").exists()
+    assert (tmp_path / "dwca" / "occurrence.txt").exists()
+    assert list((tmp_path / "dwca").glob("*.zip"))
+    # the RDF-only export still aborts on violations
+    with pytest.raises(SystemExit, match="export aborted"):
+        kg.export(sample_config, None, tmp_path / "rdf_only", validate=True)

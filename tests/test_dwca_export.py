@@ -6,6 +6,7 @@ from zipfile import ZipFile
 
 from laubmann_kg.dwca import export
 from laubmann_kg.dwca.validate import validate_archive
+from laubmann_kg.kg.model import DATA_NS
 
 
 def _tsv(path: Path) -> list[dict]:
@@ -21,10 +22,13 @@ def test_dwca_export_produces_valid_archive(sample_config, tmp_path: Path) -> No
 
     dwca_dir = tmp_path / "dwca"
     for name in ("meta.xml", "event.txt", "occurrence.txt",
-                 "measurementorfact.txt", "multimedia.txt", "eml.xml"):
+                 "measurementorfact.txt", "eml.xml"):
         assert (dwca_dir / name).exists()
+    # multimedia.txt only once the crops are hosted (multimodal.image_base_url)
+    assert not (dwca_dir / "multimedia.txt").exists()
 
-    ElementTree.parse(dwca_dir / "meta.xml")  # well-formed
+    meta = ElementTree.parse(dwca_dir / "meta.xml")  # well-formed
+    assert "Multimedia" not in ElementTree.tostring(meta.getroot(), encoding="unicode")
     assert validate_archive(dwca_dir) == []
 
     # meta.xml declares linesTerminatedBy="\n": no \r may reach the data files.
@@ -40,6 +44,9 @@ def test_occurrence_event_join_integrity(sample_config, tmp_path: Path) -> None:
     assert occ, "expected at least one occurrence"
     assert all(r["eventID"] in event_ids for r in occ)
     assert len({r["occurrenceID"] for r in occ}) == len(occ)
+    # 0.7.0: the identifiers are the nodes' IRIs in the data namespace (as in the graph)
+    assert all(e.startswith(DATA_NS + "entry_") for e in event_ids)
+    assert all(r["occurrenceID"].startswith(DATA_NS + "obs_") for r in occ)
 
 
 def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
@@ -63,13 +70,16 @@ def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
     assert OCC_FIELDS == [
         "eventID", "occurrenceID", "basisOfRecord",
         "kingdom", "class", "order", "family", "scientificName", "taxonRank", "vernacularName", "taxonID",
-        "individualCount", "organismQuantity", "organismQuantityType",
-        "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
+        "individualCount", "occurrenceStatus", "sex", "lifeStage", "reproductiveCondition", "vitality",
         "behavior", "identificationQualifier", "identificationRemarks", "verbatimIdentification",
-        "locality", "locationID", "verbatimLocality", "coordinateUncertaintyInMeters",
-        "eventDate", "eventTime", "habitat", "samplingProtocol",
-        "occurrenceRemarks", "recordedBy", "associatedMedia", "associatedReferences",
+        "locality", "verbatimLocality", "locationID", "decimalLatitude", "decimalLongitude", "geodeticDatum",
+        "coordinateUncertaintyInMeters", "georeferenceSources", "georeferenceProtocol",
+        "minimumElevationInMeters", "maximumElevationInMeters",
+        "eventDate", "eventTime", "habitat",
+        "occurrenceRemarks", "recordedBy", "associatedReferences",
         "dynamicProperties"]
+    for gone in ("organismQuantity", "organismQuantityType", "associatedMedia"):
+        assert gone not in OCC_FIELDS
     assert MOF_FIELDS == [
         "eventID", "occurrenceID", "measurementID", "measurementType",
         "measurementTypeID", "measurementValue", "measurementValueID",
@@ -83,10 +93,10 @@ def test_column_contract_and_headers(sample_config, tmp_path: Path) -> None:
     assert summary["valid"] is True
     dwca_dir = tmp_path / "dwca"
     for name, fields in (("occurrence.txt", OCC_FIELDS), ("event.txt", EVENT_FIELDS),
-                         ("measurementorfact.txt", MOF_FIELDS),
-                         ("multimedia.txt", MM_FIELDS)):
+                         ("measurementorfact.txt", MOF_FIELDS)):
         with (dwca_dir / name).open(encoding="utf-8") as handle:
             assert handle.readline().rstrip("\n").split("\t") == fields
+    assert not (dwca_dir / "multimedia.txt").exists()     # no hosted crops in the sample
 
 
 def _weather_result():
@@ -139,5 +149,6 @@ def test_archive_zip_contains_all_members(sample_config, tmp_path: Path) -> None
     summary = export(sample_config, None, tmp_path, validate=False)
     with ZipFile(summary["zip"]) as archive:
         names = set(archive.namelist())
-    assert {"meta.xml", "event.txt", "occurrence.txt", "multimedia.txt",
-            "measurementorfact.txt", "eml.xml"} <= names
+    # multimedia.txt only once the crops are hosted (multimodal.image_base_url)
+    assert names == {"meta.xml", "event.txt", "occurrence.txt",
+                     "measurementorfact.txt", "eml.xml"}

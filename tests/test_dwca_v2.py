@@ -9,7 +9,7 @@ from xml.etree import ElementTree
 import pytest
 
 from laubmann_kg.dwca.archive import build_archive, build_eml
-from laubmann_kg.dwca.event import build_events
+from laubmann_kg.dwca.event import GEOREF_PROTOCOL, build_events
 from laubmann_kg.dwca.measurement_or_fact import (
     ROW_TYPE as EMOF_ROW_TYPE,
     build_measurements,
@@ -21,6 +21,8 @@ from laubmann_kg.dwca.multimedia import build_multimedia
 from laubmann_kg.dwca.occurrence import build_occurrences
 from laubmann_kg.dwca.validate import validate_archive
 from laubmann_kg.kg.model import (
+    DATA_NS,
+    GEOREF_SOURCES,
     Behaviour,
     DiaryEntry,
     Evidence,
@@ -59,7 +61,8 @@ def _rich_result() -> ExtractionResult:
     entry = _entry(date_end="1921-05-04")
     entry.weather = WeatherReport(verbatim="heiter, warm", sky="clear")
     own_place = Place("Dechsendorfer Weiher", "Dechsendorfer Weiher",
-                      lat=49.6217, long=10.9581, kind="locality")
+                      lat=49.6217, long=10.9581, kind="locality",
+                      coordinate_uncertainty_m=500, georef_source="osm", geonames_id=2938913)
     kiebitz = Observation(
         entry_uid=entry.entry_uid,
         taxon=Taxon("Kiebitz", "Vanellus vanellus", rank="species", is_bird=True,
@@ -96,7 +99,7 @@ def _rich_result() -> ExtractionResult:
         record_type="third-party-report",
     )
     unnamed = Observation(
-        entry_uid=entry.entry_uid, taxon=Taxon("Möwen", None, rank="group"),
+        entry_uid=entry.entry_uid, taxon=Taxon("Möwen", None, rank="group", is_bird=True),
         verbatim_notes="viele Möwen", index=4, place=entry.place,
         count_qualifier="plural-unspecified",
     )
@@ -129,6 +132,7 @@ def test_event_row_uses_entry_place_and_interval() -> None:
     rows = build_events(result)
     assert len(rows) == 1
     row = rows[0]
+    assert row["eventID"] == DATA_NS + "entry_e_v2_0001"           # the entry's IRI (0.7.0)
     assert row["eventDate"] == "1921-05-03/1921-05-04"          # multi-day interval
     assert row["locality"] == "Erlangen"                         # entry.place.name
     assert row["verbatimLocality"] == "Erlangen (Regnitzgrund)"  # header as written
@@ -141,57 +145,68 @@ def test_event_row_uses_entry_place_and_interval() -> None:
 
 def test_event_row_without_place_or_coordinates() -> None:
     no_place = _entry(uid="e_v2_np", place=None)
-    no_coords = _entry(uid="e_v2_nc", place=Place("Irgendwo", None, kind="unknown"),
+    no_coords = _entry(uid="e_v2_nc", place=Place("Irgendwo", None),     # kind not read
                        location_raw="Irgendwo")
     undated = _entry(uid="e_v2_nd", date=None)
-    rows = {r["eventID"]: r for r in build_events(ExtractionResult(
-        entries=[no_place, no_coords, undated]))}
-    assert set(rows) == {"e_v2_np", "e_v2_nc"}                  # undated entries skipped
+    same_day = _entry(uid="e_v2_sd", date_end="1921-05-03")               # end == start
+    rows = {r["eventID"].removeprefix(DATA_NS + "entry_"): r for r in build_events(ExtractionResult(
+        entries=[no_place, no_coords, undated, same_day]))}
+    assert set(rows) == {"e_v2_np", "e_v2_nc", "e_v2_sd"}       # undated entries skipped
     assert rows["e_v2_np"]["locality"] == ""
     assert rows["e_v2_np"]["verbatimLocality"] == "Erlangen (Regnitzgrund)"
     assert rows["e_v2_np"]["geodeticDatum"] == ""
     assert rows["e_v2_nc"]["locality"] == "Irgendwo"
     assert rows["e_v2_nc"]["decimalLatitude"] == "" and rows["e_v2_nc"]["geodeticDatum"] == ""
+    assert rows["e_v2_nc"]["georeferenceSources"] == rows["e_v2_nc"]["georeferenceProtocol"] == ""
     assert rows["e_v2_nc"]["eventDate"] == "1921-05-03"         # single day: no slash
+    assert rows["e_v2_sd"]["eventDate"] == "1921-05-03"         # end == start: no interval
 
 
 # --- occurrence extension ----------------------------------------------------
 
 def test_occurrence_columns_from_model_detail() -> None:
     result = _rich_result()
-    rows = {r["vernacularName"]: r for r in build_occurrences(result, {
-        result.entries[0].entry_uid: ["crops/L05_p12_r1.png", "crops/L05_p12_r2.png"]})}
+    rows = {r["vernacularName"]: r for r in build_occurrences(result)}   # no media map (0.7.0)
     assert len(rows) == 6
 
     k = rows["Kiebitz"]
+    assert k["eventID"] == DATA_NS + "entry_e_v2_0001"
+    assert k["occurrenceID"] == DATA_NS + result.entries[0].observations[0].uid
     assert k["kingdom"] == "Animalia" and k["class"] == "Aves"
     assert k["scientificName"] == "Vanellus vanellus" and k["taxonRank"] == "species"
     assert k["taxonID"] == "https://www.gbif.org/species/2480242"
-    assert k["individualCount"] == ""                              # None, range instead
-    assert k["organismQuantity"] == "3-4"
-    assert k["organismQuantityType"] == "individuals (range)"
+    assert k["individualCount"] == ""                              # None, range in dynamicProperties
+    assert "organismQuantity" not in k and "associatedMedia" not in k
     assert k["occurrenceStatus"] == "present"
     assert k["sex"] == "male" and k["lifeStage"] == "adult"
-    assert k["reproductiveCondition"] == "breeding"                # from breeding_evidence
+    # probable breeding evidence is no reproductive condition any more; the
+    # behaviour "Balz" carries one
+    assert k["reproductiveCondition"] == "breeding"
     assert k["vitality"] == ""
     assert k["behavior"] == "Ruf; Balz; Zug"                       # call type (lkg:callType) first, then behaviours
     assert k["identificationQualifier"] == "" and k["identificationRemarks"] == ""
     assert k["locality"] == "Dechsendorfer Weiher"                 # own place
     assert k["verbatimLocality"] == "Dechsendorfer Weiher"
+    # the record's own place carries its georeference on the occurrence row
+    assert (k["decimalLatitude"], k["decimalLongitude"], k["geodeticDatum"]) == ("49.6217", "10.9581", "WGS84")
+    assert k["coordinateUncertaintyInMeters"] == "500"             # the place's centroid radius
+    assert k["georeferenceSources"] == GEOREF_SOURCES["osm"]
+    assert k["georeferenceProtocol"] == GEOREF_PROTOCOL
+    assert k["locationID"] == "https://sws.geonames.org/2938913/"
+    assert k["minimumElevationInMeters"] == k["maximumElevationInMeters"] == ""
     assert k["eventDate"] == "1921-05-04" and k["eventTime"] == "06:30"
     assert k["habitat"] == "Feuchtwiese"
     assert k["recordedBy"] == "Alfred Laubmann"
-    assert k["associatedMedia"] == "crops/L05_p12_r1.png;crops/L05_p12_r2.png"
-    assert json.loads(k["dynamicProperties"]) == {
-        "movementKind": "migrating", "flightDirection": "NO",
-        "countMin": 3, "countMax": 4, "breedingEvidence": "probable",
-        "recordType": "field-observation"}
+    assert k["occurrenceRemarks"] == "3-4 Kiebitze, ♂♂, balzend über der Wiese, ziehen nach NO"
+    # free text / numbers only; the controlled values are eMoF rows
+    assert json.loads(k["dynamicProperties"]) == {"countMin": 3, "countMax": 4, "flightDirection": "NO"}
 
     a = rows["Wachtelkönig"]
     assert a["occurrenceStatus"] == "absent"
     assert a["individualCount"] == "0"                             # 0 is a value
-    assert a["organismQuantity"] == ""
     assert a["basisOfRecord"] == "HumanObservation"
+    assert a["decimalLatitude"] == "49.5897"                       # effective place = entry place
+    assert a["coordinateUncertaintyInMeters"] == ""                # entry place: no radius known
 
     g = rows["Uferschnepfe?"]
     assert g["scientificName"] == "Limosa" and g["taxonRank"] == "genus"
@@ -201,21 +216,24 @@ def test_occurrence_columns_from_model_detail() -> None:
 
     m = rows["Reh"]
     assert m["kingdom"] == "" and m["class"] == ""                 # is_bird False
+    assert m["scientificName"] == "Capreolus capreolus"
     assert m["vitality"] == "dead"
     assert m["recordedBy"] == ""                                   # unattributed report
-    assert json.loads(m["dynamicProperties"]) == {"recordType": "third-party-report"}
+    assert m["dynamicProperties"] == ""                            # recordType is an eMoF row now
 
     u = rows["Möwen"]
     assert u["identificationRemarks"] == "Bestimmung auf group-Niveau"
-    assert u["taxonRank"] == "group" and u["scientificName"] == ""
+    # a bird named without a resolvable species: identified to class Aves
+    assert (u["scientificName"], u["taxonRank"]) == ("Aves", "class")
+    assert u["vernacularName"] == "Möwen"
 
     p = rows["Amsel"]
     assert p["identificationRemarks"] == "Art nicht sicher bestimmt; nur Trivialname"
-    assert p["kingdom"] == "Animalia" and p["class"] == ""         # is_bird None
+    assert p["kingdom"] == "" and p["class"] == ""                 # is_bird None: nothing claimed
+    assert p["scientificName"] == "" and p["taxonRank"] == ""
     assert p["locality"] == "Erlangen"                             # effective = entry place
     assert p["verbatimLocality"] == ""                             # no own locality
     assert p["eventDate"] == "1921-05-03/1921-05-04"               # inherits event interval
-    assert p["taxonRank"] == ""
 
 
 def test_occurrence_reproductive_condition_falls_back_to_behaviour() -> None:
@@ -234,37 +252,45 @@ def test_occurrence_reproductive_condition_falls_back_to_behaviour() -> None:
 def test_emof_rows_ids_and_method() -> None:
     result = _rich_result()
     rows = build_measurements(result)
-    kiebitz_uid = result.entries[0].observations[0].uid
+    kiebitz_id = DATA_NS + result.entries[0].observations[0].uid     # occurrenceID = the obs IRI
     by_id = {r["measurementID"]: r for r in rows}
     assert len(by_id) == len(rows)                                 # unique measurementID
-    assert all(r["eventID"] == "e_v2_0001" for r in rows)
+    assert all(r["eventID"] == DATA_NS + "entry_e_v2_0001" for r in rows)
     assert all(r["measurementMethod"] ==
                "LLM extraction from diary text (gemini-3.5-flash)" for r in rows)
 
-    kiebitz = [r for r in rows if r["occurrenceID"] == kiebitz_uid]
+    kiebitz = [r for r in rows if r["occurrenceID"] == kiebitz_id]
     types = [(r["measurementType"], r["measurementValue"]) for r in kiebitz]
-    assert types == [("evidenceType", "visual"), ("evidenceType", "auditory"),
+    assert types == [("evidenceKind", "visual"), ("evidenceKind", "auditory"),
                      ("callType", "call"), ("countQualifier", "approximate"),
-                     ("breedingEvidence", "probable"), ("movementKind", "migrating")]
+                     ("breedingEvidence", "probable"), ("movementKind", "migrating"),
+                     ("recordType", "field-observation")]
     assert [r["measurementID"] for r in kiebitz][:3] == [
-        f"{kiebitz_uid}:evidenceType:0", f"{kiebitz_uid}:evidenceType:1",
-        f"{kiebitz_uid}:callType:0"]
-    ev = by_id[f"{kiebitz_uid}:evidenceType:1"]
+        f"{kiebitz_id}:evidenceKind:0", f"{kiebitz_id}:evidenceKind:1",
+        f"{kiebitz_id}:callType:0"]
+    ev = by_id[f"{kiebitz_id}:evidenceKind:1"]
     assert ev["measurementTypeID"] == LKG + "evidenceKindScheme"
     assert ev["measurementValueID"] == LKG + "evidence_auditory"
-    assert by_id[f"{kiebitz_uid}:callType:0"]["measurementTypeID"] == LKG + "callTypeScheme"
-    assert by_id[f"{kiebitz_uid}:callType:0"]["measurementValueID"] == LKG + "call_call"
-    assert by_id[f"{kiebitz_uid}:breedingEvidence:0"]["measurementValueID"] == LKG + "breeding_probable"
-    assert by_id[f"{kiebitz_uid}:breedingEvidence:0"]["measurementTypeID"] == LKG + "breedingEvidenceScheme"
-    assert by_id[f"{kiebitz_uid}:movementKind:0"]["measurementValueID"] == LKG + "movement_migrating"
-    assert by_id[f"{kiebitz_uid}:movementKind:0"]["measurementTypeID"] == LKG + "movementKindScheme"
+    assert by_id[f"{kiebitz_id}:callType:0"]["measurementTypeID"] == LKG + "callTypeScheme"
+    assert by_id[f"{kiebitz_id}:callType:0"]["measurementValueID"] == LKG + "call_call"
+    assert by_id[f"{kiebitz_id}:breedingEvidence:0"]["measurementValueID"] == LKG + "breeding_probable"
+    assert by_id[f"{kiebitz_id}:breedingEvidence:0"]["measurementTypeID"] == LKG + "breedingEvidenceScheme"
+    assert by_id[f"{kiebitz_id}:movementKind:0"]["measurementValueID"] == LKG + "movement_migrating"
+    assert by_id[f"{kiebitz_id}:movementKind:0"]["measurementTypeID"] == LKG + "movementKindScheme"
+    assert by_id[f"{kiebitz_id}:recordType:0"]["measurementTypeID"] == LKG + "recordTypeScheme"
+    assert by_id[f"{kiebitz_id}:recordType:0"]["measurementValueID"] == LKG + "record_field_observation"
+    reh_id = DATA_NS + result.entries[0].observations[3].uid
+    assert by_id[f"{reh_id}:recordType:0"]["measurementValue"] == "third-party-report"
+    assert not any(r["measurementType"] in ("evidenceType", "timeOfDay") for r in rows)   # none stated
 
     # hyphenated values -> underscore concept local names
-    moewen_uid = result.entries[0].observations[4].uid
-    assert by_id[f"{moewen_uid}:countQualifier:0"]["measurementValueID"] == \
+    moewen_id = DATA_NS + result.entries[0].observations[4].uid
+    assert by_id[f"{moewen_id}:countQualifier:0"]["measurementValueID"] == \
         LKG + "count_plural_unspecified"
     assert concept_iri("movementKind", "passing-over") == LKG + "movement_passing_over"
+    assert concept_iri("timeOfDay", "dusk") == LKG + "timeofday_dusk"
     assert scheme_iri("countQualifier") == LKG + "countQualifierScheme"
+    assert scheme_iri("timeOfDay") == LKG + "timeOfDayScheme"
 
     # default method when provenance is absent
     bare = ExtractionResult(entries=result.entries)
@@ -274,8 +300,14 @@ def test_emof_rows_ids_and_method() -> None:
 # --- multimedia --------------------------------------------------------------
 
 def test_multimedia_description_folds_visible_text() -> None:
-    rows = build_multimedia(_rich_result())
-    assert [r["identifier"] for r in rows] == ["crops/L05_p12_r1.png", "crops/L05_p12_r2.png"]
+    result = _rich_result()
+    # 0.7.0: no rows until the crops are hosted (a file path would be a broken link)
+    assert build_multimedia(result) == []
+    result.image_base_url = "https://img.example.org/laubmann/"
+    rows = build_multimedia(result)
+    assert [r["identifier"] for r in rows] == ["https://img.example.org/laubmann/crops/L05_p12_r1.png",
+                                               "https://img.example.org/laubmann/crops/L05_p12_r2.png"]
+    assert all(r["eventID"] == DATA_NS + "entry_e_v2_0001" for r in rows)
     assert rows[0]["description"] == "Federzeichnung Kiebitz — Text: Kiebitz 3.V.21"
     assert rows[1]["description"] == ""
     assert "subjectPart" not in rows[0]
@@ -340,6 +372,10 @@ def test_eml_metadata_pieces() -> None:
     assert bbox.find("northBoundingCoordinate").text == "49.6217"
     tc = cov.find("taxonomicCoverage/taxonomicClassification")
     assert tc.find("taxonRankName").text == "class" and tc.find("taxonRankValue").text == "Aves"
+    general = cov.find("taxonomicCoverage/generalTaxonomicCoverage").text
+    assert general.startswith("Birds (class Aves).")
+    assert "excluded by the quality checks" in general
+    assert "published as class Aves with his name in vernacularName" in general
     method = ds.find("methods/methodStep/description/para").text
     assert method.startswith("LLM extraction from diary text (gemini-3.5-flash)")
     assert "gemini-3.5-flash" in method and "abc123" in method
@@ -367,25 +403,39 @@ def test_rich_archive_roundtrip_and_validation(tmp_path: Path) -> None:
     dwca_dir = tmp_path / "dwca"
     summary = build_archive(result, dwca_dir, {"package_id": "laubmann-kg-test",
                                                "zip_name": "test_dwca.zip"})
-    # eMoF: Kiebitz 6 (2 evidence + call + count + breeding + movement),
-    # Wachtelkönig 1 (evidence), Limosa 1, Reh 1, Möwen 1 (count qualifiers), Amsel 0
+    # eMoF: every record has a recordType row; Kiebitz 7 (2 evidence kinds + call
+    # + count + breeding + movement + record type), Wachtelkönig 2 (evidence +
+    # record type), Limosa 2, Reh 2, Möwen 2 (count qualifier + record type), Amsel 1
+    # multimedia.txt only with hosted crops (image_base_url)
     assert summary["counts"] == {"event.txt": 1, "occurrence.txt": 6,
-                                 "measurementorfact.txt": 10, "multimedia.txt": 2}
+                                 "measurementorfact.txt": 16}
     assert summary["package_id"] == "laubmann-kg-test"
     assert Path(summary["zip"]).name == "test_dwca.zip"
+    assert not (dwca_dir / "multimedia.txt").exists()
+    assert "Multimedia" not in (dwca_dir / "meta.xml").read_text(encoding="utf-8")
     assert validate_archive(dwca_dir) == []
 
     occ = _tsv(dwca_dir / "occurrence.txt")
     absent = [r for r in occ if r["occurrenceStatus"] == "absent"]
     assert len(absent) == 1 and absent[0]["individualCount"] == "0"
-    ranged = [r for r in occ if r["organismQuantity"]]
-    assert [r["organismQuantity"] for r in ranged] == ["3-4"]
+    ranged = [json.loads(r["dynamicProperties"]) for r in occ if "countMin" in r["dynamicProperties"]]
+    assert [(p["countMin"], p["countMax"]) for p in ranged] == [(3, 4)]
     for row in occ:
         for value in row.values():
             assert "\t" not in value and "\n" not in value
     mof = _tsv(dwca_dir / "measurementorfact.txt")
     assert {r["occurrenceID"] for r in mof} <= {r["occurrenceID"] for r in occ}
     ElementTree.parse(dwca_dir / "eml.xml")
+
+    # hosted crops: multimedia.txt + its meta.xml extension, identifiers are URLs
+    result.image_base_url = "https://img.example.org/laubmann/"
+    hosted_dir = tmp_path / "dwca_hosted"
+    summary = build_archive(result, hosted_dir)
+    assert summary["counts"]["multimedia.txt"] == 2
+    assert "http://rs.gbif.org/terms/1.0/Multimedia" in (hosted_dir / "meta.xml").read_text(encoding="utf-8")
+    media = _tsv(hosted_dir / "multimedia.txt")
+    assert all(r["identifier"].startswith("https://img.example.org/laubmann/") for r in media)
+    assert validate_archive(hosted_dir) == []
 
 
 def test_validator_flags_structural_problems(tmp_path: Path) -> None:

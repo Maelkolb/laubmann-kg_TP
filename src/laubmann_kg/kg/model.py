@@ -18,9 +18,24 @@ from typing import Literal, Optional
 DATA_NS = "https://w3id.org/laubmann-kg/data/"
 ONTO_NS = "https://w3id.org/laubmann-kg/ontology#"
 
-TimeOfDay = Literal["morning", "forenoon", "noon", "afternoon", "evening", "night"]
-DaylightPhase = Literal["dawn", "day", "dusk", "night"]
-SpatialConfidence = Literal["high", "medium", "low", "inferred"]
+
+def data_iri(uid: str) -> str:
+    """The global identifier of a node: its IRI in the data namespace. The
+    Darwin Core Archive uses the same strings as eventID / occurrenceID."""
+    return DATA_NS + uid
+
+
+# Place.georef_source -> dwc:georeferenceSources (one wording for RDF and DwC-A)
+GEOREF_SOURCES = {
+    "gazetteer": "built-in gazetteer of the project (normalization/places.py)",
+    "osm+geonames": "OpenStreetMap/Nominatim name match confirmed by GeoNames (point = GeoNames feature)",
+    "osm": "OpenStreetMap/Nominatim name match",
+    "geonames": "GeoNames name match (unique in the home region)",
+    "reviewed": "reviewer decision (validation UI)",
+    "machine-review": "machine review of the place link (LLM subagents with gazetteer checks)",
+}
+
+TimeOfDay = Literal["dawn", "morning", "forenoon", "noon", "afternoon", "evening", "dusk", "night"]
 
 # GBIF backbone ranks carried on a linked Taxon (dwc:kingdom … dwc:genus), in
 # hierarchy order. Mirrors the field names of the GBIF species/match response.
@@ -100,8 +115,9 @@ class Place:
     canonical: Optional[str] = None
     lat: Optional[float] = None
     long: Optional[float] = None
-    kind: Optional[str] = None                # vocab.PLACE_KINDS (settlement|locality|region|route|unknown)
+    kind: Optional[str] = None                # vocab.PLACE_KINDS (settlement|locality|region)
     alt_names: tuple[str, ...] = ()           # merged spellings (entity resolution) -> skos:altLabel
+    elevation_m: Optional[float] = None       # stated elevation ("Oberstdorf 843 m") -> dwc:minimum/maximumElevationInMeters
     # linking/places.py: gazetteer identity of the georeference
     geonames_id: Optional[int] = None         # -> skos:exactMatch|closeMatch https://sws.geonames.org/<id>/
     wikidata_iri: Optional[str] = None        # -> skos:exactMatch|closeMatch (same grade as the georeference)
@@ -155,7 +171,7 @@ class TravelLeg:
     departure_place: Optional[Place]          # None: the text does not say where the leg began
     arrival_place: Place
     via_places: tuple[Place, ...] = ()
-    transport_mode: str = "unknown"
+    transport_mode: Optional[str] = None      # vocab.TRANSPORT_MODES; None = not stated
     departure_time: Optional[str] = None  # xsd:dateTime (entry date + stated clock time)
     arrival_time: Optional[str] = None
     verbatim: Optional[str] = None
@@ -220,6 +236,7 @@ class Observation:
     index: int = 0
     record_type: str = "field-observation"    # vocab.RECORD_TYPES
     observer: Optional[Person] = None         # None = the diarist
+    co_observers: list[Person] = field(default_factory=list)   # companions observing WITH the diarist
     literature_citation: Optional[str] = None
     # --- model-provided detail (all optional; None = not stated in the text) ---
     locality: Optional[Place] = None          # the record's OWN place when it differs from the entry place
@@ -234,18 +251,14 @@ class Observation:
     flight_direction: Optional[str] = None    # as written ("NO→SW")
     identification_qualifier: Optional[str] = None  # the diarist's own hedge as written ("?", "wohl", "cf.")
     event_date: Optional[str] = None          # ISO date of THIS record when it differs from the entry date
+    event_date_end: Optional[str] = None      # last day when the record's own date is a range
     event_time: Optional[str] = None          # "HH:MM" when the record states a clock time
-    # --- Ziel 1 (ontology 0.5.0): spatial / temporal / method qualification ---
-    spatial_context: Optional[str] = None     # observer vantage / situation as written
-    microhabitat: Optional[str] = None        # fine structure ("Teichufer", "Baumkrone")
-    relative_elevation: Optional[str] = None  # "in mäßiger Höhe", "hoch fliegend"
-    altitude_m: Optional[float] = None        # metres above sea level when stated
-    time_of_day: Optional[TimeOfDay] = None
-    daylight_phase: Optional[DaylightPhase] = None
-    sampling_protocol: Optional[str] = None   # dwc:samplingProtocol
-    estimated_radius_m: Optional[int] = None  # viewing radius; mirrored as dwc:coordinateUncertaintyInMeters
-    spatial_confidence: Optional[SpatialConfidence] = None
-    observation_duration_minutes: Optional[int] = None
+    # --- spatial / temporal qualification (0.5.0, tightened 0.7.0: only what the text states) ---
+    spatial_context: Optional[str] = None     # the observer's vantage as written ("vom Fenster")
+    microhabitat: Optional[str] = None        # where on/in the habitat ("Teichufer", "Baumkrone")
+    relative_elevation: Optional[str] = None  # flight height as written ("in mäßiger Höhe")
+    altitude_m: Optional[float] = None        # metres above sea level stated for the record's own site
+    time_of_day: Optional[TimeOfDay] = None   # vocab.TIME_OF_DAY (dawn … night)
     flags: tuple[str, ...] = ()               # mapper notes for QA (e.g. "record_type_conflict")
     taxon_verbatim: Optional[str] = None      # the taxon name as written, when resolution merged it
                                               # into a canonical taxon (-> dwc:verbatimIdentification)
@@ -254,6 +267,17 @@ class Observation:
     def uid(self) -> str:
         base = f"{self.entry_uid}|{self.taxon_verbatim or self.taxon.vernacular_de}|{self.index}"
         return f"obs_{_slug(base)}"
+
+    @property
+    def recorders(self) -> list[Person]:
+        """Everyone who recorded the occurrence (dwciri:recordedBy): the
+        diarist and his companions for his own records; the observer for a
+        third-party record; nobody for an unattributed report or citation."""
+        if self.record_type == "field-observation":
+            lead = [self.observer] if self.observer is not None else [DIARIST]
+        else:
+            lead = [self.observer] if self.observer is not None else []
+        return lead + [p for p in self.co_observers if p not in lead]
 
 
 @dataclass(frozen=True)
@@ -323,6 +347,8 @@ class DiaryEntry:
     boundary_kind: Optional[str] = None
     boundary_source: Optional[str] = None
     multimodal: list[MultimodalRegion] = field(default_factory=list)
+    # extraction notes for QA (e.g. "truncated_output": the model hit its token cap)
+    flags: list[str] = field(default_factory=list)
     reading_notes: list[str] = field(default_factory=list)   # reviewer corrections of the transcription (skos:note)
 
     @property

@@ -72,6 +72,42 @@ def test_bogus_record_type_fails_enum_but_mapper_still_folds() -> None:
     assert obs[0].record_type == "field-observation"
 
 
-def test_unknown_top_level_key_still_rejected() -> None:
-    with pytest.raises(ValidationError):
-        parse_structured(json.dumps({"observations": [], "bogus": 1}), ENTRY_SCHEMA)
+def test_unknown_top_level_key_is_accepted_and_ignored() -> None:
+    # prompt v4: the entry envelope has no "required" and no additionalProperties
+    # false (a model that adds a key must not lose the whole entry) ...
+    assert "required" not in ENTRY_SCHEMA and "additionalProperties" not in ENTRY_SCHEMA
+    payload = json.dumps({"observations": [{"vernacular_de": "Amsel", "verbatim_notes": "n"}],
+                          "bogus": 1})
+    assert parse_structured(payload, ENTRY_SCHEMA)["bogus"] == 1
+    parse_structured("{}", ENTRY_SCHEMA)                  # every key may be omitted
+    # ... and the mapper ignores what it does not know
+    from laubmann_kg.extraction.llm_observations import extract_observations_llm
+    from laubmann_kg.kg.model import DiaryEntry
+    from laubmann_kg.llm.prompts import PromptLibrary
+    from laubmann_kg.normalization.taxa import SeedTaxonResolver
+
+    class FakeClient:
+        model = "fake"
+
+        def complete(self, prompt: str) -> str:
+            return payload
+
+    entry = DiaryEntry(entry_uid="e_schema2", entry_id="L02-e9998", volume=2,
+                       page_uid="p", page_id="pid", region_uid=None, scan=None,
+                       entry_date="1918-04-07", verbatim_event_date=None,
+                       location_raw=None, text_clean="...")
+    obs = extract_observations_llm(entry, FakeClient(), SeedTaxonResolver(), None,
+                                   PromptLibrary(Path("prompts")), ENTRY_SCHEMA)
+    assert [o.taxon.vernacular_de for o in obs] == ["Amsel"]
+
+
+def test_observation_schema_v4_fields() -> None:
+    props = SCHEMA["properties"]
+    for gone in ("daylight_phase", "sampling_protocol", "estimated_radius_m",
+                 "spatial_confidence", "observation_duration_minutes"):
+        assert gone not in props, gone
+    assert {"event_date_end", "observed_with", "altitude_m", "time_of_day"} <= set(props)
+    data = parse_structured(json.dumps({
+        "vernacular_de": "Kiebitz", "verbatim_notes": "n", "event_date": "1921-05-03",
+        "event_date_end": "1921-05-05", "observed_with": ["Kiefer"]}), SCHEMA)
+    assert data["observed_with"] == ["Kiefer"]

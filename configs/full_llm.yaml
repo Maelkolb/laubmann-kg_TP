@@ -26,14 +26,17 @@ sample:
 extraction:
   backend: llm
   provider: google
-  model: gemini-3.5-flash
+  model: gemini-3.8-flash    # 2026-09-30 A/B on 68 entries: as good as 3.5, no runaway generations
+                             #   (3.5: 6 of 68 hit the token cap), ~5x cheaper per call and much faster
   api_key_env: GOOGLE_API_KEY
   temperature: 0.0
   max_output_tokens: 32768  # long species-digest entries exceeded 16384 (22 truncated on
                             # 2026-08-17); truncated answers are never cached, so they re-run
-  timeout: 120
+  timeout: 600               # long digests (up to 38k characters) need minutes, not seconds
   thinking_level: low       # minimal | low | medium (API default) | high
   concurrency: 8            # parallel Gemini calls; lower to 4 if 429s appear
+  context_cache: true       # the prompt's instructions (up to "## Entry") are a Gemini CachedContent,
+                            #   billed at the cached-input price (~4k of ~4.3k prompt tokens per call)
   retry_backoff: 2.0        # seconds, exponential — rides out transient 429s
   # cache_dir: /content/drive/MyDrive/HistOrniGraph_output/llm_cache  # put the
   #   cache on Drive in Colab so interrupted runs resume across sessions
@@ -79,7 +82,8 @@ linking:
   enabled: true              # absent/false = stage skipped entirely (offline runs, tests)
   offline: false             # true = answer only from the on-disk caches, never touch the network
   cache_dir: data/cache/linking   # gbif_cache.json + wikidata_cache.json (resumable, safe to interrupt)
-  review_dir: data/review    # taxon_link_review.csv + person_link_review.csv (trailing decision column)
+  # review_dir: omitted = <output-dir>/review (taxon/person/place/habitat link reviews with a
+  #   trailing decision column); never data/review, which holds the decisions the run reads
   limit: 0                   # cap uncached lookups per section per run (0 = all); partial runs resume via cache
   taxa:
     enabled: true
@@ -91,7 +95,7 @@ linking:
     llm:
       enabled: true
       provider: google
-      model: gemini-3.5-flash    # keep in sync with extraction.model
+      model: gemini-3.5-flash    # stays 3.5: its Drive cache (linking_cache/llm) answers the known names
       api_key_env: GOOGLE_API_KEY
       cache_dir: data/cache/linking_llm
       prompt_dir: prompts        # uses prompts/taxon_normalization.md (revived)
@@ -126,7 +130,7 @@ linking:
     llm:
       enabled: true
       provider: google
-      model: gemini-3.5-flash
+      model: gemini-3.5-flash    # stays 3.5: its Drive cache (linking_cache/llm_habitats) answers the known labels
       api_key_env: GOOGLE_API_KEY
       cache_dir: data/cache/linking_llm_habitats
       prompt_dir: prompts    # prompts/habitat_eunis.md

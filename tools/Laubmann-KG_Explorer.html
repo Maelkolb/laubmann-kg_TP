@@ -1387,19 +1387,15 @@ svg.leaflet-image-layer.leaflet-interactive path {
     if (o.q) rows.push(['lkg:countQualifier', lit(o.q)]);
     rows.push(['dwc:occurrenceStatus', lit(o.st || 'present')]);
     if (o.sex) rows.push(['dwc:sex', lit(o.sex)]); if (o.ls) rows.push(['dwc:lifeStage', lit(o.ls)]);
-    if (o.br) { rows.push(['lkg:breedingEvidence', lit(o.br)]); if (o.br !== 'possible') rows.push(['dwc:reproductiveCondition', lit('breeding')]); }
+    if (o.br) { rows.push(['lkg:breedingEvidence', lit(o.br)]); if (o.br === 'confirmed') rows.push(['dwc:reproductiveCondition', lit('breeding')]); }
     if (o.vit) rows.push(['dwc:vitality', lit(o.vit)]); if (o.mv) rows.push(['lkg:movementKind', lit(o.mv)]); if (o.dir) rows.push(['lkg:flightDirection', lit(o.dir, '@de')]);
     if (o.iq) rows.push(['dwc:identificationQualifier', lit(o.iq)]);
     rows.push(['dwc:eventDate', lit(o.d || (o.ei != null ? E[o.ei].date : ''), '^^xsd:date')]); if (o.tm) rows.push(['dwc:eventTime', lit(o.tm)]);
-    if (o.tod) rows.push(['lkg:timeOfDay', lit(o.tod)]); if (o.dl) rows.push(['lkg:daylightPhase', lit(o.dl)]);
+    if (o.tod) rows.push(['lkg:timeOfDay', lit(o.tod)]);
     if (o.sc) rows.push(['lkg:spatialContext', lit(o.sc, '@de')]);
     if (o.mh) rows.push(['lkg:microhabitat', lit(o.mh, '@de')]);
     if (o.re) rows.push(['lkg:relativeElevation', lit(o.re, '@de')]);
-    if (o.altm != null) rows.push(['lkg:altitudeM', lit(o.altm, '^^xsd:decimal')]);
-    if (o.rad != null) { rows.push(['lkg:observationRadiusMeters', lit(o.rad, '^^xsd:integer')]); rows.push(['dwc:coordinateUncertaintyInMeters', lit(o.rad, '^^xsd:integer')]); }
-    if (o.sconf) rows.push(['lkg:spatialConfidence', lit(o.sconf)]);
-    if (o.sp) rows.push(['dwc:samplingProtocol', lit(o.sp, '@de')]);
-    if (o.dur != null) rows.push(['lkg:observationDurationMinutes', lit(o.dur, '^^xsd:integer')]);
+    if (o.altm != null) { rows.push(['dwc:minimumElevationInMeters', lit(o.altm, '^^xsd:decimal')]); rows.push(['dwc:maximumElevationInMeters', lit(o.altm, '^^xsd:decimal')]); }
     [...new Set((o.ev || []).map(ev => ev[0]))].forEach(k => rows.push(['lkg:evidenceKind', lit(k)]));
     (o.voc || []).forEach(v => { if (v[0]) rows.push(['lkg:callType', lit(v[0])]); if (v[1]) rows.push(['lkg:callTranscription', lit(v[1])]); });
     (o.beh || []).forEach(b => rows.push(['dwc:behavior', lit(b, '@de')]));
@@ -1525,8 +1521,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
       ['evidence', [...new Set((o.ev || []).map(x => x[0]))].join(', ')], ['vocalisation', (o.voc || []).map(v => (v[0] || 'unknown') + (v[1] ? ' „' + esc(v[1]) + '“' : '')).join(', ')], ['behaviour', (o.beh || []).map(esc).join(', ')],
       ['habitat', o.h != null ? esc(H[o.h].name) : ''], ['microhabitat', o.mh ? esc(o.mh) : ''], ['relative elevation', o.re ? esc(o.re) : ''],
       ['spatial context', o.sc ? esc(o.sc) : ''], ['hedge', o.iq ? esc(o.iq) : ''],
-      ['date · time', [o.d, o.tod, o.dl, o.tm].filter(Boolean).join(' · ')],
-      ['protocol · radius', [o.sp, o.rad != null ? o.rad + ' m' : null, o.sconf, o.dur != null ? o.dur + ' min' : null].filter(Boolean).join(' · ')],
+      ['date · time', [o.d, o.tod, o.tm].filter(Boolean).join(' · ')],
+      ['elevation', o.altm != null ? o.altm + ' m' : ''],
+      ['observed with', (o.with || []).map(i => `<span class="link" data-open="persons:${i}">${esc(PE[i].name)}</span>`).join(', ')],
       ['record', (o.rt || 'field-observation') + (o.by != null ? ` · <span class="link" data-open="persons:${o.by}">${esc(PE[o.by].name)}</span>` : '') + (o.cit ? ' · ' + esc(o.cit) : '')]].filter(r => r[1]);
     const no = o.ei != null ? (E[o.ei].obs || []).indexOf(oi) + 1 : '';
     card.innerHTML = `<div class="card"><b>${no ? no + ' · ' : ''}${esc(obsLabel(o))}</b> <span class="muted">${pfx('lkg:Observation')}</span><div class="muted small" style="margin:2px 0 6px">${esc(o.v || '')}</div><dl class="kv">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl></div>`;

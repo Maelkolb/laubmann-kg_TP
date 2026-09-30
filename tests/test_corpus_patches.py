@@ -21,7 +21,7 @@ import build_multimodal_regions as bmr  # noqa: E402
 from laubmann_corpus.boundaries import FIELDS, locate_line  # noqa: E402
 
 from laubmann_kg.extraction.llm_observations import _fold_vocal_behaviour  # noqa: E402
-from laubmann_kg.kg.model import Evidence  # noqa: E402
+from laubmann_kg.kg.model import DATA_NS, Evidence  # noqa: E402
 from laubmann_kg.kg.rdf import DATA, LKG, build_graph  # noqa: E402
 from laubmann_kg.normalization.vocabularies import split_vocal_behaviour  # noqa: E402
 from laubmann_kg.pipeline import build_entry, run_pipeline  # noqa: E402
@@ -248,8 +248,10 @@ def test_multimedia_rows_only_for_event_entries() -> None:
     undated = DiaryEntry("e_2", "L05-e0002", 5, "p_1", "x_L", "r_2", "10", None, "71. Juni 1955", None, "t")
     regions = [MultimodalRegion("r_a", "p_1", "x_L", 5, "10", "e_1", "photograph", crop="a.png"),
                MultimodalRegion("r_b", "p_1", "x_L", 5, "10", "e_2", "map", crop="b.png")]
-    rows = build_multimedia(ExtractionResult(entries=[dated, undated], multimodal=regions))
-    assert [r["identifier"] for r in rows] == ["a.png"]
+    rows = build_multimedia(ExtractionResult(entries=[dated, undated], multimodal=regions,
+                                             image_base_url="https://img.example.org/"))
+    assert [r["identifier"] for r in rows] == ["https://img.example.org/a.png"]
+    assert [r["eventID"] for r in rows] == [DATA_NS + "entry_e_1"]      # the event's IRI
 
 
 def test_image_base_url_turns_crops_into_public_urls() -> None:
@@ -265,8 +267,11 @@ def test_image_base_url_turns_crops_into_public_urls() -> None:
     entry.multimodal = [region]
     plain = ExtractionResult(entries=[entry], multimodal=[region])
     assert (None, SCHEMA.image, None) not in build_graph(plain)
-    assert build_multimedia(plain)[0]["identifier"] == "regions/x_L/r03 Image.png"
+    # 0.7.0: no multimedia row with a file path (it would be published as a broken link)
+    assert build_multimedia(plain) == []
     hosted = ExtractionResult(entries=[entry], multimodal=[region], image_base_url="https://img.example.org/laubmann/")
     url = URIRef("https://img.example.org/laubmann/regions/x_L/r03%20Image.png")
     assert (DATA["region_r_a"], SCHEMA.image, url) in build_graph(hosted)
-    assert build_multimedia(hosted)[0]["identifier"] == str(url)
+    row = build_multimedia(hosted)[0]
+    assert row["identifier"] == str(url)
+    assert row["eventID"] == DATA_NS + "entry_e_1"

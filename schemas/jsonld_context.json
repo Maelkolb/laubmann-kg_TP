@@ -14,59 +14,136 @@
     "dcmitype": "http://purl.org/dc/dcmitype/",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "data": "https://w3id.org/laubmann-kg/data/",
-
     "label": "rdfs:label",
     "comment": "rdfs:comment",
     "note": "skos:note",
     "prefLabel": "skos:prefLabel",
     "altLabel": "skos:altLabel",
-    "inScheme": {"@id": "skos:inScheme", "@type": "@id"},
+    "inScheme": {
+      "@id": "skos:inScheme",
+      "@type": "@id"
+    },
     "identifier": "dcterms:identifier",
     "temporal": "dcterms:temporal",
-    "isPartOf": {"@id": "dcterms:isPartOf", "@type": "@id"},
-    "hasPart": {"@id": "dcterms:hasPart", "@type": "@id"},
+    "isPartOf": {
+      "@id": "dcterms:isPartOf",
+      "@type": "@id"
+    },
+    "hasPart": {
+      "@id": "dcterms:hasPart",
+      "@type": "@id"
+    },
     "name": "schema:name",
-
     "eventDate": "dwc:eventDate",
     "eventTime": "dwc:eventTime",
     "verbatimEventDate": "dwc:verbatimEventDate",
     "fieldNotes": "dwc:fieldNotes",
-    "datePlausible": {"@id": "lkg:datePlausible", "@type": "xsd:boolean"},
+    "datePlausible": {
+      "@id": "lkg:datePlausible",
+      "@type": "xsd:boolean"
+    },
     "entryKind": "lkg:entryKind",
-    "entryPlace": {"@id": "lkg:entryPlace", "@type": "@id"},
-    "hasSourceRegion": {"@id": "lkg:hasSourceRegion", "@type": "@id"},
-    "hasMultimodalRegion": {"@id": "lkg:hasMultimodalRegion", "@type": "@id"},
+    "entryPlace": {
+      "@id": "lkg:entryPlace",
+      "@type": "@id"
+    },
+    "hasSourceRegion": {
+      "@id": "lkg:hasSourceRegion",
+      "@type": "@id"
+    },
+    "hasMultimodalRegion": {
+      "@id": "lkg:hasMultimodalRegion",
+      "@type": "@id"
+    },
     "regionKind": "lkg:regionKind",
     "visibleText": "lkg:visibleText",
     "description": "dcterms:description",
-    "type": {"@id": "dcterms:type", "@type": "@id"},
-    "image": {"@id": "schema:image", "@type": "@id"},
-    "containsObservation": {"@id": "lkg:containsObservation", "@type": "@id"},
-    "containsTravelEvent": {"@id": "lkg:containsTravelEvent", "@type": "@id"},
-    "hasWeather": {"@id": "lkg:hasWeather", "@type": "@id"},
-    "mentionsPerson": {"@id": "lkg:mentionsPerson", "@type": "@id"},
-    "mentionsCompanion": {"@id": "lkg:mentionsCompanion", "@type": "@id"},
-    "mentionsSource": {"@id": "lkg:mentionsSource", "@type": "@id"},
-    "mentionsCollector": {"@id": "lkg:mentionsCollector", "@type": "@id"},
-    "mentionsCitedAuthor": {"@id": "lkg:mentionsCitedAuthor", "@type": "@id"},
-    "mentionsOther": {"@id": "lkg:mentionsOther", "@type": "@id"},
-
-    "observedTaxon": {"@id": "lkg:observedTaxon", "@type": "@id"},
-    "toTaxon": {"@id": "dwciri:toTaxon", "@type": "@id"},
-    "observedAt": {"@id": "lkg:observedAt", "@type": "@id"},
-    "hasLocality": {"@id": "lkg:hasLocality", "@type": "@id"},
+    "dcType": {
+      "@id": "dcterms:type",
+      "@type": "@id"
+    },
+    "image": {
+      "@id": "schema:image",
+      "@type": "@id"
+    },
+    "containsObservation": {
+      "@id": "lkg:containsObservation",
+      "@type": "@id"
+    },
+    "containsTravelEvent": {
+      "@id": "lkg:containsTravelEvent",
+      "@type": "@id"
+    },
+    "hasWeather": {
+      "@id": "lkg:hasWeather",
+      "@type": "@id"
+    },
+    "mentionsPerson": {
+      "@id": "lkg:mentionsPerson",
+      "@type": "@id"
+    },
+    "mentionsCompanion": {
+      "@id": "lkg:mentionsCompanion",
+      "@type": "@id"
+    },
+    "mentionsSource": {
+      "@id": "lkg:mentionsSource",
+      "@type": "@id"
+    },
+    "mentionsCollector": {
+      "@id": "lkg:mentionsCollector",
+      "@type": "@id"
+    },
+    "mentionsCitedAuthor": {
+      "@id": "lkg:mentionsCitedAuthor",
+      "@type": "@id"
+    },
+    "mentionsOther": {
+      "@id": "lkg:mentionsOther",
+      "@type": "@id"
+    },
+    "observedTaxon": {
+      "@id": "lkg:observedTaxon",
+      "@type": "@id"
+    },
+    "observedAt": {
+      "@id": "lkg:observedAt",
+      "@type": "@id"
+    },
+    "hasLocality": {
+      "@id": "lkg:hasLocality",
+      "@type": "@id"
+    },
     "verbatimLocality": "dwc:verbatimLocality",
-    "wasDerivedFrom": {"@id": "prov:wasDerivedFrom", "@type": "@id"},
-    "wasGeneratedBy": {"@id": "prov:wasGeneratedBy", "@type": "@id"},
+    "wasDerivedFrom": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id"
+    },
+    "wasGeneratedBy": {
+      "@id": "prov:wasGeneratedBy",
+      "@type": "@id"
+    },
     "evidenceKind": "lkg:evidenceKind",
     "callType": "lkg:callType",
     "callTranscription": "lkg:callTranscription",
     "behavior": "dwc:behavior",
-    "habitatIRI": {"@id": "dwciri:habitat", "@type": "@id"},
+    "habitatIRI": {
+      "@id": "dwciri:habitat",
+      "@type": "@id"
+    },
     "habitat": "dwc:habitat",
-    "individualCount": {"@id": "dwc:individualCount", "@type": "xsd:integer"},
-    "individualCountMin": {"@id": "lkg:individualCountMin", "@type": "xsd:integer"},
-    "individualCountMax": {"@id": "lkg:individualCountMax", "@type": "xsd:integer"},
+    "individualCount": {
+      "@id": "dwc:individualCount",
+      "@type": "xsd:integer"
+    },
+    "individualCountMin": {
+      "@id": "lkg:individualCountMin",
+      "@type": "xsd:integer"
+    },
+    "individualCountMax": {
+      "@id": "lkg:individualCountMax",
+      "@type": "xsd:integer"
+    },
     "countQualifier": "lkg:countQualifier",
     "occurrenceStatus": "dwc:occurrenceStatus",
     "sex": "dwc:sex",
@@ -82,19 +159,23 @@
     "occurrenceRemarks": "dwc:occurrenceRemarks",
     "recordType": "lkg:recordType",
     "basisOfRecord": "dwc:basisOfRecord",
-    "recordedBy": {"@id": "dwciri:recordedBy", "@type": "@id"},
+    "recordedBy": {
+      "@id": "dwciri:recordedBy",
+      "@type": "@id"
+    },
     "associatedReferences": "dwc:associatedReferences",
-    "samplingProtocol": "dwc:samplingProtocol",
     "spatialContext": "lkg:spatialContext",
     "microhabitat": "lkg:microhabitat",
     "relativeElevation": "lkg:relativeElevation",
-    "altitudeM": {"@id": "lkg:altitudeM", "@type": "xsd:decimal"},
-    "observationRadiusMeters": {"@id": "lkg:observationRadiusMeters", "@type": "xsd:integer"},
-    "spatialConfidence": "lkg:spatialConfidence",
-    "observationDurationMinutes": {"@id": "lkg:observationDurationMinutes", "@type": "xsd:integer"},
+    "minimumElevationInMeters": {
+      "@id": "dwc:minimumElevationInMeters",
+      "@type": "xsd:decimal"
+    },
+    "maximumElevationInMeters": {
+      "@id": "dwc:maximumElevationInMeters",
+      "@type": "xsd:decimal"
+    },
     "timeOfDay": "lkg:timeOfDay",
-    "daylightPhase": "lkg:daylightPhase",
-
     "vernacularName": "dwc:vernacularName",
     "scientificName": "dwc:scientificName",
     "taxonRank": "dwc:taxonRank",
@@ -105,45 +186,110 @@
     "order": "dwc:order",
     "family": "dwc:family",
     "genus": "dwc:genus",
-    "isBird": {"@id": "lkg:isBird", "@type": "xsd:boolean"},
+    "isBird": {
+      "@id": "lkg:isBird",
+      "@type": "xsd:boolean"
+    },
     "matchMethod": "lkg:matchMethod",
-    "matchConfidence": {"@id": "lkg:matchConfidence", "@type": "xsd:decimal"},
     "gbifMatchType": "lkg:gbifMatchType",
-    "exactMatch": {"@id": "skos:exactMatch", "@type": "@id"},
-    "closeMatch": {"@id": "skos:closeMatch", "@type": "@id"},
-    "broadMatch": {"@id": "skos:broadMatch", "@type": "@id"},
-
+    "exactMatch": {
+      "@id": "skos:exactMatch",
+      "@type": "@id"
+    },
+    "closeMatch": {
+      "@id": "skos:closeMatch",
+      "@type": "@id"
+    },
+    "broadMatch": {
+      "@id": "skos:broadMatch",
+      "@type": "@id"
+    },
     "placeKind": "lkg:placeKind",
-    "lat": {"@id": "geo:lat", "@type": "xsd:decimal"},
-    "long": {"@id": "geo:long", "@type": "xsd:decimal"},
-    "decimalLatitude": {"@id": "dwc:decimalLatitude", "@type": "xsd:decimal"},
-    "coordinateUncertaintyInMeters": {"@id": "dwc:coordinateUncertaintyInMeters", "@type": "xsd:integer"},
+    "lat": {
+      "@id": "geo:lat",
+      "@type": "xsd:decimal"
+    },
+    "long": {
+      "@id": "geo:long",
+      "@type": "xsd:decimal"
+    },
+    "decimalLatitude": {
+      "@id": "dwc:decimalLatitude",
+      "@type": "xsd:decimal"
+    },
+    "coordinateUncertaintyInMeters": {
+      "@id": "dwc:coordinateUncertaintyInMeters",
+      "@type": "xsd:integer"
+    },
     "georeferenceSources": "dwc:georeferenceSources",
     "notation": "skos:notation",
-    "broader": {"@id": "skos:broader", "@type": "@id"},
-    "seeAlso": {"@id": "rdfs:seeAlso", "@type": "@id"},
-    "decimalLongitude": {"@id": "dwc:decimalLongitude", "@type": "xsd:decimal"},
+    "broader": {
+      "@id": "skos:broader",
+      "@type": "@id"
+    },
+    "seeAlso": {
+      "@id": "rdfs:seeAlso",
+      "@type": "@id"
+    },
+    "decimalLongitude": {
+      "@id": "dwc:decimalLongitude",
+      "@type": "xsd:decimal"
+    },
     "geodeticDatum": "dwc:geodeticDatum",
-    "asWKT": {"@id": "gsp:asWKT", "@type": "gsp:wktLiteral"},
-
-    "hasLeg": {"@id": "lkg:hasLeg", "@type": "@id"},
-    "departurePlace": {"@id": "lkg:departurePlace", "@type": "@id"},
-    "arrivalPlace": {"@id": "lkg:arrivalPlace", "@type": "@id"},
-    "viaPlace": {"@id": "lkg:viaPlace", "@type": "@id"},
+    "hasGeometry": {
+      "@id": "gsp:hasGeometry",
+      "@type": "@id"
+    },
+    "asWKT": {
+      "@id": "gsp:asWKT",
+      "@type": "gsp:wktLiteral"
+    },
+    "hasLeg": {
+      "@id": "lkg:hasLeg",
+      "@type": "@id"
+    },
+    "departurePlace": {
+      "@id": "lkg:departurePlace",
+      "@type": "@id"
+    },
+    "arrivalPlace": {
+      "@id": "lkg:arrivalPlace",
+      "@type": "@id"
+    },
+    "viaPlace": {
+      "@id": "lkg:viaPlace",
+      "@type": "@id"
+    },
     "transportMode": "lkg:transportMode",
-    "departureTime": {"@id": "lkg:departureTime", "@type": "xsd:dateTime"},
-    "arrivalTime": {"@id": "lkg:arrivalTime", "@type": "xsd:dateTime"},
-
+    "departureTime": {
+      "@id": "lkg:departureTime",
+      "@type": "xsd:dateTime"
+    },
+    "arrivalTime": {
+      "@id": "lkg:arrivalTime",
+      "@type": "xsd:dateTime"
+    },
     "weatherVerbatim": "lkg:weatherVerbatim",
-    "temperatureValue": {"@id": "lkg:temperatureValue", "@type": "xsd:decimal"},
+    "temperatureValue": {
+      "@id": "lkg:temperatureValue",
+      "@type": "xsd:decimal"
+    },
     "temperatureUnit": "lkg:temperatureUnit",
     "precipitation": "lkg:precipitation",
     "wind": "lkg:wind",
     "skyCondition": "lkg:skyCondition",
-
-    "startedAtTime": {"@id": "prov:startedAtTime", "@type": "xsd:dateTime"},
-    "wasAssociatedWith": {"@id": "prov:wasAssociatedWith", "@type": "@id"},
-    "used": {"@id": "prov:used", "@type": "@id"},
+    "startedAtTime": {
+      "@id": "prov:startedAtTime",
+      "@type": "xsd:dateTime"
+    },
+    "wasAssociatedWith": {
+      "@id": "prov:wasAssociatedWith",
+      "@type": "@id"
+    },
+    "used": {
+      "@id": "prov:used",
+      "@type": "@id"
+    },
     "backend": "lkg:backend"
   }
 }

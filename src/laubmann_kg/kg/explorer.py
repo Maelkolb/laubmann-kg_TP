@@ -293,24 +293,16 @@ def graph_from_result(result, meta: Optional[dict] = None) -> dict[str, Any]:
                 rec["tm"] = obs.event_time
             if obs.time_of_day:
                 rec["tod"] = obs.time_of_day
-            if obs.daylight_phase:
-                rec["dl"] = obs.daylight_phase
             if obs.spatial_context:
                 rec["sc"] = obs.spatial_context
             if obs.microhabitat:
                 rec["mh"] = obs.microhabitat
             if obs.relative_elevation:
                 rec["re"] = obs.relative_elevation
-            if obs.sampling_protocol:
-                rec["sp"] = obs.sampling_protocol
-            if obs.estimated_radius_m is not None:
-                rec["rad"] = obs.estimated_radius_m
-            if obs.spatial_confidence:
-                rec["sconf"] = obs.spatial_confidence
             if obs.altitude_m is not None:
                 rec["altm"] = obs.altitude_m
-            if obs.observation_duration_minutes is not None:
-                rec["dur"] = obs.observation_duration_minutes
+            if obs.co_observers:
+                rec["with"] = [intern_person(p) for p in obs.co_observers]
             if obs.taxon_verbatim:
                 rec["tv"] = obs.taxon_verbatim
             if obs.literature_citation:

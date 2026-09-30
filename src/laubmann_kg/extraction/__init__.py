@@ -50,6 +50,7 @@ def _observation_record(entry, obs) -> dict:
         "verbatim_notes": obs.verbatim_notes,
         "record_type": obs.record_type,
         "observer": obs.observer.name if obs.observer else None,
+        "observed_with": [p.name for p in obs.co_observers],
         "literature_citation": obs.literature_citation,
         "gbif_key": taxon.gbif_key,
     }

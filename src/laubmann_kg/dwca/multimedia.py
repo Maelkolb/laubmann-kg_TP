@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from laubmann_kg.kg.model import data_iri
 from laubmann_kg.kg.rdf import image_url
 
 if TYPE_CHECKING:
@@ -32,7 +33,14 @@ def _dated_entries(result: "ExtractionResult") -> set[str]:
 
 
 def build_multimedia(result: "ExtractionResult") -> list[dict]:
+    """One row per region crop of a dated entry, only once the crops are hosted
+    (multimodal.image_base_url): GBIF needs a URL as identifier, a file path
+    would be published as a broken link. Until then the graph references the
+    crops by path (dcterms:identifier)."""
     rows = []
+    base_url = getattr(result, "image_base_url", None)
+    if not base_url:
+        return rows
     events = _dated_entries(result)
     for region in result.multimodal:
         entry_uid = _get(region, "entry_uid") or ""
@@ -40,9 +48,8 @@ def build_multimedia(result: "ExtractionResult") -> list[dict]:
         if not entry_uid or not crop or entry_uid not in events:
             continue
         rows.append({
-            "eventID": entry_uid,
-            # the public URL once the crops are hosted (multimodal.image_base_url), else the path
-            "identifier": image_url(getattr(result, "image_base_url", None), crop) or crop,
+            "eventID": data_iri("entry_" + entry_uid),
+            "identifier": image_url(base_url, crop),
             "type": "StillImage",            # the crop is an image, whatever it shows
             "format": _format(crop),
             "title": _get(region, "kind") or _get(region, "region_type") or "",
@@ -60,13 +67,3 @@ def _description(region) -> str:
         return f"{description} — Text: {visible}" if description else f"Text: {visible}"
     return description
 
-
-def media_by_entry(result: "ExtractionResult") -> dict[str, list[str]]:
-    mapping: dict[str, list[str]] = {}
-    events = _dated_entries(result)
-    for region in result.multimodal:
-        entry_uid = _get(region, "entry_uid") or ""
-        crop = _get(region, "crop") or ""
-        if entry_uid and crop and entry_uid in events:
-            mapping.setdefault(entry_uid, []).append(crop)
-    return mapping

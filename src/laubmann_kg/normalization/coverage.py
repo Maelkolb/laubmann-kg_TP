@@ -38,7 +38,7 @@ import difflib
 import logging
 import re
 from collections import Counter, defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Iterable, Optional
 
@@ -139,6 +139,38 @@ def _raw_year_digits(verbatim: Optional[str]) -> Optional[str]:
 
 def _digit_distance(a: str, b: str) -> int:
     return sum(1 for x, y in zip(a, b) if x != y) + abs(len(a) - len(b))
+
+
+def _shift_date(value, old_year: int, new_year: int):
+    """``value`` (YYYY-MM-DD…) moved by the year repair when it carries the
+    misread year, else unchanged (a record's own, differing year stays)."""
+    if not value or int(value[:4]) != old_year:
+        return value
+    moved = _valid_date(new_year, int(value[5:7]), int(value[8:10]))
+    return (moved + value[10:]) if moved else value
+
+
+def _shift_years(entry, old_year: int, new_year: int) -> None:
+    """Apply an OCR-year repair to every date derived from the misread header:
+    the entry's end date (by the same number of years), the records' own dates
+    and the travel legs' clock times."""
+    if entry.entry_date_end:
+        moved = _valid_date(int(entry.entry_date_end[:4]) + new_year - old_year,
+                            int(entry.entry_date_end[5:7]), int(entry.entry_date_end[8:10]))
+        entry.entry_date_end = moved or None
+    for obs in entry.observations:
+        moved = obs.event_date is not None and int(obs.event_date[:4]) == old_year
+        obs.event_date = _shift_date(obs.event_date, old_year, new_year)
+        if obs.event_date_end and moved:
+            # the range moves as a whole (its end may lie in the next year)
+            end = obs.event_date_end
+            obs.event_date_end = _valid_date(int(end[:4]) + new_year - old_year, int(end[5:7]), int(end[8:10]))
+        if obs.event_date_end and (not obs.event_date or obs.event_date_end <= obs.event_date):
+            obs.event_date_end = None
+    for event in entry.travel_events:
+        event.legs = [replace(leg, departure_time=_shift_date(leg.departure_time, old_year, new_year),
+                              arrival_time=_shift_date(leg.arrival_time, old_year, new_year))
+                      for leg in event.legs]
 
 
 def _valid_date(year: int, month: int, day: int) -> Optional[str]:
@@ -271,9 +303,9 @@ def apply_coverage(entries: list, coverage: VolumeCoverage, config: Optional[dic
                 old = e.entry_date
                 note = (f"Jahr aus Bandabdeckung/Nachbareinträgen korrigiert "
                         f"(OCR {e.verbatim_event_date or old} → {fixed[:4]}, Band {vol} {span.start}…{span.end})")
-                if e.entry_date_end and e.entry_date_end[:4] == old[:4]:
-                    e.entry_date_end = fixed[:4] + e.entry_date_end[4:]
+                _shift_years(e, int(old[:4]), int(fixed[:4]))
                 e.entry_date = fixed
+                e.date_plausible = None        # the contradiction the model saw is resolved
                 e.date_note = f"{e.date_note}; {note}" if e.date_note else note
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "date_year_corrected",
                                     note, "flagged", f"{old} -> {fixed}"))

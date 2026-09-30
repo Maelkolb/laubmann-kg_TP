@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import Optional
 
-TRANSPORT_MODES = ("train", "foot", "boat", "car", "carriage", "bicycle", "unknown")
+TRANSPORT_MODES = ("train", "foot", "boat", "car", "carriage", "bicycle")
 CALL_TYPES = ("song", "call", "alarm", "drumming", "unknown")   # "unknown" is accepted from the model but never emitted
 EMITTED_CALL_TYPES = ("song", "call", "alarm", "drumming")      # lkg:callTypeScheme (0.6.0)
 REGION_KINDS = ("drawing", "photograph", "map", "print", "object", "text-insert", "list")   # lkg:regionKindScheme
@@ -19,14 +19,14 @@ OCCURRENCE_STATUS = ("present", "absent")
 SEXES = ("male", "female", "mixed")
 LIFE_STAGES = ("adult", "juvenile", "pullus", "immature", "egg", "mixed")
 BREEDING_EVIDENCE = ("confirmed", "probable", "possible")      # atlas-style categories
-VITALITY = ("alive", "dead")
+VITALITY = ("dead",)                                        # only a stated death is recorded
 MOVEMENT_KINDS = ("migrating", "passing-over", "arriving", "departing", "resting", "roosting")
-TAXON_RANKS = ("species", "subspecies", "genus", "family", "group", "unknown")
-PLACE_KINDS = ("settlement", "locality", "region", "route", "unknown")
+TAXON_RANKS = ("species", "subspecies", "genus", "family", "group")
+PLACE_KINDS = ("settlement", "locality", "region")
 ENTRY_KINDS = ("field-day", "species-digest", "retrospective", "correspondence", "other")
-TIME_OF_DAY = ("morning", "forenoon", "noon", "afternoon", "evening", "night")
-DAYLIGHT_PHASE = ("dawn", "day", "dusk", "night")
-SPATIAL_CONFIDENCE = ("high", "medium", "low", "inferred")
+TIME_OF_DAY = ("dawn", "morning", "forenoon", "noon", "afternoon", "evening", "dusk", "night")
+# how a Taxon's vernacular name was tied to a scientific name / GBIF record (lkg:matchMethodScheme)
+MATCH_METHODS = ("gazetteer", "llm", "llm+gbif", "review", "machine-review", "unresolved")
 
 
 def normalize_enum(raw: object, vocabulary: tuple[str, ...]) -> Optional[str]:
@@ -118,17 +118,18 @@ TRANSPORT_MODE_CUES = (
 )
 
 
-def normalize_transport_mode(raw: object) -> str:
-    """Map an LLM-supplied transport mode onto the SHACL vocabulary."""
+def normalize_transport_mode(raw: object) -> Optional[str]:
+    """Map an LLM-supplied transport mode onto the SHACL vocabulary; None when
+    the mode is not stated or not recognisable (no "unknown" placeholder)."""
     if not raw:
-        return "unknown"
+        return None
     value = str(raw).strip().lower()
     if value in TRANSPORT_MODES:
         return value
     for mode, cues in TRANSPORT_MODE_CUES:
         if any(cue in value for cue in cues):
             return mode
-    return "unknown"
+    return None
 
 # Approximate / plural quantity cues (no exact integer available).
 PLURAL_CUES = (
@@ -243,12 +244,12 @@ def normalize_temperature_unit(raw: object) -> Optional[str]:
     return None
 
 
-def basis_of_record(record_type: Optional[str], evidence_kinds) -> str:
+def basis_of_record(record_type: Optional[str], evidence_kinds, has_citation: bool = True) -> str:
     """Darwin Core basisOfRecord. Literature wins: a cited record is a
-    MaterialCitation even when it concerns a specimen; a specimen the diarist
-    handled is a PreservedSpecimen; everything else (first- or second-hand
-    sighting) is a HumanObservation."""
-    if record_type == "literature-record":
+    MaterialCitation even when it concerns a specimen (only with a citation to
+    point to); a collected or preserved specimen is a PreservedSpecimen;
+    everything else (first- or second-hand sighting) is a HumanObservation."""
+    if record_type == "literature-record" and has_citation:
         return "MaterialCitation"
     if any(k == "specimen" for k in evidence_kinds):
         return "PreservedSpecimen"
@@ -256,12 +257,13 @@ def basis_of_record(record_type: Optional[str], evidence_kinds) -> str:
 
 
 # breeding-evidence categories that imply dwc:reproductiveCondition "breeding"
-BREEDING_IMPLIES_BREEDING = ("confirmed", "probable")
+# (only confirmed: a territorial song is not a reproductive condition of the bird)
+BREEDING_IMPLIES_BREEDING = ("confirmed",)
 
 
 def reproductive_condition(breeding_evidence: Optional[str], behaviours) -> Optional[str]:
     """Single Darwin Core reproductiveCondition for a record, shared by the RDF
-    emitter and the DwC-A writer: atlas-style confirmed/probable breeding
+    emitter and the DwC-A writer: atlas-style confirmed breeding
     evidence -> "breeding"; otherwise the first behaviour that carries one
     (offline backend); None when nothing is stated."""
     if breeding_evidence in BREEDING_IMPLIES_BREEDING:

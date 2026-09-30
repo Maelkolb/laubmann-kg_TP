@@ -98,10 +98,15 @@ def run_qa(entries, config: Optional[dict] = None):
 
         # --- date -----------------------------------------------------------
         if e.date_plausible is False:
+            # a compilation (digest, retrospective, report) whose records carry
+            # their own dates is kept: only its header date is doubtful
+            compiled = (e.entry_kind in _RETROSPECTIVE_KINDS
+                        or any(o.event_date for o in e.observations))
+            excluded = exclude_implausible and not compiled
             flags.append(QAFlag(e.entry_id, e.entry_uid, "implausible_date",
                 e.date_note or "Datum laut Modell widersprüchlich und nicht korrigierbar",
-                _act(exclude_implausible), e.entry_date or ""))
-            drop_entry = drop_entry or exclude_implausible
+                _act(excluded), e.entry_date or ""))
+            drop_entry = drop_entry or excluded
         elif e.header_date and e.entry_date and e.header_date != e.entry_date:
             flags.append(QAFlag(e.entry_id, e.entry_uid, "date_corrected",
                 e.date_note or f"Kopfzeile {e.header_date} -> {e.entry_date}",
@@ -118,6 +123,12 @@ def run_qa(entries, config: Optional[dict] = None):
                     + (f"; Eintragstyp {e.entry_kind}" if e.entry_kind else ""),
                     _act(excluded), e.entry_date))
                 drop_entry = drop_entry or excluded
+
+        # --- extraction -----------------------------------------------------
+        if "truncated_output" in getattr(e, "flags", ()):
+            flags.append(QAFlag(e.entry_id, e.entry_uid, "truncated_output",
+                "Modellantwort am Token-Limit abgeschnitten; nur der reparierte Anfang ist übernommen",
+                "flagged", f"{len(e.observations)} Beobachtungen"))
 
         # --- place ----------------------------------------------------------
         if e.place is None and e.location_raw and e.location_raw.strip():
@@ -136,18 +147,26 @@ def run_qa(entries, config: Optional[dict] = None):
                 if exclude_non_bird:
                     continue
             elif (taxon.scientific_name is None
-                  and (taxon.rank in (None, "unknown"))
                   and taxon.confidence is not None and taxon.confidence < min_conf):
-                # only a STATED low model confidence excludes; the offline backend
-                # and legacy responses carry no confidence and are kept
+                # only a STATED low model confidence excludes (the model is not
+                # sure the word names an organism); the offline backend and
+                # legacy responses carry no confidence and are kept
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "low_confidence_taxon",
-                    f"kein wissenschaftlicher Name, Rang unbekannt, Konfidenz {taxon.confidence}",
+                    f"kein wissenschaftlicher Name, Konfidenz {taxon.confidence}",
                     _act(exclude_low_conf), taxon.vernacular_de))
                 if exclude_low_conf:
                     continue
             if "record_type_conflict" in obs.flags:
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "record_type_conflict",
                     "field-observation trotz Beobachter/Zitat — Modellangabe beibehalten",
+                    "flagged", taxon.vernacular_de))
+            if "literature_without_citation" in obs.flags:
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "literature_without_citation",
+                    "literature-record ohne Zitat — basisOfRecord HumanObservation",
+                    "flagged", taxon.vernacular_de))
+            if "absent_with_count" in obs.flags:
+                flags.append(QAFlag(e.entry_id, e.entry_uid, "absent_with_count",
+                    "Fehlnachweis mit Anzahl > 0 — Anzahl verworfen",
                     "flagged", taxon.vernacular_de))
             kept_obs.append(obs)
         e.observations = kept_obs

@@ -186,6 +186,7 @@ def test_rdf_emission_and_shacl_conforms(tmp_path) -> None:
                   literature_citation="A.S.Z. 1949, S. 12"),
         _obs_item("Star", evidence=[{"kind": "specimen"}]),
         _obs_item("Milan", record_type="third-party-report"),
+        _obs_item("Uhu", record_type="literature-record"),          # no citation given
     ]})
     entry, obs = _run(payload)
     graph = build_graph(ExtractionResult(entries=[entry]))
@@ -205,7 +206,14 @@ def test_rdf_emission_and_shacl_conforms(tmp_path) -> None:
     # unattributed third-party record: attribution is never fabricated
     assert graph.value(nodes[3], DWCIRI.recordedBy) is None
     citation = graph.value(nodes[1], DWC.associatedReferences)
-    assert citation == Literal("A.S.Z. 1949, S. 12", lang="de")
+    assert citation == Literal("A.S.Z. 1949, S. 12")                 # 0.7.0: untagged literal
+    # a literature record without a citation has nothing to cite: HumanObservation,
+    # flagged for QA; nobody recorded it
+    assert obs[4].record_type == "literature-record"
+    assert "literature_without_citation" in obs[4].flags
+    assert "literature_without_citation" not in obs[1].flags
+    assert graph.value(nodes[4], DWC.basisOfRecord) == Literal("HumanObservation")
+    assert graph.value(nodes[4], DWCIRI.recordedBy) is None
 
     ttl = tmp_path / "provenance.ttl"
     serialize_turtle(graph, ttl)
@@ -234,8 +242,12 @@ def test_dwca_provenance() -> None:
                     record_type="third-party-report"),
         Observation(entry_uid=entry.entry_uid, taxon=Taxon(vernacular_de="Amsel"),
                     verbatim_notes="n", index=2),
+        Observation(entry_uid=entry.entry_uid, taxon=Taxon(vernacular_de="Uhu"),
+                    verbatim_notes="n", index=3, record_type="literature-record"),   # no citation
     ]
     rows = build_occurrences(ExtractionResult(entries=[entry]))
+    assert rows[3]["basisOfRecord"] == "HumanObservation"   # nothing to cite
+    assert rows[3]["recordedBy"] == ""
     # literature wins over specimen evidence
     assert rows[0]["basisOfRecord"] == "MaterialCitation"
     assert rows[0]["recordedBy"] == ""                  # observerless literature record

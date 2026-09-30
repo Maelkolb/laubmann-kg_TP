@@ -51,3 +51,22 @@ def normalize_date(date_raw: Optional[str], date_norm: Optional[str] = None) -> 
         if match and _valid_iso(*(int(g) for g in match.groups())):
             return date_norm.strip()
     return parse_german_date(date_raw or "")
+
+
+def event_date(entry) -> str:
+    """Darwin Core eventDate of an entry: ISO date, or the ISO interval
+    ``start/end`` for a multi-day entry (shared by the RDF and the DwC-A)."""
+    start = entry.entry_date or ""
+    end = getattr(entry, "entry_date_end", None)
+    if start and end and end != start:
+        return f"{start}/{end}"
+    return start
+
+
+def obs_event_date(obs, entry_date: str) -> str:
+    """Darwin Core eventDate of a record: its own date (or date range) when the
+    text gives one, else the entry's date or interval."""
+    if obs.event_date:
+        end = getattr(obs, "event_date_end", None)
+        return f"{obs.event_date}/{end}" if end and end != obs.event_date else obs.event_date
+    return entry_date

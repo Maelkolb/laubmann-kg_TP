@@ -14,13 +14,25 @@ from laubmann_kg.kg.shacl_validate import run_shacl_validation
 logger = logging.getLogger(__name__)
 
 
+def review_dir_default(config: dict, output_dir: Path) -> dict:
+    """The review CSVs a run writes (link and merge reviews) go to
+    ``<output_dir>/review`` unless the config names a folder: ``data/review``
+    holds the adjudicated decision files the run READS (``reviewed_csv``), and
+    writing into it would overwrite them."""
+    for section in ("linking", "resolution"):
+        cfg = config.get(section)
+        if isinstance(cfg, dict) and not cfg.get("review_dir"):
+            cfg["review_dir"] = str(Path(output_dir) / "review")
+    return config
+
+
 def export(config: dict, input_dir: Optional[Path], output_dir: Path,
-           validate: bool = True, result=None) -> dict:
+           validate: bool = True, result=None, raise_on_violation: bool = True) -> dict:
     """RDF/Turtle + JSON-LD (+ SHACL) of ``result``; runs the pipeline when no
     result is passed. ``export_all`` shares one pipeline run with the DwC-A."""
     if result is None:
         from laubmann_kg.pipeline import run_pipeline
-        result = run_pipeline(config, input_dir)
+        result = run_pipeline(review_dir_default(config, output_dir), input_dir)
 
     output_dir = Path(output_dir)
     if result.qa_flags:
@@ -62,7 +74,7 @@ def export(config: dict, input_dir: Optional[Path], output_dir: Path,
             ontology_path=paths.get("ontology", "ontologies/laubmann.ttl"),
             shapes_path=paths.get("shapes", "ontologies/shacl_shapes.ttl"),
         )
-        if not conforms:
+        if not conforms and raise_on_violation:
             raise SystemExit("SHACL validation failed (violations) – export aborted.")
 
     return {
@@ -82,9 +94,15 @@ def export_all(config: dict, input_dir: Optional[Path], output_dir: Path, valida
     uncached entry is made once, not once per export)."""
     from laubmann_kg.dwca import export as export_dwca
     from laubmann_kg.pipeline import run_pipeline
-    result = run_pipeline(config, input_dir)
-    summary = export(config, input_dir, output_dir, validate=validate, result=result)
+    result = run_pipeline(review_dir_default(config, output_dir), input_dir)
+    # SHACL violations are reported after BOTH outputs exist: a failing graph
+    # must not cost the archive of a multi-hour run
+    summary = export(config, input_dir, output_dir, validate=validate, result=result,
+                     raise_on_violation=False)
     summary["dwca"] = export_dwca(config, input_dir, output_dir, validate=validate, result=result)
+    if not summary["shacl_conforms"]:
+        raise SystemExit("SHACL validation failed (violations) – see the report; "
+                         "RDF, JSON-LD and DwC-A were written.")
     return summary
 
 

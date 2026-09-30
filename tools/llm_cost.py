@@ -22,6 +22,9 @@ from pathlib import Path
 PRICES = {
     "gemini-3.5-flash": (1.50, 0.15, 9.00),
     "gemini-3.5-flash-lite": (0.30, 0.03, 2.50),
+    # promo prices through 2026-12-31 (from 2027: 1.50 / 0.15 / 7.50)
+    "gemini-3.8-flash": (0.75, 0.075, 3.75),
+    "gemini-3.7-flash": (0.75, 0.075, 3.75),
 }
 
 
@@ -49,7 +52,8 @@ def summarize(paths: list[Path], since: str = "", prices: tuple[float, float, fl
             total["cached"] += cached
             total["output"] += output
             total["thoughts"] += thoughts
-            total["usd"] += ((prompt - cached) * p_in + cached * p_cached + (output + thoughts) * p_out) / 1e6
+            usd = ((prompt - cached) * p_in + cached * p_cached + (output + thoughts) * p_out) / 1e6
+            total["usd"] += usd * (0.5 if usage.get("batch") else 1.0)   # Batch API: half price
     return total
 
 

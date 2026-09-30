@@ -39,9 +39,9 @@ DEFAULT_ABSTRACT = (
     "sampling event; each bird record within an entry is an occurrence. Records "
     "were transcribed from page scans and structured by a documented extraction "
     "pipeline; verbatim wording is retained in fieldNotes and occurrenceRemarks, "
-    "and categorical facts (evidence, count qualifier, breeding evidence, movement) "
-    "are published as ExtendedMeasurementOrFact rows with concept IRIs from the "
-    "project vocabulary."
+    "and categorical facts (evidence, call type, count qualifier, breeding evidence, "
+    "movement, record type, time of day, EUNIS habitat class) are published as "
+    "ExtendedMeasurementOrFact rows with concept IRIs from the project vocabulary."
 )
 
 
@@ -115,8 +115,10 @@ def _coverage(result: "ExtractionResult") -> str:
         ]
     lines += [
         "  <taxonomicCoverage>",
-        "    <generalTaxonomicCoverage>Birds (class Aves); occasional non-avian "
-        "records are flagged via kingdom/class</generalTaxonomicCoverage>",
+        "    <generalTaxonomicCoverage>Birds (class Aves). Records of other "
+        "organisms named in the diaries are excluded by the quality checks; "
+        "birds the diarist named without a resolvable species are published "
+        "as class Aves with his name in vernacularName</generalTaxonomicCoverage>",
         "    <taxonomicClassification>",
         "      <taxonRankName>class</taxonRankName>",
         "      <taxonRankValue>Aves</taxonRankValue>",
@@ -206,14 +208,17 @@ def build_archive(result: "ExtractionResult", output_dir: Path, config: dict | N
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    media_map = multimedia.media_by_entry(result)
     tables = {
         "event.txt": (event.FIELDS, event.build_events(result)),
-        "occurrence.txt": (occurrence.FIELDS, occurrence.build_occurrences(result, media_map)),
+        "occurrence.txt": (occurrence.FIELDS, occurrence.build_occurrences(result)),
         "measurementorfact.txt": (measurement_or_fact.FIELDS,
                                   measurement_or_fact.build_measurements(result)),
-        "multimedia.txt": (multimedia.FIELDS, multimedia.build_multimedia(result)),
     }
+    media_rows = multimedia.build_multimedia(result)
+    if media_rows:                  # only hosted crops (multimodal.image_base_url)
+        tables["multimedia.txt"] = (multimedia.FIELDS, media_rows)
+    elif (output_dir / "multimedia.txt").exists():
+        (output_dir / "multimedia.txt").unlink()     # left over from an earlier hosted build
 
     counts = {}
     for filename, (fields, rows) in tables.items():
@@ -223,8 +228,9 @@ def build_archive(result: "ExtractionResult", output_dir: Path, config: dict | N
     extensions = [
         FileSpec("occurrence", "occurrence.txt", occurrence.FIELDS),
         FileSpec("measurement_or_fact", "measurementorfact.txt", measurement_or_fact.FIELDS),
-        FileSpec("multimedia", "multimedia.txt", multimedia.FIELDS),
     ]
+    if "multimedia.txt" in tables:
+        extensions.append(FileSpec("multimedia", "multimedia.txt", multimedia.FIELDS))
     (output_dir / "meta.xml").write_text(build_meta_xml(core, extensions), encoding="utf-8")
     (output_dir / "eml.xml").write_text(build_eml(result, config), encoding="utf-8")
 

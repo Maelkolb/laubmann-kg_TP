@@ -29,7 +29,7 @@ def test_graph_from_result_matches_explorer_v7_schema(sample_config) -> None:
 
 def test_graph_json_and_shell_expose_ziel1_fields() -> None:
     from laubmann_kg.kg.model import (
-        DiaryEntry, Observation, Place, Taxon,
+        DiaryEntry, Observation, Person, Place, Taxon,
     )
     from laubmann_kg.pipeline import ExtractionResult
 
@@ -43,20 +43,30 @@ def test_graph_json_and_shell_expose_ziel1_fields() -> None:
         text_clean="Vormittags 1/2 12 h vom Fenster.",
         place=place,
     )
+    companion = Person("Kiefer", role="companion")
+    entry.persons = [companion]
     entry.observations = [Observation(
         entry_uid=entry.entry_uid, taxon=Taxon("Mauersegler"),
         verbatim_notes="erste Mauersegler", place=own, locality=own, index=0,
         spatial_context="vom Fenster meiner Wohnung an der äußeren Prinzregentenstraße 14",
-        time_of_day="forenoon", event_time="11:30", estimated_radius_m=100,
-        sampling_protocol="Ansitz/Fensterbeobachtung",
+        microhabitat="Wohngebäude/Fenster", time_of_day="dusk", event_time="11:30",
+        altitude_m=520.0, co_observers=[companion],
     )]
-    obs = graph_from_result(ExtractionResult(entries=[entry]))["obs"][0]
-    assert obs["sc"].startswith("vom Fenster")
-    assert obs["tod"] == "forenoon" and obs["tm"] == "11:30" and obs["rad"] == 100
+    graph = graph_from_result(ExtractionResult(entries=[entry]))
+    obs = graph["obs"][0]
+    assert obs["sc"].startswith("vom Fenster") and obs["mh"] == "Wohngebäude/Fenster"
+    assert obs["tod"] == "dusk" and obs["tm"] == "11:30" and obs["altm"] == 520.0
+    # 0.7.0: companions who observed with the diarist; the removed 0.5.0 fields are gone
+    assert [graph["persons"][i]["name"] for i in obs["with"]] == ["Kiefer"]
+    for gone in ("rad", "sp", "sconf", "dl", "dur"):
+        assert gone not in obs
     html = Path("tools/explorer/index.html").read_text(encoding="utf-8")
-    for term in ("lkg:spatialContext", "lkg:timeOfDay", "lkg:observationRadiusMeters",
-                 "dwc:samplingProtocol", "lkg:microhabitat"):
+    for term in ("lkg:spatialContext", "lkg:timeOfDay", "lkg:microhabitat",
+                 "dwc:minimumElevationInMeters", "dwc:maximumElevationInMeters", "observed with"):
         assert term in html
+    for term in ("lkg:observationRadiusMeters", "dwc:samplingProtocol", "lkg:daylightPhase",
+                 "lkg:spatialConfidence", "lkg:observationDurationMinutes", "lkg:altitudeM"):
+        assert term not in html
     assert "drive.google.com/file/d/" in html
     assert "function scanHref" in html
     vol1 = DiaryEntry(

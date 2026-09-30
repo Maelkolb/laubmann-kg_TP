@@ -157,6 +157,12 @@ def _iso_date(value) -> Optional[str]:
     return f"{year:04d}-{month:02d}-{day:02d}"
 
 
+def _altitude(value) -> Optional[float]:
+    """Metres above sea level within a plausible range, else None."""
+    number = _sanitize_float(value)
+    return number if number is not None and -500 <= number <= 9000 else None
+
+
 def _clock_time(value) -> Optional[str]:
     text = _text(value)
     if not text:
@@ -266,21 +272,34 @@ def _sanitize_observer(value) -> Optional[str]:
     return name
 
 
-def _resolve_observer(name: str, persons: list[Person]) -> Person:
+_TITLES = {"dr", "prof", "frl", "frau", "herr", "hr", "fr", "studienrat", "förster", "forstmeister",
+           "oberförster", "oberlehrer", "lehrer", "pfarrer", "freiherr", "graf", "von", "v"}
+
+
+def _given_initials(name: str) -> list[str]:
+    """First letters of the given names ("Dr. W. Wüst" -> ["w"]); titles skipped."""
+    tokens = [t.strip(".,").casefold() for t in name.split()[:-1]]
+    return [t[0] for t in tokens if t and t not in _TITLES]
+
+
+def _resolve_observer(name: str, persons: list[Person], role: str = "source") -> Person:
     """Link an observer name to the entry's persons: exact case-insensitive name
     first (the prompt asks the model to spell it as in ``persons``), then a
-    unique surname match ("Kiel" -> "Förster Kiel"); otherwise a fresh Person
-    with role 'source'."""
+    unique surname match whose given names/initials do not contradict ("Kiel"
+    -> "Förster Kiel", but "H. Wüst" never -> "W. Wüst"); otherwise a fresh
+    Person with ``role``."""
     low = name.casefold()
     for p in persons:
         if p.name.casefold() == low:
             return p
     surname = low.split()[-1].rstrip(".")
+    mine = _given_initials(name)
     matches = [p for p in persons
-               if p.name.casefold().split()[-1].rstrip(".") == surname]
+               if p.name.casefold().split()[-1].rstrip(".") == surname
+               and (not mine or not _given_initials(p.name) or _given_initials(p.name)[0] == mine[0])]
     if len(matches) == 1:
         return matches[0]
-    return Person(name=name, role="source")
+    return Person(name=name, role=role)
 
 
 # --------------------------------------------------------------------------
@@ -302,17 +321,18 @@ def _model_place(raw, default_kind: str = "locality",
     kind = vocab.normalize_enum(raw.get("kind"), vocab.PLACE_KINDS) or default_kind
     verbatim = _text(raw.get("verbatim")) or verbatim_fallback or name
     lat, lon = lookup_coordinates(name)
-    return Place(verbatim=verbatim, canonical=name, lat=lat, long=lon, kind=kind)
+    elevation = _sanitize_float(raw.get("altitude_m"))
+    if elevation is not None and not -500 <= elevation <= 9000:
+        elevation = None
+    return Place(verbatim=verbatim, canonical=name, lat=lat, long=lon, kind=kind,
+                 elevation_m=elevation)
 
 
 def map_entry_place(raw, location_raw: Optional[str]) -> Optional[Place]:
-    """The entry's main place as read by the model. ``None`` when the model says
-    there is no usable place (explicit null / kind unknown without name)."""
-    place = _model_place(raw, default_kind="settlement",
-                         verbatim_fallback=(location_raw or "").strip() or None)
-    if place is not None and place.kind == "unknown":
-        return None           # the model saw no usable place (QA flags 'nonplace')
-    return place
+    """The entry's main place as read by the model; ``None`` when the model
+    gave none (null; QA flags 'nonplace')."""
+    return _model_place(raw, default_kind="settlement",
+                        verbatim_fallback=(location_raw or "").strip() or None)
 
 
 def map_entry_date(raw, header_iso: Optional[str]) -> dict:
@@ -328,7 +348,7 @@ def map_entry_date(raw, header_iso: Optional[str]) -> dict:
     if iso:
         out["iso"] = iso
     end_iso = _iso_date(raw.get("end_iso"))
-    if end_iso and out["iso"] and end_iso >= out["iso"]:
+    if end_iso and out["iso"] and end_iso > out["iso"]:
         out["end_iso"] = end_iso
     out["plausible"] = _sanitize_bool(raw.get("plausible"))
     out["note"] = _text(raw.get("note"))
@@ -350,24 +370,27 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
         vernacular = _text(item.get("vernacular_de"))
         if not vernacular:
             continue
-        resolution = resolver.resolve(vernacular)
         llm_sci = _text(item.get("scientific_name"))
-        scientific = llm_sci or resolution.scientific_name
-        rank = vocab.normalize_enum(item.get("taxon_rank"), vocab.TAXON_RANKS)
-        if rank is None and "taxon_rank" in item and item.get("taxon_rank") is not None:
-            rank = "unknown"      # the model said something outside the vocabulary
+        # omitted rank = species (prompt v4 omits defaults); a value outside
+        # the vocabulary is dropped rather than guessed
+        rank = (vocab.normalize_enum(item.get("taxon_rank"), vocab.TAXON_RANKS)
+                if item.get("taxon_rank") is not None else "species")
+        # The seed gazetteer names SPECIES: it may fill a species the model left
+        # without a name, never a genus/family/group ("Bussard" is not Buteo buteo)
+        resolution = resolver.resolve(vernacular) if rank == "species" and not llm_sci else None
+        scientific = llm_sci or (resolution.scientific_name if resolution else None)
         # A resolver IRI is only meaningful for the resolver's own binomial.
-        taxon_iri = resolution.taxon_iri if (
-            resolution.taxon_iri and (not llm_sci or llm_sci == resolution.scientific_name)) else None
+        taxon_iri = resolution.taxon_iri if resolution is not None and resolution.taxon_iri else None
+        is_bird = _sanitize_bool(item.get("is_bird"))
         taxon = Taxon(
             vernacular_de=vernacular,
             scientific_name=scientific,
             taxon_iri=taxon_iri,
-            match_method="llm" if llm_sci else resolution.match_method,
+            match_method="llm" if llm_sci else (resolution.match_method if resolution else "unresolved"),
             confidence=_sanitize_confidence(item.get("confidence")),
             note=None if scientific else "wissenschaftlicher Name nicht angegeben",
             rank=rank,
-            is_bird=_sanitize_bool(item.get("is_bird")),
+            is_bird=True if is_bird is None else is_bird,     # omitted = a bird (prompt v4)
         )
         evidence, behaviour_phrases = _fold_vocal_behaviour(
             _evidence_from(item.get("evidence")),
@@ -381,6 +404,16 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             observer = _resolve_observer(observer_name, entry.persons)
             if observer not in entry.persons:
                 entry.persons.append(observer)   # the entry mentions its observers
+        co_observers: list[Person] = []
+        for raw_name in _as_list(item.get("observed_with")):
+            name = _sanitize_observer(raw_name)
+            if not name:
+                continue
+            companion = _resolve_observer(name, entry.persons, role="companion")
+            if companion not in entry.persons:
+                entry.persons.append(companion)
+            if companion != observer and companion not in co_observers:
+                co_observers.append(companion)
         flags: list[str] = []
         # membership first; a German label the model used for the same concept
         # ("Literaturangabe") is folded onto the vocabulary — the model's own word,
@@ -393,31 +426,57 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
         elif record_type == "field-observation" and (observer is not None or citation):
             # keep the model's reading, but surface the tension for review
             flags.append("record_type_conflict")
+        if record_type == "literature-record" and not citation:
+            flags.append("literature_without_citation")
         occurrence_status = vocab.normalize_enum(item.get("occurrence_status"),
                                                  vocab.OCCURRENCE_STATUS) or "present"
         count = _sanitize_int(item.get("individual_count"), minimum=0)
-        if count == 0 and occurrence_status != "absent":
-            count = None          # a zero is only meaningful for an explicit absence
         count_min = _sanitize_int(item.get("count_min"), minimum=0)
         count_max = _sanitize_int(item.get("count_max"), minimum=0)
-        if count_min is not None and count_max is not None and count_max < count_min:
-            count_min, count_max = count_max, count_min
-        if count is None and count_min is not None:
-            count = count_min     # prompt: the lower bound is the count
+        qualifier = vocab.normalize_enum(item.get("count_qualifier"), vocab.COUNT_QUALIFIERS)
+        if count_min is not None and count_max is not None:
+            if count_max < count_min:
+                count_min, count_max = count_max, count_min
+            if count_min == count_max:
+                count, count_min, count_max = count_min, None, None
+            else:
+                count = count_min             # dwc:individualCount = the lower bound of a range
+                qualifier = qualifier or "approximate"
+        elif count_min is not None or count_max is not None:
+            # a lone bound is a minimum ("über 30") or a maximum ("bis zu 20")
+            bound = count_min if count_min is not None else count_max
+            count = count if count is not None else bound
+            qualifier = qualifier or ("minimum" if count_min is not None else "maximum")
+            count_min = count_max = None
+        if occurrence_status == "absent":
+            if count:
+                flags.append("absent_with_count")
+                count = None
+        elif count == 0:
+            count = None          # a zero is only meaningful for an explicit absence
+        if count is not None and qualifier is None:
+            qualifier = "exact"   # omitted qualifier next to a number (prompt v4 default)
         locality = _model_place(item.get("locality"), default_kind="locality")
+        if locality is not None and place is not None and locality.name.casefold() == place.name.casefold():
+            locality = None       # the entry place itself, not an own locality
+        event_date = _iso_date(item.get("event_date"))
+        event_date_end = _iso_date(item.get("event_date_end"))
+        if not event_date or not event_date_end or event_date_end <= event_date:
+            event_date_end = None
         observations.append(Observation(
             entry_uid=entry.entry_uid,
             taxon=taxon,
-            verbatim_notes=_text(item.get("verbatim_notes")) or entry.text_clean or vernacular,
+            verbatim_notes=_text(item.get("verbatim_notes")) or vernacular,
             place=locality or place,
             individual_count=count,
-            count_qualifier=vocab.normalize_enum(item.get("count_qualifier"), vocab.COUNT_QUALIFIERS),
+            count_qualifier=qualifier,
             evidence=evidence,
             behaviour=behaviour,
             habitat=Habitat(habitat) if habitat else None,
             index=index,
             record_type=record_type,
             observer=observer,
+            co_observers=co_observers,
             literature_citation=citation,
             locality=locality,
             occurrence_status=occurrence_status,
@@ -430,20 +489,14 @@ def map_items(entry: DiaryEntry, items: list, resolver: TaxonResolver,
             movement_kind=vocab.normalize_enum(item.get("movement_kind"), vocab.MOVEMENT_KINDS),
             flight_direction=_text(item.get("flight_direction")),
             identification_qualifier=_text(item.get("identification_qualifier")),
-            event_date=_iso_date(item.get("event_date")),
+            event_date=event_date,
+            event_date_end=event_date_end,
             event_time=_clock_time(item.get("event_time")),
             spatial_context=_text(item.get("spatial_context")),
             microhabitat=_text(item.get("microhabitat")),
             relative_elevation=_text(item.get("relative_elevation")),
-            altitude_m=_sanitize_float(item.get("altitude_m")),
+            altitude_m=_altitude(item.get("altitude_m")),
             time_of_day=vocab.normalize_enum(item.get("time_of_day"), vocab.TIME_OF_DAY),
-            daylight_phase=vocab.normalize_enum(item.get("daylight_phase"), vocab.DAYLIGHT_PHASE),
-            sampling_protocol=_text(item.get("sampling_protocol")),
-            estimated_radius_m=_sanitize_int(item.get("estimated_radius_m"), minimum=1),
-            spatial_confidence=vocab.normalize_enum(
-                item.get("spatial_confidence"), vocab.SPATIAL_CONFIDENCE),
-            observation_duration_minutes=_sanitize_int(
-                item.get("observation_duration_minutes"), minimum=1),
             flags=tuple(flags),
         ))
     return observations
@@ -460,7 +513,7 @@ def _travel_place(name) -> Optional[Place]:
     if not raw:
         return None
     lat, lon = lookup_coordinates(raw)
-    return Place(verbatim=raw, canonical=raw, lat=lat, long=lon, kind="settlement" if lat is not None else None)
+    return Place(verbatim=raw, canonical=raw, lat=lat, long=lon)
 
 
 def _iso_datetime(entry_date: Optional[str], raw) -> Optional[str]:
@@ -545,22 +598,15 @@ def map_persons(items: list) -> list[Person]:
 # entry point
 # --------------------------------------------------------------------------
 
-def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
-                             place: Optional[Place], prompts, schema: dict) -> list[Observation]:
-    """One LLM call per entry. Returns the observations; entry place/date/kind,
-    travel_events, persons, and weather are attached to ``entry`` directly.
-    Legacy array-only responses (old caches, old schema configs) are accepted
-    as bare observations.
-
-    ``place`` is the caller's fallback for the entry place (used only when the
-    response carries no ``entry_place`` key at all, e.g. legacy responses).
-
-    Ordering is load-bearing: ``entry.persons`` is assigned before ``map_items``
-    runs so ``_resolve_observer`` sees the entry's persons; do not reorder."""
+def render_prompt(entry: DiaryEntry, prompts) -> Optional[str]:
+    """The extraction prompt of one entry (None for an entry without text).
+    The single place a prompt is rendered: live calls and the batch tool
+    (tools/batch_extract.py) must produce the same text, since the cache key is
+    sha256(model, prompt)."""
     text = entry.text_clean or ""
     if not text.strip():
-        return []
-    prompt = prompts.render(
+        return None
+    return prompts.render(
         "observation_extraction",
         entry_date=entry.entry_date or "",
         date_raw=entry.verbatim_event_date or "",
@@ -569,7 +615,28 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
         context=entry.context_before or "",
         segment_note=segment_note(entry),
     )
+
+
+def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
+                             place: Optional[Place], prompts, schema: dict) -> list[Observation]:
+    """One LLM call per entry. Returns the observations; entry place/date/kind,
+    travel_events, persons, and weather are attached to ``entry`` directly.
+    Legacy array-only responses (old caches, old schema configs) are accepted
+    as bare observations.
+
+    ``place`` is the caller's fallback for the entry place, used only for a
+    legacy response (a bare observation array); a missing ``entry_place`` key
+    in an entry object means the model read no place.
+
+    Ordering is load-bearing: ``entry.persons`` is assigned before ``map_items``
+    runs so ``_resolve_observer`` sees the entry's persons; do not reorder."""
+    prompt = render_prompt(entry, prompts)
+    if prompt is None:
+        return []
     raw = client.complete(prompt)
+    if getattr(raw, "truncated", False):
+        # the model hit max_output_tokens: the repaired prefix is used, QA flags it
+        entry.flags.append("truncated_output")
     try:
         data = parse_structured(raw, schema)
     except Exception as exc:  # noqa: BLE001 - eyeball mode: log and degrade gracefully
@@ -581,7 +648,8 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
             logger.error("could not parse LLM output for %s; skipping. raw=%r",
                          entry.entry_id, (raw or "")[:800])
             return []
-    if isinstance(data, list):
+    legacy = isinstance(data, list)          # pre-2026-08 caches: a bare observation array
+    if legacy:
         data = {"observations": data}
     if not isinstance(data, dict):
         data = {}
@@ -593,10 +661,10 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
     entry.entry_date_end = date["end_iso"]
     entry.date_plausible = date["plausible"]
     entry.date_note = date["note"]
-    if "entry_place" in data:
-        entry.place = map_entry_place(data.get("entry_place"), entry.location_raw)
-    else:
+    if legacy:
         entry.place = place                    # legacy response: caller's fallback
+    else:
+        entry.place = map_entry_place(data.get("entry_place"), entry.location_raw)
     entry.entry_kind = vocab.normalize_enum(data.get("entry_kind"), vocab.ENTRY_KINDS)
 
     entry.travel_events = map_travel(entry, data.get("travel_events"), entry.place)

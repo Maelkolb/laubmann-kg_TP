@@ -94,17 +94,20 @@ def test_non_bird_observation_excluded_by_default():
     assert len(kept[0].observations) == 1 and flags[0].action == "flagged"
 
 
-def test_low_confidence_unranked_taxon_excluded_but_genus_level_kept():
+def test_low_confidence_unnamed_taxon_excluded_but_genus_level_kept():
+    # 0.7.0: no rank "unknown"; only a STATED low confidence (the model is not
+    # sure the word names an organism) excludes a record without a scientific name
     e = _entry("e", "1919-05-01", obs=[
-        _obs("Tolarla", None, rank="unknown", confidence=0.1),          # noise: model itself unsure
+        _obs("Tolarla", None, rank=None, confidence=0.1),               # noise: model itself unsure
         _obs("Limose", "Limosa", rank="genus", confidence=1.0),         # genus-level record: kept
-        _obs("Spötter", None, rank="genus", confidence=0.9),            # rank stated -> kept
+        _obs("Spötter", None, rank="genus", confidence=0.9),            # confident genus -> kept
+        _obs("Rohrschwirl?", None, rank="genus", confidence=0.1),       # a rank no longer shields noise
         _obs("Kormoran", None, is_bird=True, confidence=1.0),           # unresolved but confident -> kept
         _obs("Wied", None),                                             # offline/legacy: no signal -> kept
     ])
     kept, flags = run_qa([e], {"exclude": True})
     assert [o.taxon.vernacular_de for o in kept[0].observations] == ["Limose", "Spötter", "Kormoran", "Wied"]
-    assert any(f.reason == "low_confidence_taxon" and f.value == "Tolarla" for f in flags)
+    assert {f.value for f in flags if f.reason == "low_confidence_taxon"} == {"Tolarla", "Rohrschwirl?"}
     assert not any(f.reason == "low_confidence_taxon" and f.value == "Wied" for f in flags)
 
 

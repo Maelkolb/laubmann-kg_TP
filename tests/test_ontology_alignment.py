@@ -1,4 +1,4 @@
-"""Ontology <-> emitter <-> SHACL <-> JSON-LD alignment guard (ontology 0.6.0).
+"""Ontology <-> emitter <-> SHACL <-> JSON-LD alignment guard (ontology 0.7.0).
 
 The ontology TTL is the single source of truth for the project vocabulary.
 This module enforces, in both directions, that
@@ -13,7 +13,7 @@ This module enforces, in both directions, that
     property is constrained by some property shape,
 (d) every ``lkg:`` term in the JSON-LD context is declared and every predicate
     the emitter uses has a context term (compaction is complete),
-(e) ontology, shapes and CHANGELOG agree on the version.
+(e) ontology, shapes, controlled vocabularies and CHANGELOG agree on the version.
 """
 
 from __future__ import annotations
@@ -123,12 +123,25 @@ def test_jsonld_context_matches_ontology_and_emitter() -> None:
     assert not missing, f"emitted predicates without a JSON-LD context term: {missing}"
 
 
+def test_jsonld_context_0_7_0_terms() -> None:
+    ctx = json.loads(CONTEXT.read_text(encoding="utf-8"))["@context"]
+    for gone in ("altitudeM", "observationRadiusMeters", "spatialConfidence", "observationDurationMinutes",
+                 "daylightPhase", "matchConfidence", "samplingProtocol", "toTaxon", "type"):
+        assert gone not in ctx, gone
+    assert ctx["dcType"] == {"@id": "dcterms:type", "@type": "@id"}       # "type" clashed with @type aliases
+    assert ctx["hasGeometry"] == {"@id": "gsp:hasGeometry", "@type": "@id"}
+    for term in ("minimumElevationInMeters", "maximumElevationInMeters"):
+        assert ctx[term] == {"@id": f"dwc:{term}", "@type": "xsd:decimal"}
+
+
 def test_versions_agree() -> None:
     onto = Graph().parse(str(ONTOLOGY), format="turtle")
     shapes = Graph().parse(str(SHAPES), format="turtle")
     version = str(onto.value(ONTO_IRI, OWL.versionInfo))
-    assert version == "0.6.0"
+    assert version == "0.7.0"
     assert str(shapes.value(SHAPES_IRI, OWL.versionInfo)) == version
+    vocab = Graph().parse(str(VOCABS), format="turtle")
+    assert str(vocab.value(URIRef("https://w3id.org/laubmann-kg/vocabularies"), OWL.versionInfo)) == version
     assert onto.value(ONTO_IRI, OWL.versionIRI) == URIRef(f"https://w3id.org/laubmann-kg/ontology/{version}")
     changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     assert version in changelog

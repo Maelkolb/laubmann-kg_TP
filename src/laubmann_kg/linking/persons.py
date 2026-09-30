@@ -275,23 +275,20 @@ def link_persons(result, cfg: dict, cache: JsonCache, offline: bool) -> tuple[in
         except Exception as exc:  # noqa: BLE001 - linking must never abort the pipeline
             logger.warning("person linking failed for %r: %s", item.get("name"), exc)
 
-    # collect-then-apply on EVERY occurrence (entry.persons and obs.observer):
-    # a partial replacement would diverge at the idempotency-guarded emitter.
+    # collect-then-apply on EVERY occurrence (entry.persons, obs.observer,
+    # obs.co_observers): a partial replacement would diverge at the
+    # idempotency-guarded emitter.
+    def enrich(p):
+        low = p.name.lower()
+        return replace(p, wikidata_iri=links.get(low, p.wikidata_iri),
+                       wikidata_match=grades.get(low, p.wikidata_match),
+                       gnd_iri=gnd.get(low, p.gnd_iri),
+                       gnd_match=gnd_grade.get(low, p.gnd_match))
+
     for entry in result.entries:
-        entry.persons = [
-            replace(p, wikidata_iri=links.get(p.name.lower(), p.wikidata_iri),
-                    wikidata_match=grades.get(p.name.lower(), p.wikidata_match),
-                    gnd_iri=gnd.get(p.name.lower(), p.gnd_iri),
-                    gnd_match=gnd_grade.get(p.name.lower(), p.gnd_match))
-            for p in entry.persons]
+        entry.persons = [enrich(p) for p in entry.persons]
         for obs in entry.observations:
             if obs.observer is not None:
-                obs.observer = replace(
-                    obs.observer,
-                    wikidata_iri=links.get(obs.observer.name.lower(),
-                                           obs.observer.wikidata_iri),
-                    wikidata_match=grades.get(obs.observer.name.lower(),
-                                              obs.observer.wikidata_match),
-                    gnd_iri=gnd.get(obs.observer.name.lower(), obs.observer.gnd_iri),
-                    gnd_match=gnd_grade.get(obs.observer.name.lower(), obs.observer.gnd_match))
+                obs.observer = enrich(obs.observer)
+            obs.co_observers = [enrich(p) for p in obs.co_observers]
     return len(links), rows
