@@ -111,6 +111,9 @@ def build_entry(row: dict) -> DiaryEntry:
         location_raw=row.get("location_raw") or None,
         text_clean=row.get("text_clean") or row.get("text_raw") or "",
         source_regions=_source_regions(row.get("source_regions")),
+        context_before=(row.get("context_before") or "").strip() or None,
+        boundary_kind=(row.get("boundary_kind") or "").strip() or None,
+        boundary_source=(row.get("boundary_source") or "").strip() or None,
     )
 
 

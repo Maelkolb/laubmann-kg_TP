@@ -97,6 +97,10 @@ def test_boundaries_split_and_stop_keep_identity(tmp_path) -> None:
     assert report["date_norm"] == "1954-04-14" and report["location_raw"] == "Ismaning"
     assert report["boundary_source"] == "review" and report["boundary_kind"] == "correspondence"
     assert report["text_clean"].startswith("Ismaning, den 14.4.54.")
+    # a split-off report sees the end of the text before it (who introduced it)
+    assert report["context_before"].endswith("Noch 2 Buchfinken am Haus.")
+    assert after[0]["context_before"] == "" and after[2]["context_before"] == ""
+    assert build_entry(report).context_before.endswith("Buchfinken am Haus.")
     # the day before now ends before the report but keeps its continuation page
     first = after[0]
     assert "Buchfinken" in first["text_clean"] and "Lachmöwen" not in first["text_clean"]

@@ -195,6 +195,23 @@ def _evidence_from(items) -> list[Evidence]:
     return out
 
 
+_SEGMENT_NOTES = {
+    "correspondence": ("reviewed split: a report, letter or card written by another person and "
+                       "pasted into the diary (context_before shows how the diarist introduced it)"),
+    "species-digest": "reviewed split: a compilation of records (species list or digest), not a single day's notes",
+    "retrospective": "reviewed split: older records written down later",
+    "other": "reviewed split from the text before it",
+}
+
+
+def segment_note(entry: DiaryEntry) -> str:
+    """One line for the prompt when the entry starts at a reviewed boundary of
+    the patched corpus; empty for entries the date detector found."""
+    if entry.boundary_source == "review-resumption":
+        return "reviewed split: the diarist's own notes of the same day, resuming after an interleaved list"
+    return _SEGMENT_NOTES.get(entry.boundary_kind or "", "")
+
+
 def _fold_vocal_behaviour(evidence: list[Evidence], phrases: list[str]) -> tuple[list[Evidence], list[str]]:
     """Behaviour phrases that only restate a vocalisation ("singend", "ruft")
     become the observation's call type (ontology 0.6.0: one place for what was
@@ -545,6 +562,8 @@ def extract_observations_llm(entry: DiaryEntry, client, resolver: TaxonResolver,
         date_raw=entry.verbatim_event_date or "",
         location=entry.location_raw or "",
         text=text,
+        context=entry.context_before or "",
+        segment_note=segment_note(entry),
     )
     raw = client.complete(prompt)
     try:

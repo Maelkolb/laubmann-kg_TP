@@ -314,6 +314,13 @@ class DiaryEntry:
     # every body-text region the entry's text runs through (corpus span); empty
     # = only the header region (region_uid) is known
     source_regions: list[SourceRegionRef] = field(default_factory=list)
+    # patched corpus: tail of the text before an entry split off at a boundary
+    # (pasted report, digest); shown to the model for attribution only
+    context_before: Optional[str] = None
+    # patched corpus: kind of the reviewed boundary the entry starts at
+    # (correspondence | species-digest | field-day | …) and its source
+    boundary_kind: Optional[str] = None
+    boundary_source: Optional[str] = None
     multimodal: list[MultimodalRegion] = field(default_factory=list)
 
     @property

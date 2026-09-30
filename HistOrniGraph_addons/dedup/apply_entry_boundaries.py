@@ -62,7 +62,15 @@ ENTRY_COLS = ["entry_id", "volume", "scan", "page_id", "image", "region_id", "re
               "reading_order", "date_raw", "date_norm", "year", "location_raw", "variant",
               "n_chars", "n_words", "preview", "text_clean", "entry_uid", "page_uid",
               "region_uid", "month_source", "year_form", "loc_source",
-              "source_regions", "boundary_source", "boundary_kind"]
+              "source_regions", "boundary_source", "boundary_kind", "context_before"]
+
+# entries split off at a boundary of these kinds get the tail of the text
+# before them as read-only context for the extraction model: a pasted report
+# or digest is introduced by the diarist ("Bericht von E. Bezzel vom 19. X.:")
+# and without that line its "ich" reads as the diarist
+CONTEXT_KINDS = {"correspondence", "species-digest", "retrospective", "other"}
+CONTEXT_SOURCES = {"review-resumption"}
+CONTEXT_CHARS = 1200
 
 
 def _pages_by_volume(pages: List[Dict[str, Any]]) -> Dict[int, List[Dict[str, Any]]]:
@@ -134,6 +142,7 @@ def regenerate(pages: List[Dict[str, Any]], boundary_rows: List[Dict[str, str]],
         hits = {h["entry_uid"]: h for p in vpages for r in p["regions"] for h in r.get("starts", [])}
         prev_id = f"L{vol:02d}-e0000"
         prev_date = None
+        prev_text = ""
         used: Counter = Counter()
         for e in segment_entries(vol, vpages):
             h = hits.get(e["entry_uid"], {})
@@ -152,6 +161,13 @@ def regenerate(pages: List[Dict[str, Any]], boundary_rows: List[Dict[str, str]],
                 e["year"] = int(prev_date[:4])
             if e.get("date_norm"):
                 prev_date = e["date_norm"]
+            e["context_before"] = ""
+            if h.get("variant") == "boundary" and (e["boundary_kind"] in CONTEXT_KINDS
+                                                  or e["boundary_source"] in CONTEXT_SOURCES):
+                tail = prev_text[-CONTEXT_CHARS:]
+                e["context_before"] = ("…" + tail[tail.find(" ") + 1:]) if len(prev_text) > CONTEXT_CHARS else tail
+            if not e.get("dropped"):
+                prev_text = e["text_clean"]
             e["source_regions"] = json.dumps(e.get("source_regions") or [], ensure_ascii=False)
             e["preview"] = (e["text_clean"][:120] + "…") if len(e["text_clean"]) > 120 else e["text_clean"]
             entries.append(e)

@@ -82,3 +82,29 @@ def test_lenient_fallback_and_sanitization() -> None:
     assert obs[0].count_qualifier is None
     assert obs[0].evidence == []                # nothing stated -> nothing fabricated
     assert obs[0].occurrence_status == "present"
+
+
+def test_context_before_reaches_the_prompt_only_for_split_entries() -> None:
+    """A report split off from the text that introduced it sees that text as
+    read-only context; an ordinary entry renders an empty context line."""
+    payload = json.dumps([])
+    entry = _entry("Ismaning, den 19.10. Excursion mit Herrn Dr. Wüst.")
+    entry.context_before = "…E. Bezzel sendet mir folgenden Bericht:"
+    client = FakeClient(payload)
+    extract_observations_llm(entry, client, SeedTaxonResolver(), None, PROMPTS, SCHEMA)
+    assert "context_before: …E. Bezzel sendet mir folgenden Bericht:" in client.prompts[0]
+    _, plain = _run("7. April 1918. München. Eine Amsel.", payload)
+    assert "context_before: \ntext:" in plain.prompts[0]
+
+
+def test_segment_note_names_reviewed_report_splits() -> None:
+    from laubmann_kg.extraction.llm_observations import segment_note
+    entry = _entry("Ismaning, den 19.10. Excursion mit Herrn Dr. Wüst.")
+    assert segment_note(entry) == ""
+    entry.boundary_kind, entry.boundary_source = "correspondence", "review"
+    assert "another person" in segment_note(entry)
+    client = FakeClient(json.dumps([]))
+    extract_observations_llm(entry, client, SeedTaxonResolver(), None, PROMPTS, SCHEMA)
+    assert "segment_note: reviewed split: a report, letter or card" in client.prompts[0]
+    entry.boundary_kind, entry.boundary_source = "field-day", "review-resumption"
+    assert "resuming" in segment_note(entry)

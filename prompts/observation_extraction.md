@@ -15,6 +15,8 @@ ambiguous, prefer omission and keep the verbatim wording.
 date_iso: $entry_date
 date_verbatim: $date_raw
 location_header: $location
+segment_note: $segment_note
+context_before: $context
 text: $text
 ```
 
@@ -27,6 +29,26 @@ be the first words of the entry or a bird name. `date_iso` may be a mis-parse
 ("19.III. 85.)" is 19 March followed by the running species number "85.)", not
 the year 1985). Read both critically and return your own reading in
 `entry_date` and `entry_place`.
+
+`segment_note` and `context_before` are empty for most entries. When present,
+a reviewer split this entry off from the diary text just before it:
+`segment_note` says what the entry is (for example "a report, letter or card
+written by another person and pasted into the diary"), `context_before` is the
+end of the preceding text, where the diarist usually introduces it ("Nachfolgend
+ein Bericht von E. Bezzel aus Ismaning vom 19. X.:", "Adolf Müller schreibt:").
+Use both ONLY to decide who wrote or observed this entry's records
+(`entry_kind`, `record_type`, `observer`) and to complete a missing date or
+place. Never extract observations, travel, persons or weather from
+`context_before` itself.
+
+**A report or letter by another person** (`segment_note` says so, or the text
+is signed by / headed with someone else's name): `entry_kind` is
+`correspondence`; every record is `record_type: third-party-report` with
+`observer` = the report's author — from its signature, heading or
+`context_before` — unless a record names a different observer; add the author
+to `persons` with role `source`. "Ich"/"wir" in such a report is its author,
+never the diarist. A companion named in the report ("mit Herrn Dr. Wüst") does
+not change the author.
 
 ## Output
 

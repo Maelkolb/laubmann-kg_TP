@@ -28,13 +28,18 @@ month_source, year_form, loc_source
 `text_clean` is the extraction input; hyphenated line breaks are already joined.
 
 The **patched corpus** (`HistOrniGraph_addons/dedup/apply_entry_boundaries.py`,
-ontology 0.6.0; the corpus `configs/full_llm.yaml` points at) adds three columns:
+ontology 0.6.0; the corpus `configs/full_llm.yaml` points at) adds four columns:
 `source_regions` (JSON list of `{region_uid, page_uid, page_id, scan}` — every
 body-text region the entry's text runs through, header region first; read into
 `DiaryEntry.source_regions`, one `lkg:hasSourceRegion` each), `boundary_source`
 and `boundary_kind` (set on entries that start at a reviewed boundary:
 `review` / `auto-markup` / … and `field-day` / `correspondence` /
-`species-digest`). Entries added by a boundary keep the detector's `entry_uid`
+`species-digest`) and `context_before` (for entries split off at a boundary of
+kind correspondence / species-digest / retrospective / other and for
+resumptions: the last 1,200 characters of the text before them, where the
+diarist introduces a pasted report; shown to the extraction model as
+`context_before` together with a `segment_note` derived from `boundary_kind`,
+for attribution only). Entries added by a boundary keep the detector's `entry_uid`
 derivation and get the `entry_id` of the entry before them plus a letter
 (`L05-e0123a`), so every existing `entry_uid` / `entry_id` is unchanged.
 Regions listed in `data/corpus_patches/masked_regions.csv` (unreliable or
