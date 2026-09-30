@@ -59,6 +59,15 @@ _KIND_BY_TYPE = {"ImageRegion": "drawing", "GraphicRegion": "drawing", "ObjectRe
                  "InsertRegion": "text-insert"}
 
 
+_INLINE_MARKUP = re.compile(r"</?(?:u|sup|sub|b|i|em|strong)\s*>", re.IGNORECASE)
+
+
+def _strip_inline_markup(text: str) -> str:
+    """The transcriptions underline species and places (<u>…</u>); the graph
+    literal keeps the words and line breaks, not the markup (like dwc:fieldNotes)."""
+    return _INLINE_MARKUP.sub("", text)
+
+
 def to_region(record: dict, volume: Optional[int] = None) -> Optional[MultimodalRegion]:
     """A catalogue record as a ``MultimodalRegion`` (None without a region uid).
     Marginal notes are not multimodal regions of the graph (0.6.0)."""
@@ -77,7 +86,7 @@ def to_region(record: dict, volume: Optional[int] = None) -> Optional[Multimodal
         entry_uid=record.get("entry_uid") or None,
         kind=kind,
         description=(record.get("description") or "").strip() or None,
-        visible_text=(record.get("visible_text") or "").strip() or None,
+        visible_text=_strip_inline_markup(record.get("visible_text") or "").strip() or None,
         crop=record.get("crop") or None,
         region_type=rtype or None,
     )

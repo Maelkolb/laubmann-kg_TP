@@ -164,7 +164,7 @@ def test_pipeline_reads_regions_and_emits_them(tmp_path) -> None:
     pages = json.loads((out_dir / "corpus.json").read_text())
     rows, _ = bmr.build(pages, [{"region_uid": "r_photo", "page_uid": "p_x", "page_id": "uuid_0010_R",
                                  "volume": 5, "scan": 10, "type_original": "ImageRegion",
-                                 "description": "A sepia photograph of a pond.", "visible_text": "Teich",
+                                 "description": "A sepia photograph of a pond.", "visible_text": "<u>Teich</u>",
                                  "crop": "regions/uuid_0010_R/r01_ImageRegion.png"}],
                         [], {"r_photo": 1}, {}, {})
     with (out_dir / "multimodal_regions.jsonl").open("w", encoding="utf-8") as fh:
@@ -180,6 +180,7 @@ def test_pipeline_reads_regions_and_emits_them(tmp_path) -> None:
     assert (DATA[day.uid], LKG.hasMultimodalRegion, region) in graph
     assert (region, RDF.type, LKG.MultimodalRegion) in graph
     assert graph.value(region, LKG.regionKind) == Literal("photograph")
+    assert graph.value(region, LKG.visibleText) == Literal("Teich", lang="de")      # markup stripped
     assert graph.value(DATA["region_r_11"], DCTERMS.isPartOf) == DATA["page_p_" + pages[1]["page_uid"][2:]]
 
 
