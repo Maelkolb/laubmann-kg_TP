@@ -61,6 +61,31 @@ Claude agent answered fall back to Gemini's answer as the single (never auto-app
 candidate (initial + surname, titles). `combine_rounds.py --rounds r1 r3 … --out data/review/machine`
 writes the one identities/value-corrections file the pipeline reads (later round wins per name).
 
+## Round 4: record check of every entry (2026-10-01)
+
+The entry dossiers reach 115 entries. `record_check.py` gives the same material of EVERY entry to
+Gemini (3.8 Flash, one call per entry: page scans at high resolution, the transcription the
+extraction read, the reading corrections, every record of the graph with count range, locality,
+georeference, record type, observers, own date): records that are right by index, for the others
+the wrong fields, the right values and the words of the page that show it; missing records; entry
+date, place and kind; the reading corrections that are not right. Answers per entry in
+`<workdir>/record_check/answers/`, merged to `record_checks.csv` (the `graph_checks.csv` contract
+plus `quote`, `quote_in_text`), `record_checks_missing.csv`, `record_checks_entries.csv`,
+`transcript_checks_gemini.csv`. Resumable (LLM cache `data/cache/record_check_v1`, `--budget`).
+
+On the 115 entries both checks saw, Gemini flags 129 records and the Claude agents 197; 87 are
+flagged by both (67 % of Gemini's flags, 44 % of Claude's). Agreement by field: record type 24 of
+25, georeference 32 of 38, locality 28 of 38, species 6 of 12, count 3 of 12. A single check is
+therefore a pointer for the reviewer, not a correction. `record_check_combine.py` writes all
+findings in the pipeline contracts (`observation_corrections_machine.csv`, rows added to
+`value_corrections_machine.csv`) with `confidence`, `agreement`, `sources`; the pipeline applies a
+row only when two checks propose the same value for the same field (`review.machine`,
+`min_agreement`). `--trust FIELD[:MIN_CONFIDENCE[:quote]]` releases a whole class of Gemini
+findings once a reviewer has checked a sample of it in the graph validation page.
+
+Medium thinking finds more of what the agents flag (59 % instead of 44 %) but flags twice as many
+records, agrees less often (49 %) and costs 4.5 times as much; the run used `low`.
+
 ## Running
 
 ```bash

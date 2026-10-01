@@ -65,6 +65,8 @@ taxa:
 
 corrections:                  # reviewer decisions on single mentions (validation UI export), applied before QA
   csv: data/review/value_corrections.csv   # absent file = no corrections
+  observations: data/review/observation_corrections.csv   # single record fields (count, locality, date, observer,
+                                           #   record type …) and records added by hand; absent = none
 
 review:                       # validation UI decisions (tools/validation_ui, "Abgleich"); absent files = none
   identities: data/review/identities.csv              # name form -> entity (same/own/none) and entity links (link/nolink)
@@ -75,7 +77,8 @@ review:                       # validation UI decisions (tools/validation_ui, "A
     min_confidence: 0.9       #   machine rows need this confidence ...
     min_agreement: 2          #   ... and this many independent sources (text agent, scan agent, Gemini, Opus) agreeing
     value_corrections: data/review/machine/value_corrections_machine.csv   # single mentions the scan agent read differently
-    min_correction_confidence: 0.9
+    observation_corrections: data/review/machine/observation_corrections_machine.csv   # record fields two scan checks agree on
+    min_correction_confidence: 0.9    #   (rows with an agreement column also need min_agreement)
 
 qa:
   enabled: true

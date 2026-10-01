@@ -38,6 +38,9 @@ plus the transcript corrections of the visual reading. Usage, contracts, build: 
 
 ## Open
 
-- pipeline consumer for observation_corrections.csv (count, locality, date, observer) if those
-  findings are to be applied rather than only measured
+- record fields (count, locality, date, observer …) now have a pipeline consumer
+  (`normalization/observation_corrections.py`, one row per field: `field`, `new_value`). This
+  page's `observation_corrections.csv` (machine verdict + agree/disagree per record) is an audit
+  file in another layout and is NOT read by it; field corrections are made in the graph page
+  (`tools/validation_ui/graph_check/`), which exports the consumer's contract
 - r3 transcript checks "partly" with a better text are shown only when they fall into the sample

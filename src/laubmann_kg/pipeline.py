@@ -355,9 +355,22 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     if machine_cfg.get("enabled", True) and machine_cfg.get("value_corrections"):
         # scan-checked single mentions of the machine review, above the confidence threshold only
         correction_flags += apply_corrections(result.entries, load_corrections(
-            machine_cfg["value_corrections"], float(machine_cfg.get("min_correction_confidence", 0.9))))[1]
+            machine_cfg["value_corrections"], float(machine_cfg.get("min_correction_confidence", 0.9)),
+            int(machine_cfg.get("min_agreement", 2))))[1]
     # name-level "not a taxon / person / place / habitat" decisions of the review
     correction_flags += apply_identity_removals(result.entries, result.identities)
+    # single record fields (count, locality, date, observer, record type …) and records
+    # added by hand (review/observation_corrections.csv); after the value corrections,
+    # so a record is addressed by the name the graph shows for it
+    from laubmann_kg.normalization.observation_corrections import (
+        apply_observation_corrections, load_observation_corrections)
+    if corr_cfg.get("enabled", True) and corr_cfg.get("observations"):
+        correction_flags += apply_observation_corrections(
+            result.entries, load_observation_corrections(corr_cfg["observations"]))[1]
+    if machine_cfg.get("enabled", True) and machine_cfg.get("observation_corrections"):
+        correction_flags += apply_observation_corrections(result.entries, load_observation_corrections(
+            machine_cfg["observation_corrections"], float(machine_cfg.get("min_correction_confidence", 0.9)),
+            int(machine_cfg.get("min_agreement", 2))))[1]
 
     qa_cfg = dict(config.get("qa", {}) or {})
     # Volume coverage: misfiled scans -> home volume, OCR years repaired against

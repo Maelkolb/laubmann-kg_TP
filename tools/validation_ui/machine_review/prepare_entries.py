@@ -75,6 +75,95 @@ def read_csv(path, delimiter=","):
         return list(csv.DictReader(h, delimiter=delimiter))
 
 
+class GraphView:
+    """The exported graph by subject and local predicate name (``triples`` = the
+    pickled triple list of the export's Turtle file)."""
+
+    def __init__(self, triples) -> None:
+        self.out = collections.defaultdict(lambda: collections.defaultdict(list))
+        self.typ: dict = {}
+        for s, p, o in pickle.load(open(triples, "rb")):
+            pn = loc(p)
+            if pn == "type":
+                self.typ.setdefault(s, set()).add(loc(o))
+            else:
+                self.out[s][pn].append(o)
+        self.entries = {self.one(s, "identifier"): s for s, ts in self.typ.items() if "DiaryEntry" in ts}
+
+    def one(self, s, p, d=""):
+        v = self.out[s].get(p) if s is not None else None
+        return str(v[0]) if v else d
+
+    def many(self, s, p):
+        return [str(x) for x in self.out[s].get(p, [])]
+
+    def label(self, s):
+        return self.one(s, "prefLabel") or self.one(s, "label") or self.one(s, "name") or loc(s)
+
+
+def obs_index(s, entry_uid, written) -> int:
+    """The extraction index of an observation, recovered from its IRI."""
+    want_ = loc(s).replace("obs_", "")
+    for i in range(1000):
+        if hashlib.sha1(f"{entry_uid}|{written}|{i}".encode("utf-8")).hexdigest()[:12] == want_:
+            return i
+    return 10 ** 6
+
+
+def graph_records(G: GraphView, s, entry_uid: str, entry_date: str, occ_rows: dict) -> dict:
+    """Everything the graph says about the entry node ``s``: observations (in
+    extraction order), persons with roles, travel legs, weather."""
+    out, one, many, label = G.out, G.one, G.many, G.label
+    observations = []
+    for o in out[s].get("containsObservation", []):
+        tx = out[o].get("observedTaxon", [None])[0]
+        written = one(o, "verbatimIdentification") or (label(tx) if tx is not None else "")
+        place = out[o].get("observedAt", [None])[0]
+        dw = occ_rows.get(str(o), {})
+        observers = [label(p) for p in out[o].get("recordedBy", [])]
+        rec = {"index": obs_index(o, entry_uid, written), "written": written,
+               "taxon": label(tx) if tx is not None else None, "sci": one(tx, "scientificName") or None,
+               "rank": one(tx, "taxonRank") or None, "is_bird": one(tx, "isBird") or None,
+               "count": one(o, "individualCount") or None, "count_min": one(o, "individualCountMin") or None,
+               "count_max": one(o, "individualCountMax") or None, "count_qualifier": one(o, "countQualifier") or None,
+               "status": one(o, "occurrenceStatus") or None, "locality": one(o, "verbatimLocality") or None,
+               "place": label(place) if place is not None else None,
+               "georef": [dw.get("locality"), dw.get("decimalLatitude"), dw.get("decimalLongitude"),
+                          dw.get("coordinateUncertaintyInMeters")] if dw.get("decimalLatitude") else None,
+               "evidence": many(o, "evidenceKind") or None, "call_type": many(o, "callType") or None,
+               "call_transcription": many(o, "callTranscription") or None,
+               "behaviour": many(o, "behavior") or None, "movement": one(o, "movementKind") or None,
+               "flight_direction": one(o, "flightDirection") or None, "time_of_day": one(o, "timeOfDay") or None,
+               "sex": one(o, "sex") or None, "life_stage": one(o, "lifeStage") or None, "vitality": one(o, "vitality") or None,
+               "breeding": one(o, "breedingEvidence") or None, "record_type": one(o, "recordType") or None,
+               "observers": observers if observers != ["Alfred Laubmann"] else None,
+               "identification_qualifier": one(o, "identificationQualifier") or None,
+               "habitat": [label(h) for h in out[o].get("habitat", []) if str(h).startswith("http")] or None,
+               "microhabitat": many(o, "microhabitat") or None,
+               "event_date": one(o, "eventDate") if one(o, "eventDate") != entry_date else None,
+               "notes": one(o, "verbatimNotes") or None}
+        observations.append({k2: v for k2, v in rec.items() if v not in (None, [], "")})
+    observations.sort(key=lambda r: r["index"])
+    roles = collections.defaultdict(set)
+    for pred, role in {"mentionsCompanion": "Begleiter", "mentionsSource": "Quelle", "mentionsCollector": "Sammler",
+                       "mentionsCitedAuthor": "zitiert", "mentionsOther": "sonstige"}.items():
+        for p in out[s].get(pred, []):
+            roles[p].add(role)
+    persons = [{"name": label(p), "roles": sorted(roles.get(p, {"erwähnt"}))} for p in out[s].get("mentionsPerson", [])]
+    travel = []
+    for tv in out[s].get("containsTravelEvent", []):
+        for leg in out[tv].get("hasLeg", []):
+            travel.append({k2: v for k2, v in {
+                "from": label(out[leg]["departurePlace"][0]) if out[leg].get("departurePlace") else None,
+                "to": label(out[leg]["arrivalPlace"][0]) if out[leg].get("arrivalPlace") else None,
+                "via": [label(x) for x in out[leg].get("viaPlace", [])] or None,
+                "mode": one(leg, "transportMode") or None, "note": one(leg, "note") or None}.items() if v})
+    weather = [{k2: v for k2, v in {"verbatim": one(w, "weatherVerbatim"), "temperature": one(w, "temperatureValue"),
+                                    "unit": one(w, "temperatureUnit"), "precipitation": one(w, "precipitation"),
+                                    "sky": one(w, "skyCondition")}.items() if v} for w in out[s].get("hasWeather", [])]
+    return {"observations": observations, "persons": persons, "travel": travel, "weather": weather}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("payload")
@@ -96,26 +185,8 @@ def main() -> None:
     pages = PageImages(Path(args.pages))
 
     print("loading triples …")
-    out = collections.defaultdict(lambda: collections.defaultdict(list))
-    typ = {}
-    for s, p, o in pickle.load(open(args.triples, "rb")):
-        pn = loc(p)
-        if pn == "type":
-            typ.setdefault(s, set()).add(loc(o))
-        else:
-            out[s][pn].append(o)
-
-    def one(s, p, d=""):
-        v = out[s].get(p) if s is not None else None
-        return str(v[0]) if v else d
-
-    def many(s, p):
-        return [str(x) for x in out[s].get(p, [])]
-
-    def label(s):
-        return one(s, "prefLabel") or one(s, "label") or one(s, "name") or loc(s)
-
-    entries = {one(s, "identifier"): s for s, ts in typ.items() if "DiaryEntry" in ts}
+    G = GraphView(args.triples)
+    out, typ, one, entries = G.out, G.typ, G.one, G.entries
     corr = collections.defaultdict(list)
     for r in read_csv(Path(args.review) / "transcript_corrections.csv" if args.review else None):
         corr[r["entry_uid"]].append(r)
@@ -166,13 +237,6 @@ def main() -> None:
         print(f"stratum {name}: {len(pick)} of {len(pools[name])} candidates")
     rng.shuffle(sample)
 
-    def obs_index(s, entry_uid, written):
-        want_ = loc(s).replace("obs_", "")
-        for i in range(1000):
-            if hashlib.sha1(f"{entry_uid}|{written}|{i}".encode("utf-8")).hexdigest()[:12] == want_:
-                return i
-        return 10 ** 6
-
     edir = root / "entries"
     (edir / "answers").mkdir(parents=True, exist_ok=True)
     manifest = []
@@ -190,60 +254,15 @@ def main() -> None:
             name = f"page_{len(imgs) + 1}.jpg"
             (d / name).write_bytes(page_jpeg(src, 1400))
             imgs.append({"file": str((d / name)).replace("\\", "/"), "scan": pg[2], "side": pg[3], "printed_page": pg[4]})
-        observations = []
-        for o in out[s].get("containsObservation", []):
-            tx = out[o].get("observedTaxon", [None])[0]
-            written = one(o, "verbatimIdentification") or (label(tx) if tx is not None else "")
-            place = out[o].get("observedAt", [None])[0]
-            dw = occ_rows.get(str(o), {})
-            observers = [label(p) for p in out[o].get("recordedBy", [])]
-            rec = {"index": obs_index(o, e[1], written), "written": written,
-                   "taxon": label(tx) if tx is not None else None, "sci": one(tx, "scientificName") or None,
-                   "rank": one(tx, "taxonRank") or None, "is_bird": one(tx, "isBird") or None,
-                   "count": one(o, "individualCount") or None, "count_min": one(o, "individualCountMin") or None,
-                   "count_max": one(o, "individualCountMax") or None, "count_qualifier": one(o, "countQualifier") or None,
-                   "status": one(o, "occurrenceStatus") or None, "locality": one(o, "verbatimLocality") or None,
-                   "place": label(place) if place is not None else None,
-                   "georef": [dw.get("locality"), dw.get("decimalLatitude"), dw.get("decimalLongitude"),
-                              dw.get("coordinateUncertaintyInMeters")] if dw.get("decimalLatitude") else None,
-                   "evidence": many(o, "evidenceKind") or None, "call_type": many(o, "callType") or None,
-                   "call_transcription": many(o, "callTranscription") or None,
-                   "behaviour": many(o, "behavior") or None, "movement": one(o, "movementKind") or None,
-                   "flight_direction": one(o, "flightDirection") or None, "time_of_day": one(o, "timeOfDay") or None,
-                   "sex": one(o, "sex") or None, "life_stage": one(o, "lifeStage") or None, "vitality": one(o, "vitality") or None,
-                   "breeding": one(o, "breedingEvidence") or None, "record_type": one(o, "recordType") or None,
-                   "observers": observers if observers != ["Alfred Laubmann"] else None,
-                   "identification_qualifier": one(o, "identificationQualifier") or None,
-                   "habitat": [label(h) for h in out[o].get("habitat", []) if str(h).startswith("http")] or None,
-                   "microhabitat": many(o, "microhabitat") or None,
-                   "event_date": one(o, "eventDate") if one(o, "eventDate") != e[2] else None,
-                   "notes": one(o, "verbatimNotes") or None}
-            observations.append({k2: v for k2, v in rec.items() if v not in (None, [], "")})
-        observations.sort(key=lambda r: r["index"])
-        roles = collections.defaultdict(set)
-        for pred, role in {"mentionsCompanion": "Begleiter", "mentionsSource": "Quelle", "mentionsCollector": "Sammler",
-                           "mentionsCitedAuthor": "zitiert", "mentionsOther": "sonstige"}.items():
-            for p in out[s].get(pred, []):
-                roles[p].add(role)
-        persons = [{"name": label(p), "roles": sorted(roles.get(p, {"erwähnt"}))} for p in out[s].get("mentionsPerson", [])]
-        travel = []
-        for tv in out[s].get("containsTravelEvent", []):
-            for leg in out[tv].get("hasLeg", []):
-                travel.append({k2: v for k2, v in {
-                    "from": label(out[leg]["departurePlace"][0]) if out[leg].get("departurePlace") else None,
-                    "to": label(out[leg]["arrivalPlace"][0]) if out[leg].get("arrivalPlace") else None,
-                    "via": [label(x) for x in out[leg].get("viaPlace", [])] or None,
-                    "mode": one(leg, "transportMode") or None, "note": one(leg, "note") or None}.items() if v})
-        weather = [{k2: v for k2, v in {"verbatim": one(w, "weatherVerbatim"), "temperature": one(w, "temperatureValue"),
-                                        "unit": one(w, "temperatureUnit"), "precipitation": one(w, "precipitation"),
-                                        "sky": one(w, "skyCondition")}.items() if v} for w in out[s].get("hasWeather", [])]
+        graph = graph_records(G, s, e[1], e[2], occ_rows)
+        observations = graph["observations"]
         tc = [{"i": i, "old": r["old_text"], "new": r["new_text"], "applied": r.get("applied") == "y"}
               for i, r in enumerate(corr.get(e[1], []))]
         dossier = {"dossier": k, "entry": {"id": e[0], "uid": e[1], "date": e[2], "date_verbatim": e[3], "kind": e[4],
                                             "volume": e[5], "place": e[6], "place_verbatim": e[9], "stratum": stratum,
                                             "qa_flags": sorted(qa.get(e[1], ())) or None},
                    "pages": imgs, "transcription": e[7], "transcript_corrections": tc,
-                   "graph": {"observations": observations, "persons": persons, "travel": travel, "weather": weather}}
+                   "graph": graph}
         write_json(d / "dossier.json", dossier)
         manifest.append({"dossier": k, "entry_id": e[0], "entry_uid": e[1], "stratum": stratum, "pages": len(imgs),
                          "observations": len(observations), "corrections": len(tc)})

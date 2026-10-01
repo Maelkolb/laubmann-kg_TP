@@ -195,6 +195,29 @@ def test_link_habitats_reviewed_csv_overrides(tmp_path, monkeypatch) -> None:
     assert (DATA[e.observations[0].habitat.uid], SKOS.broadMatch, URIRef("http://eunis.eea.europa.eu/eunishabitats/G1")) in graph
 
 
+def test_habitat_answers_are_kept_per_label(tmp_path, monkeypatch) -> None:
+    """A label is classified once: a later run with other labels in the batch does not ask again."""
+    asked: list[list[str]] = []
+    reply = {"Auwald": {"code": "G1.2", "match": "exact", "confidence": 0.95, "note": ""},
+             "Schilf": {"code": "C3.21", "match": "exact", "confidence": 0.9, "note": ""}}
+
+    def proposer(labels):
+        asked.append(list(labels))
+        return {l: reply[l] for l in labels if l in reply}
+    monkeypatch.setattr(habitats_mod, "build_habitat_proposer", lambda cfg, vocab: proposer)
+    cfg = {"vocabulary": str(REPO / "data" / "eunis_habitats.csv"), "llm": {"cache_dir": str(tmp_path / "llm")}}
+    first = _entry("e1"); first.observations = [_obs("e1", habitat=Habitat("Auwald"))]
+    assert link_habitats(ExtractionResult(entries=[first]), cfg, offline=False)[0] == 1
+    reply["Auwald"] = {"code": "G1", "match": "broad", "confidence": 0.9, "note": "another answer"}
+    second = _entry("e2"); second.observations = [_obs("e2", habitat=Habitat("Auwald")), _obs("e2", habitat=Habitat("Schilf"), index=1)]
+    assert link_habitats(ExtractionResult(entries=[second]), cfg, offline=False)[0] == 2
+    assert asked == [["Auwald"], ["Schilf"]]
+    assert second.observations[0].habitat.eunis_code == "G1.2"          # the first answer stands
+    # offline: the stored answers still link
+    third = _entry("e3"); third.observations = [_obs("e3", habitat=Habitat("Schilf"))]
+    assert link_habitats(ExtractionResult(entries=[third]), cfg, offline=True)[0] == 1
+
+
 def test_entry_context_disambiguates_and_demotes() -> None:
     from laubmann_kg.linking.places import _context_points
     # two Bernrieds in Bavaria; the entries also mention Tutzing (anchor) -> the Starnberg one

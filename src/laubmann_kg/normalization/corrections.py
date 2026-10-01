@@ -80,10 +80,11 @@ class Correction:
         return bool(self.entry_id) and entry.entry_id == self.entry_id
 
 
-def load_corrections(path, min_confidence: Optional[float] = None) -> list[Correction]:
-    """Read one value_corrections.csv. ``min_confidence`` filters rows by their
-    ``confidence`` column (the machine review writes one; rows without the
-    column pass), so machine corrections can be taken above a threshold only."""
+def load_corrections(path, min_confidence: Optional[float] = None, min_agreement: Optional[int] = None) -> list[Correction]:
+    """Read one value_corrections.csv. ``min_confidence`` / ``min_agreement``
+    filter rows by their ``confidence`` and ``agreement`` (number of independent
+    sources) columns (the machine review writes them; rows without a value
+    pass), so machine corrections can be taken above the thresholds only."""
     path = Path(path)
     if not path.exists():
         logger.info("no value corrections at %s", path)
@@ -100,6 +101,9 @@ def load_corrections(path, min_confidence: Optional[float] = None) -> list[Corre
                         continue
                 except ValueError:
                     pass
+            if min_agreement is not None and g("agreement").isdigit() and int(g("agreement")) < min_agreement:
+                dropped += 1
+                continue
             kind, action = g("kind").lower(), (g("action").lower() or "replace")
             if kind not in KINDS or action not in ("replace", "drop") or not g("old_value") \
                     or (action == "replace" and not g("new_value")):
@@ -117,7 +121,7 @@ def load_corrections(path, min_confidence: Optional[float] = None) -> list[Corre
                                   g("scientific_name"), g("is_bird").lower() not in _NO, g("note"), action,
                                   int(occ) if occ.isdigit() else None, int(key) if key.isdigit() else None, g("reason")))
     if dropped:
-        logger.info("%s: %d corrections below the confidence threshold %.2f skipped", path.name, dropped, min_confidence)
+        logger.info("%s: %d corrections below the confidence/agreement thresholds skipped", path.name, dropped)
     return out
 
 

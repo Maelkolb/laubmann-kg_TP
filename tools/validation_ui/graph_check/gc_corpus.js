@@ -1,0 +1,77 @@
+/* Graph-Prüfung — corpus filter: vollständig / Kern / strenger Kern / strenger Kern mit Koordinaten.
+   Every record carries a tier (review layer `t`, reasons `tw`): 0 outside the core, 1 core, 2 strict core,
+   3 strict core with coordinates. The selector in the header chooses the lowest tier that is shown
+   (RVU.corpus = 0 … 3). It is a VIEW: graphs, table, work list, queue counts, node views, class view and
+   overview count only the records of the chosen corpus; decisions and exports are not affected. */
+
+const CORP = { tier: null, n: [0, 0, 0, 0], ent: [0, 0, 0, 0], taxa: [0, 0, 0, 0], why: {} };
+function corpusIndex() {   // tier of every observation node, counts per corpus, reasons
+  const tier = new Int8Array(G.nodes.length).fill(-1); const taxa = [new Set(), new Set(), new Set(), new Set()]; const why = {};
+  CORP.n = [0, 0, 0, 0]; CORP.ent = [0, 0, 0, 0];
+  for (const r of G.ent) {
+    const rv = R.entries[r.id] || {}; const s = RVS.get(r.n); const nc = [0, 0, 0, 0]; const flat = R.obs[r.id] || [];
+    for (let i = 0; i < flat.length; i += 3) {
+      const n = flat[i]; const rec = (rv.rec || {})[flat[i + 1]]; const tr = rec && rec.t != null ? rec.t : 0; tier[n] = tr; const tx = node1(n, 'lkg:observedTaxon');
+      for (let c = 0; c <= tr; c++) { nc[c]++; if (tx >= 0) taxa[c].add(tx); }
+      for (const w of (rec && rec.tw) || []) why[w] = (why[w] || 0) + 1;
+    }
+    s.nc = nc; for (let c = 0; c < 4; c++) { CORP.n[c] += nc[c]; if (c === 0 || nc[c]) CORP.ent[c]++; }
+  }
+  CORP.tier = tier; CORP.taxa = taxa.map(x => x.size); CORP.why = why;
+}
+function recOfNode(n) {   // the review-layer record of an observation node
+  const e = entryOf(n); if (e < 0) return null; const r = entryRec(e); const flat = R.obs[r.id] || [];
+  for (let i = 0; i < flat.length; i += 3) if (flat[i] === n) return ((R.entries[r.id] || {}).rec || {})[flat[i + 1]] || null;
+  return null;
+}
+const corpusOn = () => RVU.corpus > 0;
+const tierOf = n => (CORP.tier ? CORP.tier[n] : -1);
+const inCorpus = n => RVU.corpus === 0 || CORP.tier[n] >= RVU.corpus;
+const entryInCorpus = s => RVU.corpus === 0 || !!(s.nc && s.nc[RVU.corpus] > 0);
+const corpusName = c => t('corp_' + c);
+const tierName = tr => t('tier_' + tr);
+const whyText = code => { const k = 'tw_' + code; return UI[LANG][k] || UI.de[k] || code; };
+function tierWhy(o) { const tw = (o.rec && o.rec.tw) || []; return tw.map(whyText).join('; '); }   // why the record is not in the next tier, in words
+function tierChip(o) { const tr = tierOf(o.n); if (tr < 0) return ''; const why = tierWhy(o); return `<span class="trc tr${tr}" title="${esc(t('tier_t') + (why ? ' — ' + why : ''))}">${esc(tierName(tr))}</span>`; }
+function tierLine(o) {   // chip + reason, for cards and tooltips
+  const tr = tierOf(o.n); if (tr < 0) return ''; const why = tierWhy(o);
+  return `<div class="trline">${tierChip(o)}${tr < 3 && why ? `<span class="trwhy">${esc(t(tr === 0 ? 'tier_out_why' : 'tier_next_why', tierName(Math.min(3, tr + 1))))} ${esc(why)}</span>` : ''}</div>`;
+}
+// ---- hooks of the forked explorer code
+const rvObsShown = o => inCorpus(o) || RVU.showOut;
+function rvSrcOk(s) { const k = G.kind[s]; if (k === KI.obs) return inCorpus(s); if (k === KI.entry) { const x = RVS.get(s); return !x || entryInCorpus(x); } return true; }
+function rvInCount(n, name) { if (!corpusOn()) return inCount(n, name); const p = PI(name); if (p < 0) return 0; let c = 0; for (let i = G.inOff[n], e = G.inOff[n + 1]; i < e; i++) if (G.inP[i] === p && rvSrcOk(G.inS[i])) c++; return c; }
+function rvUses(n) { if (!corpusOn()) return G.inOff[n + 1] - G.inOff[n]; let c = 0; for (let i = G.inOff[n], e = G.inOff[n + 1]; i < e; i++) if (rvSrcOk(G.inS[i])) c++; return c; }
+function rvClassOk(n, k) { if (!corpusOn()) return true; if (k === 'obs' || k === 'entry') return rvSrcOk(n); if (k === 'taxon' || k === 'place' || k === 'person' || k === 'habitat') return rvUses(n) > 0; return true; }
+function rvEntryCount(r) {   // "5 von 8 Beobachtungen" under a filter
+  const s = RVS.get(r.n); return corpusOn() && s && s.nc ? t('obs_of', fmt(s.nc[RVU.corpus]), fmt(r.nobs)) : fmt(r.nobs) + ' ' + t('observations');
+}
+function outCount(m) { return corpusOn() ? m.obs.filter(o => !inCorpus(o.n)).length : 0; }
+// ---- selector, switching
+function renderCorpusSel() {
+  const sel_ = $('#corpsel'); if (!sel_) return;
+  sel_.innerHTML = [0, 1, 2, 3].map(c => `<option value="${c}"${c === RVU.corpus ? ' selected' : ''}>${esc(t('corp_sel', t('corp_s_' + c), fmt(CORP.n[c])))}</option>`).join('');
+  sel_.classList.toggle('on', corpusOn()); sel_.title = t('corp_t');
+  const bar = $('#corpbar'); if (bar) { bar.hidden = !corpusOn(); const c = RVU.corpus;
+    bar.innerHTML = corpusOn() ? `<span class="trc tr${c}">K${c}</span><span>${esc(t('corp_active', corpusName(c), fmt(CORP.n[c]), fmt(CORP.n[0]), fmt(CORP.ent[c]), fmt(CORP.ent[0])))}</span><button class="btn" data-act="corpus-off">${t('corp_off')}</button>` : ''; }
+  document.documentElement.classList.toggle('corpus-on', corpusOn());
+}
+function setCorpus(c) {
+  RVU.corpus = clamp(+c || 0, 0, 3); store('corpus', String(RVU.corpus)); RVU.showOut = false;
+  G.stats = null; NV.rows = null; CV.rows = null; LVC.clear(); const ov = $('#x-ov'); if (ov) ov.dataset.lang = '';
+  countQueues(); renderCorpusSel(); renderChips(); rvRenderList();
+  if (S.view === 'entry') EM = null;   // the model keeps no corpus state, but the cards and the head do
+  route(); rvResize(); if (S.view === 'entry') fitView();
+}
+// ---- overview
+function corpusTableHtml() {
+  const pct = (a, b) => (b ? (100 * a / b).toFixed(1).replace('.', LANG === 'de' ? ',' : '.') + ' %' : '–');
+  let s = `<table class="t covt"><tr><th>${t('corp_h')}</th><th class="r">${t('corp_h_rec')}</th><th class="r"></th><th class="r">${t('corp_h_ent')}</th><th class="r">${t('corp_h_taxa')}</th></tr>` +
+    [0, 1, 2, 3].map(c => `<tr class="click${c === RVU.corpus ? ' on' : ''}" data-corpus="${c}"><td>${c === RVU.corpus ? '● ' : ''}${esc(corpusName(c))}</td><td class="num r">${fmt(CORP.n[c])}</td><td class="num r muted">${pct(CORP.n[c], CORP.n[0])}</td><td class="num r">${fmt(c === 0 ? G.ent.filter(r => r.nobs > 0).length : CORP.ent[c])}</td><td class="num r">${fmt(CORP.taxa[c])}</td></tr>`).join('') + '</table>';
+  const order = ['spurious', 'duplicate', 'no-taxon', 'flagged', 'unchecked', 'rank', 'name', 'reading', 'date', 'illegible', 'no-coords'];
+  const from = { spurious: 0, duplicate: 0, 'no-taxon': 0, flagged: 0, unchecked: 0, rank: 1, name: 1, reading: 1, date: 1, illegible: 1, 'no-coords': 2 };
+  const codes = order.filter(k => CORP.why[k]).concat(Object.keys(CORP.why).filter(k => !order.includes(k)));
+  s += `<h3 style="margin-top:14px">${t('corp_why_h')}</h3><table class="t covt"><tr><th>${t('corp_why_reason')}</th><th>${t('corp_why_keeps')}</th><th class="r">${t('corp_h_rec')}</th></tr>` +
+    codes.map(k => `<tr><td>${esc(whyText(k))}</td><td class="muted">${esc(tierName(Math.min(3, (from[k] == null ? 0 : from[k]) + 1)))}</td><td class="num r">${fmt(CORP.why[k])}</td></tr>`).join('') + '</table>';
+  return s;
+}

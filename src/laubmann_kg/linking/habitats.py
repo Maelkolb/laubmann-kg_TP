@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import Optional
 
 from laubmann_kg.linking import review
+from laubmann_kg.linking.cache import JsonCache
 
 logger = logging.getLogger(__name__)
 
@@ -181,17 +182,30 @@ def link_habitats(result, cfg: dict, offline: bool) -> tuple[int, list[dict]]:
             reviewed.pop(label, None)
         elif ident.auth("eunis"):
             reviewed[label] = {"eunis_code": ident.auth("eunis"), "match": ident.eunis_match or "close"}
-    proposer = build_habitat_proposer(dict(cfg.get("llm") or {}), vocab) if not offline else None
+    llm_cfg = dict(cfg.get("llm") or {})
+    proposer = build_habitat_proposer(llm_cfg, vocab) if not offline else None
     labels = [l for l, _ in usage.most_common()]
     if limit:
         labels = labels[:limit]
     todo = [l for l in labels if l not in reviewed]
-    proposals: dict[str, dict] = {}
+    # One answer per label, kept across runs (``answers``, default <llm cache_dir>/label_answers.json).
+    # The LLM cache alone keys on the whole batch: one label more or less in a run changes every
+    # batch, the model is asked again and answers a few hundred labels differently.
+    store_path = cfg.get("answers") or (Path(llm_cfg["cache_dir"]) / "label_answers.json" if llm_cfg.get("cache_dir") else None)
+    answers = JsonCache(Path(store_path)) if store_path else None
+    proposals: dict[str, dict] = {l: answers.get(l) for l in todo if answers is not None and answers.get(l) is not None}
+    ask = [l for l in todo if l not in proposals]
     if proposer is not None:
-        for start in range(0, len(todo), batch_size):
-            proposals.update(proposer(todo[start:start + batch_size]))
-    elif todo:
-        logger.warning("habitat linking: no LLM proposer (offline) — %d labels left unclassified", len(todo))
+        for start in range(0, len(ask), batch_size):
+            got = proposer(ask[start:start + batch_size])
+            proposals.update(got)
+            if answers is not None:
+                for label, item in got.items():
+                    answers.put(label, item)
+        if answers is not None and ask:
+            answers.flush()
+    elif ask:
+        logger.warning("habitat linking: no LLM proposer (offline) — %d labels left unclassified", len(ask))
 
     rows: list[dict] = []
     links: dict[str, tuple[str, str]] = {}       # label -> (code, match)

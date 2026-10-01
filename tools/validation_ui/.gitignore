@@ -5,3 +5,4 @@ payload.b64
 shots/
 pages_geometry.json
 vernaculars.json
+!graph_check_template.html

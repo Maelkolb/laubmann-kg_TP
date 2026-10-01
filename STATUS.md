@@ -6,6 +6,21 @@
 |---|---|---|---|---|---|
 | `kg_exports_2026-10-01` (pipeline only) | 9,901 | 86,037 | 1,986,310 | 0 violations, 450 warnings | 0 errors |
 | `kg_exports_2026-10-01_machine` (+ machine review rounds 1–3) | 9,901 | 85,636 | 1,979,656 | 0 violations, 464 warnings | 0 errors |
+| `kg_exports_2026-10-01_checked` (+ round 4, current) | 9,901 | 85,631 | 1,979,492 | 0 violations, 464 warnings | 0 errors |
+
+**Round 4** (`docs/validation_round4_report.md`): Gemini checked every record
+against the scan (9,590 entries, 85,604 records, $30.14): 88.7 % right, 10.2 %
+wrong in a field (locality, georeference, observer, species, record type,
+count), 0.9 % spurious, 1,549 records missing. Against the Claude dossier check
+of 115 entries the two agree on 87 flagged records (67 % of Gemini's, 44 % of
+Claude's), so a single finding is a suggestion; the graph takes only the 39
+corrections both propose. New consumer `review/observation_corrections.csv`
+(single record fields, added records), one EUNIS answer per habitat label
+(re-exports no longer change reviewed links). Human validation now in two
+pages: `tools/validation_ui/link_check/` (authority links and merges, one
+decision per name) and `tools/validation_ui/graph_check/` (entry by entry: scan
+with regions, automatic changes and findings as annotations, corrections).
+Still no human decision in `data/review/`.
 
 The warnings are entries without any record (458) and 6 taxon ranks outside the
 scheme. Cost of the run $63.95 (visual reading $25.76, extraction $36.49,

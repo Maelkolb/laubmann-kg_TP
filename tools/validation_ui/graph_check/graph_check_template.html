@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+/*{{LEAFLET_CSS}}*/
+</style>
+<style>
+/*{{APP_CSS}}*/
+</style>
+</head>
+<body>
+<header id="top">
+  <h1 id="apptitle">Laubmann-KG · Graph-Prüfung</h1>
+  <nav class="modes" id="nav">
+    <button data-nav="overview" data-i18n="nav_overview">Übersicht</button>
+    <button data-nav="entry" data-i18n="nav_entry">Prüfen</button>
+    <button data-nav="classes" data-i18n="nav_classes">Klassen</button>
+  </nav>
+  <select id="corpsel" title="Korpusfilter"></select>
+  <div id="searchbox">
+    <input id="q" type="search" autocomplete="off" spellcheck="false" data-i18n-ph="search_ph" placeholder="Suche: Datum, Ort, Band, Text, ID, Art, Person …">
+    <div id="qres" hidden></div>
+  </div>
+  <span class="stats" id="rvprog"></span>
+  <input id="who" type="text" autocomplete="off" spellcheck="false" data-i18n-ph="who_ph" data-i18n-title="who_t" placeholder="Name">
+  <button id="btn-save" class="pill strong" data-i18n="btn_save" data-i18n-title="btn_save_t">Sichern &amp; Export</button>
+  <button id="btn-load" class="pill" data-i18n="btn_load" data-i18n-title="btn_load_t">Fortschritt laden</button>
+  <input id="fileImport" type="file" accept=".json,.zip,application/json,application/zip" hidden>
+  <span class="stats" id="savedlbl"></span>
+  <button id="btn-lang" class="pill" title="Sprache / language">EN</button>
+  <button id="btn-theme" class="pill" data-i18n-title="theme_t" title="Hell/Dunkel">◐</button>
+  <button id="btn-help" class="pill" data-i18n-title="help_t" title="Hilfe">?</button>
+</header>
+<div id="corpbar" hidden></div>
+<div id="loading"><div class="spinner"></div><div id="loadmsg">Graph wird geladen …</div></div>
+<main id="app" hidden>
+  <section id="v-overview" class="view"><div id="rv-ov"></div><div id="x-ov"></div></section>
+  <section id="v-entry" class="view">
+    <aside id="elist">
+      <div class="elist-head">
+        <div id="qchips"></div>
+        <div id="lvchips"></div>
+        <div class="elist-row">
+          <select id="volsel"></select>
+          <select id="qsort"></select>
+        </div>
+        <input id="efilter" type="search" data-i18n-ph="filter_ph" placeholder="Filter …">
+      </div>
+      <div id="elist-body"><div id="elist-pad"></div></div>
+      <div id="elist-foot"></div>
+    </aside>
+    <div id="gwrap">
+      <div id="ehead"></div>
+      <div id="gtools"></div>
+      <div id="gcanvas"><svg id="gsvg" xmlns="http://www.w3.org/2000/svg"></svg><div id="gtip" hidden></div><button id="gless" class="gpan" hidden></button><button id="gmore" class="gpan" hidden></button></div>
+      <div id="rtable" hidden></div>
+      <div id="legend"></div>
+    </div>
+    <div id="split" title="Breite ziehen"></div>
+    <aside id="panel">
+      <div id="scanpane">
+        <div id="scanbar"></div>
+        <div id="scanview"><div id="scanstage"><img id="scanimg" alt="" draggable="false"><svg id="scanov" xmlns="http://www.w3.org/2000/svg"></svg></div><div id="scanmsg" hidden></div></div>
+      </div>
+      <div id="hsplit" title="Höhe ziehen"></div>
+      <div class="tabs" id="ptabs">
+        <button data-tab="check" data-i18n="tab_check">Prüfen</button>
+        <button data-tab="text" data-i18n="tab_text">Text</button>
+        <button data-tab="node" data-i18n="tab_node">Knoten</button>
+      </div>
+      <div id="pbody"></div>
+    </aside>
+  </section>
+  <section id="v-node" class="view"></section>
+  <section id="v-class" class="view"></section>
+</main>
+<div id="modalbg" hidden><div id="modal" role="dialog" aria-modal="true"></div></div>
+<div id="lightbox" role="dialog" aria-modal="true" hidden></div>
+<div id="help" hidden></div>
+<div id="toast" hidden></div>
+<script id="kg-data" type="application/octet-stream">{{DATA}}</script>
+<script id="rv-data" type="application/octet-stream">{{REVIEW}}</script>
+<script>
+/*{{LEAFLET_JS}}*/
+</script>
+<script>
+/*{{APP_JS}}*/
+</script>
+</body>
+</html>

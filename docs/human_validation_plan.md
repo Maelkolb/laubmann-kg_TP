@@ -1,5 +1,16 @@
 # Human validation of the final graph and the Darwin Core Archive
 
+> **Update 2026-10-01 (round 4).** Every record has since been checked against
+> the scan by Gemini, corrections of single record fields have a pipeline
+> consumer (`review/observation_corrections.csv`), and the work is split over
+> two focused pages: the link page (`tools/validation_ui/link_check/`, section
+> 2 tasks 2, 3 and 7 for names) and the graph page
+> (`tools/validation_ui/graph_check/`, tasks 1, 4, 5 and 6 entry by entry with
+> the scan). Results, the agreement of the checks and the order of work:
+> `docs/validation_round4_report.md`. The page described below
+> (`Laubmann_Validierung.html`) stays usable; its decisions use the same keys
+> and files.
+
 Plan for the validation of `kg_exports_2026-10-01_machine` (ontology 0.7.0,
 prompt v4, visual reading, three machine review rounds applied above the
 thresholds). The reviewer works in ONE page, `Laubmann_Validierung.html`

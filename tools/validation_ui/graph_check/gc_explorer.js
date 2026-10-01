@@ -1,4 +1,8 @@
-/* Laubmann-KG graph explorer (ontology 0.7.0) — application script.
+/* Laubmann-KG graph validation page ("Graph-Prüfung") — FORK of tools/explorer/graph_explorer.js (ontology 0.7.0).
+   Everything the explorer does is kept (overview, node view, classes, search); the entry view is extended by the
+   review modules gc_*.js, which follow this file in the SAME function scope (build_graph_check.py concatenates them;
+   gc_boot.js closes the scope). Changes against the explorer are marked [GC].
+   Original header: Laubmann-KG graph explorer — application script.
    The data is the exported graph itself, packed by tools/explorer/build_graph_explorer.py:
    node / predicate / literal tables plus the triples sorted by subject (CSR arrays).
    Everything shown here is read from those triples; nothing is precomputed by the pipeline. */
@@ -11,11 +15,11 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 function store(k, v) {
-  try { if (v === undefined) return localStorage.getItem('lkgx.' + k); localStorage.setItem('lkgx.' + k, v); } catch (e) { /* storage unavailable */ }
+  try { if (v === undefined) return localStorage.getItem('lkgc.' + k); localStorage.setItem('lkgc.' + k, v); } catch (e) { /* storage unavailable */ }
   return null;
 }
 const debounce = (f, ms) => { let h; return (...a) => { clearTimeout(h); h = setTimeout(() => f(...a), ms); }; };
-function toast(msg) { const el = $('#toast'); el.textContent = msg; el.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => { el.hidden = true; }, 1800); }
+function toast(msg, ms) { const el = $('#toast'); el.textContent = msg; el.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => { el.hidden = true; }, ms || 1800); }
 function copyText(s) {
   const fallback = () => { const ta = document.createElement('textarea'); ta.value = s; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { /* ignore */ } ta.remove(); toast(t('copied')); };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(s).then(() => toast(t('copied')), fallback); else fallback();
@@ -132,10 +136,10 @@ const CLASS_KIND = [ // priority order: first match wins for nodes with several 
 ];
 const KIND_CLASS = Object.fromEntries(CLASS_KIND.map(([c, k]) => [k, c]));
 const KIND_COLOR = { entry: 'entry', obs: 'rec', group: 'rec', ghead: 'rec', weather: 'detail', travel: 'detail', leg: 'detail', taxon: 'taxon', place: 'place', geom: 'place',
-  person: 'person', habitat: 'habitat', auth: 'auth', volume: 'archive', page: 'archive', region: 'archive', mmregion: 'archive', run: 'prov', agent: 'prov', prompt: 'prov' };
+  person: 'person', habitat: 'habitat', auth: 'auth', miss: 'other', gone: 'other', volume: 'archive', page: 'archive', region: 'archive', mmregion: 'archive', run: 'prov', agent: 'prov', prompt: 'prov' };
 const kc = k => KIND_COLOR[k] || 'other';
 const SHARED = new Set(['taxon', 'place', 'person', 'habitat', 'auth', 'volume', 'page', 'concept', 'scheme', 'run', 'agent', 'prompt', 'region', 'mmregion', 'geom', 'term', 'ext', 'other']);
-const LAYERS = [['records', 'rec'], ['taxa', 'taxon'], ['places', 'place'], ['persons', 'person'], ['habitats', 'habitat'], ['archive', 'archive'], ['authorities', 'auth'], ['provenance', 'prov']];
+const LAYERS = [['records', 'rec'], ['taxa', 'taxon'], ['places', 'place'], ['persons', 'person'], ['habitats', 'habitat'], ['archive', 'archive'], ['authorities', 'auth'], ['provenance', 'prov'], ['props', 'props'], ['links', 'other']];   // [GC] properties (literal rows), other statements
 const MATCH = ['skos:exactMatch', 'skos:closeMatch', 'skos:broadMatch'];
 const PLACE_PREDS = ['lkg:observedAt', 'lkg:hasLocality', 'lkg:entryPlace', 'lkg:departurePlace', 'lkg:arrivalPlace', 'lkg:viaPlace'];
 const OBS_KNOWN = new Set(['rdf:type', 'dcterms:isPartOf', 'prov:wasDerivedFrom', 'prov:wasGeneratedBy', 'lkg:observedTaxon', 'lkg:observedAt', 'lkg:hasLocality', 'dwciri:recordedBy', 'dwciri:habitat']);
@@ -230,10 +234,11 @@ function localName(n) { const c = G.nodes[n]; const m = /([^:#/]+)\/?$/.exec(c);
 function subPropOf(p, sup) { let q = p; for (let i = 0; i < 8 && q; i++) { if (q === sup) return true; q = G.meta.subProp[q]; } return false; }
 
 // ------------------------------------------------------------------ labels
-const pl = p => { const l = G.meta.labels[p]; return l ? (l[LANG] || l.en || l.de) : p; };
+const pl = p => { if (p.startsWith('rv:')) return t('e_' + p.slice(3)); const l = G.meta.labels[p]; return l ? (l[LANG] || l.en || l.de) : p; };
 const clsLabel = c => { const l = G.meta.labels[c]; return l ? (l[LANG] || l.en || l.de) : c; };
 function kindLabel(k) {
   if (k === 'habitat') return t('k_habitat'); if (k === 'auth') return t('k_auth'); if (k === 'group' || k === 'ghead') return t('k_group');
+  if (k === 'miss') return t('k_miss'); if (k === 'gone') return t('k_gone');   // [GC] ghost nodes
   if (k === 'term') return t('k_term'); if (k === 'ext') return t('k_ext'); if (k === 'other') return t('k_other'); if (k === 'concept') return t('k_concept');
   return KIND_CLASS[k] ? clsLabel(KIND_CLASS[k]) : k;
 }
@@ -326,10 +331,10 @@ const entryPlaceLabel = r => (r.place >= 0 ? label(r.place) : (pref(r.n, 'dwc:ve
 
 // ------------------------------------------------------------------ state + routing
 const S = {
-  view: 'overview', e: -1, sel: null, tab: store('tab') || 'text', group: store('group') || 'auto', labels: store('labels') || 'auto',
-  layers: Object.assign({ records: true, taxa: true, places: true, persons: true, habitats: true, archive: true, authorities: true, provenance: false }, (() => { try { return JSON.parse(store('layers') || '{}'); } catch (e) { return {}; } })()),
-  expanded: new Set(), vol: null, recSort: ['pos', 1], lastEntry: -1,
-  list: store('list') ? store('list') === '1' : window.innerWidth >= 1750,
+  view: 'overview', e: -1, sel: null, tab: store('tab') || 'check', group: store('group') || 'auto', labels: store('labels') || 'none',   // [GC] defaults
+  layers: Object.assign({ records: true, taxa: true, places: true, persons: true, habitats: true, archive: false, authorities: false, provenance: false, props: true, links: false }, (() => { try { return JSON.parse(store('layers') || '{}'); } catch (e) { return {}; } })()),
+  expanded: new Set(), vol: null, recSort: ['pos', 1], lastEntry: -1, props: store('props') || 'auto', propOpen: new Set(),   // [GC] mode of the properties layer
+  list: store('list') ? store('list') === '1' : window.innerWidth >= 1200,
 };
 window.LKGX.S = S;
 function go(h) { if (location.hash === '#' + h) route(); else location.hash = h; }
@@ -371,8 +376,8 @@ function applyStatic() {
   $$('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   $$('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
   $('#btn-lang').textContent = LANG === 'de' ? 'EN' : 'DE';
-  $('#stats').textContent = `${fmt(G.meta.triples)} ${t('triples')} · ${fmt(G.ent.length)} ${t('entries')} · ${t('ontology')} ${G.meta.ontologyVersion || '?'}`;
-  $('#apptitle').textContent = LANG === 'de' ? 'Laubmann-KG · Graph-Explorer' : 'Laubmann KG · graph explorer';
+  $('#apptitle').textContent = t('app_title');
+  rvApplyStatic();   // [GC]
 }
 
 // ------------------------------------------------------------------ small chart helpers
@@ -410,7 +415,7 @@ function makeMap(el, pts, opts = {}) { // pts [{la, lo, r, label, go}]
   if (typeof L === 'undefined') { el.textContent = 'Leaflet missing'; return null; }
   if (el._map) { el._map.remove(); el._map = null; }
   const map = L.map(el, { scrollWheelZoom: false, preferCanvas: true });
-  // tile.openstreetmap.org answers 403 to pages opened from file:// (no Referer); the Esri services do not need one
+  // [GC] tile.openstreetmap.org answers 403 to pages opened from file:// (no Referer); the Esri services do not need one
   const esri = s => 'https://server.arcgisonline.com/ArcGIS/rest/services/' + s + '/MapServer/tile/{z}/{y}/{x}';
   const base = { Topo: L.tileLayer(esri('World_Topo_Map'), { maxZoom: 18, attribution: 'Tiles © Esri' }), 'Straßen': L.tileLayer(esri('World_Street_Map'), { maxZoom: 18, attribution: 'Tiles © Esri, HERE, Garmin, OpenStreetMap' }), Luftbild: L.tileLayer(esri('World_Imagery'), { maxZoom: 18, attribution: 'Tiles © Esri, Maxar' }) };
   base.Topo.addTo(map); L.control.layers(base, null, { collapsed: false }).addTo(map);
@@ -431,35 +436,40 @@ function makeMap(el, pts, opts = {}) { // pts [{la, lo, r, label, go}]
 }
 
 // ------------------------------------------------------------------ overview
-function stats() {
+function stats() {   // [GC] counts follow the corpus filter (rvSrcOk, rvInCount)
   if (G.stats) return G.stats;
+  const filt = corpusOn();
   const nN = G.nodes.length; const kcnt = new Uint32Array(KIND_LIST.length); for (let n = 0; n < nN; n++) kcnt[G.kind[n]]++;
   const pc = new Uint32Array(G.preds.length); for (let i = 0; i < G.tP.length; i++) pc[G.tP[i]]++;
   const classCount = new Map(); const pType = PI('rdf:type');
   if (pType >= 0) for (let i = 0; i < G.tP.length; i++) if (G.tP[i] === pType) { const o = G.tO[i]; classCount.set(o, (classCount.get(o) || 0) + 1); }
   const yE = new Map(), yO = new Map();
-  for (const r of G.ent) { const y = +r.date.slice(0, 4); if (y) yE.set(y, (yE.get(y) || 0) + 1); }
+  const ents = filt ? G.ent.filter(r => rvSrcOk(r.n)) : G.ent;
+  for (const r of ents) { const y = +r.date.slice(0, 4); if (y) yE.set(y, (yE.get(y) || 0) + 1); }
   const byKind = k => { const r = []; for (let n = 0; n < nN; n++) if (G.kind[n] === KI[k]) r.push(n); return r; };
-  const obsNodes = byKind('obs');
+  const obsNodes = filt ? byKind('obs').filter(rvSrcOk) : byKind('obs');
   for (const o of obsNodes) { const d = pref(o, 'dwc:eventDate'); const y = d ? +d.slice(0, 4) : 0; if (y) yO.set(y, (yO.get(y) || 0) + 1); }
-  const uses = (n, preds) => preds.reduce((s, p) => s + inCount(n, p), 0);
+  const uses = (n, preds) => preds.reduce((s, p) => s + rvInCount(n, p), 0);
   const mentionPreds = G.preds.filter(p => subPropOf(p, 'lkg:mentionsPerson'));
   const top = (k, preds) => byKind(k).map(n => ({ n, v: uses(n, preds) })).filter(x => x.v > 0).sort((a, b) => b.v - a.v);
   const places = byKind('place');
-  const geo = []; for (const p of places) { const c = coords(p); if (c) geo.push({ n: p, c, v: uses(p, PLACE_PREDS) }); }
+  const geo = []; for (const p of places) { const c = coords(p); if (c) { const v = uses(p, PLACE_PREDS); if (!filt || v > 0) geo.push({ n: p, c, v }); } }
   G.stats = { kc: kcnt, pc, classCount, yE, yO, obsCount: obsNodes.length, taxa: top('taxon', ['lkg:observedTaxon']), places: top('place', PLACE_PREDS),
     persons: top('person', ['dwciri:recordedBy'].concat(mentionPreds.filter(p => p === 'lkg:mentionsPerson'))), habitats: top('habitat', ['dwciri:habitat']), geo, nPlaces: places.length };
+  kcnt[KI.entry] = ents.length; kcnt[KI.obs] = obsNodes.length;
+  if (filt) { for (const k of ['taxon', 'place', 'person', 'habitat']) kcnt[KI[k]] = byKind(k).filter(n => rvUses(n) > 0).length; G.stats.nPlaces = kcnt[KI.place]; }
   return G.stats;
 }
 function showOverview() {
   setView('overview');
-  const v = $('#v-overview');
-  if (v.dataset.lang === LANG && v.dataset.theme === document.documentElement.dataset.theme) { const m = $('#ov-map'); if (m && m._map) setTimeout(() => m._map.invalidateSize(), 30); return; }
-  v.dataset.lang = LANG; v.dataset.theme = document.documentElement.dataset.theme;
+  rvRenderOverview();   // [GC] the review overview stands above the explorer's
+  const v = $('#x-ov');
+  if (v.dataset.lang === LANG && v.dataset.theme === document.documentElement.dataset.theme && v.dataset.corpus === String(RVU.corpus)) { const m = $('#ov-map'); if (m && m._map) setTimeout(() => m._map.invalidateSize(), 30); return; }
+  v.dataset.lang = LANG; v.dataset.theme = document.documentElement.dataset.theme; v.dataset.corpus = String(RVU.corpus);
   const st = stats();
   const tile = (val, lab, h) => `<div class="tile"${h ? ` data-go="${h}"` : ' style="cursor:default"'}><div class="v num">${fmt(val)}</div><div class="l">${esc(lab)}</div></div>`;
   const built = (G.meta.built || '').slice(0, 16).replace('T', ' ');
-  const volItems = G.vols.map(vn => { const ids = G.entByVol.get(vn) || []; return { l: label(vn).replace(/^Laubmann\s*·\s*/, ''), title: label(vn) + ' · ' + (pref(vn, 'dcterms:temporal') || ''), v: ids.length, go: ids.length ? entryHash(G.ent[ids[0]].n) : '/n/' + G.nodes[vn] }; });
+  const volItems = G.vols.map(vn => { const ids = (G.entByVol.get(vn) || []).filter(i => rvSrcOk(G.ent[i].n)); return { l: label(vn).replace(/^Laubmann\s*·\s*/, ''), title: label(vn) + ' · ' + (pref(vn, 'dcterms:temporal') || ''), v: ids.length, go: ids.length ? entryHash(G.ent[ids[0]].n) : '/n/' + G.nodes[vn] }; });
   const span = yearSpan([st.yE, st.yO]); const y0 = span.y0, y1 = span.y1;
   const yearNote = which => { const m = which === 'obs' ? st.yO : st.yE; const sp = yearSpan([m]); return sp.note ? `<div class="muted" style="font-size:.74rem">${esc(sp.note)}</div>` : ''; };
   const yearItems = which => { const m = which === 'obs' ? st.yO : st.yE; const r = []; if (y0) for (let y = y0; y <= y1; y++) { const first = G.ent.find(x => x.date.startsWith(String(y))); r.push({ l: String(y), v: m.get(y) || 0, go: first ? entryHash(first.n) : '' }); } return r; };
@@ -471,7 +481,7 @@ function showOverview() {
     <h2>${t('ov_title')}</h2>
     <p class="lead">${esc(t('ov_lead', G.meta.sourcePath || G.meta.source, fmt(G.meta.triples), G.meta.ontologyVersion || '?', built))}</p>
     <div class="tiles">
-      ${tile(G.ent.length, kindLabel('entry'), G.ent.length ? entryHash(G.ent[0].n) : '/')}
+      ${tile(st.kc[KI.entry], kindLabel('entry'), G.ent.length ? entryHash(G.ent[0].n) : '/')}
       ${tile(st.kc[KI.obs], kindLabel('obs'), '/c/obs')}
       ${tile(st.kc[KI.taxon], kindLabel('taxon'), '/c/taxon')}
       ${tile(st.kc[KI.place], kindLabel('place'), '/c/place')}
@@ -520,65 +530,40 @@ function showEntry(e, selKey) {
   const changed = S.e !== e;
   if (changed) { S.e = e; S.expanded = new Set(); S.lastEntry = e; }
   S.sel = selKey || (changed ? null : S.sel);
-  const r = entryRec(e);
-  if (S.vol !== r.vol || $('#elist-body').dataset.lang !== LANG) { if (S.vol !== r.vol) $('#efilter').value = ''; S.vol = r.vol; renderVolSelect(); renderEntryList(); }
-  else markEntryList();
+  rvEnterEntry(e, changed);          // [GC] entry model, work list, scan pane
   renderEntryHead();
   renderTools();
   renderGraph(!changed);
   if (S.sel && SUB && !SUB.V.has(S.sel)) revealNode(S.sel);
-  if (S.sel && selKey) { S.tab = S.tab === 'records' ? 'records' : 'node'; centerOn(S.sel); }
+  if (S.sel && selKey) { centerOn(S.sel); rvOnSelect(S.sel, { fromRoute: true }); }
+  rvRenderTable();                   // [GC] the records table replaces the graph when toggled
   renderPanel();
 }
-function renderVolSelect() {
-  const sel = $('#volsel');
-  sel.innerHTML = G.vols.concat(G.entByVol.has(-1) ? [-1] : []).map(v => `<option value="${v}">${esc(volLabel(v))} · ${esc(pref(v, 'dcterms:temporal') || '')} (${(G.entByVol.get(v) || []).length})</option>`).join('');
-  sel.value = String(S.vol);
-}
-function renderEntryList() {
-  const body = $('#elist-body'); body.dataset.lang = LANG;
-  const q = $('#efilter').value.trim().toLowerCase();
-  const ids = G.entByVol.get(S.vol) || [];
-  let rows = ids.map(i => G.ent[i]);
-  if (q) rows = rows.filter(r => (r.id + ' ' + r.date + ' ' + (pref(r.n, 'dwc:verbatimEventDate') || '') + ' ' + entryPlaceLabel(r)).toLowerCase().includes(q));
-  body.innerHTML = rows.map(r => `<div class="erow" data-e="${r.n}"><span class="d">${esc(r.date || pref(r.n, 'dwc:verbatimEventDate') || r.id)}</span><span class="n">${r.nobs ? fmt(r.nobs) : ''}</span><span class="p">${esc(entryPlaceLabel(r))} <span class="muted mono" style="font-size:.7rem">${esc(r.id)}</span></span></div>`).join('');
-  markEntryList();
-}
-function markEntryList() {
-  const body = $('#elist-body'); let on = null;
-  $$('.erow', body).forEach(x => { const is = +x.dataset.e === S.e; x.classList.toggle('on', is); if (is) on = x; });
-  if (on) { const br = body.getBoundingClientRect(), r = on.getBoundingClientRect(); if (r.top < br.top || r.bottom > br.bottom) on.scrollIntoView({ block: 'center' }); }
-}
-function stepEntry(d) {
-  const i = G.entPos.get(S.e); const r = G.ent[i]; const list = G.entByVol.get(r.vol) || []; const j = list.indexOf(i) + d;
-  if (j >= 0 && j < list.length) go(entryHash(G.ent[list[j]].n));
-}
-function renderEntryHead() {
-  const e = S.e, r = entryRec(e); const list = G.entByVol.get(r.vol) || []; const pos = list.indexOf(G.entPos.get(e));
-  $('#ehead').innerHTML = `<button class="btn" data-act="list" title="${t('toggle_list')}">☰</button><span class="navb"><button class="btn" data-act="prev" title="${t('prev')}" ${pos <= 0 ? 'disabled' : ''}>◀</button><button class="btn" data-act="next" title="${t('next')}" ${pos >= list.length - 1 ? 'disabled' : ''}>▶</button></span>
-    <span class="t">${esc(label(e))}</span><span class="muted mono" style="font-size:.78rem">${esc(r.id)}</span>
-    <span class="muted" style="font-size:.76rem">${esc(t('of_vol', pos + 1, list.length, volLabel(r.vol)))}</span>
-    <button class="btn" data-copy="${esc(iriOf(e))}" title="${esc(iriOf(e))}">${t('copy_iri')}</button>`;
+// [GC] renderVolSelect, renderEntryList, markEntryList and stepEntry of the explorer are replaced by the work list (gc_views.js)
+function renderEntryHead() {   // [GC] position in the queue, graph/table toggle, checked state
+  const e = S.e, r = entryRec(e); const q = rvQueuePos(e);
+  $('#ehead').innerHTML = `<button class="btn" data-act="list" title="${t('toggle_list')}">☰</button><span class="navb"><button class="btn" data-act="prev" title="${t('prev')}" ${q.pos === 0 ? 'disabled' : ''}>◀</button><button class="btn" data-act="next" title="${t('next')}" ${q.pos >= q.n - 1 ? 'disabled' : ''}>▶</button></span>
+    <span class="t" title="${esc(label(e))}">${esc(label(e))}</span><span class="muted mono" style="font-size:.78rem">${esc(r.id)}</span>
+    ${rvHeadHtml(e, q.pos >= 0 ? t('of_queue', fmt(q.pos + 1), fmt(q.n), t('q_' + q.queue)) : volLabel(r.vol))}`;
 }
 function renderTools() {
+  if (rvToolsHtml()) return;   // [GC] the records table has its own tool row
   const g = S.group;
   $('#gtools').innerHTML = LAYERS.map(([l, c]) => `<span class="chip ${S.layers[l] ? 'on' : ''}" data-layer="${l}"><i style="background:var(--c-${c})"></i>${t('l_' + l)}</span>`).join('') +
-    `<label>${t('group_by')} <select id="grpsel">${['auto', 'none', 'order', 'family', 'place', 'recordedBy', 'recordType'].map(k => `<option value="${k}" ${k === g ? 'selected' : ''}>${t('g_' + k)}</option>`).join('')}</select></label>
-     <button class="zbtn" data-act="expand">${t('expand_all')}</button><button class="zbtn" data-act="collapse">${t('collapse_all')}</button>
-     <label>${t('labels')} <select id="lblsel">${['auto', 'all', 'none'].map(k => `<option value="${k}" ${k === S.labels ? 'selected' : ''}>${t('lb_' + k)}</option>`).join('')}</select></label>
-     <span class="sp"></span>
-     <button class="zbtn" data-act="zout" title="−">−</button><button class="zbtn" data-act="zin" title="+">+</button><button class="zbtn" data-act="fit">${t('fit')}</button>`;
-  $('#legend').innerHTML = `<span>${t('legend_nodes')}:</span>` +
-    ['entry', 'obs', 'weather', 'taxon', 'place', 'person', 'habitat', 'page', 'auth', 'run'].map(k => `<span class="li"><svg width="12" height="10"><rect x=".5" y=".5" width="11" height="9" rx="2" fill="var(--c-${kc(k)})" opacity="${k === 'auth' || k === 'run' ? .35 : .8}"/></svg>${esc(k === 'weather' ? kindLabel('weather') + '/' + kindLabel('travel') : k === 'page' ? t('l_archive') : kindLabel(k))}</span>`).join('') +
-    `<span style="margin-left:8px">${t('legend_edges')}:</span>` +
-    [['exact', 'c-exact'], ['close', 'c-close'], ['broad', 'c-broad']].map(([k, c]) => `<span class="li"><svg width="26" height="8"><path class="edge ${c}" d="M1,4 L25,4"/></svg>skos:${k}Match (${t(k)})</span>`).join('') +
-    `<span class="muted" style="margin-left:auto">${t('zoom_hint')}</span>`;
+    `<select id="grpsel" title="${t('group_by')}">${['auto', 'none', 'order', 'family', 'place', 'recordedBy', 'recordType'].map(k => `<option value="${k}" ${k === g ? 'selected' : ''}>${t('grp_short')}: ${t('g_' + k)}</option>`).join('')}</select>
+     <button class="zbtn" data-act="expand" title="${t('expand_all')}">▾▾</button><button class="zbtn" data-act="collapse" title="${t('collapse_all')}">▸▸</button>
+     <select id="lblsel" title="${t('labels')}">${['auto', 'all', 'none'].map(k => `<option value="${k}" ${k === S.labels ? 'selected' : ''}>${t('labels_short')}: ${t('lb_' + k)}</option>`).join('')}</select>
+     ${rvGraphTools()}<span class="sp"></span>
+     <button class="zbtn" data-act="zout" title="−">−</button><button class="zbtn" data-act="zin" title="+">+</button><button class="zbtn" data-act="fit" title="${t('fit')}">⤢</button>`;   // [GC] compact: the middle column is narrow
+  // [GC] the legend explains the annotation layer; node colours are on the layer chips above
+  $('#legend').innerHTML = rvLegendHtml() + (S.layers.authorities ? `<span style="margin-left:8px">${t('legend_edges')}:</span>` +
+    [['exact', 'c-exact'], ['close', 'c-close'], ['broad', 'c-broad']].map(([k, c]) => `<span class="li"><svg width="26" height="8"><path class="edge ${c}" d="M1,4 L25,4"/></svg>${t(k)}</span>`).join('') : '');
 }
 
 // ---- subgraph model
 let SUB = null;
-const COLW = { 0: 150, 1: 178, 2: 184, 3: 164, 4: 168, 5: 166 };
-const COLGAP = 80, NGAP = 7;
+const COLW = { 0: 150, 1: 164, 2: 176, 3: 154, 4: 160, 5: 160 };   // [GC] a little narrower: the graph shares the width with the scan
+const NGAP = 7; const colGap = () => (S.labels === 'none' ? 46 : 80);   // [GC] narrower columns without edge labels
 function textPos(e) { // position of each observation's verbatim notes in the entry text
   if (textPos.e === e) return textPos.m;
   const fn = pref(e, 'dwc:fieldNotes') || ''; const m = new Map();
@@ -593,7 +578,7 @@ function textPos(e) { // position of each observation's verbatim notes in the en
   textPos.e = e; textPos.m = m; return m;
 }
 function obsOfEntry(e) {
-  const obs = uniq(nodeObjs(e, 'lkg:containsObservation').concat(incoming(e, 'dcterms:isPartOf').filter(x => isKind(x, 'obs'))));
+  const obs = uniq(nodeObjs(e, 'lkg:containsObservation').concat(incoming(e, 'dcterms:isPartOf').filter(x => isKind(x, 'obs')))).filter(rvObsShown);   // [GC] corpus filter
   const tp = textPos(e);
   return obs.map(o => ({ o, p: tp.get(o) ? tp.get(o)[0] : 1e9, l: label(o) })).sort((a, b) => a.p - b.p || coll.compare(a.l, b.l)).map(x => x.o);
 }
@@ -659,9 +644,10 @@ function buildSub(e) {
         link(src, add(x, k === 'taxon' ? 3 : 4), p);
       }
     }
+    rvGhosts(e, add, link, ev, records);   // [GC] missing records and removed mentions as ghost nodes
     if (on('provenance')) {
       for (const v of records) {
-        const nodes = v.kind === 'group' ? v.members : v.kind === 'ghead' ? [] : [v.n];
+        const nodes = v.kind === 'group' ? v.members : v.kind === 'ghead' || v.n < 0 ? [] : [v.n];
         for (const n of nodes) {
           for (const run of nodeObjs(n, 'prov:wasGeneratedBy')) link(v, add(run, 1, { bottom: true }), 'prov:wasGeneratedBy');
           for (const d of nodeObjs(n, 'prov:wasDerivedFrom')) if (d === e && !pairs.has(v.key + '|' + ev.key) && v.kind !== 'leg') link(v, ev, 'prov:wasDerivedFrom');
@@ -710,6 +696,7 @@ function buildSub(e) {
   return { V, E: [...E.values()], e };
 }
 function nodeText(v) {
+  if (v.kind === 'miss' || v.kind === 'gone') return v.label;   // [GC]
   if (v.kind === 'group') return `▸ ${v.label} · ${t('obs_n', v.members.length)}`;
   if (v.kind === 'ghead') return `▾ ${v.label} · ${t('obs_n', v.members.length)}`;
   if (v.kind === 'auth') { const pl_ = pref(v.n, 'skos:prefLabel') || pref(v.n, 'rdfs:label'); return pl_ || authId(v.n); }
@@ -717,7 +704,8 @@ function nodeText(v) {
   return label(v.n);
 }
 function nodeSub(v) {
-  if (v.kind === 'entry') { const r = entryRec(v.n); return `${r.id} · ${fmt(r.nobs)} ${t('observations')}`; }
+  if (v.kind === 'miss' || v.kind === 'gone') return v.sub || '';   // [GC]
+  if (v.kind === 'entry') { const r = entryRec(v.n); return `${r.id} · ${rvEntryCount(r)}`; }   // [GC] "n von m" under a corpus filter
   if (v.kind === 'auth') return (pref(v.n, 'skos:prefLabel') || pref(v.n, 'rdfs:label')) ? authId(v.n) : schemeName(v.n);
   if (v.kind === 'taxon') return pref(v.n, 'dwc:scientificName') || '';
   if (v.kind === 'group') { const tx = uniq(v.members.map(o => node1(o, 'lkg:observedTaxon'))).length; return t('taxa_n', tx); }
@@ -728,21 +716,23 @@ function layoutSub(sub) {
   const nb = new Map(all.map(v => [v.key, []]));
   for (const ed of E) { nb.get(ed.a.key).push(ed.b); nb.get(ed.b.key).push(ed.a); }
   for (const v of all) {
-    v.w = COLW[v.col] || 200;
+    v.w = colW(v.col);   // [GC]
     v.h = v.kind === 'entry' ? 50 : v.kind === 'group' ? 36 : v.kind === 'ghead' ? 22 : (v.kind === 'taxon' || v.kind === 'auth') ? 34 : 26;
     if (v.kind === 'taxon' && !nodeSub(v)) v.h = 26;
     if (v.kind === 'auth' && !(pref(v.n, 'skos:prefLabel') || pref(v.n, 'rdfs:label'))) v.h = 26;
+    if ((v.kind === 'miss' || v.kind === 'gone') && v.sub) v.h = 34;   // [GC]
   }
+  rvPropsLayout(sub, all);   // [GC] rows of literal statements inside the node boxes (v.rows, v.hh = header height, v.h)
   const cols = new Map(); for (const v of all) { if (!cols.has(v.col)) cols.set(v.col, []); cols.get(v.col).push(v); }
   const stack = (list, y0) => { let y = y0; for (const v of list) { v.y = y; y += v.h + NGAP; } return y - NGAP; };
-  const center = v => v.y + v.h / 2;
+  const center = v => v.y + (v.hh || v.h) / 2;   // [GC] edges meet the header of a node
   const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
   // col 2: records in insertion order
   const c2 = (cols.get(2) || []).sort((a, b) => a.ord - b.ord);
   let y2end = stack(c2, 0);
   const ev = V.get('n' + sub.e);
   const mid2 = c2.length ? (c2[0].y + y2end) / 2 : 0;
-  ev.y = mid2 - ev.h / 2;
+  ev.y = S.layers.props && c2.length ? c2[0].y : mid2 - ev.h / 2;   // [GC] with property rows the entry stands at the top, next to its first record
   // col 1: entry, then provenance nodes below
   const c1rest = (cols.get(1) || []).filter(v => v !== ev);
   stack(c1rest, Math.max(ev.y + ev.h + 60, y2end - c1rest.length * (26 + NGAP)));
@@ -750,7 +740,7 @@ function layoutSub(sub) {
   const place = (list, ref) => {
     for (const v of list) { const ys = nb.get(v.key).filter(ref).map(center); v.bary = ys.length ? mean(ys) : center(ev); }
     list.sort((a, b) => a.bary - b.bary || a.ord - b.ord);
-    let y = -Infinity; for (const v of list) { v.y = Math.max(v.bary - v.h / 2, y); y = v.y + v.h + NGAP; }
+    let y = -Infinity; for (const v of list) { v.y = Math.max(v.bary - (v.hh || v.h) / 2, y); y = v.y + v.h + NGAP; }   // [GC] header at the barycentre
     if (list.length) { const d = mean(list.map(v => center(v) - v.bary)); for (const v of list) v.y -= d; }
   };
   const c0 = (cols.get(0) || []).sort((a, b) => a.ord - b.ord);
@@ -759,13 +749,14 @@ function layoutSub(sub) {
   place(cols.get(4) || [], w => w.col < 4);
   place(cols.get(5) || [], w => w.col === 3 || w.col === 4);
   // x positions: only the columns in use
-  const used = [...cols.keys()].sort((a, b) => a - b); let x = 70; const colX = {};
-  for (const c of used) { colX[c] = x; x += (COLW[c] || 200) + COLGAP; }
+  const used = [...cols.keys()].sort((a, b) => a - b); let x = used[0] === 0 ? 70 : 24; const colX = {};
+  for (const c of used) { colX[c] = x; x += colW(c) + colGap(); }
   for (const v of all) v.x = colX[v.col];
   const minY = Math.min(...all.map(v => v.y)); for (const v of all) v.y += 46 - minY;
-  sub.width = x - COLGAP + 40; sub.height = Math.max(...all.map(v => v.y + v.h)) + 40; sub.colX = colX; sub.used = used; sub.nb = nb;
+  sub.width = x - colGap() + 30; sub.height = Math.max(...all.map(v => v.y + v.h)) + 40; sub.colX = colX; sub.used = used; sub.nb = nb;
 }
 const EDGE_CLS = p => {
+  if (p === 'rv:missing' || p === 'rv:removed') return 'ghost';   // [GC]
   if (p === 'skos:exactMatch' || p === 'owl:sameAs') return 'exact'; if (p === 'skos:closeMatch') return 'close'; if (p === 'skos:broadMatch') return 'broad';
   if (p === 'lkg:observedTaxon' || p === 'dwciri:toTaxon') return 'taxon';
   if (PLACE_PREDS.includes(p)) return 'place';
@@ -786,7 +777,7 @@ function fitText(s, w, font) {
   return s.slice(0, lo) + '…';
 }
 function edgeGeom(a, b) {
-  const y1 = a.y + a.h / 2, y2 = b.y + b.h / 2;
+  const y1 = a.y + (a.hh || a.h) / 2, y2 = b.y + (b.hh || b.h) / 2;   // [GC]
   if (a.col === b.col) {
     const x = a.x, d = 26 + Math.min(70, Math.abs(y2 - y1) * 0.22);
     return { d: `M${x},${y1} C${x - d},${y1} ${x - d},${y2} ${x},${y2 + (y2 > y1 ? -3 : 3)}`, mx: x - d * 0.75, my: (y1 + y2) / 2 };
@@ -811,46 +802,52 @@ function renderGraph(keepView) {
     }
   }
   const heads = { 0: t('col_archive'), 1: t('col_entry'), 2: t('col_records'), 3: t('col_taxa'), 4: t('col_shared'), 5: t('col_auth') };
-  let s = '<defs>' + ['part', 'taxon', 'place', 'person', 'habitat', 'detail', 'archive', 'auth', 'prov', 'other'].map(c => `<marker id="ar-${c}" viewBox="0 0 8 8" refX="7.2" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0.6 L8,4 L0,7.4 z" class="arrow-${c}"/></marker>`).join('') + '</defs>';
+  let s = '<defs>' + ['part', 'taxon', 'place', 'person', 'habitat', 'detail', 'archive', 'auth', 'prov', 'other', 'ghost'].map(c => `<marker id="ar-${c}" viewBox="0 0 8 8" refX="7.2" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0.6 L8,4 L0,7.4 z" class="arrow-${c}"/></marker>`).join('') + '</defs>';
   s += '<g id="vp">';
   s += sub.used.map(c => `<text class="colhead" x="${sub.colX[c]}" y="22">${esc(heads[c] || '')}</text>`).join('');
   s += '<g>' + allE.map(ed => `<path class="edge c-${ed.cls}${ed.a.col === 2 && ed.b.col === 4 && fanIn.get(ed.b.key) > 8 ? ' fan' : ''}" data-i="${ed.i}" d="${ed.g.d}" marker-end="url(#ar-${ARROW(ed.cls)})"${ed.count > 1 ? ` style="stroke-width:${(1.2 + Math.log2(ed.count) * 0.9).toFixed(1)}"` : ''}/>`).join('') + '</g>';
   s += '<g>' + allE.map(ed => `<text class="elbl${shown.has(ed.i) ? '' : ' hide'}" data-i="${ed.i}" x="${ed.g.mx.toFixed(1)}" y="${(ed.g.my - 3).toFixed(1)}" text-anchor="middle">${esc(pl(ed.p) + (ed.count > 1 ? ' ×' + ed.count : ''))}</text>`).join('') + '</g>';
   s += '<g>';
   for (const v of V.values()) {
-    const cls = `nd k-${v.kind}${S.sel === v.key ? ' sel' : ''}`;
-    let inner = '';
+    const an = rvAnn(v);   // [GC] annotation layer: what is not yet confirmed by a human (colour = level, marker = kind)
+    const cls = `nd k-${v.kind}${S.sel === v.key ? ' sel' : ''}${an ? ' an an-' + an.cls + (an.strike ? ' an-gone' : '') : ''}${rvOutCls(v)}`;
+    let inner = an ? rvRingSvg(v, an) : '';
     if (v.kind === 'group') inner += `<rect class="shadow" x="4" y="4" width="${v.w}" height="${v.h}" rx="7"/>`;
+    const hh = v.hh || v.h;   // [GC] header height: below it the rows of the properties layer
     const rx = v.kind === 'taxon' || v.kind === 'place' || v.kind === 'person' || v.kind === 'habitat' ? 13 : 6;
-    inner += `<rect class="b" width="${v.w}" height="${v.h}" rx="${Math.min(rx, v.h / 2)}"${v.kind === 'entry' ? '' : ` style="stroke:var(--c-${kc(v.kind)})"`}/>`;
+    inner += `<rect class="b" width="${v.w}" height="${v.h}" rx="${Math.min(rx, hh / 2)}"${v.kind === 'entry' || v.kind === 'miss' || v.kind === 'gone' ? '' : ` style="stroke:var(--c-${kc(v.kind)})"`}/>`;
     const sub_ = nodeSub(v); const main = nodeText(v);
-    const tx = v.kind === 'entry' ? 12 : 20;
-    if (v.kind !== 'entry') inner += `<circle class="dot" cx="10" cy="${sub_ ? 12 : v.h / 2}" r="3.6" fill="var(--c-${kc(v.kind)})"/>`;
+    const tx = v.kind === 'entry' ? 12 : 20; const tw = v.w - tx - 8 - (v.kind === 'obs' ? 24 : 0);   // room for the tier pill of a record
+    if (v.kind !== 'entry') inner += `<circle class="dot" cx="10" cy="${sub_ ? 12 : hh / 2}" r="3.6" fill="var(--c-${kc(v.kind)})"/>`;
     if (v.kind === 'entry') {
       const r = entryRec(v.n);
       inner += `<text x="${tx}" y="20">${esc(fitText((r.date || '') + ' · ' + entryPlaceLabel(r), v.w - 22, '600 11.5px "Segoe UI", system-ui, sans-serif'))}</text><text class="s" x="${tx}" y="38">${esc(fitText(sub_, v.w - 22, '9.5px "Segoe UI", sans-serif'))}</text>`;
-    } else if (sub_ && v.h >= 30) {
-      inner += `<text x="${tx}" y="15">${esc(fitText(main, v.w - tx - 8))}</text><text class="s" x="${tx}" y="${v.h - 7}">${esc(fitText(sub_, v.w - tx - 8, '9.5px "Segoe UI", sans-serif'))}</text>`;
-    } else inner += `<text x="${tx}" y="${v.h / 2 + 4}">${esc(fitText(main, v.w - tx - 8))}</text>`;
-    s += `<g class="${cls}" data-key="${esc(v.key)}" transform="translate(${v.x},${v.y})">${inner}</g>`;
+    } else if (sub_ && hh >= 30) {
+      inner += `<text x="${tx}" y="15">${esc(fitText(main, tw))}</text><text class="s" x="${tx}" y="${hh - 7}">${esc(fitText(sub_, tw, '9.5px "Segoe UI", sans-serif'))}</text>`;
+    } else inner += `<text x="${tx}" y="${hh / 2 + 4}">${esc(fitText(main, tw))}</text>`;
+    inner += rvPropsSvg(v) + rvTierSvg(v);
+    s += `<g class="${cls}" data-key="${esc(v.key)}" transform="translate(${v.x},${v.y})">${inner}${an ? rvBadgeSvg(v, an) : ''}</g>`;
   }
   s += '</g></g>';
   svg.innerHTML = s;
   svg.classList.remove('dim');
   SUB.edgeEls = $$('path.edge', svg); SUB.lblEls = $$('text.elbl', svg);
   SUB.nodeEls = new Map($$('.nd', svg).map(g => [g.dataset.key, g]));
+  SUB.selDrawn = S.sel;   // [GC]
   SUB.adj = new Map(); allE.forEach(ed => { for (const k of [ed.a.key, ed.b.key]) { if (!SUB.adj.has(k)) SUB.adj.set(k, []); SUB.adj.get(k).push(ed); } });
   if (!keepView) fitView(); else applyZ();
 }
 // ---- pan / zoom
 const Z = { k: 1, x: 0, y: 0 };
-function applyZ() { const vp = $('#vp'); if (vp) vp.setAttribute('transform', `translate(${Z.x.toFixed(1)},${Z.y.toFixed(1)}) scale(${Z.k.toFixed(4)})`); }
-function fitView() {
+function applyZ() { const vp = $('#vp'); if (vp) vp.setAttribute('transform', `translate(${Z.x.toFixed(1)},${Z.y.toFixed(1)}) scale(${Z.k.toFixed(4)})`); rvPanHint(); }   // [GC]
+function fitView(whole) {   // [GC] whole = the ⤢ button: the complete width, however small
   if (!SUB) return; const c = $('#gcanvas'); const W = c.clientWidth || 800, H = c.clientHeight || 600;
   let k = Math.min(W / SUB.width, H / SUB.height, 1.1);
   if (k < 0.62) k = clamp(Math.min(W / SUB.width, 1), 0.45, 1);
+  if (S.layers.props) k = whole === true ? clamp(Math.min(W / SUB.width, 1.1), 0.3, 1.1) : Math.max(k, Math.min(1, 0.8));   // [GC] property rows stay legible; pan for the rest
   Z.k = k; Z.x = Math.max(8, (W - SUB.width * k) / 2);
   if (SUB.height * k <= H) Z.y = (H - SUB.height * k) / 2;
+  else if (S.layers.props) Z.y = 6;
   else { const ev = SUB.V.get('n' + S.e); Z.y = Math.min(10, H / 2 - (ev.y + ev.h / 2) * k); }
   applyZ();
 }
@@ -876,7 +873,7 @@ function highlight(key) {
   }
 }
 function tipHtml(v) {
-  let h = `<div class="k">${esc(kindLabel(v.kind))}</div><div>${esc(v.kind === 'group' || v.kind === 'ghead' ? v.label : label(v.n))}</div>`;
+  let h = `<div class="k">${esc(kindLabel(v.kind))}</div><div>${esc(v.n < 0 ? v.label : label(v.n))}</div>`;
   if (v.kind === 'obs') {
     const bits = [pref(v.n, 'dwc:eventDate'), cv('lkg:recordType', pref(v.n, 'lkg:recordType') || ''), nodeObjs(v.n, 'dwciri:recordedBy').map(label).join(', ')].filter(Boolean);
     const vn = pref(v.n, 'lkg:verbatimNotes'); h += `<div class="muted">${esc(bits.join(' · '))}</div>` + (vn ? `<div style="font-style:italic">„${esc(vn.slice(0, 200))}“</div>` : '');
@@ -886,46 +883,40 @@ function tipHtml(v) {
     const sub = nodeSub(v); if (sub) h += `<div class="muted">${esc(sub)}</div>`;
     h += `<div class="iri">${esc(G.nodes[v.n])}</div>`;
   }
-  return h;
+  return h + rvTipHtml(v);   // [GC]
 }
 function selectKey(key, opts = {}) {
   S.sel = key;
   if (SUB) for (const [k, el] of SUB.nodeEls) el.classList.toggle('sel', k === key);
   setHashQuiet(entryHash(S.e, key));
   if (opts.tab) S.tab = opts.tab;
+  rvOnSelect(key, opts);   // [GC] card focus, table row, line on the scan
+  propsSelSync();   // [GC] compact properties: the selected node shows its full rows
   renderPanel();
   if (opts.center) centerOn(key);
 }
 
 // ---- panel
-function renderPanel() {
+function renderPanel() {   // [GC] tabs: check (cards), text, node
+  if (!['check', 'text', 'node'].includes(S.tab)) S.tab = 'check';
   $$('#ptabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === S.tab)));
   const body = $('#pbody'); const e = S.e;
-  if (S.tab === 'text') body.innerHTML = panelText(e);
-  else if (S.tab === 'records') body.innerHTML = panelRecords(e);
-  else if (S.tab === 'scans') { body.innerHTML = panelScans(e); wireScans(body); }
-  else body.innerHTML = panelNode();
-  if (S.tab === 'text') { const m = $('mark.on', body); if (m) m.scrollIntoView({ block: 'center' }); }
-  if (S.tab === 'records') { const r = $('tr.on', body); if (r) r.scrollIntoView({ block: 'center' }); }
+  if (S.tab === 'check') rvRenderCheck(body);
+  else if (S.tab === 'text') { const keep = body.dataset.tab === 'text' && body.dataset.e === String(e) ? body.scrollTop : -1; body.innerHTML = panelText(e); rvTextWire(body); const m = $('.fieldnotes .on', body); if (keep >= 0) body.scrollTop = keep; else if (m) m.scrollIntoView({ block: 'center' }); }
+  else { const same = body.dataset.tab === 'node' && body.dataset.shown === String(S.sel); body.innerHTML = panelNode(); if (!same) body.scrollTop = 0; }   // [GC] another node starts at its top (crop, label)
+  body.dataset.tab = S.tab; body.dataset.e = String(e); body.dataset.shown = String(S.sel);
 }
 function kv(rows) { return '<div class="kv">' + rows.filter(r => r[1] != null && r[1] !== '').map(([k, v]) => `<div class="k">${esc(k)}</div><div>${v}</div>`).join('') + '</div>'; }
 const nlink = n => `<span class="link" data-n="${n}">${esc(label(n))}</span>`;
 function panelText(e) {
-  const r = entryRec(e); const fn = pref(e, 'dwc:fieldNotes') || '';
-  const tp = textPos(e); const selN = S.sel && S.sel.startsWith('n') ? +S.sel.slice(1) : -1;
-  const marks = [...tp.entries()].filter(([, h]) => h).map(([o, h]) => ({ o, s: h[0], e: h[0] + h[1] })).sort((a, b) => a.s - b.s || b.e - a.e);
-  let html = '', pos = 0;
-  for (const m of marks) { if (m.s < pos) continue; html += esc(fn.slice(pos, m.s)) + `<mark class="${m.o === selN ? 'on' : ''}" data-n="${m.o}" title="${esc(label(m.o))}">${esc(fn.slice(m.s, m.e))}</mark>`; pos = m.e; }
-  html += esc(fn.slice(pos));
-  const pages = entryPages(e);
-  let s = `<div><span class="kbadge k-c-entry">${esc(kindLabel('entry'))}</span></div><h2 class="nt">${esc(label(e))}</h2>
-    <div class="iri">${esc(iriOf(e))} <span class="link" data-copy="${esc(iriOf(e))}">⧉</span></div>`;
+  const r = entryRec(e); const pages = entryPages(e);
+  let s = rvTextBlock(e);   // [GC] entry text first: reading corrections inline, record passages, free text correction
+  s += `<h3 class="sec">${esc(kindLabel('entry'))}</h3><div class="iri">${esc(iriOf(e))} <span class="link" data-copy="${esc(iriOf(e))}">⧉</span></div>`;
   s += kv([[t('id'), esc(r.id)], [t('date'), esc(litsOf(e, 'dwc:eventDate').join(' · '))], [t('v_date'), esc(pref(e, 'dwc:verbatimEventDate'))],
     [t('place'), nodeObjs(e, 'lkg:entryPlace').map(nlink).join(', ')], [t('v_place'), esc(pref(e, 'dwc:verbatimLocality'))],
     [t('kind'), esc(litsOf(e, 'lkg:entryKind').map(v => cv('lkg:entryKind', v)).join(', '))], [t('plausible'), esc(litsOf(e, 'lkg:datePlausible').join(', '))],
     [t('volume'), r.vol >= 0 ? nlink(r.vol) + ` <span class="muted">${esc(pref(r.vol, 'dcterms:temporal') || '')}</span>` : ''], [t('pages'), pages.map(nlink).join('<br>')]]);
   for (const note of litsOf(e, 'skos:note')) s += `<div class="note"><b>${t('transcript_note')}:</b> ${esc(note)}</div>`;
-  s += `<h3 class="sec">${t('field_notes')}</h3><div class="fieldnotes">${html || `<span class="muted">${t('no_text')}</span>`}</div>`;
   const weather = nodeObjs(e, 'lkg:hasWeather');
   if (weather.length) {
     s += `<h3 class="sec">${t('weather')}</h3>`;
@@ -968,58 +959,14 @@ function entryPages(e) {
   const u = uniq(pages); const first = u[0];
   return [first].concat(u.slice(1).sort((a, b) => coll.compare(pref(a, 'dcterms:identifier') || '', pref(b, 'dcterms:identifier') || ''))).filter(x => x !== undefined);
 }
-const REC_COLS = ['pos', 'taxon', 'count', 'sexstage', 'behav', 'call', 'evid', 'breed', 'type', 'place', 'by', 'date', 'verb'];
-function recordRow(o, i) {
-  const tx = node1(o, 'lkg:observedTaxon'); const loc = node1(o, 'lkg:hasLocality'); const at = node1(o, 'lkg:observedAt');
-  const lv = p => litsOf(o, p).map(v => cv(p, v)).join(', ');
-  const q = pref(o, 'lkg:countQualifier');
-  return { o, pos: i, taxon: tx >= 0 ? label(tx) : '', sci: tx >= 0 ? pref(tx, 'dwc:scientificName') || '' : '',
-    count: countStr(o), countQ: q ? cv('lkg:countQualifier', q) : '', countN: parseFloat(pref(o, 'dwc:individualCount') || pref(o, 'lkg:individualCountMin') || '0') || 0,
-    sexstage: [lv('dwc:sex'), lv('dwc:lifeStage'), lv('dwc:vitality'), lv('dwc:reproductiveCondition')].filter(Boolean).join(' · '),
-    behav: litsOf(o, 'dwc:behavior').concat(litsOf(o, 'lkg:movementKind').map(v => cv('lkg:movementKind', v))).join('; '),
-    call: [lv('lkg:callType'), litsOf(o, 'lkg:callTranscription').map(x => '„' + x + '“').join(' ')].filter(Boolean).join(' '),
-    evid: lv('lkg:evidenceKind'), breed: lv('lkg:breedingEvidence'), type: lv('lkg:recordType'),
-    place: loc >= 0 ? label(loc) : at >= 0 ? label(at) : '', ownLoc: loc >= 0, placeN: loc >= 0 ? loc : at,
-    by: nodeObjs(o, 'dwciri:recordedBy').map(label).join(', '), date: litsOf(o, 'dwc:eventDate').join(' · ') + (pref(o, 'dwc:eventTime') ? ' ' + pref(o, 'dwc:eventTime') : ''),
-    verb: pref(o, 'lkg:verbatimNotes') || '' };
-}
-function panelRecords(e) {
-  const obs = obsOfEntry(e);
-  if (!obs.length) return `<p class="muted">${t('no_records')}</p>`;
-  const rows = obs.map(recordRow);
-  const [k, dir] = S.recSort;
-  rows.sort((a, b) => { const x = k === 'count' ? a.countN : a[k], y = k === 'count' ? b.countN : b[k]; return (typeof x === 'number' ? x - y : coll.compare(String(x), String(y))) * dir || a.pos - b.pos; });
-  const selN = S.sel && S.sel.startsWith('n') ? +S.sel.slice(1) : -1;
-  const th = c => `<th class="sort" data-sort="${c}">${c === 'pos' ? '#' : t('r_' + c)}${k === c ? (dir > 0 ? ' ▲' : ' ▼') : ''}</th>`;
-  return `<p class="muted" style="margin-top:0">${esc(t('rec_count', fmt(obs.length)))}</p><div class="rec-wrap"><table class="t"><tr>${REC_COLS.map(th).join('')}</tr>` +
-    rows.map(r => `<tr class="click${r.o === selN ? ' on' : ''}" data-sel="${r.o}"><td class="num muted">${r.pos + 1}</td><td title="${esc(r.sci)}">${esc(r.taxon)}<div class="muted" style="font-size:.7rem;font-style:italic">${esc(r.sci)}</div></td>
-      <td class="num">${esc(r.count)}${r.countQ ? `<div class="muted" style="font-size:.7rem">${esc(r.countQ)}</div>` : ''}</td><td>${esc(r.sexstage)}</td><td class="wrap"><div class="clamp" title="${esc(r.behav)}">${esc(r.behav)}</div></td><td>${esc(r.call)}</td><td>${esc(r.evid)}</td><td>${esc(r.breed)}</td><td>${esc(r.type)}</td>
-      <td>${esc(r.place)}${r.ownLoc ? `<div class="muted" style="font-size:.7rem">${t('own_loc')}</div>` : ''}</td><td>${esc(r.by)}</td><td class="num">${esc(r.date)}</td><td class="wrap muted"><div class="clamp" title="${esc(r.verb)}">${esc(r.verb)}</div></td></tr>`).join('') + '</table></div>';
-}
+// [GC] the explorer's records tab is replaced by the editable records table in the middle (gc_views.js)
 function scanSources(pid) {
   const sc = G.meta.scans || {}; const id = sc.drive && sc.drive[pid];
   const dr = id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w1600' : null;
   const lo = sc.local ? sc.local.replace(/\/$/, '') + '/' + encodeURIComponent(pid) + '.jpg' : null;
   return { list: (sc.mode === 'local' ? [lo, dr] : [dr, lo]).filter(Boolean), view: id ? 'https://drive.google.com/file/d/' + encodeURIComponent(id) + '/view' : null, local: lo };
 }
-function panelScans(e) {
-  const pages = entryPages(e);
-  if (!pages.length) return `<p class="muted">${t('scans_none')}</p>`;
-  return pages.map(p => {
-    const pid = pref(p, 'dcterms:identifier') || ''; const src = scanSources(pid);
-    return `<div class="scan"><div class="cap"><b>${esc(label(p))}</b>${src.view ? `<a href="${esc(src.view)}" target="_blank" rel="noopener">${t('open_drive')}</a>` : ''}${src.local ? `<a href="${esc(src.local)}" target="_blank">${t('open_local')}</a>` : ''}</div>
-      ${src.list.length ? `<img alt="${esc(pid)}" loading="lazy" data-srcs="${esc(JSON.stringify(src.list))}" data-i="0" data-pid="${esc(pid)}" src="${esc(src.list[0])}">` : `<div class="fail">${esc(t('scan_fail', pid + '.jpg'))}</div>`}</div>`;
-  }).join('');
-}
-function wireScans(root) {
-  $$('img[data-srcs]', root).forEach(img => {
-    img.addEventListener('error', () => {
-      const list = JSON.parse(img.dataset.srcs); const i = +img.dataset.i + 1;
-      if (i < list.length) { img.dataset.i = i; img.src = list[i]; } else { const d = document.createElement('div'); d.className = 'fail'; d.textContent = t('scan_fail', img.dataset.pid + '.jpg'); img.replaceWith(d); }
-    });
-    img.addEventListener('click', () => window.open(img.src.replace('sz=w1600', 'sz=w3000'), '_blank'));
-  });
-}
+// [GC] the explorer's scans tab is replaced by the persistent scan pane (gc_scan.js)
 function panelNode() {
   if (!S.sel) return `<p class="muted">${t('node_hint')}</p>` + nodeDetails(S.e, { incomingMax: 6 });
   if (S.sel.startsWith('g:') || S.sel.startsWith('h:')) {
@@ -1055,6 +1002,7 @@ function nodeDetails(n, opts = {}) {
   if (opts.page && entryOf(n) >= 0) s += `<button class="btn" data-go="${esc(entryHash(entryOf(n), 'n' + n))}">${t('open_entry')}</button>`;
   if (url) s += `<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${t('open_ext')} ↗</a>`;
   s += '</div>';
+  s += rvNodeExtra(n, opts);   // [GC] the crop of a multimodal region
   // outgoing statements grouped by predicate
   const groups = new Map();
   for (let i = G.sOff[n], end = G.sOff[n + 1]; i < end; i++) { const p = G.preds[G.tP[i]]; if (!groups.has(p)) groups.set(p, []); groups.get(p).push(G.tO[i]); }
@@ -1077,17 +1025,18 @@ function nodeDetails(n, opts = {}) {
 // ------------------------------------------------------------------ node view
 const NV = { n: -1, page: 0, sort: ['date', 1], pred: '', q: '' };
 function usageRows(n) {
-  if (NV.rows && NV.rowsFor === n + LANG) return NV.rows;
+  if (NV.rows && NV.rowsFor === n + LANG + RVU.corpus) return NV.rows;
   const rows = [];
   for (let i = G.inOff[n], end = G.inOff[n + 1]; i < end; i++) {
     const s = G.inS[i], p = G.preds[G.inP[i]]; const k = kindOf(s);
+    if (!rvSrcOk(s)) continue;   // [GC] only records and entries of the chosen corpus
     const e = k === 'entry' ? s : entryOf(s); const er = e >= 0 ? entryRec(e) : null;
     let date = '', place = '', count = '';
     if (k === 'obs') { date = pref(s, 'dwc:eventDate') || (er ? er.date : ''); const loc = node1(s, 'lkg:hasLocality'); const at = node1(s, 'lkg:observedAt'); place = label(loc >= 0 ? loc : at); count = countStr(s); }
     else if (er) { date = er.date; place = entryPlaceLabel(er); }
     rows.push({ s, p, k, e, id: er ? er.id : '', date, place, count, lab: label(s) });
   }
-  NV.rows = rows; NV.rowsFor = n + LANG; return rows;
+  NV.rows = rows; NV.rowsFor = n + LANG + RVU.corpus; return rows;
 }
 function showNode(n) {
   setView('node');
@@ -1116,7 +1065,7 @@ function showNode(n) {
   }
   const hasMap = pts.length > 0 && (k === 'place' || rows.length > 0);
   v.innerHTML = `<div class="page"><div class="grid2">
-    <div class="card">${nodeDetails(n, { page: true, incomingMax: 0 })}</div>
+    <div class="card">${rvFilterNote(true)}${nodeDetails(n, { page: true, incomingMax: 0 })}</div>
     <div>
       <div class="card star"><h3>${t('neighbourhood')}</h3>${starSvg(n, rows)}</div>
       ${hasMap ? `<div class="card" style="margin-top:16px"><h3>${k === 'place' ? t('map') : t('dist_map', fmt(pts.length))}</h3><div class="map small" id="nv-map"></div></div>` : ''}
@@ -1178,16 +1127,16 @@ function showClass(k) {
   if (CV.k !== k) { CV.k = k; CV.page = 0; CV.q = ''; CV.sort = ['uses', -1]; CV.rows = null; }
   const st = stats();
   const kinds = KIND_LIST.map((x, i) => ({ x, c: st.kc[i] })).filter(r => r.c);
-  if (!CV.rows || CV.rowsFor !== k + LANG) {
+  if (!CV.rows || CV.rowsFor !== k + LANG + RVU.corpus) {
     const rows = []; const ki = KI[k];
-    for (let n = 0; n < G.nodes.length; n++) if (G.kind[n] === ki) {
+    for (let n = 0; n < G.nodes.length; n++) if (G.kind[n] === ki && rvClassOk(n, k)) {   // [GC] corpus filter
       let sub = '';
       if (k === 'taxon') sub = pref(n, 'dwc:scientificName') || ''; else if (k === 'place') { const c = coords(n); sub = c ? c[0].toFixed(4) + ', ' + c[1].toFixed(4) : ''; }
       else if (k === 'auth') sub = authId(n); else if (k === 'entry') sub = pref(n, 'dcterms:identifier') || ''; else if (k === 'obs') sub = pref(n, 'dwc:eventDate') || '';
       else if (k === 'volume') sub = pref(n, 'dcterms:temporal') || '';
-      rows.push({ n, lab: label(n), sub, uses: G.inOff[n + 1] - G.inOff[n], iri: G.nodes[n] });
+      rows.push({ n, lab: label(n), sub, uses: rvUses(n), iri: G.nodes[n] });
     }
-    CV.rows = rows; CV.rowsFor = k + LANG;
+    CV.rows = rows; CV.rowsFor = k + LANG + RVU.corpus;
   }
   renderClassTable(kinds);
 }
@@ -1198,7 +1147,7 @@ function renderClassTable(kinds) {
   const per = 100, pages = Math.max(1, Math.ceil(rows.length / per)); CV.page = clamp(CV.page, 0, pages - 1);
   const th = (c, l) => `<th class="sort" data-csort="${c}">${esc(l)}${sk === c ? (dir > 0 ? ' ▲' : ' ▼') : ''}</th>`;
   const hash = r => (k === 'entry' ? entryHash(r.n) : k === 'obs' && entryOf(r.n) >= 0 ? entryHash(entryOf(r.n), 'n' + r.n) : '/n/' + r.iri);
-  v.innerHTML = `<div class="page"><h2>${esc(kindLabel(k))}</h2><p class="lead">${esc(KIND_CLASS[k] || '')}</p>
+  v.innerHTML = `<div class="page"><h2>${esc(kindLabel(k))}</h2><p class="lead">${esc(KIND_CLASS[k] || '')}${rvFilterNote()}</p>
     <div class="btnrow">${(kinds || []).filter(x => !['term', 'ext', 'other', 'scheme'].includes(x.x)).map(x => `<button class="btn" data-go="/c/${x.x}" ${x.x === k ? 'style="border-color:var(--accent);font-weight:600"' : ''}>${esc(kindLabel(x.x))} (${fmt(x.c)})</button>`).join('')}</div>
     <div class="pager"><input id="cv-q" type="search" placeholder="${t('filter')}" value="${esc(CV.q)}"><button class="btn" data-cpage="-1" ${CV.page <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', CV.page + 1, pages)} · ${fmt(rows.length)}</span><button class="btn" data-cpage="1" ${CV.page >= pages - 1 ? 'disabled' : ''}>▶</button></div>
     <div class="card"><table class="t"><tr>${th('lab', t('label'))}${th('sub', t('detail'))}${th('uses', t('uses'))}${th('iri', 'IRI')}</tr>
@@ -1263,7 +1212,7 @@ function wire() {
   document.addEventListener('click', ev => {
     const cp = ev.target.closest('[data-copy]'); if (cp) { copyText(cp.dataset.copy); return; }
     const nav = ev.target.closest('[data-nav]');
-    if (nav) { const w = nav.dataset.nav; if (w === 'overview') go('/'); else if (w === 'classes') go('/c/' + (CV.k || 'taxon')); else { const e = S.lastEntry >= 0 ? S.lastEntry : (G.ent[0] && G.ent[0].n); if (e !== undefined) go(entryHash(e)); } return; }
+    if (nav) { const w = nav.dataset.nav; if (w === 'overview') go('/'); else if (w === 'classes') go('/c/' + (CV.k || 'taxon')); else { const e = S.lastEntry >= 0 ? S.lastEntry : rvFirstEntry(); if (e !== undefined) go(entryHash(e)); } return; }
     const sel = ev.target.closest('[data-sel]');
     if (sel && S.view === 'entry') { const key = 'n' + sel.dataset.sel; if (SUB && !SUB.V.has(key)) revealNode(key); selectKey(key, { center: true }); return; }
     const dn = ev.target.closest('[data-n]');
@@ -1277,28 +1226,30 @@ function wire() {
     if (!ev.target.closest('#searchbox')) $('#qres').hidden = true;
   });
   // entry view controls
-  $('#volsel').addEventListener('change', ev => { const v = +ev.target.value; const ids = G.entByVol.get(v) || []; if (ids.length) go(entryHash(G.ent[ids[0]].n)); });
-  $('#efilter').addEventListener('input', debounce(renderEntryList, 120));
-  $('#elist-body').addEventListener('click', ev => { const r = ev.target.closest('.erow'); if (r) go(entryHash(+r.dataset.e)); });
-  $('#ehead').addEventListener('click', ev => { const b = ev.target.closest('[data-act]'); if (!b) return; if (b.dataset.act === 'list') { S.list = !S.list; store('list', S.list ? '1' : '0'); $('#v-entry').classList.toggle('nolist', !S.list); fitView(); markEntryList(); return; } stepEntry(b.dataset.act === 'prev' ? -1 : 1); });
+  rvWireList();   // [GC] work list: queues, volume filter, sort, filter, virtual rows
+  $('#ehead').addEventListener('click', ev => {
+    const b = ev.target.closest('[data-act]'); if (!b) return; const a = b.dataset.act;
+    if (a === 'list') { S.list = !S.list; store('list', S.list ? '1' : '0'); $('#v-entry').classList.toggle('nolist', !S.list); fitView(); rvRenderList(); }
+    else if (a === 'prev' || a === 'next') stepEntry(a === 'prev' ? -1 : 1);
+    else rvHeadAct(a, b);
+  });
   $('#gtools').addEventListener('click', ev => {
-    const ch = ev.target.closest('.chip'); if (ch) { const l = ch.dataset.layer; S.layers[l] = !S.layers[l]; store('layers', JSON.stringify(S.layers)); renderTools(); renderGraph(false); return; }
+    const ch = ev.target.closest('.chip[data-layer]'); if (ch) { const l = ch.dataset.layer; S.layers[l] = !S.layers[l]; store('layers', JSON.stringify(S.layers)); renderTools(); renderGraph(false); return; }
     const b = ev.target.closest('[data-act]'); if (!b) return; const c = $('#gcanvas');
-    if (b.dataset.act === 'fit') fitView();
+    if (b.dataset.act === 'fit') fitView(true);
     else if (b.dataset.act === 'zin') zoomAt(c.clientWidth / 2, c.clientHeight / 2, 1.25);
     else if (b.dataset.act === 'zout') zoomAt(c.clientWidth / 2, c.clientHeight / 2, 0.8);
     else if (b.dataset.act === 'expand') { for (const v of SUB.V.values()) if (v.kind === 'group') S.expanded.add(v.gkey); renderGraph(false); }
     else if (b.dataset.act === 'collapse') { S.expanded.clear(); renderGraph(false); }
+    else rvHeadAct(b.dataset.act, b);   // [GC]
   });
   $('#gtools').addEventListener('change', ev => {
     if (ev.target.id === 'grpsel') { S.group = ev.target.value; store('group', S.group); S.expanded.clear(); renderGraph(false); renderPanelIfGroup(); }
-    if (ev.target.id === 'lblsel') { S.labels = ev.target.value; store('labels', S.labels); renderGraph(true); }
+    if (ev.target.id === 'lblsel') { S.labels = ev.target.value; store('labels', S.labels); renderGraph(false); }
+    if (ev.target.id === 'propsel') { S.props = ev.target.value; store('props', S.props); renderGraph(false); }   // [GC]
   });
   $('#ptabs').addEventListener('click', ev => { const b = ev.target.closest('[data-tab]'); if (!b) return; S.tab = b.dataset.tab; store('tab', S.tab); renderPanel(); });
-  $('#pbody').addEventListener('click', ev => {
-    const th = ev.target.closest('[data-sort]'); if (th) { const k = th.dataset.sort; S.recSort = [k, S.recSort[0] === k ? -S.recSort[1] : 1]; renderPanel(); return; }
-    const mk = ev.target.closest('mark[data-n]'); if (mk) { ev.stopPropagation(); const key = 'n' + mk.dataset.n; if (SUB && !SUB.V.has(key)) revealNode(key); selectKey(key, { center: true }); }
-  }, true);
+  // [GC] clicks in the panel are handled in gc_cards.js (rvWire)
   // graph interactions
   const svg = $('#gsvg'), canvas = $('#gcanvas'), tip = $('#gtip');
   let drag = null, moved = false;
@@ -1324,7 +1275,7 @@ function wire() {
     const g = ev.target.closest('.nd'); if (!g || !SUB) return; const v = SUB.V.get(g.dataset.key); if (!v) return;
     if (v.kind === 'group') { S.expanded.add(v.gkey); renderGraph(true); return; }
     if (v.kind === 'ghead') { S.expanded.delete(v.gkey); renderGraph(true); return; }
-    selectKey(v.key, { tab: v.kind === 'entry' ? 'text' : 'node' });
+    rvNodeClick(v, ev);   // [GC] opens the matching card in the check tab
   });
   svg.addEventListener('dblclick', ev => { const g = ev.target.closest('.nd'); if (!g || !SUB) return; const v = SUB.V.get(g.dataset.key); if (v && v.n >= 0 && SHARED.has(v.kind)) go('/n/' + G.nodes[v.n]); });
   // split
@@ -1358,19 +1309,19 @@ function wire() {
     else if (ev.key === 'Escape') { box.hidden = true; q.blur(); }
   });
   document.addEventListener('keydown', ev => {
+    if (rvKey(ev)) return;   // [GC] J N E X U, arrows, Z, S, G, Enter
     if (ev.target && ev.target.closest && ev.target.closest('input,select,textarea')) return;
     if (ev.key === '/') { ev.preventDefault(); q.focus(); }
-    else if (S.view === 'entry' && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) stepEntry(ev.key === 'ArrowLeft' ? -1 : 1);
     else if (ev.key === 'Escape') { $('#help').hidden = true; if (S.view === 'entry' && S.sel) selectKey(null); }
   });
   // header buttons
-  $('#btn-lang').addEventListener('click', () => { LANG = LANG === 'de' ? 'en' : 'de'; store('lang', LANG); SIDX = null; NV.rows = null; CV.rows = null; applyStatic(); $('#elist-body').dataset.lang = ''; if (!$('#help').hidden) $('#help').innerHTML = t('help'); route(); });
+  $('#btn-lang').addEventListener('click', () => { LANG = LANG === 'de' ? 'en' : 'de'; store('lang', LANG); SIDX = null; NV.rows = null; CV.rows = null; applyStatic(); rvLangChanged(); if (!$('#help').hidden) $('#help').innerHTML = rvHelpHtml(); route(); });
   $('#btn-theme').addEventListener('click', () => { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark'; store('theme', d.dataset.theme); if (S.view === 'overview') showOverview(); });
-  $('#btn-help').addEventListener('click', () => { const h = $('#help'); h.innerHTML = t('help'); h.hidden = !h.hidden; });
+  $('#btn-help').addEventListener('click', () => { const h = $('#help'); h.innerHTML = rvHelpHtml(); h.hidden = !h.hidden; });   // [GC] with the table of levels
   $('#help').addEventListener('click', () => { $('#help').hidden = true; });
   $('#apptitle').addEventListener('click', () => go('/'));
   window.addEventListener('hashchange', route);
-  window.addEventListener('resize', debounce(() => { if (S.view === 'entry') fitView(); }, 200));
+  window.addEventListener('resize', debounce(() => { if (S.view === 'entry') { fitView(); rvResize(); } }, 200));
 }
 function renderPanelIfGroup() { if (S.sel && !S.sel.startsWith('n')) { S.sel = null; renderPanel(); } }
 
@@ -1385,14 +1336,15 @@ async function boot() {
     await new Promise(r => setTimeout(r, 0));
     const t1 = performance.now();
     buildIndex(meta, A);
-    window.LKGX.timing = { decode: Math.round(t1 - t0), index: Math.round(performance.now() - t1) };
+    const t2 = performance.now();
+    await rvBoot();   // [GC] review layer, stored decisions, queues
+    window.LKGX.timing = { decode: Math.round(t1 - t0), index: Math.round(t2 - t1), review: Math.round(performance.now() - t2) };
   } catch (err) {
     $('#loadmsg').textContent = t('load_fail') + ': ' + err; console.error(err); return;
   }
   $('#loading').hidden = true; $('#loading').style.display = 'none'; $('#app').hidden = false;
-  applyStatic(); wire();
+  applyStatic(); wire(); rvWire();
   route();
   window.LKGX.ready = true;
 }
-boot();
-})();
+// [GC] boot() is called in gc_boot.js, which also closes the function scope
