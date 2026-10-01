@@ -7,6 +7,19 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Added (2026-10-01 — Volllauf, maschinelle Prüfung Runde 3, Prüfwerkzeuge für den finalen Graphen)
+
+- **Volllauf** `kg_exports_2026-10-01` (Ontologie 0.7.0, Prompt v4, gemini-3.8-flash mit Kontext-Cache, visuelle Lesung): 9.909 Einträge gelesen und extrahiert, 9.901 im Graphen, 86.037 Beobachtungen, 1.986.310 Tripel, SHACL 0 Verstöße (450 Hinweise: 447 Einträge ohne Datensatz, 3 Ränge außerhalb des Schemas), DwC-A 9.901 Events / 86.037 Occurrences / 232.892 eMoF. Kosten $63,95 (Lesung $25,76, Extraktion $36,49, Verknüpfungs-LLMs).
+- **`tools/validate_export.py`:** regelbasierte Prüfung von DwC-A (IDs, Referenzen, Pflichtterme, ISO-Datum/Intervall, Koordinaten, Zahlen, Taxonomie, mögliche Dubletten) und Graph ↔ DwC-A (jede Beobachtung eine Occurrence mit gleichem Datum, Namen, Punkt) sowie geteilter Knoten (Taxa mit gleichem GBIF-Schlüssel, Orte gleichen Namens > 25 km auseinander). Volllauf: 0 Fehler.
+- **Maschinelle Prüfung Runde 3** auf dem finalen Graphen (Claude-Sonnet-5.5-Subagenten, Gemini 3.8 Flash als unabhängige Zweitmeinung): `prepare_entries.py` für 0.7.0 (Schichten Zufall / schlechte Transkription / fremde Berichte / lange Listen / Einträge ohne Datensatz; im Dossier jede Lesekorrektur und die DwC-A-Georeferenz je Beobachtung), neu `prepare_habitats.py` (EUNIS), `gemini_verify.py` (dieselben Anweisungen und Pakete an Gemini, Antwort in `answers_gemini/`; eine übereinstimmende Antwort zählt als weitere Quelle), `research_persons.py` (Nachsuche per Nachname für Personen ohne Wikidata-Kandidaten), `combine_rounds.py` (Runden zusammenführen, spätere gewinnt), `--known` (nur neue oder geänderte Namen), `--max-mentions` für Orte. `merge.py` kennt Habitate, Lesekorrektur-Urteile (`transcript_checks.csv`) und Gemini-Stimmen.
+- **Prüfentscheidungen für die Pipeline:** `review/transcript_decisions.csv` (Lesekorrektur annehmen / verwerfen / ändern; `reading.decisions`) und `review/qa_decisions.csv` (QA-Hinweis Fehlalarm: Hinweis und Ausschluss entfallen; `qa.decisions`).
+- **Payload der Prüfoberfläche für 0.7.0** (`build_payload.py`: Normdaten über `skos:exactMatch`/`closeMatch` statt `owl:sameAs`).
+
+### Fixed (2026-10-01)
+
+- **Lesekorrekturen nur an Wortgrenzen:** „Witt“ → „Wüst“ machte aus dem „Wittelsbacher-Platz“ einen „Wüstelsbacher-Platz“; 113 Korrekturen in 96 Einträgen trafen das Innere eines längeren Worts. Eine Korrektur, die nur innerhalb längerer Wörter vorkommt, wird nicht mehr angewendet.
+- **`<u>`-Auszeichnung blockiert keine Korrektur mehr:** 390 Korrekturen (u. a. Vogelnamen wie „Bachstelze“ → „Lachmöwe“) fanden ihr `old` nicht, weil Modell oder Transkription die Unterstreichung anders setzten; sie werden jetzt ohne Auszeichnung gesucht, reine Auszeichnungsänderungen nie angewendet.
+
 ### Added (2026-09-30 spät — Eintragserkennung abgeschlossen, visuelle Lesung vor der Extraktion)
 
 - **Eintragserkennung:** letzter Durchgang über 701 Einträge mit datumsartigen Zeilen im Text und 988 Seiten ohne Eintrag (Claude-Subagenten, Zeilenreferenzen per Skript aufgelöst). 121 geprüfte Starts in `data/corpus_patches/entry_boundaries.csv` (Quelle `review-2026-09-30`), davon 52 wirksam: 40 zusammengeschriebene Tage abgetrennt (z. B. Kaufbeuren-Aufenthalte 1944–1948 als ein Block), 10 eigens datierte Berichte; 57 Starts liegen auf als unzuverlässig maskierten Regionen (Durchscheinen maschinengeschriebener Einlagen) und bleiben wirkungslos; 12 sind Tabellenregionen außerhalb des Textstroms (Erstankunftstabellen 1901–1930, Storchennest-Umfragen, Horsttabellen — offener Punkt: TableRegions in den Strom aufnehmen). Verworfen: doppelt transkribierte Kopfzeilen, Tagesblöcke innerhalb eines zitierten Briefs. Gepatchter Korpus 9.857 → 9.909 Einträge, kein Eintrag verloren; Neuaufbau aus dem Dedup-Korpus bytegleich reproduzierbar.

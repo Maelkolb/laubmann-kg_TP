@@ -1,11 +1,31 @@
 # STATUS
 
+## Full run 2026-10-01 (ontology 0.7.0, prompt v4, gemini-3.8-flash, visual reading)
+
+| export | entries | observations | triples | SHACL | DwC-A (`tools/validate_export.py`) |
+|---|---|---|---|---|---|
+| `kg_exports_2026-10-01` (pipeline only) | 9,901 | 86,037 | 1,986,310 | 0 violations, 450 warnings | 0 errors |
+| `kg_exports_2026-10-01_machine` (+ machine review rounds 1–3) | 9,901 | 85,636 | 1,979,656 | 0 violations, 464 warnings | 0 errors |
+
+The warnings are entries without any record (458) and 6 taxon ranks outside the
+scheme. Cost of the run $63.95 (visual reading $25.76, extraction $36.49,
+linking LLMs); machine review round 3 (Claude Sonnet subagents + Gemini second
+opinion) $9.06 Gemini. The `_machine` export applies 2,753 machine decisions
+(confidence ≥ 0.9, ≥ 2 independent sources; `data/review/machine/`); against the
+pipeline-only export it changes 900 scientific names / 1,470 GBIF keys, adds
+coordinates to 485 occurrences, moves 251 and removes 179 wrong points.
+Extraction check of 115 stratified entries: 86.4 % of 1,652 records right,
+11.5 % wrong (georeference, locality, count, species, record type), 0.8 %
+spurious. Human validation: `docs/human_validation_plan.md`, page
+`tools/validation_ui/pruefung/`; explorer `tools/explorer/build_graph_explorer.py`.
+
+## Sample run (historical, Vol. 2, offline rule-based extraction)
+
 First end-to-end knowledge-graph build on a fixed sample. Numbers below are
 **real**, from the Vol. 2 run — not projected. The full 34-volume build is
 deferred until the deduplicated corpus is available (switching is a config path
 change; see `INTERFACES.md`).
 
-## Sample run (Vol. 2, offline rule-based extraction)
 
 Command:
 

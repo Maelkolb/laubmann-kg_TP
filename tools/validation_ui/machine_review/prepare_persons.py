@@ -23,7 +23,7 @@ import urllib.parse
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import Cache, context, get_json, instructions, load_payload, write_json  # noqa: E402
+from common import known_verdicts, Cache, context, get_json, instructions, load_payload, write_json  # noqa: E402
 
 INSTRUCTIONS = """# Person check — instructions
 
@@ -124,6 +124,7 @@ def main() -> None:
     ap.add_argument("person_link_review")
     ap.add_argument("--out", required=True)
     ap.add_argument("--min-mentions", type=int, default=3)
+    ap.add_argument("--known", nargs="*", default=None, help="machine_review.json / place_readings.json of earlier rounds")
     ap.add_argument("--per-batch", type=int, default=15)
     ap.add_argument("--wd-cache", default=None)
     ap.add_argument("--gnd-cache", default=None)
@@ -149,6 +150,13 @@ def main() -> None:
     n_of = {ei: sum(PS["forms"][fi][1] for fi in fis) for ei, fis in forms_of.items()}
 
     selected = [ei for ei in forms_of if PS["ent"][ei][1] or n_of[ei] >= args.min_mentions]
+    if args.known:
+        known = known_verdicts(args.known)["person"]
+        before = len(selected)
+        selected = [ei for ei in selected
+                    if PS["ent"][ei][0].lower() not in known
+                    and not all(PS["forms"][fi][0].lower() in known for fi in forms_of[ei])]
+        print(f"persons: {before - len(selected)} judged in earlier rounds, {len(selected)} to check")
     selected.sort(key=lambda ei: (-bool(PS["ent"][ei][1]), -n_of[ei]))
     print(f"persons selected: {len(selected)} (linked {sum(1 for ei in selected if PS['ent'][ei][1])})")
 

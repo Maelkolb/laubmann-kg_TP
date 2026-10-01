@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+/*{{LEAFLET_CSS}}*/
+</style>
+<style>
+/*{{APP_CSS}}*/
+</style>
+</head>
+<body>
+<header id="top">
+  <h1 id="apptitle">Laubmann-KG</h1>
+  <nav class="modes" id="nav">
+    <button data-nav="overview" data-i18n="nav_overview">Übersicht</button>
+    <button data-nav="entry" data-i18n="nav_entry">Eintrag</button>
+    <button data-nav="classes" data-i18n="nav_classes">Klassen</button>
+  </nav>
+  <div id="searchbox">
+    <input id="q" type="search" autocomplete="off" spellcheck="false" data-i18n-ph="search_ph" placeholder="Suche: Datum, Ort, Band, Text, ID, Art, Person …">
+    <div id="qres" hidden></div>
+  </div>
+  <span class="stats" id="stats"></span>
+  <button id="btn-lang" class="pill" title="Sprache / language">EN</button>
+  <button id="btn-theme" class="pill" data-i18n-title="theme_t" title="Hell/Dunkel">◐</button>
+  <button id="btn-help" class="pill" data-i18n-title="help_t" title="Hilfe">?</button>
+</header>
+<div id="loading"><div class="spinner"></div><div id="loadmsg">Graph wird geladen …</div></div>
+<main id="app" hidden>
+  <section id="v-overview" class="view"></section>
+  <section id="v-entry" class="view">
+    <aside id="elist">
+      <div class="elist-head">
+        <select id="volsel"></select>
+        <input id="efilter" type="search" data-i18n-ph="filter_ph" placeholder="Filter …">
+      </div>
+      <div id="elist-body"></div>
+    </aside>
+    <div id="gwrap">
+      <div id="ehead"></div>
+      <div id="gtools"></div>
+      <div id="gcanvas"><svg id="gsvg" xmlns="http://www.w3.org/2000/svg"></svg><div id="gtip" hidden></div></div>
+      <div id="legend"></div>
+    </div>
+    <div id="split" title="Breite ziehen"></div>
+    <aside id="panel">
+      <div class="tabs" id="ptabs">
+        <button data-tab="text" data-i18n="tab_text">Text</button>
+        <button data-tab="records" data-i18n="tab_records">Datensätze</button>
+        <button data-tab="scans" data-i18n="tab_scans">Scans</button>
+        <button data-tab="node" data-i18n="tab_node">Knoten</button>
+      </div>
+      <div id="pbody"></div>
+    </aside>
+  </section>
+  <section id="v-node" class="view"></section>
+  <section id="v-class" class="view"></section>
+</main>
+<div id="help" hidden></div>
+<div id="toast" hidden></div>
+<script id="kg-data" type="application/octet-stream">{{DATA}}</script>
+<script>
+/*{{LEAFLET_JS}}*/
+</script>
+<script>
+/*{{APP_JS}}*/
+</script>
+</body>
+</html>

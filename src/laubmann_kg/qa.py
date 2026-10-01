@@ -73,10 +73,30 @@ def _year_ranges(entries, config: dict) -> dict[int, tuple[int, int]]:
 _RETROSPECTIVE_KINDS = ("species-digest", "retrospective", "correspondence")
 
 
+def load_qa_decisions(path) -> dict:
+    """Reviewer decisions on QA flags (validation UI export
+    ``review/qa_decisions.csv``: entry_uid, reason, value, decision
+    confirm | false_alarm | fix) keyed by (entry_uid, reason, value)."""
+    import csv
+    from pathlib import Path
+
+    if not path or not Path(path).is_file():
+        return {}
+    with open(path, encoding="utf-8", newline="") as h:
+        return {(r.get("entry_uid", ""), r.get("reason", ""), r.get("value", "")): (r.get("decision") or "").strip().lower()
+                for r in csv.DictReader(h) if r.get("entry_uid")}
+
+
 def run_qa(entries, config: Optional[dict] = None):
     """Return ``(kept_entries, flags)``. Mutates each entry's observation list to
-    drop excluded observations when ``exclude`` is on."""
+    drop excluded observations when ``exclude`` is on. A flag the reviewer
+    marked ``false_alarm`` (config ``decisions``) is dropped and excludes
+    nothing."""
     config = config or {}
+    decisions = load_qa_decisions(config.get("decisions", "data/review/qa_decisions.csv"))
+
+    def dismissed(e, reason, value) -> bool:
+        return decisions.get((e.entry_uid, reason, value or "")) == "false_alarm"
     exclude = config.get("exclude", True)
     exclude_non_bird = exclude and config.get("exclude_non_bird", True)
     exclude_low_conf = exclude and config.get("exclude_low_confidence_taxon", True)
@@ -97,7 +117,7 @@ def run_qa(entries, config: Optional[dict] = None):
         drop_entry = False
 
         # --- date -----------------------------------------------------------
-        if e.date_plausible is False:
+        if e.date_plausible is False and not dismissed(e, "implausible_date", e.entry_date or ""):
             # a compilation (digest, retrospective, report) whose records carry
             # their own dates is kept: only its header date is doubtful
             compiled = (e.entry_kind in _RETROSPECTIVE_KINDS
@@ -152,14 +172,17 @@ def run_qa(entries, config: Optional[dict] = None):
         kept_obs = []
         for obs in e.observations:
             taxon = obs.taxon
-            if taxon.is_bird is False:
+            if taxon.is_bird is False and dismissed(e, "non_bird", taxon.vernacular_de):
+                pass
+            elif taxon.is_bird is False:
                 flags.append(QAFlag(e.entry_id, e.entry_uid, "non_bird",
                     "laut Modell kein Vogel" + (f" ({taxon.scientific_name})" if taxon.scientific_name else ""),
                     _act(exclude_non_bird), taxon.vernacular_de))
                 if exclude_non_bird:
                     continue
             elif (taxon.scientific_name is None
-                  and taxon.confidence is not None and taxon.confidence < min_conf):
+                  and taxon.confidence is not None and taxon.confidence < min_conf
+                  and not dismissed(e, "low_confidence_taxon", taxon.vernacular_de)):
                 # only a STATED low model confidence excludes (the model is not
                 # sure the word names an organism); the offline backend and
                 # legacy responses carry no confidence and are kept
@@ -194,6 +217,10 @@ def run_qa(entries, config: Optional[dict] = None):
         if not drop_entry:
             kept.append(e)
 
+    if decisions:
+        before = len(flags)
+        flags = [f for f in flags if decisions.get((f.entry_uid, f.reason, f.value or "")) != "false_alarm"]
+        logger.info("QA decisions: %d reviewer decisions, %d flags dismissed as false alarms", len(decisions), before - len(flags))
     return kept, flags
 
 

@@ -58,6 +58,7 @@ reading:
   context_cache: true
   concurrency: 16
   timeout: 600
+  decisions: data/review/transcript_decisions.csv   # reviewer decisions on the corrections (validation UI); absent = none
 
 taxa:
   links_long_path: null       # set to the index linker's long table when available
@@ -79,6 +80,7 @@ review:                       # validation UI decisions (tools/validation_ui, "A
 qa:
   enabled: true
   exclude: true               # drop misdated entries + garbage taxa; recorded to review/qa_flags.csv
+  decisions: data/review/qa_decisions.csv   # reviewer decisions on flags (validation UI): false_alarm drops the flag and its exclusion
   coverage:                   # volume time spans (title pages): OCR-year repair, misfiled scans, off-span entries
     enabled: true
     path: configs/volume_coverage.yaml

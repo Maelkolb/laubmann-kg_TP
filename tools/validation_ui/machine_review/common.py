@@ -43,9 +43,18 @@ def read_json(path, default=None):
     p = Path(path)
     if not p.exists():
         return default
-    txt = p.read_text(encoding="utf-8").strip()
+    raw = p.read_bytes()
+    try:
+        txt = raw.decode("utf-8").strip()
+    except UnicodeDecodeError:          # an agent wrote the Windows codepage
+        txt = raw.decode("cp1252").strip()
     txt = re.sub(r"^```(?:json)?\s*|\s*```$", "", txt)
-    return json.loads(txt)
+    try:
+        return json.loads(txt)
+    except json.JSONDecodeError as exc:
+        if "Extra data" not in str(exc):
+            raise
+        return json.JSONDecoder().raw_decode(txt)[0]     # trailing text after the answer
 
 
 def write_json(path, obj, indent=1) -> None:
@@ -97,6 +106,31 @@ def same_word(a: str, b: str) -> bool:
     return difflib.SequenceMatcher(None, a, b).ratio() >= 0.88
 
 
+def known_verdicts(paths) -> dict:
+    """Names an earlier machine round already judged, per section: the
+    machine_review.json of merge.py (taxon forms with their GBIF key, person
+    and place entities by label) and place_readings.json of the second round.
+    A later round skips them (``--known``) and checks only new or changed names."""
+    known = {"taxon": set(), "taxon_key": set(), "person": set(), "place": set()}
+    for path in paths or []:
+        d = read_json(path, {}) or {}
+        if "taxon" in d or "person" in d or "place" in d:
+            for v in (d.get("taxon") or {}).get("form", {}).values():
+                if v.get("name"):
+                    known["taxon"].add(v["name"].lower())
+                    known["taxon_key"].add((v["name"].lower(), str(v.get("key") or "")))
+            for sec in ("person", "place"):
+                for v in (d.get(sec) or {}).get("ent", {}).values():
+                    if v.get("label"):
+                        known[sec].add(v["label"].lower())
+        else:                                  # place_readings.json: entity -> [readings]
+            for items in d.values():
+                for r in items if isinstance(items, list) else []:
+                    if r.get("written"):
+                        known["place"].add(r["written"].lower())
+    return known
+
+
 # ---------------------------------------------------------------- scans
 class PageImages:
     def __init__(self, root: Path):
@@ -109,6 +143,9 @@ class PageImages:
                 self.by_prefix[first.name.split("_")[0]] = pages
 
     def path(self, pid: str) -> Path | None:
+        flat = self.root / f"{pid}.jpg"          # a folder of page JPEGs (tools/export_page_images.py)
+        if flat.exists():
+            return flat
         d = self.by_prefix.get(pid.split("_")[0])
         p = d / f"{pid}.png" if d else None
         return p if p and p.exists() else None

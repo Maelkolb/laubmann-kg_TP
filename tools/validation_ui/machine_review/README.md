@@ -15,7 +15,8 @@ used by the pipeline, by the reviewer UI, or both. Background:
 | **species, scan** (`prepare_taxa.py` → `sheets/`) | doubtful written names (classes B, C, L): 1–2 line images per name | contact sheets of 8 line crops (orange box = the line), transcription word, context, current taxon, earlier readings | reading of the word, kind, species, confidence, legible |
 | **persons** (`prepare_persons.py`) | persons linked to Wikidata or with ≥ 3 mentions | written names, roles, years, passages, Wikidata candidates enriched (dates, occupation, GND), GND candidates from lobid.org (dates, occupation, places, GND→Wikidata cross-reference) | Wikidata item / GND record / none / unclear, whether the automatic link is right |
 | **places** (`prepare_places.py`) | places with ≥ 3 mentions | the graph's location + GeoNames/Wikidata record, the header places of the entries that mention it (anchors, with distances), passages, Nominatim candidates for the label and for "label, main anchor" (contextual geocoding) | `ok` / `wrong` (+candidate) / `unlocated_ok` (+candidate) / `unlocatable` (+hint) / `not_a_place` |
-| **extraction** (`prepare_entries.py`) | stratified sample of entries | scan pages, transcription, every record the graph holds for the entry | per observation `ok`/`wrong` (fields + correction)/`spurious`, missing records, entry date/place/kind, misread words |
+| **extraction** (`prepare_entries.py`) | stratified sample of entries (random / poor transcript / third-party reports / long lists / no records) | scan pages, the text the extraction read, every correction of the visual reading, every record the graph holds for the entry with its DwC-A georeference | per observation `ok`/`wrong` (fields + correction)/`spurious`, missing records, entry date/place/kind, a verdict per transcript correction (`right`/`partly`/`wrong`/`unclear`), misread words |
+| **habitats** (`prepare_habitats.py`) | every habitat concept | written forms, passages, current EUNIS class and match, the EUNIS list levels 1–3 | `ok` / `other` (+code, match) / `none` / `unsure` |
 
 `merge.py` joins the answers. For every written taxon name it tallies the
 independent opinions (text agent, scan agent, Gemini second reading, Opus
@@ -47,6 +48,18 @@ takes machine rows only above `review.machine.min_confidence` (0.9) with
 `min_agreement` (2) independent sources, and only where no human decision
 exists for the same written name; the UI shows every verdict and lets the
 reviewer accept or overrule it.
+
+## Round 3 on the final graph (2026-10-01)
+
+Later rounds check only what earlier rounds did not see (`--known machine_review.json …` on
+prepare_taxa/persons/places: names judged before are skipped; `--max-mentions` splits the
+long tail of places). Every name batch also goes to Gemini (`gemini_verify.py`, same
+INSTRUCTIONS.md and batch, answers in `<check>/answers_gemini/`); an agreeing Gemini answer is
+one more independent source in `merge.py`, a disagreeing one lowers the confidence; batches no
+Claude agent answered fall back to Gemini's answer as the single (never auto-applied) verdict.
+`research_persons.py` searches Wikidata by surname for persons the first pass left without a
+candidate (initial + surname, titles). `combine_rounds.py --rounds r1 r3 … --out data/review/machine`
+writes the one identities/value-corrections file the pipeline reads (later round wins per name).
 
 ## Running
 

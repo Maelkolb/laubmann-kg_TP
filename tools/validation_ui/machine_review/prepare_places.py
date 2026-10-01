@@ -27,7 +27,7 @@ import urllib.parse
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import Cache, context, get_json, instructions, load_payload, read_json, write_json  # noqa: E402
+from common import known_verdicts, Cache, context, get_json, instructions, load_payload, read_json, write_json  # noqa: E402
 
 INSTRUCTIONS = """# Place check — instructions
 
@@ -88,6 +88,8 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--nominatim-cache", required=True, help="the linking stage's nominatim_cache.json (label -> results)")
     ap.add_argument("--min-mentions", type=int, default=3)
+    ap.add_argument("--max-mentions", type=int, default=0, help="only places with at most this many mentions (0 = no limit)")
+    ap.add_argument("--known", nargs="*", default=None, help="machine_review.json / place_readings.json of earlier rounds")
     ap.add_argument("--per-batch", type=int, default=25)
     ap.add_argument("--no-live", action="store_true", help="never query Nominatim (contextual candidates only from the cache)")
     ap.add_argument("--max-live", type=int, default=1500)
@@ -114,7 +116,15 @@ def main() -> None:
     for mi, m in enumerate(PL["men"]):
         if m[5] == "Kopfzeile":
             header.setdefault(m[1], PL["forms"][m[0]][2])
-    selected = [ei for ei in forms_of if n_of[ei] >= args.min_mentions]
+    selected = [ei for ei in forms_of if n_of[ei] >= args.min_mentions
+                and (not args.max_mentions or n_of[ei] <= args.max_mentions)]
+    if args.known:
+        known = known_verdicts(args.known)["place"]
+        before = len(selected)
+        selected = [ei for ei in selected
+                    if PL["ent"][ei][0].lower() not in known
+                    and not all(PL["forms"][fi][0].lower() in known for fi in forms_of[ei])]
+        print(f"places: {before - len(selected)} judged in earlier rounds, {len(selected)} to check")
     selected.sort(key=lambda ei: (PL["ent"][ei][1] is None, -n_of[ei]))
     print(f"places selected: {len(selected)} (located {sum(1 for ei in selected if PL['ent'][ei][1] is not None)})")
 

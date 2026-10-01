@@ -24,7 +24,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (PageImages, contact_sheet, context, crop_line, instructions, load_payload,  # noqa: E402
+from common import (known_verdicts, PageImages, contact_sheet, context, crop_line, instructions, load_payload,  # noqa: E402
                     mention_keys, read_json, write_json, written_of)
 
 BATCH_INSTRUCTIONS = """# Species check (text) — instructions
@@ -93,6 +93,9 @@ def main() -> None:
     ap.add_argument("--per-sheet", type=int, default=8)
     ap.add_argument("--sheet-width", type=int, default=1200)
     ap.add_argument("--no-sheets", action="store_true")
+    ap.add_argument("--known", nargs="*", default=None,
+                    help="machine_review.json of earlier rounds: entities whose written names were all judged "
+                         "there (with the same GBIF key) are skipped, and so are their contact-sheet crops")
     args = ap.parse_args()
 
     P = load_payload(args.payload)
@@ -124,8 +127,18 @@ def main() -> None:
                 break
         return out
 
+    known = known_verdicts(args.known)
+
+    def is_known(fi):
+        f = T["forms"][fi]
+        return (f[0].lower(), str(T["ent"][f[2]][2] or "")) in known["taxon_key"]
+
     # ------------------------------------------------------------ text batches
     order = sorted(forms_of, key=lambda ei: -ent_n[ei])
+    if args.known:
+        before = len(order)
+        order = [ei for ei in order if not all(is_known(fi) for fi in forms_of[ei])]
+        print(f"taxa: {before - len(order)} entities fully judged in earlier rounds, {len(order)} to check")
     batches = []
     for ei in order:
         ent = T["ent"][ei]
@@ -137,6 +150,7 @@ def main() -> None:
         for fi in sorted(forms_of[ei], key=lambda fi: -T["forms"][fi][1]):
             f = T["forms"][fi]
             rec["forms"].append({"form": fi, "name": f[0], "n": f[1], "class": f[3], "nearest_attested": f[4] or None,
+                                 "judged_before": True if args.known and is_known(fi) else None,
                                  "contexts": contexts(fi, 2 if f[3] == "A" else 3),
                                  "model_readings": readings_summary(men_of[fi], keys, second, third) or None})
         for c in ec.get(str(ei), []):
@@ -161,7 +175,7 @@ def main() -> None:
     pages = PageImages(Path(args.pages))
     items = []
     for fi, f in enumerate(T["forms"]):
-        if f[3] not in ("B", "C", "L"):
+        if f[3] not in ("B", "C", "L") or (args.known and is_known(fi)):
             continue
         cands = [mi for mi in men_of[fi] if isinstance(T["men"][mi][4], list) and len(T["men"][mi][4]) >= 5]
         cands.sort(key=lambda mi: (T["men"][mi][4][5] if len(T["men"][mi][4]) > 5 else 1, mi))

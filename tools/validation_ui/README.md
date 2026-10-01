@@ -1,5 +1,10 @@
 # Laubmann-Abgleich (validation UI)
 
+> **Final review page:** [`pruefung/`](pruefung/README.md) builds `Laubmann_Validierung.html`, the
+> successor of this page and of `Laubmann_Pruefung.html`: sign-off of the machine review (rounds r1–r3),
+> review of everything the machine did not see, habitats, QA flags and the transcript corrections of the
+> visual reading, in one page; it imports the progress files of both earlier pages.
+
 Standalone HTML page (German) for reviewing and correcting the graph's main
 entities: species, persons, places, habitats. Background and rationale:
 [`docs/validation.md`](../../docs/validation.md).

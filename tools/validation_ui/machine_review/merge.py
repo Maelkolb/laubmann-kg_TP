@@ -102,6 +102,20 @@ class Resolver:
 
 
 # ---------------------------------------------------------------- taxa
+def gemini_answers(work: Path, check: str) -> dict:
+    """``<check>/answers_gemini/batch_*.json`` of gemini_verify.py: entity id -> answer."""
+    out = {}
+    for f in sorted((work / check / "answers_gemini").glob("batch_*.json")):
+        try:
+            rows = read_json(f)
+        except Exception:  # noqa: BLE001 - an unparseable second opinion is no opinion
+            continue
+        for r in rows if isinstance(rows, list) else []:
+            if isinstance(r, dict) and r.get("entity") is not None:
+                out[r["entity"]] = r
+    return out
+
+
 def merge_taxa(P, work: Path, resolver: Resolver, second, third):
     T, E = P["taxon"], P["E"]
     keys = mention_keys(P, "taxon")
@@ -135,6 +149,11 @@ def merge_taxa(P, work: Path, resolver: Resolver, second, third):
             for inc in r.get("incoming", []):
                 if inc.get("form") is not None:
                     incoming[inc["form"]].append((ei, inc))
+    gem_form = {}
+    for ei, r in gemini_answers(work, "taxa").items():
+        for fr in r.get("forms", []) or []:
+            if isinstance(fr, dict) and fr.get("form") is not None:
+                gem_form[fr["form"]] = (ei, fr)
     # --- sheets
     sheet_read = {}      # mention -> answer
     readings_out = {}
@@ -211,19 +230,20 @@ def merge_taxa(P, work: Path, resolver: Resolver, second, third):
         cur = ent_new_key.get(ei) or cur_key[ei]
         cur_k = cur[0] if cur else None
         votes = []      # (source, target tuple or None, confidence, note)
-        tf = text_form.get(fi)
-        if tf:
+        for src, tf in (("text", text_form.get(fi)), ("gemtext", gem_form.get(fi))):
+            if not tf:
+                continue
             _, fr = tf
             d = (fr.get("decision") or "unsure").lower()
-            c = fnum(fr.get("confidence"))
+            c = fnum(fr.get("confidence")) * (0.95 if src == "gemtext" else 1.0)
             if d == "same":
-                votes.append(("text", (cur_k, cur[1], cur[2], ent[0]) if cur_k else None, c, fr.get("reason") or ""))
+                votes.append((src, (cur_k, cur[1], cur[2], ent[0]) if cur_k else None, c, fr.get("reason") or ""))
             elif d == "other":
-                votes.append(("text", target_of(fr.get("sci"), fr.get("species_de"), "bird", fr.get("rank")), c, fr.get("reason") or ""))
+                votes.append((src, target_of(fr.get("sci"), fr.get("species_de"), "bird", fr.get("rank")), c, fr.get("reason") or ""))
             elif d == "none":
-                votes.append(("text", ("none", "text"), c, fr.get("reason") or ""))
+                votes.append((src, ("none", "text"), c, fr.get("reason") or ""))
             else:
-                votes.append(("text", None, c, fr.get("reason") or ""))
+                votes.append((src, None, c, fr.get("reason") or ""))
         for ei2, inc in incoming.get(fi, []):
             if inc.get("belongs") is True:
                 k2 = ent_new_key.get(ei2) or cur_key[ei2]
@@ -359,6 +379,7 @@ def merge_persons(P, work: Path, person_matches):
             bad.append(f"{bat.stem}: {exc}")
     identities, verdicts = [], {}
     stats = collections.Counter()
+    gem = gemini_answers(work, "persons")
     for ei, a in answers.items():
         ent = PS["ent"][ei]
         rec = batches.get(ei, {})
@@ -409,6 +430,18 @@ def merge_persons(P, work: Path, person_matches):
         if xref:
             agreement += 1
             sources += "+xref"
+        ga = gem.get(ei)
+        if ga:
+            gq = (ga.get("wikidata") or "unclear").strip()
+            gg = (ga.get("gnd") or "unclear").strip()
+            if (qid and gq == qid) or (not qid and gnd and gg == gnd) or (q == "none" and gq == "none"):
+                agreement += 1
+                sources += "+gemini"
+                stats["person gemini agrees"] += 1
+            elif gq not in ("unclear", "") and (qid or q == "none"):
+                note.append(f"Gemini: {gq}")
+                conf = min(conf, 0.6)
+                stats["person gemini disagrees"] += 1
         auto_ok = a.get("auto_link_ok")
         decision = None
         if (qid or gnd) and conf >= 0.5:
@@ -482,10 +515,15 @@ def _place_corroboration(v, ent, rec, cand):
 def merge_places(P, work: Path):
     PL = P["place"]
     answers, batches, missing, bad = {}, {}, [], []
+    gemini_primary = set()        # batches no Claude agent answered: Gemini's answer is the (single) verdict
     for bat in sorted((work / "places" / "batches").glob("batch_*.json")):
-        for r in read_json(bat):
+        rows_ = read_json(bat)
+        for r in rows_:
             batches[r["entity"]] = r
         ans = work / "places" / "answers" / bat.name
+        if not ans.exists() and (work / "places" / "answers_gemini" / bat.name).exists():
+            ans = work / "places" / "answers_gemini" / bat.name
+            gemini_primary.update(r["entity"] for r in rows_)
         if not ans.exists():
             missing.append(bat.stem)
             continue
@@ -497,6 +535,7 @@ def merge_places(P, work: Path):
             bad.append(f"{bat.stem}: {exc}")
     identities, verdicts = [], {}
     stats = collections.Counter()
+    gem = gemini_answers(work, "places")
     for ei, a in answers.items():
         ent = PL["ent"][ei]
         rec = batches.get(ei, {})
@@ -520,12 +559,26 @@ def merge_places(P, work: Path):
             row = {"decision": "nolink", "authority": ""}
         elif v == "not_a_place" and conf >= 0.8:
             row = {"decision": "none", "authority": ""}
+        ga = gem.get(ei) if ei not in gemini_primary else None
+        gem_agrees = False
+        if ga:
+            gv = (ga.get("verdict") or "unsure").lower()
+            gc = next((c for c in rec.get("candidates", []) if c.get("id") == ga.get("candidate")), None) if ga.get("candidate") else None
+            if gv == v and (not cand or (gc and (gc.get("id") == cand.get("id")
+                                                 or (_km(gc.get("lat"), gc.get("lon"), cand.get("lat"), cand.get("lon")) or 99) <= 5))):
+                gem_agrees = True
+                stats["place gemini agrees"] += 1
+            elif gv not in ("unsure",):
+                verdict["gemini"] = gv
+                conf = min(conf, 0.6) if row is None else conf * 0.8
+                stats["place gemini disagrees"] += 1
         if row:
-            extra = _place_corroboration(v, ent, rec, cand)
-            verdict["sources"] = ["text"] + extra
+            extra = _place_corroboration(v, ent, rec, cand) + (["gemini"] if gem_agrees else [])
+            first = "gemini" if ei in gemini_primary else "text"
+            verdict["sources"] = [first] + extra
             row.update({"section": "places", "name_form": ent[0], "target": ent[0], "reason": (a.get("reason") or "")[:300],
                         "note": (a.get("location_hint") or "")[:200], "reviewed_by": BY, "reviewed_at": NOW, "confidence": f"{conf:.2f}",
-                        "agreement": 1 + len(extra), "sources": "+".join(["text"] + extra)})
+                        "agreement": 1 + len(extra), "sources": "+".join([first] + extra)})
             if extra:
                 stats[f"place corroborated ({extra[0]})"] += 1
             identities.append(row)
@@ -608,6 +661,82 @@ def merge_entries(P, work: Path, resolver: Resolver):
                 stats[f"entry {k} false"] += 1
     return {"rows": rows, "missing_rows": missing_rows, "misreadings": misread_rows, "corrections": corrections, "text": text_rows,
             "per_entry": per_entry, "stats": stats, "field_err": field_err, "missing": missing}
+
+
+# ---------------------------------------------------------------- habitats (EUNIS)
+def merge_habitats(P, work: Path):
+    H = P.get("habitat") or {"ent": []}
+    answers, missing, bad = {}, [], []
+    for bat in sorted((work / "habitats" / "batches").glob("batch_*.json")):
+        ans = work / "habitats" / "answers" / bat.name
+        if not ans.exists():
+            missing.append(bat.stem)
+            continue
+        try:
+            for a in read_json(ans):
+                if a.get("entity") is not None:
+                    answers[a["entity"]] = a
+        except Exception as exc:  # noqa: BLE001
+            bad.append(f"{bat.stem}: {exc}")
+    gem = gemini_answers(work, "habitats")
+    identities, verdicts = [], {}
+    stats = collections.Counter()
+    for ei, a in answers.items():
+        ent = H["ent"][ei]
+        v = (a.get("verdict") or "unsure").lower()
+        conf = fnum(a.get("confidence"))
+        code = (a.get("code") or "").strip() if v == "other" else (ent[1] if v == "ok" else "")
+        match = (a.get("match") or ent[2] or "close").lower() if code else ""
+        agreement, sources = 1, "text"
+        ga = gem.get(ei)
+        if ga:
+            gv = (ga.get("verdict") or "unsure").lower()
+            gcode = (ga.get("code") or "").strip() if gv == "other" else (ent[1] if gv == "ok" else "")
+            if gv == "none" and v == "none" or (code and gcode == code):
+                agreement, sources = 2, "text+gemini"
+                stats["habitat gemini agrees"] += 1
+            elif gv != "unsure":
+                conf = min(conf, 0.6)
+                stats["habitat gemini disagrees"] += 1
+        verdicts[ei] = {"verdict": v, "code": code, "match": match, "confidence": round(conf, 2), "agreement": agreement,
+                        "sources": sources, "reason": a.get("reason") or "", "label": ent[0], "cur_code": ent[1]}
+        stats[f"habitat {v}"] += 1
+        row = None
+        if code and conf >= 0.6:
+            row = {"decision": "link", "authority": f"eunis:{code}", "eunis_match": match if match in ("exact", "close", "broad") else "close"}
+        elif v == "none" and conf >= 0.8:
+            row = {"decision": "none", "authority": ""}
+        if row:
+            row.update({"section": "habitats", "name_form": ent[0], "target": ent[0], "reason": (a.get("reason") or "")[:300],
+                        "note": "", "reviewed_by": BY, "reviewed_at": NOW, "confidence": f"{conf:.2f}",
+                        "agreement": agreement, "sources": sources})
+            identities.append(row)
+    stats["missing habitat batches"] = len(missing)
+    return {"identities": identities, "ent": verdicts, "stats": stats, "missing": missing, "bad": bad, "n": len(answers)}
+
+
+def merge_transcript_checks(work: Path):
+    """The dossier agents' verdicts on the visual reading's corrections."""
+    rows = []
+    for d in sorted((work / "entries").glob("dossier_*")):
+        ans = work / "entries" / "answers" / (d.name + ".json")
+        if not ans.exists():
+            continue
+        try:
+            a = read_json(ans)
+            dossier = read_json(d / "dossier.json")
+        except Exception:  # noqa: BLE001
+            continue
+        tc = {c["i"]: c for c in dossier.get("transcript_corrections") or []}
+        for r in a.get("transcript_checks") or []:
+            c = tc.get(r.get("i"))
+            if not c:
+                continue
+            rows.append({"entry_uid": dossier["entry"]["uid"], "entry_id": dossier["entry"]["id"], "stratum": dossier["entry"].get("stratum", ""),
+                         "old_text": c["old"], "new_text": c["new"], "applied": "y" if c.get("applied") else "n",
+                         "verdict": (r.get("verdict") or "unclear").lower(), "better_text": r.get("better") or "",
+                         "reviewed_by": BY, "reviewed_at": NOW})
+    return rows
 
 
 # ---------------------------------------------------------------- report
@@ -699,24 +828,47 @@ def main() -> None:
     ps = merge_persons(P, work, pm)
     pl = merge_places(P, work)
     en = merge_entries(P, work, resolver)
+    hb = merge_habitats(P, work)
+    tchecks = merge_transcript_checks(work)
     resolver.cache.flush()
 
-    write_csv(out / "identities_machine.csv", IDENTITY_FIELDS, tx["identities"] + ps["identities"] + pl["identities"])
+    write_csv(out / "identities_machine.csv", IDENTITY_FIELDS, tx["identities"] + ps["identities"] + pl["identities"] + hb["identities"])
+    write_csv(out / "transcript_checks.csv", ["entry_uid", "entry_id", "stratum", "old_text", "new_text", "applied", "verdict", "better_text",
+                                              "reviewed_by", "reviewed_at"], tchecks)
     write_csv(out / "value_corrections_machine.csv", CORRECTION_FIELDS, tx["mentions"] + en["corrections"])
     write_csv(out / "text_corrections_machine.csv", READING_FIELDS, en["text"])
     write_json(out / "readings_machine.json", tx["readings"], indent=0)
     write_json(out / "machine_review.json", {"model": MODEL, "built": NOW,
                                              "taxon": {"ent": tx["ent"], "form": tx["form"], "men": tx["men"]},
-                                             "person": {"ent": ps["ent"]}, "place": {"ent": pl["ent"]}}, indent=0)
+                                             "person": {"ent": ps["ent"]}, "place": {"ent": pl["ent"]},
+                                             "habitat": {"ent": hb["ent"]}}, indent=0)
     write_csv(out / "graph_checks.csv", ["entry_id", "entry_uid", "obs_index", "occurrence", "written", "taxon", "sci", "count", "verdict", "fields",
                                          "correction", "confidence", "reason"], en["rows"])
     write_csv(out / "graph_checks_missing.csv", ["entry_id", "entry_uid", "kind", "text", "species_de", "sci", "count", "note"], en["missing_rows"])
     write_csv(out / "graph_checks_misreadings.csv", ["entry_id", "entry_uid", "transcribed", "correct", "matters_for"], en["misreadings"])
     write_csv(out / "graph_checks_entries.csv", ["dossier", "entry_id", "entry_uid", "volume", "date", "n_obs", "ok", "wrong", "spurious", "unsure",
                                                  "missing", "date_ok", "place_ok", "kind_ok", "scan_legible", "summary"], en["per_entry"])
-    print(report(P, tx, ps, pl, en, out))
-    if tx["missing"] or ps["missing"] or pl["missing"] or en["missing"]:
-        print("MISSING:", tx["missing"], ps["missing"], pl["missing"], en["missing"])
+    txt = report(P, tx, ps, pl, en, out)
+    extra = ["\n## Habitate (EUNIS)\n", f"- geprüfte Habitate: {hb['n']} (fehlende Batches: {hb['stats']['missing habitat batches']})"]
+    extra += [f"- {k}: {v}" for k, v in sorted(hb["stats"].items()) if k.startswith("habitat ")]
+    n_pass = sum(1 for r in hb["identities"] if float(r["confidence"]) >= 0.9 and int(r["agreement"]) >= 2)
+    extra.append(f"- Zeilen in identities_machine.csv: {len(hb['identities'])}, davon {n_pass} mit Konfidenz ≥ 0.9 und ≥ 2 Quellen")
+    vc = collections.Counter(r["verdict"] for r in tchecks)
+    extra += ["\n## Lesekorrekturen der visuellen Lesung (Stichprobe der Dossiers)\n",
+              f"- beurteilt: {len(tchecks)}: " + ", ".join(f"{k} {v} ({100 * v / max(1, len(tchecks)):.0f} %)" for k, v in vc.most_common())]
+    for ap_ in ("y", "n"):
+        sub_ = [r for r in tchecks if r["applied"] == ap_]
+        if sub_:
+            c = collections.Counter(r["verdict"] for r in sub_)
+            extra.append(f"- {'angewendet' if ap_ == 'y' else 'nicht angewendet'} ({len(sub_)}): " + ", ".join(f"{k} {v}" for k, v in c.most_common()))
+    gem_lines = [f"- {k}: {v}" for st in (ps["stats"], pl["stats"], hb["stats"]) for k, v in sorted(st.items()) if "gemini" in k]
+    if gem_lines:
+        extra += ["\n## Zweitmeinung Gemini\n"] + gem_lines
+    txt += "\n".join(extra) + "\n"
+    (out / "report.md").write_text(txt, encoding="utf-8")
+    print(txt)
+    if tx["missing"] or ps["missing"] or pl["missing"] or en["missing"] or hb["missing"]:
+        print("MISSING:", tx["missing"], ps["missing"], pl["missing"], en["missing"], hb["missing"])
 
 
 if __name__ == "__main__":

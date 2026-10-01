@@ -513,8 +513,13 @@ ROLE_PRED = {"mentionsCompanion": "Begleiter", "mentionsSource": "Quelle", "ment
 PS = Section(fuzzy=False)
 
 
+LINK_PREDS = ("exactMatch", "closeMatch", "sameAs")    # ontology >= 0.6: skos matches; before: owl:sameAs
+
+
 def same_as(node, host):
-    return next((str(x).rsplit("/", 1)[-1] for x in out[node].get("sameAs", []) if host in str(x)), "")
+    """The authority id of ``node`` at ``host`` (exact or close match)."""
+    return next((str(x).rstrip("/").rsplit("/", 1)[-1] for pr in LINK_PREDS for x in out[node].get(pr, [])
+                 if host in str(x)), "")
 
 
 def person_entity(p):
@@ -569,7 +574,7 @@ PL = Section(fuzzy=False)
 
 def place_entity(p):
     lat, lon = one(p, "lat") or one(p, "decimalLatitude"), one(p, "long") or one(p, "decimalLongitude")
-    gn = next((str(x).rstrip("/").rsplit("/", 1)[-1] for x in out[p].get("sameAs", []) if "geonames" in str(x)), "")
+    gn = same_as(p, "geonames")
     return [one(p, "label"), round(float(lat), 5) if lat else None, round(float(lon), 5) if lon else None,
             one(p, "coordinateUncertaintyInMeters"), gn, same_as(p, "wikidata.org"), one(p, "placeKind"),
             one(p, "georeferenceSources")[:80], labels(p)]

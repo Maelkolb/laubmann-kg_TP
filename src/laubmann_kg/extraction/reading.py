@@ -32,11 +32,80 @@ logger = logging.getLogger(__name__)
 # the same page: it is listed for review but not applied
 MAX_INSERT_CHARS = 400
 
+DECISIONS = ("accept", "reject", "edit", "unsure")
 
-def apply_reading(entry: DiaryEntry, raw) -> None:
+_TAG = re.compile(r"</?[a-zA-Z][^>]*>")
+_WORD = re.compile(r"\w")
+
+
+def _bounded(text: str, start: int, end: int, needle: str) -> bool:
+    """The match does not start or end inside a longer word ("Witt" must not
+    hit "Wittelsbacher-Platz", "Flug" not "Flugspiele")."""
+    if needle[:1] and _WORD.match(needle[0]) and start > 0 and _WORD.match(text[start - 1]):
+        return False
+    if needle[-1:] and _WORD.match(needle[-1]) and end < len(text) and _WORD.match(text[end]):
+        return False
+    return True
+
+
+def _locate(text: str, old: str) -> Optional[tuple[int, int, bool]]:
+    """(start, end, markup_ignored) of the first whole-word occurrence of
+    ``old``: exact, then whitespace-tolerant, then ignoring ``<u>`` markup
+    (the model often quotes a bird name without the underline tags the
+    transcription has, or with them where it has none). None when ``old``
+    occurs only inside longer words or not at all."""
+    for pattern in (re.escape(old), r"\s+".join(re.escape(tok) for tok in old.split())):
+        if not pattern:
+            continue
+        for m in re.finditer(pattern, text):
+            if _bounded(text, m.start(), m.end(), old):
+                return m.start(), m.end(), False
+    target = _TAG.sub("", old).strip()
+    if not target:
+        return None
+    chars, pos, i = [], [], 0
+    while i < len(text):
+        tag = _TAG.match(text, i)
+        if tag:
+            i = tag.end()
+            continue
+        chars.append(text[i])
+        pos.append(i)
+        i += 1
+    plain = "".join(chars)
+    pattern = r"\s+".join(re.escape(tok) for tok in target.split())
+    for m in re.finditer(pattern, plain):
+        if m.end() > m.start() and _bounded(plain, m.start(), m.end(), target):
+            return pos[m.start()], pos[m.end() - 1] + 1, True
+    return None
+
+
+def load_transcript_decisions(path) -> dict:
+    """Reviewer decisions on the reading's corrections (validation UI export
+    ``review/transcript_decisions.csv``: entry_uid, old_text, new_text,
+    decision accept | reject | edit | unsure, final_text) keyed by
+    (entry_uid, old_text, new_text). Absent file = no decisions."""
+    import csv
+
+    if not path or not Path(path).is_file():
+        return {}
+    out = {}
+    with open(path, encoding="utf-8", newline="") as h:
+        for r in csv.DictReader(h):
+            d = (r.get("decision") or "").strip().lower()
+            if d in DECISIONS and d != "unsure" and r.get("entry_uid"):
+                out[(r["entry_uid"], r.get("old_text") or "", r.get("new_text") or "")] = (d, r.get("final_text") or "")
+    logger.info("transcript decisions: %d from %s", len(out), path)
+    return out
+
+
+def apply_reading(entry: DiaryEntry, raw, decisions: Optional[dict] = None) -> None:
     """Apply ``{"quality", "corrections"}`` to the entry text (first occurrence
     of each ``old``, whitespace tolerant); unmatched corrections and oversized
-    insertions are kept with ``applied = False`` for QA and review."""
+    insertions are kept with ``applied = False`` for QA and review. A
+    reviewer's decision wins: ``reject`` drops the correction (the transcription
+    stands), ``edit`` replaces ``new`` by the reviewer's text, ``accept`` applies
+    it even when it is an oversized insertion."""
     if not isinstance(raw, dict):
         return
     entry.transcript_quality = vocab.normalize_enum(raw.get("quality"), vocab.TRANSCRIPT_QUALITY)
@@ -49,18 +118,25 @@ def apply_reading(entry: DiaryEntry, raw) -> None:
         old, new = item.get("old"), item.get("new")
         if not isinstance(old, str) or not old.strip() or not isinstance(new, str) or old == new:
             continue
+        decided = (decisions or {}).get((entry.entry_uid, old, new))
+        if decided and decided[0] == "reject":
+            continue
+        if decided and decided[0] == "edit":
+            new = decided[1]
         applied = False
-        if len(new) - len(old) > MAX_INSERT_CHARS:
+        if len(new) - len(old) > MAX_INSERT_CHARS and not decided:
             out.append((old, new, False))
             continue
-        if old in text:
-            text = text.replace(old, new, 1)
-            applied = True
-        else:
-            pattern = r"\s+".join(re.escape(tok) for tok in old.split())
-            m = re.search(pattern, text) if pattern else None
-            if m:
-                text = text[:m.start()] + new + text[m.end():]
+        hit = _locate(text, old)
+        if hit:
+            start, end, markup_ignored = hit
+            if not markup_ignored:
+                text = text[:start] + new + text[end:]
+                applied = True
+            elif _TAG.sub("", new).split() != _TAG.sub("", old).split():
+                # found only when the underline markup is ignored: the span keeps
+                # the transcription's own markup around it, the reading goes in plain
+                text = text[:start] + _TAG.sub("", new) + text[end:]
                 applied = True
         out.append((old, new, applied))
     entry.transcript_corrections = out
@@ -69,7 +145,7 @@ def apply_reading(entry: DiaryEntry, raw) -> None:
         entry.text_clean = text
 
 
-def read_entry(entry: DiaryEntry, client, prompts, images) -> bool:
+def read_entry(entry: DiaryEntry, client, prompts, images, decisions: Optional[dict] = None) -> bool:
     """One reading call; returns True when the entry was checked."""
     text = entry.text_clean or ""
     if not text.strip():
@@ -88,14 +164,15 @@ def read_entry(entry: DiaryEntry, client, prompts, images) -> bool:
     except Exception:  # noqa: BLE001 - a failed reading leaves the transcription as it is
         logger.warning("unreadable reading answer for %s", entry.entry_id)
         return False
-    apply_reading(entry, data if isinstance(data, dict) else {})
+    apply_reading(entry, data if isinstance(data, dict) else {}, decisions)
     return True
 
 
 def run_reading(entries: list[DiaryEntry], config: dict, images) -> dict:
     """Check every entry's transcription against its scans (config ``reading``:
     provider, model, cache_dir, prompt_dir, media_resolution, concurrency,
-    thinking_level, max_output_tokens, context_cache)."""
+    thinking_level, max_output_tokens, context_cache, decisions = the
+    reviewer's transcript_decisions.csv)."""
     from laubmann_kg.llm.cache import LLMCache
     from laubmann_kg.llm.clients import build_client
     from laubmann_kg.llm.prompts import PromptLibrary
@@ -115,10 +192,11 @@ def run_reading(entries: list[DiaryEntry], config: dict, images) -> dict:
         "retry_backoff": config.get("retry_backoff", 2.0),
     })
     prompts = PromptLibrary(Path(config.get("prompt_dir", "prompts")))
+    decisions = load_transcript_decisions(config.get("decisions", "data/review/transcript_decisions.csv"))
 
     def one(entry):
         try:
-            return read_entry(entry, client, prompts, images)
+            return read_entry(entry, client, prompts, images, decisions)
         except Exception as exc:  # noqa: BLE001 - one failed reading must not stop the run
             logger.error("%s reading failed: %s", entry.entry_id, exc)
             return False
