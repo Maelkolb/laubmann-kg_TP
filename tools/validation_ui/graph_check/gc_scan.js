@@ -72,7 +72,11 @@ function scanDraw() {   // overlay: region boxes of the entry, its multimodal re
     s += `<rect class="mreg${on ? ' on' : ''}" x="${mx.toFixed(1)}" y="${my.toFixed(1)}" width="${mw.toFixed(1)}" height="${mh.toFixed(1)}"/>` +
       `<text class="mreglbl" x="${(mx + 5 / SC.k).toFixed(1)}" y="${(my + 14 / SC.k).toFixed(1)}" font-size="${(fs * 0.92).toFixed(1)}">${esc(mediaKind(x[1]))}</text>`;
   }
-  if (hl && !hl.none && !hl.media && hl.page === p.idx) {
+  if (hl && hl.box && hl.page === p.idx) {   // a selected text region (archive node of the subgraph)
+    const b = hl.box; const x = b[0] * W, y = b[1] * H;
+    s += `<rect class="areg on" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${((b[2] - b[0]) * W).toFixed(1)}" height="${((b[3] - b[1]) * H).toFixed(1)}"/><text class="areglbl" x="${(x + 5 / SC.k).toFixed(1)}" y="${(y + 14 / SC.k).toFixed(1)}" font-size="${(fs * 0.92).toFixed(1)}">${esc(hl.label || '')}</text>`;
+  }
+  if (hl && !hl.none && !hl.media && !hl.box && hl.page === p.idx) {
     const x = hl.x0 * W, y = hl.y0 * H, w = (hl.x1 - hl.x0) * W, h = (hl.y1 - hl.y0) * H; const pad = Math.max(3, h * 0.18);
     s += `<rect class="line${hl.approx ? ' approx' : ''}" x="${x.toFixed(1)}" y="${(y - pad).toFixed(1)}" width="${w.toFixed(1)}" height="${(h + 2 * pad).toFixed(1)}"/>`;
     if (hl.fx1 > hl.fx0) s += `<rect class="word" x="${(x + hl.fx0 * w).toFixed(1)}" y="${(y - pad).toFixed(1)}" width="${((hl.fx1 - hl.fx0) * w).toFixed(1)}" height="${(h + 2 * pad).toFixed(1)}"/>`;

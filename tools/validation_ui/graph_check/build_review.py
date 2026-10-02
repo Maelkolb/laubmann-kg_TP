@@ -69,8 +69,11 @@ Output (JSON; coordinates are fractions of the page width/height, 0-1):
                (taxa [label, scientific name, GBIF key]; persons [label, Wikidata, GND]; places [label, lat, lon,
                GeoNames, Wikidata, source]; habitats [label, EUNIS code, match]); before only where an applied
                row changed the link
-    crops     {region_uid: Google Drive file id of the crop image}   (tools/validation_ui/drive_ids.py --regions);
-              local copies: <region_uid>.jpg (tools/export_region_crops.py)
+    crops     {region_uid: Google Drive file id of the crop image}   (tools/validation_ui/drive_ids.py --regions), for
+              the multimodal regions and for the body-text regions; local copies of the multimodal crops:
+              <region_uid>.jpg (tools/export_region_crops.py)
+    regions   {region_uid: [page, x0, y0, x1, y1]}   every body-text region of the graph (lkg:SourceRegion node
+              data:region_<region_uid>): its page and box on the page scan (box absent when unknown)
 """
 from __future__ import annotations
 
@@ -179,7 +182,8 @@ def main() -> None:
 
     stream = collections.defaultdict(list)       # volume -> [(start, end, page_id, region id, text)]
     pos = collections.defaultdict(int)
-    for pg in json.loads((corpus / "corpus.json").read_text(encoding="utf-8")):
+    corpus_pages = json.loads((corpus / "corpus.json").read_text(encoding="utf-8"))
+    for pg in corpus_pages:
         vol = int(pg["volume"])
         for r in sorted(pg["regions"], key=lambda r: int(r.get("reading_order") or 0)):
             if r.get("type") not in ("ParagraphRegion", "ListRegion"):
@@ -307,6 +311,7 @@ def main() -> None:
     inserts = collections.defaultdict(list)
     media = collections.defaultdict(list)
     crops: dict = {}
+    drive_regions = json.loads(Path(args.drive_regions).read_text(encoding="utf-8")) if args.drive_regions else {}
     mm_path = corpus / "multimodal_regions.jsonl"
     if mm_path.exists():
         ids = {e[1]: e[0] for e in E}
@@ -323,7 +328,6 @@ def main() -> None:
             w = words(text)
             for i in range(len(w) - 4):
                 index[" ".join(w[i:i + 5])].add(uid)
-        drive_regions = json.loads(Path(args.drive_regions).read_text(encoding="utf-8")) if args.drive_regions else {}
         for line in mm_path.read_text(encoding="utf-8").splitlines():
             r = json.loads(line) if line.strip() else None
             uid = (r or {}).get("entry_uid") or ""
@@ -351,6 +355,21 @@ def main() -> None:
             else:
                 state = "partly" if own >= 0.2 else "unread"
             inserts[uid].append([r["region_uid"], r["kind"], len(r["visible_text"]), state])
+
+    # ------------------------------------------------------------ body-text regions of the graph
+    # (lkg:SourceRegion nodes data:region_<uid>): box on the page scan and Drive id of the region's crop
+    regions: dict = {}
+    in_graph = {str(n).rsplit("region_", 1)[-1] for n, ts in G.typ.items() if "SourceRegion" in ts}
+    for pg in corpus_pages:
+        for r in pg["regions"]:
+            uid = r.get("region_uid")
+            if uid not in in_graph or uid in crops:
+                continue
+            box = geo.get(pg["page_id"], {}).get("r", {}).get(r["id"])
+            f = frac(pg["page_id"], box) if box else None
+            regions[uid] = [page(pg["page_id"])] + (f or [])
+            if drive_regions.get(r.get("crop") or ""):
+                crops[uid] = drive_regions[r["crop"]]
 
     # ------------------------------------------------------------ what the corpus tiers need
     occ_rows, duplicates = {}, set()
@@ -559,7 +578,7 @@ def main() -> None:
 
     out = {"meta": {"export": P.get("export"), "built": datetime.date.today().isoformat(),
                     "thresholds": {"confidence": args.min_confidence, "agreement": args.min_agreement}, "counts": dict(counts)},
-           "pages": pages, "entries": entries, "names": names, "crops": crops}
+           "pages": pages, "entries": entries, "names": names, "crops": crops, "regions": regions}
     out["meta"]["counts"]["regions with a crop"] = sum(len(v) for v in media.values())
     out["meta"]["counts"]["crops with a Drive id"] = len(crops)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)

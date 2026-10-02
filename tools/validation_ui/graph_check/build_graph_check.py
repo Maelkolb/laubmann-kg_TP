@@ -29,7 +29,8 @@ What the builder adds to the review layer:
             index recovered from the IRI (sha1("<entry_uid>|<written name>|<index>")[:12]);
             occurrence = 0-based index among the entry's records with that written name
     sample  [entry_id, ...]   the fixed random sample: sha1(entry_uid) mod 33 == 0
-    (meta.scans.crops = the local folder of the region crops, see --local-crops)
+    (meta.scans.crops = the local folder of the region crops, see --local-crops;
+     meta.scans.base = --image-base-url: <base>/pages/<page_id>.jpg and <base>/crops/<region_uid>.jpg are tried first)
     graph   {source, entries, records}
 
 Only needs rdflib (through the explorer builder). The parsed graph is cached in
@@ -58,7 +59,7 @@ sys.dont_write_bytecode = True     # the import must not leave a __pycache__ in 
 import build_graph_explorer as X  # noqa: E402  (packing, ontology labels, blob layout)
 
 # page sources, concatenated in this order into one script (one shared function scope)
-JS_FILES = ["gc_explorer.js", "gc_i18n.js", "gc_state.js", "gc_severity.js", "gc_corpus.js", "gc_props.js", "gc_scan.js", "gc_media.js", "gc_cards.js", "gc_views.js", "gc_table.js", "gc_export.js",
+JS_FILES = ["gc_explorer.js", "gc_i18n.js", "gc_state.js", "gc_severity.js", "gc_corpus.js", "gc_props.js", "gc_scan.js", "gc_media.js", "gc_archive.js", "gc_cards.js", "gc_views.js", "gc_table.js", "gc_export.js",
             "gc_boot.js"]
 CSS_FILES = ["gc_explorer.css", "gc_review.css", "gc_levels.css"]
 TEMPLATE = "graph_check_template.html"
@@ -212,6 +213,10 @@ def main(argv=None) -> int:
                     help="directory of the crops of the multimodal regions, <region uid>.jpg (tools/export_region_crops.py), "
                          "relative to the HTML; fallback when a crop does not load from Drive "
                          "(default: data/region_crops of this repository, if it exists; 'none' = no local crops)")
+    ap.add_argument("--image-base-url", default=None,
+                    help="publication: a folder or URL that holds pages/<page_id>.jpg and crops/<region_uid>.jpg "
+                         "(the layout of data/pages_jpg and data/region_crops); tried FIRST for page scans and the crops of "
+                         "multimodal regions, before Drive and the local folders; text regions are then cut out of the page scan")
     ap.add_argument("--ontology-dir", default=str(REPO / "ontologies"))
     ap.add_argument("--mode", choices=("review", "explorer"), default="review",
                     help="review = Graph-Prüfung (decisions, export); explorer = the same display, read-only")
@@ -257,6 +262,7 @@ def main(argv=None) -> int:
     if crops is None and (REPO / "data" / "region_crops").is_dir():
         crops = os.path.relpath(REPO / "data" / "region_crops", out_dir)
     scans["crops"] = crops.rstrip("/\\").replace("\\", "/") if crops and crops.lower() != "none" else None
+    scans["base"] = args.image_base_url.rstrip("/\\").replace("\\", "/") if args.image_base_url else None
     meta["scans"] = scans
 
     # review layer: only the entries of this graph, plus the observation table and the sample
@@ -267,7 +273,7 @@ def main(argv=None) -> int:
     obs_map, sample, stats, idents = graph_layer(Packed(meta, arrays), review)
     layer = {"meta": review.get("meta", {}), "pages": review.get("pages", []),
              "entries": {k: v for k, v in review.get("entries", {}).items() if k in idents},
-             "names": review.get("names", {}), "crops": review.get("crops", {}), "obs": obs_map, "sample": sorted(sample),
+             "names": review.get("names", {}), "crops": review.get("crops", {}), "regions": review.get("regions", {}), "obs": obs_map, "sample": sorted(sample),
              "graph": {"source": meta["sourcePath"], "entries": stats.get("entries in the graph", 0),
                        "records": stats.get("records in the graph", 0)}}
     layer["meta"] = dict(layer["meta"], mode=args.mode)
@@ -302,7 +308,8 @@ def main(argv=None) -> int:
     print(f"wrote {out} [{args.mode}] - {len(html) / mb:.1f} MB (graph {len(b64) / mb:.1f} MB base64, review layer {len(rv_raw) / mb:.1f} MB raw / "
           f"{len(rv_b64) / mb:.1f} MB base64); {meta['triples']:,} triples, {len(layer['entries']):,} entries with review data, "
           f"{len(sample):,} sample entries, {len(scans['drive']):,} pages with Drive id ({len(pages):,} pages in the graph, {len(extra):,} more in the "
-          f"review layer), {len(layer['crops']):,} region crops with Drive id, local crops: {scans['crops'] or '-'}; {time.time() - t0:.1f} s",
+          f"review layer), {len(layer['crops']):,} region crops with Drive id, {len(layer['regions']):,} text regions with a box, local crops: {scans['crops'] or '-'}, "
+          f"image base: {scans['base'] or '-'}; {time.time() - t0:.1f} s",
           file=sys.stderr)
     return 0
 

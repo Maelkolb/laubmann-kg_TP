@@ -831,7 +831,7 @@ function renderGraph(keepView) {
     } else if (sub_ && hh >= 30) {
       inner += `<text x="${tx}" y="15">${esc(fitText(main, tw))}</text><text class="s" x="${tx}" y="${hh - 7}">${esc(fitText(sub_, tw, '9.5px "Segoe UI", sans-serif'))}</text>`;
     } else inner += `<text x="${tx}" y="${hh / 2 + 4}">${esc(fitText(main, tw))}</text>`;
-    inner += rvPropsSvg(v) + rvTierSvg(v);
+    inner += rvThumbSvg(v) + rvPropsSvg(v) + rvTierSvg(v);
     s += `<g class="${cls}" data-key="${esc(v.key)}" transform="translate(${v.x},${v.y})">${inner}${an ? rvBadgeSvg(v, an) : ''}</g>`;
   }
   s += '</g></g>';
@@ -845,7 +845,7 @@ function renderGraph(keepView) {
 }
 // ---- pan / zoom
 const Z = { k: 1, x: 0, y: 0 };
-function applyZ() { const vp = $('#vp'); if (vp) vp.setAttribute('transform', `translate(${Z.x.toFixed(1)},${Z.y.toFixed(1)}) scale(${Z.k.toFixed(4)})`); rvPanHint(); }   // [GC]
+function applyZ() { const vp = $('#vp'); if (vp) vp.setAttribute('transform', `translate(${Z.x.toFixed(1)},${Z.y.toFixed(1)}) scale(${Z.k.toFixed(4)})`); rvPanHint(); thumbsSoon(); }   // [GC]
 function fitView(whole) {   // [GC] whole = the ⤢ button: the complete width, however small
   if (!SUB) return; const c = $('#gcanvas'); const W = c.clientWidth || 800, H = c.clientHeight || 600;
   let k = Math.min(W / SUB.width, H / SUB.height, 1.1);
@@ -966,11 +966,12 @@ function entryPages(e) {
   return [first].concat(u.slice(1).sort((a, b) => coll.compare(pref(a, 'dcterms:identifier') || '', pref(b, 'dcterms:identifier') || ''))).filter(x => x !== undefined);
 }
 // [GC] the explorer's records tab is replaced by the editable records table in the middle (gc_views.js)
-function scanSources(pid) {
+function scanSources(pid, size) {   // [GC] size of the Drive thumbnail; --image-base-url first
   const sc = G.meta.scans || {}; const id = sc.drive && sc.drive[pid];
-  const dr = id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w1600' : null;
+  const dr = id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w' + (size || 1600) : null;
   const lo = sc.local ? sc.local.replace(/\/$/, '') + '/' + encodeURIComponent(pid) + '.jpg' : null;
-  return { list: (sc.mode === 'local' ? [lo, dr] : [dr, lo]).filter(Boolean), view: id ? 'https://drive.google.com/file/d/' + encodeURIComponent(id) + '/view' : null, local: lo };
+  const ba = sc.base ? sc.base + '/pages/' + encodeURIComponent(pid) + '.jpg' : null;
+  return { list: [ba].concat(sc.mode === 'local' ? [lo, dr] : [dr, lo]).filter(Boolean), view: id ? 'https://drive.google.com/file/d/' + encodeURIComponent(id) + '/view' : null, local: lo, base: ba };
 }
 // [GC] the explorer's scans tab is replaced by the persistent scan pane (gc_scan.js)
 function panelNode() {
@@ -1130,7 +1131,7 @@ function renderUsage() {
 const CV = { k: 'taxon', page: 0, sort: ['uses', -1], q: '' };
 function showClass(k) {
   setView('class');
-  if (CV.k !== k) { CV.k = k; CV.page = 0; CV.q = ''; CV.sort = ['uses', -1]; CV.rows = null; }
+  if (CV.k !== k) { CV.k = k; CV.page = 0; CV.q = ''; CV.sort = classMode(k) === 'img' ? ['ord', 1] : ['uses', -1]; CV.rows = null; }   // [GC] images in the order of the archive
   const st = stats();
   const kinds = KIND_LIST.map((x, i) => ({ x, c: st.kc[i] })).filter(r => r.c);
   if (!CV.rows || CV.rowsFor !== k + LANG + RVU.corpus) {
@@ -1140,7 +1141,7 @@ function showClass(k) {
       if (k === 'taxon') sub = pref(n, 'dwc:scientificName') || ''; else if (k === 'place') { const c = coords(n); sub = c ? c[0].toFixed(4) + ', ' + c[1].toFixed(4) : ''; }
       else if (k === 'auth') sub = authId(n); else if (k === 'entry') sub = pref(n, 'dcterms:identifier') || ''; else if (k === 'obs') sub = pref(n, 'dwc:eventDate') || '';
       else if (k === 'volume') sub = pref(n, 'dcterms:temporal') || '';
-      rows.push({ n, lab: label(n), sub, uses: rvUses(n), iri: G.nodes[n] });
+      rows.push({ n, lab: label(n), sub, uses: rvUses(n), iri: G.nodes[n], ord: rvClassOrd(n, k) });
     }
     CV.rows = rows; CV.rowsFor = k + LANG + RVU.corpus;
   }
@@ -1150,14 +1151,15 @@ function renderClassTable(kinds) {
   const v = $('#v-class'); const k = CV.k;
   let rows = CV.rows; if (CV.q) { const q = CV.q.toLowerCase(); rows = rows.filter(r => (r.lab + ' ' + r.sub + ' ' + r.iri).toLowerCase().includes(q)); }
   const [sk, dir] = CV.sort; rows = rows.slice().sort((a, b) => (sk === 'uses' ? a.uses - b.uses : coll.compare(String(a[sk]), String(b[sk]))) * dir);
-  const per = 100, pages = Math.max(1, Math.ceil(rows.length / per)); CV.page = clamp(CV.page, 0, pages - 1);
+  const per = rvClassPer(k), pages = Math.max(1, Math.ceil(rows.length / per)); CV.page = clamp(CV.page, 0, pages - 1);   // [GC] "Tabelle / Bilder" for classes with images
+  const grid = rvClassBody(k, rows.slice(CV.page * per, CV.page * per + per));
   const th = (c, l) => `<th class="sort" data-csort="${c}">${esc(l)}${sk === c ? (dir > 0 ? ' ▲' : ' ▼') : ''}</th>`;
   const hash = r => (k === 'entry' ? entryHash(r.n) : k === 'obs' && entryOf(r.n) >= 0 ? entryHash(entryOf(r.n), 'n' + r.n) : '/n/' + r.iri);
   v.innerHTML = `<div class="page"><h2>${esc(kindLabel(k))}</h2><p class="lead">${esc(KIND_CLASS[k] || '')}${rvFilterNote()}</p>
     <div class="btnrow">${(kinds || []).filter(x => !['term', 'ext', 'other', 'scheme'].includes(x.x)).map(x => `<button class="btn" data-go="/c/${x.x}" ${x.x === k ? 'style="border-color:var(--accent);font-weight:600"' : ''}>${esc(kindLabel(x.x))} (${fmt(x.c)})</button>`).join('')}</div>
-    <div class="pager"><input id="cv-q" type="search" placeholder="${t('filter')}" value="${esc(CV.q)}"><button class="btn" data-cpage="-1" ${CV.page <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', CV.page + 1, pages)} · ${fmt(rows.length)}</span><button class="btn" data-cpage="1" ${CV.page >= pages - 1 ? 'disabled' : ''}>▶</button></div>
-    <div class="card"><table class="t"><tr>${th('lab', t('label'))}${th('sub', t('detail'))}${th('uses', t('uses'))}${th('iri', 'IRI')}</tr>
-    ${rows.slice(CV.page * per, CV.page * per + per).map(r => `<tr class="click" data-go="${esc(hash(r))}"><td>${esc(r.lab)}</td><td class="muted">${esc(r.sub)}</td><td class="num">${fmt(r.uses)}</td><td class="iri">${esc(r.iri)}</td></tr>`).join('')}</table></div></div>`;
+    <div class="pager">${rvClassSwitch(k)}<input id="cv-q" type="search" placeholder="${t('filter')}" value="${esc(CV.q)}"><button class="btn" data-cpage="-1" ${CV.page <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', CV.page + 1, pages)} · ${fmt(rows.length)}</span><button class="btn" data-cpage="1" ${CV.page >= pages - 1 ? 'disabled' : ''}>▶</button></div>
+    <div class="card">${grid}<table class="t"${grid ? ' hidden' : ''}><tr>${th('lab', t('label'))}${th('sub', t('detail'))}${th('uses', t('uses'))}${th('iri', 'IRI')}</tr>
+    ${(grid ? [] : rows.slice(CV.page * per, CV.page * per + per)).map(r => `<tr class="click" data-go="${esc(hash(r))}"><td>${esc(r.lab)}</td><td class="muted">${esc(r.sub)}</td><td class="num">${fmt(r.uses)}</td><td class="iri">${esc(r.iri)}</td></tr>`).join('')}</table></div></div>`;
   CV.kinds = kinds;
 }
 
@@ -1300,6 +1302,7 @@ function wire() {
   $('#v-node').addEventListener('change', ev => { if (ev.target.id === 'nv-pred') { NV.pred = ev.target.value; NV.page = 0; renderUsage(); } });
   $('#v-node').addEventListener('input', debounce(ev => { if (ev.target.id === 'nv-q') { NV.q = ev.target.value; NV.page = 0; renderUsage(); const q = $('#nv-q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }, 200));
   $('#v-class').addEventListener('click', ev => {
+    if (rvClassAct(ev)) return;   // [GC]
     const th = ev.target.closest('[data-csort]'); if (th) { const k = th.dataset.csort; CV.sort = [k, CV.sort[0] === k ? -CV.sort[1] : (k === 'uses' ? -1 : 1)]; renderClassTable(CV.kinds); return; }
     const pg = ev.target.closest('[data-cpage]'); if (pg) { CV.page += +pg.dataset.cpage; renderClassTable(CV.kinds); }
   });

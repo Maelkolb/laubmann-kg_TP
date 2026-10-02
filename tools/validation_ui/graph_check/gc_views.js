@@ -144,7 +144,7 @@ function rvLegendHtml() {   // colour = level, marker = kind; K0–K3 = corpus t
   return (RVU.notes ? markLegendHtml() : '') + `<span class="li" title="${esc(t('lg_tier_t'))}">${[0, 1, 2, 3].map(tr => `<span class="trc tr${tr}">K${tr}</span>`).join('')}${t('lg_tier_s')}</span>` +
     `<span class="li muted" title="${esc(t('lg_click') + ' · ' + t('zoom_hint'))}">ⓘ</span>`;
 }
-function rvHelpHtml() { return t('help') + `<h3>${t('help_corp')}</h3><dl class="corpdl">${[0, 1, 2, 3].map(k => `<dt>${esc(t('corp_b_' + k))}</dt><dd>${esc(t('corp_def_' + k))}</dd>`).join('')}</dl>` + (RVU.notes ? `<h3>${t('help_sev')}</h3>` + sevTableHtml() + `<p class="muted" style="font-size:.8rem">${t('sev_note')}</p>` : ''); }
+function rvHelpHtml() { return t('help') + `<p>${t('ar_help')}</p><h3>${t('help_corp')}</h3><dl class="corpdl">${[0, 1, 2, 3].map(k => `<dt>${esc(t('corp_b_' + k))}</dt><dd>${esc(t('corp_def_' + k))}</dd>`).join('')}</dl>` + (RVU.notes ? `<h3>${t('help_sev')}</h3>` + sevTableHtml() + `<p class="muted" style="font-size:.8rem">${t('sev_note')}</p>` : ''); }
 function rvFilterNote(block) {   // node view, class view: the counts follow the corpus filter
   if (!corpusOn()) return ''; const s = esc(t('filter_note', corpusName(RVU.corpus), fmt(CORP.n[RVU.corpus]), fmt(CORP.n[0])));
   return block ? `<div class="note corpnote">${s}</div>` : ` <span class="corptag">${s}</span>`;
@@ -197,7 +197,7 @@ function rvRingSvg(v, an) {   // the ring carries the level; hints (level 0) hav
 }
 function rvBadgeSvg(v, an) { const w = an.mk.length > 1 ? 11 : 8; return `<g class="abadge ${an.cls}" transform="translate(${v.w - 3},-2)"><rect x="${-w}" y="-8" width="${2 * w}" height="16" rx="8"/><text y="3.6" text-anchor="middle">${esc(an.mk)}</text></g>`; }
 function rvTipHtml(v) {
-  const an = rvAnn(v); let s = mediaTip(v);
+  const an = rvAnn(v); let s = archiveTip(v);
   if (an) s += `<div class="antip ${an.cls}">${an.lv != null ? lvDot(an.lv) + esc(lvName(an.lv)) + ' · ' : ''}${esc(t(an.tip))}</div>`;
   if (v.kind === 'obs' && EM) { const o = EM.byNode.get(v.n); if (o) s += tierLine(o); }
   if (SUB && SUB.propMode === 'compact' && S.sel !== v.key) s += propsTip(v);

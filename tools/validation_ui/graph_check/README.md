@@ -22,6 +22,7 @@ Die Seite ist ein **Fork des Graph-Explorers** (`tools/explorer/`): gleiche Date
     data\cache\graph_check\review.json `
     data\exports\graph_check\Laubmann_Graph_Explorer.html --mode explorer
 #   --mode review|explorer   review (Standard) = Graph-Prüfung; explorer = dieselbe Anzeige ohne Entscheidungen
+#   --image-base-url <URL>   Veröffentlichung: Bilder zuerst von <URL>/pages/<page_id>.jpg und <URL>/crops/<region_uid>.jpg
 #   --scans drive            (Standard) Drive-Vorschau je Seite, lokale JPEGs als Rückfall
 #   --scans local:<Ordner>   <Ordner>/<Seiten-ID>.jpg relativ zur HTML-Datei zuerst
 #   --local-crops <Ordner>   Ausschnitte der multimodalen Regionen, <region_uid>.jpg, relativ zur HTML-Datei
@@ -69,6 +70,43 @@ Ladereihenfolge eines Ausschnitts (wie bei den Scans, mit `loading="lazy"`):
 4. sonst der Hinweis „Bild nicht ladbar“.
 
 Die Dateien dazu entstehen außerhalb dieses Ordners: `tools/export_region_crops.py` schreibt die lokalen JPEGs (`data/region_crops/<region_uid>.jpg`, längste Seite 1.400 px), `tools/validation_ui/drive_ids.py --regions drive_regions.json` liest die Drive-Kennungen der Ausschnitte, die `build_review.py --drive-regions` als `crops` in die Prüfschicht übernimmt.
+
+## Bilder des Archivs: Seiten und Regionen
+
+Nicht nur die multimodalen Regionen, auch die Knoten des Archivs zeigen ihr Bild – in beiden Builds. Die Prüfschicht liefert dafür `regions` (`{region_uid: [Seite, x0, y0, x1, y1]}` für jede Textregion des Graphen, Rahmen in Seitenanteilen) und in `crops` die Drive-Kennung des Ausschnitts auch für die Textregionen.
+
+- **Tagebuchseite** (`lkg:DiaryPage`; Knotenansicht und Reiter *Knoten*): der Scan der Seite, darauf jede Region umrandet und beschriftet – grün „Text 1 … n“ die Textregionen, violett Bilder und Einlagen mit ihrer Art. Ein Klick auf einen Rahmen öffnet den Knoten der Region, „⤢ Seite groß ansehen“ (oder ein Klick neben die Rahmen) die Großansicht mit Zoom und Verschieben wie bei den Ausschnitten. Darunter die Einträge, die auf der Seite stehen.
+- **Textregion** (`lkg:SourceRegion`) und **multimodale Region**: das Bild der Region, der Link zu ihrer Seite („auf der Seite zeigen“ öffnet die Seite groß mit hervorgehobener Region) und die Einträge, deren Text durch sie läuft. Klick = Großansicht.
+- **Klassen:** für *Tagebuchseite*, *Quellregion* und *multimodale Region* schaltet „Tabelle / Bilder“ auf ein Raster von Vorschaubildern mit Beschriftung (Seite: Band, Scan, Seite L/R; Region: Art und Seite), 48 je Blatt, geordnet nach Band, Scan und Lage auf der Seite; ein Klick öffnet den Knoten. Die Wahl bleibt je Klasse gemerkt. Ein **Band** zeigt in seiner Knotenansicht dasselbe Raster seiner Seiten.
+- **Teilgraph:** mit der Ebene „Archiv“ tragen Seiten- und Regionsknoten ein kleines Bild in einem festen Kasten (das Layout springt nicht, wenn es eintrifft) und ein größeres im Tooltip. Wer einen Seiten- oder Regionsknoten wählt, sieht die Seite im Scan-Bereich, die Region hervorgehoben. „Alles zeigen“ stellt so die Scans neben die Struktur des Graphen.
+
+Woher ein Bild kommt (der Reihe nach, das erste, das lädt):
+
+| | Seitenscan | Ausschnitt einer multimodalen Region | Bild einer Textregion |
+|---|---|---|---|
+| mit `--image-base-url` | `<Basis>/pages/<page_id>.jpg` | `<Basis>/crops/<region_uid>.jpg` | Ausschnitt aus dem Seitenscan nach dem Rahmen |
+| dann | Drive-Vorschau über die Dateikennung | Drive-Vorschau (`crops`) | Drive-Vorschau (`crops`; nur ohne `--image-base-url`) |
+| dann | lokales JPEG (`data/pages_jpg`) | lokales JPEG (`data/region_crops`) | Ausschnitt aus dem Seitenscan nach dem Rahmen (`regions`) |
+| sonst | Hinweis „Bild nicht ladbar“ (Rahmen und Listen bleiben) | Ausschnitt aus dem Seitenscan, sonst Hinweis | Hinweis |
+
+Geladen wird nur, was sichtbar ist: die Raster und Figuren füllen sich über einen `IntersectionObserver`, die Bilder im Teilgraphen nach ihrer Lage im Fenster (nach jedem Zeichnen, Verschieben, Zoomen); bei ausgeschalteter Ebene „Archiv“ wird kein Bild angefragt. Der größte Eintrag (391 Datensätze) öffnet mit allen Ebenen in etwa 0,3 s.
+
+### Veröffentlichen: `--image-base-url`
+
+Drive-Kennungen und lokale Ordner hat eine öffentliche Leserin nicht. Für eine Veröffentlichung legt man die Bilder neben die Seite (oder auf einen Webserver) und baut mit `--image-base-url <URL oder relativer Ordner>`:
+
+```
+<Basis>/
+  pages/<page_id>.jpg       # die Seitenscans  – Inhalt von data/pages_jpg
+  crops/<region_uid>.jpg    # die Ausschnitte der multimodalen Regionen – Inhalt von data/region_crops
+```
+
+```powershell
+.venv\Scripts\python.exe tools\validation_ui\graph_check\build_graph_check.py <graph.ttl> <review.json> <out.html> `
+    --mode explorer --image-base-url https://example.org/laubmann/images
+```
+
+Die Seite fragt dann zuerst `<Basis>/pages/…` und `<Basis>/crops/…`; Bilder von Textregionen schneidet sie aus dem Seitenscan aus (es braucht keine eigenen Dateien dafür). Drive und die lokalen Ordner bleiben als Rückfall dahinter. Ein relativer Wert wie `images` meint einen Ordner neben der HTML-Datei.
 
 ## Eigenschaften, „Alles zeigen“ und die Spalten der Tabelle
 
@@ -205,7 +243,8 @@ Die Dateien aus `review/` gehören nach `data/review/` (an vorhandene Dateien an
 | `gc_corpus.js` | Korpusfilter: Stufe je Datensatz, die Korpusleiste (vier Knöpfe, ⓘ, „Filter aufheben“, im Explorer-Build „Prüfhinweise zeigen“), Zählungen für Explorer-Ansichten, Gründe in Worten, Tabellen der Übersicht |
 | `gc_props.js` | Ebene „Eigenschaften“ / „Verweise“: Zeilen aus den Tripeln, kompakt/alle, „Alles zeigen“/„Standard“, Hinweis auf Spalten außerhalb des Fensters |
 | `gc_scan.js` | Scan-Bereich |
-| `gc_media.js` | multimodale Regionen: Ausschnitte mit Rückfallkette, Karten, Großansicht |
+| `gc_media.js` | Bilder der Regionen: Quellen mit Rückfallkette, Ausschnitt aus dem Seitenscan, Karten der multimodalen Regionen, Großansicht |
+| `gc_archive.js` | Bilder der Archivknoten: Seite mit umrandeten Regionen, Textregion, Raster der Klassen und Bände, Vorschaubilder im Teilgraphen, Seite/Region im Scan-Bereich |
 | `gc_cards.js` | Reiter „Prüfen“: Karten, Aktionen, Formulare, Tastatur |
 | `gc_views.js` | Arbeitsliste (Stufen, Sortierung, Chips), Kopfzeile, Markierungsschicht, Text, Übersicht |
 | `gc_table.js` | Tabelle der Datensätze: Spalten aus den Prädikaten, Spaltenwahl, Bearbeiten in der Zelle |
@@ -231,6 +270,7 @@ $py = "C:\Users\totom\Projects\laubmann-kg_TP\.venv\Scripts\python.exe"
 
 - `smoke.py` – prüft BEIDE Builds. Graph-Prüfung: Ladezeit ≤ 5 s, jede Warteschlange, Karten jedes Typs, Markierungen im Graph, Tabelle, Scan-Overlay, **Eigenschaften** (jedes Literal jedes gezeichneten Knotens ist eine Zeile; kompakt/alle; „Alles zeigen“: jedes Tripel ist Kante oder Zeile; „Standard“), **Spalten der Tabelle** (jedes Prädikat der Datensätze hat eine Spalte, Standard, Spaltenwahl, feste erste Spalte, Chips in ihrer Zelle), **Schwere** (Regeltabelle, Stufen einzelner Fälle, Zahlen je Zeile, Sortierung, Stufen-Chips allein und mit Warteschlange, Kopf, Reihenfolge der Karten, eingeklappte Hinweise, Ringfarbe, „entschieden zählt nicht mehr“, Legende, Übersicht, Hilfe), **Korpusfilter** (Zahlen der Auswahl gegen die Prüfschicht und gegen 85.631 / 74.909 / 69.150 / 44.372, Balken, Warteschlangen, Arbeitsliste, Statistik, Eintrag mit „n außerhalb zeigen“, Tabelle, Knotenansicht eines Taxons, Klassenansicht, Übersicht, gemerkt nach Neuladen, Aufheben), Bilder und Einlagen (Karten, lokaler Ausschnitt, Großansicht, Rahmen auf dem Scan, Knoten-Reiter und Knotenansicht), alle Reiter, DE/EN (gleiche Schlüssel, keine unübersetzten), die übrigen Explorer-Ansichten, der größte Eintrag (391 Datensätze), Betrieb ganz ohne Bilder, keine Konsolenfehler.
   Dazu die **Korpusleiste** (vier Knöpfe mit Namen und Zahlen, Beschriftung „Korpus“, gefüllter aktiver Knopf, eigene Zeile unter der Kopfzeile, in Übersicht / Eintrag / Klassen / Knotenansicht / Suche vorhanden, ⓘ mit vier Erklärungen, Wahl und „Filter aufheben“). **Explorer-Build** (`Laubmann_Graph_Explorer.html` neben der Seite, sonst `GC_EXPLORER`): Modus in den Metadaten, Titel; derselbe Eintrag (`L17-e0132`) zeigt dieselben Knoten mit denselben Eigenschaftszeilen, Kanten, Markierungen, Karten, Tabellenspalten und -zellen und Scan-Overlays wie die Graph-Prüfung, „Alles zeigen“ denselben Graphen, die Übersicht dieselben Zahlen; kein Entscheidungselement in Übersicht, Eintrag (alle Reiter), Tabelle, Knoten- und Klassenansicht; Entscheidungstasten wirkungslos, nichts wird gespeichert, ein gespeicherter Stand der Graph-Prüfung wird nicht geladen; Liste in Tagebuchfolge, Warteschlangen als Filter; „Prüfhinweise zeigen“ aus/an; Korpusleiste und Korpusfilter wie oben; DE/EN; keine Konsolenfehler.
+  **Bilder des Archivs** (beide Builds): Seitenknoten mit Scan, allen Rahmen, Einträgen, Klick auf Rahmen, Großansicht; Textregion mit Bild über den Ausschnitt aus dem lokalen Seiten-JPEG, Link zur Seite, Einträgen; Raster der Klassen Seite / Quellregion / multimodale Region (48 Zellen, nur sichtbare geladen, blättern, Klick öffnet den Knoten, Wahl gemerkt) und der Seiten eines Bandes; Teilgraph mit und ohne Ebene „Archiv“ (Vorschaubilder, fester Kasten, Tooltip, Auswahl zeigt Seite/Region im Scan-Bereich); größter Eintrag mit allen Ebenen; alles ohne ladbare Bilder; `--image-base-url` (der Test baut dafür eine dritte Seite, bedient die Basis-URL aus `data/pages_jpg` und `data/region_crops` und prüft, dass die Basis zuerst gefragt wird).
 - `interaction_export.py` – mindestens eine Entscheidung jeder Art per Tastatur und Maus, Export (derselbe unter dem strengsten Korpusfilter), ZIP; dann liest `tests/loaders_check.py` jede `review/*.csv` mit dem Lader der Pipeline und wendet Wert- und Datensatzkorrekturen in der Reihenfolge der Pipeline auf Modell-Einträge an. Geprüft wird, dass die Zeilen mit den richtigen Werten ankommen und genau die gemeinten Datensätze ändern.
 - `reload.py` – Rückgängig, Neuladen, Fortschritt aus JSON und ZIP in ein frisches Browserprofil, identischer Re-Export, „neuer gewinnt“ beim Zusammenführen.
 

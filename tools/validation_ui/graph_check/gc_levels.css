@@ -234,3 +234,42 @@ header#top > #searchbox { flex: 1 1 110px; }
 .lvchip .lvd { margin-right: 2px; width: 9px; height: 9px; }
 .lvchip .num { margin-left: 2px; font-size: .64rem; }
 #lvchips { gap: 2px; }
+
+/* ---- images of the archive nodes: page figure with outlines, region image, thumbnail grids, thumbnails in the subgraph */
+.pagefig { margin: 8px 0 2px; max-width: 520px; }
+.pagebox { position: relative; width: 100%; background: var(--surface2); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; cursor: zoom-in; }
+.pagebox:hover { border-color: var(--media); }
+.pagebox img.pscan { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.pagebox > .cropfail { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 0; }
+.pr { position: absolute; box-sizing: border-box; border: 2px solid #1E8E3E; background: rgba(30,142,62,.05); cursor: pointer; border-radius: 2px; }
+.pr span { position: absolute; left: 0; top: 0; font: 600 .62rem/1.25 "Segoe UI", system-ui, sans-serif; padding: 0 4px; background: #1E8E3E; color: #fff; border-radius: 0 0 3px 0; white-space: nowrap; pointer-events: none; }
+.pr.pr-m { border-color: #9B4DCA; background: rgba(155,77,202,.07); } .pr.pr-m span { background: #9B4DCA; }
+.pr:hover, .pr.on { background: rgba(30,142,62,.20); box-shadow: 0 0 0 2px rgba(30,142,62,.45); }
+.pr.pr-m:hover, .pr.pr-m.on { background: rgba(155,77,202,.22); box-shadow: 0 0 0 2px rgba(155,77,202,.45); }
+.arhint { font-size: .76rem; margin: 3px 0 8px; }
+table.arlist td { padding: 2px 6px; font-size: .8rem; }
+table.arlist td.mono { font-size: .72rem; color: var(--muted); }
+.lb-stage .pagebox.big { height: 100%; width: auto; max-width: 100%; cursor: grab; border: 0; box-shadow: 0 4px 30px rgba(0,0,0,.6); }
+.lb-stage svg.cutout.big { width: 100%; height: 100%; }
+.lb-stage .pr span { font-size: .72rem; }
+.agrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.agrid:has(.k-region), .agrid:has(.k-mmregion) { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+.gcell { border: 1px solid var(--line); border-radius: 7px; background: var(--surface); padding: 6px; cursor: pointer; min-width: 0; }
+.gcell:hover { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.gimg { height: 190px; display: flex; align-items: center; justify-content: center; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.gcell.k-region .gimg, .gcell.k-mmregion .gimg { height: 124px; }
+.gimg img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
+.gimg svg.cutout { width: 100%; height: 100%; display: block; }
+.gimg .cropfail { border: 0; font-size: .7rem; padding: 4px; }
+.gl { font-size: .78rem; font-weight: 600; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gs { font-size: .7rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pager .seg { margin-right: 6px; } .pager .seg button { padding: 3px 11px; font-size: .8rem; }
+#volgrid .agrid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); } #volgrid .gimg { height: 150px; }
+svg.cutout { background: var(--surface2); }
+.tipcrop.tippage img.pscan { max-width: 150px; max-height: 230px; display: block; border-radius: 4px; }
+.tipcrop svg.cutout { width: 240px; height: 130px; display: block; border-radius: 4px; }
+.tipcrop img.crop.fit { max-width: 240px; max-height: 150px; }
+.nthumb .tbg { fill: var(--surface2); stroke: var(--line); stroke-width: 1; }
+.nthumb image { pointer-events: none; }
+#scanov .areg { stroke: #1E8E3E; stroke-width: 3; fill: rgba(30,142,62,.14); }
+#scanov .areglbl { fill: #156B2E; font-weight: 600; }

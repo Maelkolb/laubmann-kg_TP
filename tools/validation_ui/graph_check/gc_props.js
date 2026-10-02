@@ -69,7 +69,8 @@ function tierRow(v) {   // not a statement of the graph: the corpus tier of the 
   const why = tierWhy(o); const key = t('tier_k'); return { k: key, kx: measure(key) + 5, v: fitText(tierName(tr) + (why && tr < 3 ? ' — ' + why : ''), v.w - 16 - measure(key) - 5, PFONT), cls: ' ptier tr' + tr };
 }
 function rvPropsLayout(sub, all) {   // called by layoutSub after the header heights are set
-  for (const v of all) { v.hh = v.h; v.rows = null; }
+  // v.hh = header height; page and region nodes carry a thumbnail in a fixed box below it (v.th); the rows start at v.ry
+  for (const v of all) { v.hh = v.h; v.rows = null; v.th = thumbBox(v); v.ry = v.hh + (v.th ? v.th.h + 6 : 0); v.h = v.ry; }
   if (!S.layers.props) return;
   const mode = propMode(sub); sub.propMode = mode; const drawn = S.layers.links ? new Set(sub.E.map(ed => ed.a.key + '|' + ed.b.key + '|' + ed.p)) : null;
   for (const v of all) {
@@ -77,7 +78,7 @@ function rvPropsLayout(sub, all) {   // called by layoutSub after the header hei
     const open = mode === 'all' || S.sel === v.key;
     if (open) v.rows = (tr ? [tr] : []).concat(propLines(v, props, S.propOpen.has(v.key)));
     else v.rows = [{ k: '', kx: 0, v: fitText(props.filter(r => !r.link && r.v.length < 60).map(r => r.v).join(' · ') || '…', v.w - 16, PFONT), cls: ' psum' }];
-    v.props = props; v.h = v.hh + 3 + v.rows.length * PROW + 5;
+    v.props = props; v.h = v.ry + 3 + v.rows.length * PROW + 5;
   }
 }
 function propsSelSync() {   // compact mode: redraw so that the selected node shows its rows; its header keeps its place on the screen
@@ -87,9 +88,9 @@ function propsSelSync() {   // compact mode: redraw so that the selected node sh
   const v1 = S.sel ? SUB.V.get(S.sel) : null; if (v1 && y0 != null) { Z.y = y0 - v1.y * Z.k; applyZ(); }
 }
 function rvPropsSvg(v) {
-  if (!v.rows) return ''; let s = `<line class="psep" x1="7" x2="${v.w - 7}" y1="${v.hh + 0.5}" y2="${v.hh + 0.5}"/>`;
+  if (!v.rows) return ''; let s = `<line class="psep" x1="7" x2="${v.w - 7}" y1="${v.ry + 0.5}" y2="${v.ry + 0.5}"/>`;
   v.rows.forEach((r, i) => {
-    const y = v.hh + 3 + (i + 1) * PROW - 2;
+    const y = v.ry + 3 + (i + 1) * PROW - 2;
     s += `<text class="pr${r.cls || ''}" y="${y}">${r.k ? `<tspan class="pk" x="8">${esc(r.k)}</tspan>` : ''}<tspan x="${(8 + r.kx).toFixed(1)}">${esc(r.v)}</tspan></text>`;
     if (r.more) s += `<rect class="pmore" x="4" y="${y - PROW + 2}" width="${v.w - 8}" height="${PROW}"><title>${esc(t('prop_more'))}</title></rect>`;
   });

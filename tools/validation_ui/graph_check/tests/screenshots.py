@@ -40,6 +40,51 @@ async def entry_shot(pg, name):
     await pg.screenshot(path=str(SHOTS / name))
 
 
+JS_ARCH = """(eid) => { const G = LKGC.G; const e = G.ent.find(r => r.id === eid).n; const out = (n, kind) => { for (let i = G.sOff[n]; i < G.sOff[n + 1]; i++) { const o = G.tO[i]; if (o >= 0 && G.kind[o] === kind) return o; } return -1; };
+  const region = out(e, 13), page = out(region, 12), vol = out(page, 11);
+  return { region: G.nodes[region], regionN: region, page: G.nodes[page], pageN: page, vol: G.nodes[vol] }; }"""
+
+
+async def archive_shots(pg, tag):
+    """Images of the archive nodes: page with outlines, text region, class grids, volume, subgraph thumbnails."""
+    a = await pg.evaluate(JS_ARCH, SAME_ENTRY)
+    await pg.evaluate(f"LKGC.go('/n/' + {a['page']!r})")
+    await pg.wait_for_timeout(1500)
+    await pg.screenshot(path=str(SHOTS / f"20a_{tag}_seite_scan_mit_regionen.png"))
+    await pg.click("#v-node .arhint [data-page-open]")
+    await pg.wait_for_timeout(900)
+    await pg.screenshot(path=str(SHOTS / f"20b_{tag}_seite_grossansicht.png"))
+    await pg.keyboard.press("Escape")
+    await pg.evaluate(f"LKGC.go('/n/' + {a['region']!r})")
+    await pg.wait_for_timeout(1500)
+    await pg.screenshot(path=str(SHOTS / f"20c_{tag}_textregion.png"))
+    for k, name in (("page", "20d_{}_klassen_seiten_bilder.png"), ("region", "20e_{}_klassen_quellregionen_bilder.png"), ("mmregion", "20f_{}_klassen_multimodale_regionen_bilder.png")):
+        await pg.evaluate(f"LKGC.go('/c/{k}')")
+        await pg.wait_for_timeout(400)
+        await pg.click('#v-class [data-cmode="img"]')
+        await pg.wait_for_timeout(2500)
+        await pg.screenshot(path=str(SHOTS / name.format(tag)))
+        await pg.click('#v-class [data-cmode="table"]')
+    await pg.evaluate(f"LKGC.go('/n/' + {a['vol']!r})")
+    await pg.wait_for_timeout(2200)
+    await pg.screenshot(path=str(SHOTS / f"20g_{tag}_band_seiten.png"))
+    await goto_entry(pg, SAME_ENTRY, 800)
+    if not await pg.locator("#scanpane").is_visible():
+        await pg.keyboard.press("s")
+    await pg.click('#gtools [data-act="preset-all"]')
+    await pg.wait_for_timeout(1500)
+    await pg.screenshot(path=str(SHOTS / f"20h_{tag}_alles_zeigen_archivbilder.png"))
+    await pg.click(f'#gsvg .nd[data-key="n{a["regionN"]}"] rect.b', position={"x": 40, "y": 10})
+    await pg.wait_for_timeout(1000)
+    await pg.screenshot(path=str(SHOTS / f"20i_{tag}_region_gewaehlt_scan_und_knoten.png"))
+    await pg.click(f'#gsvg .nd[data-key="n{a["pageN"]}"] rect.b', position={"x": 40, "y": 10})
+    await pg.wait_for_timeout(1000)
+    await pg.screenshot(path=str(SHOTS / f"20j_{tag}_seite_gewaehlt_scan_und_knoten.png"))
+    await pg.click('#gtools [data-act="preset-std"]')
+    await pg.wait_for_timeout(300)
+    print("shots 20", tag)
+
+
 async def explorer_shots(p):
     """The explorer build of the same app: overview, the same entry as the review build, corpus bar, notes off."""
     if not check(EXPLORER_PAGE.exists(), f"the explorer build exists ({EXPLORER_PAGE.name})"):
@@ -66,6 +111,7 @@ async def explorer_shots(p):
     await pg.screenshot(path=str(SHOTS / "19c_explorer_ohne_pruefhinweise.png"))
     await pg.locator("#corpbar #notesw").check()
     (SHOTS / "19f_explorer_eintrag_vor_schalter.png").unlink(missing_ok=True)
+    await archive_shots(pg, "explorer")
     # 18c: both builds side by side for the same entry
     page = SHOTS / "_nebeneinander.html"
     page.write_text('<!doctype html><meta charset="utf-8"><body style="margin:0;background:#888;display:flex;gap:6px">'
@@ -232,6 +278,7 @@ async def main():
         await pg.click('#corpbar [data-act="corpus-off"]')
         await pg.wait_for_timeout(500)
         print("shots 17, 18a")
+        await archive_shots(pg, "pruefung")
         # a decided entry: 'von dir entschieden' on cards, nodes and in the list
         eid = await find_entry(pg, f"(rv, s) => s.find.length >= 2 && {SMALL} && Object.values(rv.rec).filter(r => r.g && r.g.v === 'wrong' && r.g.fix && (r.g.fix.count || r.g.fix.locality)).length >= 2")
         await goto_entry(pg, eid, 600)

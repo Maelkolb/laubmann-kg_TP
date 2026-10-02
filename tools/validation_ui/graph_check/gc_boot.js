@@ -15,7 +15,7 @@ async function rvBoot() {
   RVU.list = listRows(); RVU.listPos = new Map(RVU.list.map((r, i) => [r.n, i])); $('#elist-body').dataset.lang = '';
 }
 function rvWire() {
-  scanWire(); mediaWire();
+  scanWire(); mediaWire(); archiveWire();
   $('#pbody').addEventListener('click', rvPanelClick);
   $('#pbody').addEventListener('mousedown', ev => { if (ev.target.closest('[data-act="txtedit"]')) ev.preventDefault(); });   // keep the text selection
   $('#rtable').addEventListener('click', tableClick);
@@ -30,7 +30,8 @@ function rvWire() {
   window.LKGC = window.LKGX;
   Object.assign(window.LKGC, { R, RV, RVU, RVS, SC, QUEUES, entryModel, buildModel, visibleItems, entCur, entProposal, makeZip, exportFiles, auditRows, importState, setQueue, decide, undo, cardAct, focusCard, countQueues, progressJSON,
     go, entryHash, proposal, mergedProposal, recVals, listRows, t, UI, MEDIA, cropErr, cutErr, cropSources, openCrop, closeCrop, selectMedia, scanMediaAt,
-    SEV, CORP, LEVELS, openLevels, openByLevel, levelTotals, setCorpus, setLevelFilter, setPreset, sevDoc, tableCols, nodeProps, stats, itemLevel, tierOf, inCorpus, openFindings, itemDecided, usageRows, propMode, entryInCorpus, setNotes, queueList, META: GC_META, EXPLORER });
+    SEV, CORP, LEVELS, openLevels, openByLevel, levelTotals, setCorpus, setLevelFilter, setPreset, sevDoc, tableCols, nodeProps, stats, itemLevel, tierOf, inCorpus, openFindings, itemDecided, usageRows, propMode, entryInCorpus, setNotes, queueList, META: GC_META, EXPLORER,
+    pageErr, pageLoaded, openPage, pageRegions, pageIndex, regionBox, scanSources, pageEntries, regionEntries, thumbsSync, ARCH, pageNode, regionNode, pageTitle, kindOf });
   Object.defineProperty(window.LKGC, 'SUB', { get: () => SUB });
   Object.defineProperty(window.LKGC, 'EM', { get: () => EM });
   Object.defineProperty(window.LKGC, 'LANG', { get: () => LANG });

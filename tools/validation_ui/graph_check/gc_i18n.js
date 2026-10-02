@@ -105,6 +105,11 @@ const GC_DE = {
   ak_entry_date: 'Datum des Eintrags', ak_entry_place: 'Ort des Eintrags', ak_entry_kind: 'Art des Eintrags', ak_missing_record: 'fehlender Datensatz', ak_missing_other: 'fehlende Angabe', ak_missing_manual: 'von Hand ergänzt',
   ak_name_changed: 'Verknüpfung geändert', ak_name_removed: 'Name entfernt', ak_name_confirmed: 'Verknüpfung bestätigt (unverändert)', ak_name_suggest: 'Vorschlag (nicht angewendet)', ak_reading_relevant: 'Lesekorrektur an Art/Zahl/Ort',
   ak_reading_other: 'übrige Lesekorrektur', ak_reading_verdict: 'Urteil über eine Lesekorrektur', ak_qa_excluded: 'Ausschluss', ak_qa_flagged: 'Hinweis', ak_text: 'eigene Textkorrektur',
+  // ---- images of the archive nodes (pages, regions)
+  ar_help: '<b>Bilder des Archivs:</b> Jede Tagebuchseite zeigt in Knotenansicht und Reiter „Knoten“ ihren Scan mit allen Regionen (grün = Text, violett = Bild/Einlage; Klick auf einen Rahmen öffnet die Region, Klick auf die Seite die Großansicht), jede Region ihr Bild. Unter „Klassen“ schaltet „Tabelle / Bilder“ für Seiten und Regionen auf Vorschaubilder; mit der Ebene „Archiv“ tragen Seiten und Regionen des Teilgraphen ein kleines Bild.',
+  ar_text: 'Text {0}', ar_regions: '{0} Textregionen · {1} Bilder/Einlagen', ar_hint: 'grün = Textregion, violett = Bild oder Einlage · ein Klick auf einen Rahmen öffnet die Region', ar_open_page: 'Seite groß ansehen',
+  ar_entries_page: 'Einträge auf dieser Seite ({0})', ar_entries_region: 'Einträge, deren Text durch diese Region läuft ({0})', ar_entries_mm: 'Einträge mit dieser Region ({0})', ar_no_entries: 'kein Eintrag',
+  ar_textregion: 'Textregion', ar_page: 'Seite', ar_on_page: 'auf der Seite zeigen', ar_table: 'Tabelle', ar_images: 'Bilder', ar_mode_t: 'Tabelle oder Bilder (Vorschaubilder laden erst, wenn sie sichtbar sind)', ar_vol_pages: 'Seiten dieses Bandes ({0})',
   // ---- corpus bar, explorer build
   corp_label: 'Korpus', corp_b_0: 'Vollständig', corp_b_1: 'Kern', corp_b_2: 'Strenger Kern', corp_b_3: 'Strenger Kern mit Koordinaten',
   corp_def_0: 'alle Datensätze des Exports', corp_def_1: 'ohne Datensätze, die eine Scanprüfung nicht auf der Seite findet oder in einem Feld für falsch hält, ohne Doppel, ohne Datensätze ohne GBIF-Taxon und ohne unbeurteilte',
@@ -264,6 +269,11 @@ const GC_EN = {
   ak_entry_date: 'entry date', ak_entry_place: 'entry place', ak_entry_kind: 'entry kind', ak_missing_record: 'missing record', ak_missing_other: 'missing statement', ak_missing_manual: 'added by hand',
   ak_name_changed: 'link changed', ak_name_removed: 'name removed', ak_name_confirmed: 'link confirmed (unchanged)', ak_name_suggest: 'suggestion (not applied)', ak_reading_relevant: 'reading correction of species/number/place',
   ak_reading_other: 'other reading correction', ak_reading_verdict: 'verdict on a reading correction', ak_qa_excluded: 'exclusion', ak_qa_flagged: 'hint', ak_text: 'own text correction',
+  // ---- images of the archive nodes (pages, regions)
+  ar_help: '<b>Images of the archive:</b> every diary page shows its scan with all regions in the node view and the node tab (green = text, violet = image/insert; click an outline to open the region, click the page for the large view), every region its image. Under “Classes”, “Table / Images” switches pages and regions to thumbnails; with the layer “Archive” the pages and regions of the subgraph carry a small image.',
+  ar_text: 'text {0}', ar_regions: '{0} text regions · {1} images/inserts', ar_hint: 'green = text region, violet = image or insert · click an outline to open the region', ar_open_page: 'view the page large',
+  ar_entries_page: 'Entries on this page ({0})', ar_entries_region: 'Entries whose text runs through this region ({0})', ar_entries_mm: 'Entries with this region ({0})', ar_no_entries: 'no entry',
+  ar_textregion: 'text region', ar_page: 'page', ar_on_page: 'show on the page', ar_table: 'Table', ar_images: 'Images', ar_mode_t: 'table or images (thumbnails load only when visible)', ar_vol_pages: 'Pages of this volume ({0})',
   // ---- corpus bar, explorer build
   corp_label: 'Corpus', corp_b_0: 'Full', corp_b_1: 'Core', corp_b_2: 'Strict core', corp_b_3: 'Strict core with coordinates',
   corp_def_0: 'every record of the export', corp_def_1: 'without records a scan check does not find on the page or calls wrong in a field, without duplicates, without records lacking a GBIF taxon and without unjudged ones',

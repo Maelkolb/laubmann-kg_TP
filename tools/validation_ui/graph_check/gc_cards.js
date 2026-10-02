@@ -268,7 +268,7 @@ function cardIndexFor(key) {   // the card that belongs to a graph node / ghost
 function rvOnSelect(key) {
   if (!EM) return; const ci = cardIndexFor(key); if (ci >= 0) RVU.card = ci;
   $$('#rtable tr.on').forEach(r => r.classList.remove('on'));
-  if (key && key[0] === 'n') { const n = +key.slice(1); const r = $(`#rtable tr[data-o="${n}"]`); if (r) r.classList.add('on'); scanHighlight(EM.byNode.get(n) || null); }
+  if (key && key[0] === 'n') { const n = +key.slice(1); const r = $(`#rtable tr[data-o="${n}"]`); if (r) r.classList.add('on'); if (!scanShowArchive(n)) scanHighlight(EM.byNode.get(n) || null); }   // a page or region node: its page in the scan pane
   else scanHighlight(null);
 }
 function rvNodeClick(v, ev) {

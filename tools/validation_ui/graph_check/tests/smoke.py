@@ -6,13 +6,15 @@ views still work; no page errors. Works without any scan image. Then the EXPLORE
 (--mode explorer): the same entry shows the same nodes, property rows, annotations, cards, table columns
 and scan overlays as the review build, the corpus bar filters the views, and no decision control exists."""
 import asyncio
+import os
 import re
 import time
+from pathlib import Path
 from playwright.async_api import async_playwright
-from common import EXPLORER_PAGE, SHOTS, check, done, find_entry, goto_entry, open_page, reload
+from common import EXPLORER_PAGE, PAGE, REPO, REPO_PY, SHOTS, check, done, find_entry, goto_entry, open_page, reload
 
 # raw i18n keys that would show up if a string were missing
-KEYPAT = re.compile(r"\b(?:q|qt|g|a|d|c|f|tip|lg|ov|ex|im|tck|tcv|nk|ak|as|src|hint|mk|bt|tl|txt|row|link|prec|ins|scan|sort|chk|agree|name|names|finish|err|crop|media|mkind"
+KEYPAT = re.compile(r"\b(?:q|qt|g|a|d|c|f|tip|lg|ov|ex|im|tck|tcv|nk|ak|as|src|hint|mk|bt|tl|txt|row|link|prec|ins|scan|sort|chk|agree|name|names|finish|err|crop|media|mkind|ar"
                     r"|lv|lvf|lvk|lvt|sd|corp|tier|tw|cols|col|props|prop|pm|preset|out|pan|sec|hints|open|head|help|grp|filter|sev)_[a-z][a-z_-]*\b")
 QUEUES = ["finding", "auto", "tc", "ins", "img", "qa", "sample", "all", "done"]
 CASES = {   # card type -> predicate on (review entry, summary)
@@ -411,6 +413,239 @@ async def corpus_checks(pg, queues=QUEUES, tag="review"):
 
 
 # ---------------------------------------------------------------------------------------------------------------
+# images of the archive nodes: page scans with outlines, region images, thumbnail grids, thumbnails in the subgraph
+
+ARCH_ENTRY = "L17-e0132"
+JS_ARCH = """(eid) => { const G = LKGC.G; const e = G.ent.find(r => r.id === eid).n; const out = (n, kind) => { for (let i = G.sOff[n]; i < G.sOff[n + 1]; i++) { const o = G.tO[i]; if (o >= 0 && G.kind[o] === kind) return o; } return -1; };
+  const region = out(e, 13), page = out(region, 12), vol = out(page, 11); let pid = '';
+  for (let i = G.sOff[page]; i < G.sOff[page + 1]; i++) if (G.tO[i] < 0 && G.preds[G.tP[i]] === 'dcterms:identifier') pid = G.lits[-G.tO[i] - 1];
+  const uid = G.nodes[region].replace(/^.*region_/, ''); const pi = LKGC.pageIndex(pid);
+  let both = null; for (let i = 0; i < LKGC.R.pages.length && !both; i++) { const r = LKGC.pageRegions(i); if (r.some(x => x.media) && r.some(x => !x.media) && LKGC.pageNode(LKGC.R.pages[i][0]) >= 0) both = G.nodes[LKGC.pageNode(LKGC.R.pages[i][0])]; }
+  return { region: G.nodes[region], regionN: region, uid, page: G.nodes[page], pageN: page, pid, vol: G.nodes[vol], nvol: (() => { let c = 0; for (let i = G.inOff[vol]; i < G.inOff[vol + 1]; i++) if (G.kind[G.inS[i]] === 12) c++; return c; })(), nreg: LKGC.pageRegions(pi).length,
+    pageEnts: LKGC.pageEntries(page).length, regEnts: LKGC.regionEntries(region).length, both, crop: (LKGC.R.crops || {})[uid] || '' }; }"""
+IMG_OK = "(i => !!i && i.complete && i.naturalWidth > 0)"
+
+
+async def hash_kind(pg):
+    return await pg.evaluate("(() => { const h = decodeURIComponent(location.hash.replace(/^#[/]?/, '')); if (!h.startsWith('n/')) return h; const n = LKGC.G.N.get(h.slice(2)); return n === undefined ? h : LKGC.kindOf(n); })()")
+
+
+async def archive_checks(pg, tag):
+    a = await pg.evaluate(JS_ARCH, ARCH_ENTRY)
+    # 1 page node: the scan with every region outlined, the entries of the page, large view
+    await pg.evaluate(f"LKGC.go('/n/' + {a['page']!r})")
+    await pg.wait_for_timeout(1300)
+    check(await pg.evaluate(IMG_OK + "(document.querySelector('#v-node .pagebox img.pscan'))"), f"[{tag}] page node: the scan of the page is shown ({a['pid'][-9:]})")
+    prs = await pg.evaluate("[...document.querySelectorAll('#v-node .pagebox .pr')].map(p => [p.className, p.querySelector('span').textContent, p.dataset.n])")
+    check(len(prs) == a["nreg"] > 0 and all(x[1] and x[2] for x in prs), f"[{tag}] ... with every region of the page outlined and labelled ({[x[1] for x in prs]})")
+    check(await pg.locator("#v-node table.arlist tr.click").count() == min(a["pageEnts"], 60) > 0, f"[{tag}] ... and the {a['pageEnts']} entries written on the page")
+    await pg.click("#v-node .pagebox .pr >> nth=0", position={"x": 60, "y": 30})
+    await pg.wait_for_timeout(700)
+    check(await hash_kind(pg) == "region" and await pg.locator("#v-node .nodecrop").count() == 1, f"[{tag}] a click on an outline opens that region's node")
+    await pg.evaluate(f"LKGC.go('/n/' + {a['page']!r})")
+    await pg.wait_for_timeout(600)
+    await pg.click("#v-node .arhint [data-page-open]")
+    await pg.wait_for_timeout(700)
+    check(await pg.locator("#lightbox").is_visible() and await pg.locator("#lightbox .pagebox.big .pr").count() == a["nreg"], f"[{tag}] the page opens in the large view with its outlines")
+    before = await pg.evaluate("document.querySelector('#lightbox .lb-stage').style.transform")
+    await pg.mouse.move(720, 480)
+    await pg.mouse.wheel(0, -300)
+    await pg.wait_for_timeout(150)
+    check(await pg.evaluate("document.querySelector('#lightbox .lb-stage').style.transform") != before, f"[{tag}] ... wheel zooms it")
+    await pg.keyboard.press("Escape")
+    check(not await pg.locator("#lightbox").is_visible(), f"[{tag}] ... Esc closes it")
+    if a["both"]:
+        await pg.evaluate(f"LKGC.go('/n/' + {a['both']!r})")
+        await pg.wait_for_timeout(500)
+        cols = await pg.evaluate("[getComputedStyle(document.querySelector('#v-node .pr.pr-t')).borderTopColor, getComputedStyle(document.querySelector('#v-node .pr.pr-m')).borderTopColor]")
+        check(cols[0] != cols[1], f"[{tag}] text regions and images/inserts are outlined in different colours {cols}")
+    # 2 text-region node: its image (cut out of the page scan when the crop does not load), its page, its entries
+    await pg.evaluate(f"LKGC.go('/n/' + {a['region']!r})")
+    await pg.wait_for_timeout(1500)
+    cut = await pg.evaluate("(() => { const c = document.querySelector('#v-node .nodecrop .cutout img'); return c ? { src: c.getAttribute('src'), ok: c.complete && c.naturalWidth > 0, page: c.dataset.page } : null; })()")
+    check(bool(cut) and cut["ok"] and cut["page"] == a["pid"] and cut["src"].endswith(a["pid"] + ".jpg") and "drive.google" not in cut["src"],
+          f"[{tag}] text-region node: the image comes through the cut-out of the local page JPEG when Drive is not reachable ({(cut or {}).get('src', '')[-30:]})")
+    check(await pg.evaluate("+document.querySelector('#v-node .arhint [data-n]').dataset.n") == a["pageN"] and await pg.locator("#v-node table.arlist tr.click").count() == a["regEnts"] > 0,
+          f"[{tag}] ... with a link to its page and the {a['regEnts']} entries whose text runs through it")
+    await pg.click("#v-node .nodecrop")
+    await pg.wait_for_timeout(700)
+    check(await pg.locator("#lightbox").is_visible() and await pg.locator("#lightbox svg.cutout.big, #lightbox img.crop.big").count() == 1, f"[{tag}] ... large view on click")
+    await pg.keyboard.press("Escape")
+    # 3 classes: Tabelle / Bilder
+    for k, name in (("page", "Seite"), ("region", "Quellregion"), ("mmregion", "multimodale Region")):
+        await pg.evaluate(f"LKGC.go('/c/{k}')")
+        await pg.wait_for_timeout(400)
+        check(await pg.locator("#v-class [data-cmode]").count() == 2, f"[{tag}] class {name}: switch 'Tabelle / Bilder'")
+        await pg.click('#v-class [data-cmode="img"]')
+        await pg.wait_for_timeout(1500)
+        g = await pg.evaluate("({ cells: document.querySelectorAll('#v-class .gcell').length, on: document.querySelectorAll('#v-class .gimg[data-on]').length, img: [...document.querySelectorAll('#v-class .gimg img')].filter(i => i.complete && i.naturalWidth > 0).length, svg: document.querySelectorAll('#v-class .gimg svg.cutout').length, lab: [...document.querySelectorAll('#v-class .gcell')].slice(0, 3).map(c => [c.querySelector('.gl').textContent, c.querySelector('.gs').textContent]) })")
+        check(g["cells"] == 48 and 0 < g["on"] < 48 and g["img"] + g["svg"] > 0 and all(x[0] and x[1] for x in g["lab"]), f"[{tag}] class {name}: a grid of 48 labelled thumbnails, loaded only where visible ({g['on']} of 48; {g['lab'][0]})")
+        await pg.click('#v-class [data-cpage="1"]')
+        await pg.wait_for_timeout(500)
+        lab2 = await pg.evaluate("document.querySelector('#v-class .gcell .gl').textContent")
+        check(lab2 != g["lab"][0][0] and await pg.locator("#v-class .gcell").count() == 48, f"[{tag}] class {name}: the grid pages through")
+        await pg.click("#v-class .gcell >> nth=0")
+        await pg.wait_for_timeout(600)
+        check(await hash_kind(pg) == k, f"[{tag}] class {name}: a click on a thumbnail opens the node")
+        await pg.evaluate(f"LKGC.go('/c/{k}')")
+        await pg.wait_for_timeout(400)
+        check(await pg.locator("#v-class .agrid").count() == 1, f"[{tag}] class {name}: the choice 'Bilder' is remembered")
+        await pg.click('#v-class [data-cmode="table"]')
+        await pg.wait_for_timeout(300)
+        check(await pg.locator("#v-class .agrid").count() == 0 and await pg.locator("#v-class table.t tr.click").count() > 10, f"[{tag}] class {name}: back to the table")
+    await pg.evaluate("LKGC.go('/c/taxon')")
+    await pg.wait_for_timeout(300)
+    check(await pg.locator("#v-class [data-cmode]").count() == 0, f"[{tag}] classes without images have no such switch")
+    # a volume: the grid of its pages
+    await pg.evaluate(f"LKGC.go('/n/' + {a['vol']!r})")
+    await pg.wait_for_timeout(1000)
+    first = await pg.evaluate("document.querySelector('#volgrid .gcell .gl').textContent")
+    check(await pg.locator("#volgrid .gcell").count() == min(48, a["nvol"]) and await pg.locator("#volgrid .gimg[data-on]").count() > 0, f"[{tag}] volume node: the grid of its {a['nvol']} pages")
+    if a["nvol"] > 48:
+        await pg.click('#volgrid [data-vpage="1"]')
+        await pg.wait_for_timeout(400)
+        check(await pg.evaluate("document.querySelector('#volgrid .gcell .gl').textContent") != first, f"[{tag}] ... pages through")
+    await pg.click("#volgrid .gcell >> nth=0")
+    await pg.wait_for_timeout(600)
+    check(await hash_kind(pg) == "page" and await pg.locator("#v-node .pagebox").count() == 1, f"[{tag}] ... a click opens the page")
+    # 4 subgraph: thumbnails with the archive layer, none without; selecting a page / region shows it in the scan pane
+    await goto_entry(pg, ARCH_ENTRY, 700)
+    await pg.click('#gtools [data-act="preset-std"]')
+    await pg.wait_for_timeout(300)
+    check(await pg.locator("#gsvg svg.nthumb, #gsvg image").count() == 0, f"[{tag}] subgraph: no thumbnail and no image request with the archive layer off")
+    await pg.click('#gtools .chip[data-layer="archive"]')
+    h0 = await pg.evaluate("[LKGC.SUB.height, document.querySelectorAll('#gsvg svg.nthumb[data-ok]').length]")
+    await pg.wait_for_timeout(1300)
+    th = await pg.evaluate("({ n: document.querySelectorAll('#gsvg svg.nthumb').length, pages: document.querySelectorAll('#gsvg .nd.k-page').length, regs: document.querySelectorAll('#gsvg .nd.k-region, #gsvg .nd.k-mmregion').length, ok: document.querySelectorAll('#gsvg svg.nthumb[data-ok]').length, h: LKGC.SUB.height })")
+    check(th["n"] == th["pages"] + th["regs"] > 0 and th["ok"] >= 1, f"[{tag}] subgraph: page and region nodes carry a thumbnail with the archive layer on ({th['ok']} of {th['n']} loaded)")
+    check(th["h"] == h0[0], f"[{tag}] ... in a fixed box: the layout does not move when the images arrive")
+    rk = await pg.evaluate(f"'n' + {a['regionN']}")
+    pk = await pg.evaluate(f"'n' + {a['pageN']}")
+    await pg.hover(f'#gsvg .nd[data-key="{rk}"] rect.b', position={"x": 40, "y": 10})
+    await pg.wait_for_timeout(400)
+    check(await pg.locator("#gtip .tipcrop").count() == 1, f"[{tag}] ... and a larger image in the tooltip")
+    await pg.click(f'#gsvg .nd[data-key="{rk}"] rect.b', position={"x": 40, "y": 10})
+    await pg.wait_for_timeout(700)
+    sc = await pg.evaluate("({ tab: LKGC.S.tab, crop: document.querySelectorAll('#pbody .nodecrop').length, areg: document.querySelectorAll('#scanov rect.areg.on').length, hl: (LKGC.SC.hl || {}).region, pid: LKGC.SC.pages[LKGC.SC.pi].pid })")
+    check(sc["tab"] == "node" and sc["crop"] == 1 and sc["areg"] == 1 and sc["hl"] == a["uid"] and sc["pid"] == a["pid"], f"[{tag}] selecting a region node shows its page in the scan pane with the region highlighted, and its image in the node tab")
+    await pg.click(f'#gsvg .nd[data-key="{pk}"] rect.b', position={"x": 40, "y": 10})
+    await pg.wait_for_timeout(700)
+    sc = await pg.evaluate("({ box: document.querySelectorAll('#pbody .pagebox').length, pr: document.querySelectorAll('#pbody .pagebox .pr').length, pid: LKGC.SC.pages[LKGC.SC.pi].pid })")
+    check(sc["box"] == 1 and sc["pr"] == a["nreg"] and sc["pid"] == a["pid"], f"[{tag}] selecting a page node shows the page in the scan pane and the scan with outlines in the node tab")
+    await pg.click('#gtools [data-act="preset-all"]')
+    await pg.wait_for_timeout(1200)
+    check(await pg.locator("#gsvg svg.nthumb[data-ok]").count() >= 1, f"[{tag}] 'Alles zeigen' shows the scans next to the graph structure")
+    await pg.screenshot(path=str(SHOTS / f"smoke_archive_{tag}.png"))
+    # the largest entry with everything on stays responsive; thumbnails outside the canvas are not requested
+    big = await pg.evaluate("LKGC.G.ent.slice().sort((a, b) => b.nobs - a.nobs)[0].id")
+    t0 = time.time()
+    await pg.evaluate(f"LKGC.go('/e/' + {big!r})")
+    await pg.wait_for_function(f"LKGC.EM && LKGC.EM.id === {big!r} && LKGC.SUB && LKGC.SUB.e === LKGC.S.e && document.querySelector('#gsvg .nd')")
+    dt = time.time() - t0
+    await pg.wait_for_timeout(600)
+    lz = await pg.evaluate("[document.querySelectorAll('#gsvg svg.nthumb').length, document.querySelectorAll('#gsvg svg.nthumb[data-on]').length]")
+    check(dt < 2.5 and lz[0] > 0 and (lz[1] < lz[0] or lz[0] <= 6), f"[{tag}] largest entry with every layer: {dt:.2f} s, {lz[1]} of {lz[0]} thumbnails requested (only those in view)")
+    await pg.click('#gtools [data-act="preset-std"]')
+    await pg.wait_for_timeout(300)
+    check(await pg.locator("#gsvg svg.nthumb").count() == 0, f"[{tag}] 'Standard' hides the archive and its thumbnails again")
+
+
+async def archive_blocked_checks(pg):
+    """No image loads at all: figures, grids and thumbnails degrade to notes, nothing breaks."""
+    a = await pg.evaluate(JS_ARCH, ARCH_ENTRY)
+    await pg.evaluate(f"LKGC.go('/n/' + {a['page']!r})")
+    await pg.wait_for_timeout(1500)
+    check(await pg.locator("#v-node .pagebox .cropfail").count() == 1 and await pg.locator("#v-node .pagebox .pr").count() == a["nreg"], "without images: the page node says 'Bild nicht ladbar' and still draws the outlines")
+    await pg.evaluate(f"LKGC.go('/n/' + {a['region']!r})")
+    await pg.wait_for_timeout(1500)
+    check(await pg.locator("#v-node .nodecrop .cropfail").count() == 1 and await pg.locator("#v-node table.arlist tr.click").count() == a["regEnts"], "without images: the region node shows the note and its entries")
+    await pg.evaluate("LKGC.go('/c/page')")
+    await pg.wait_for_timeout(300)
+    await pg.click('#v-class [data-cmode="img"]')
+    await pg.wait_for_timeout(1500)
+    check(await pg.locator("#v-class .gcell").count() == 48 and await pg.locator("#v-class .gimg .cropfail").count() > 0, "without images: the class grid renders with notes")
+    await pg.click('#v-class [data-cmode="table"]')
+    await goto_entry(pg, ARCH_ENTRY, 600)
+    await pg.click('#gtools [data-act="preset-all"]')
+    await pg.wait_for_timeout(1500)
+    check(await pg.locator("#gsvg svg.nthumb[data-fail]").count() > 0 and await pg.locator("#gsvg svg.nthumb[data-ok]").count() == 0 and await pg.locator("#gsvg .nd.k-page").count() > 0, "without images: the subgraph keeps its empty thumbnail boxes")
+    await pg.click('#gtools [data-act="preset-std"]')
+
+
+async def base_url_checks(p, source_path):
+    """--image-base-url: page scans and multimodal crops are requested at the base URL first."""
+    import subprocess
+    from urllib.parse import unquote
+    base = "https://images.example.test/laubmann"
+    ttl = Path(os.environ.get("GC_TTL", REPO / source_path))
+    review = Path(os.environ.get("GC_REVIEW", REPO / "data" / "cache" / "graph_check" / "review.json"))
+    out = PAGE.with_name("_base_url_test.html")
+    if not check(ttl.exists() and review.exists(), f"--image-base-url: the build inputs exist ({ttl.name}, {review.name})"):
+        return []
+    res = subprocess.run([REPO_PY, "-B", str(REPO / "tools" / "validation_ui" / "graph_check" / "build_graph_check.py"), str(ttl), str(review), str(out), "--mode", "explorer", "--image-base-url", base + "/"],
+                         capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=str(REPO))
+    if not check(res.returncode == 0 and out.exists(), "--image-base-url: the builder accepts the option " + res.stderr[-300:].replace("\n", " ")):
+        return []
+    log = []
+    b = await p.chromium.launch()
+    ctx = await b.new_context(viewport={"width": 1440, "height": 900}, locale="de-DE")
+
+    async def handler(route):
+        url = route.request.url
+        if url.startswith(base):
+            log.append(url)
+            rel = unquote(url[len(base):])
+            f = REPO / "data" / "pages_jpg" / rel[7:] if rel.startswith("/pages/") else REPO / "data" / "region_crops" / rel[7:] if rel.startswith("/crops/") else None
+            if f is not None and f.exists():
+                await route.fulfill(path=str(f), content_type="image/jpeg")
+            else:
+                await route.fulfill(status=404, body="")
+        elif url.startswith("file:"):
+            if url.lower().endswith(".jpg"):
+                log.append(url)
+            await route.continue_()
+        else:
+            log.append(url)
+            await route.abort()
+    await ctx.route("**/*", handler)
+    pg = await ctx.new_page()
+    errs = []
+    pg.on("pageerror", lambda e: errs.append("pageerror: " + str(e)))
+    await pg.goto(out.as_uri())
+    await pg.wait_for_function("window.LKGC && window.LKGC.ready", timeout=120000)
+    check(await pg.evaluate("LKGC.G.meta.scans.base") == base, f"--image-base-url: the base is embedded ({base})")
+    a = await pg.evaluate(JS_ARCH, ARCH_ENTRY)
+    await goto_entry(pg, ARCH_ENTRY, 1200)
+    first = next((u for u in log if a["pid"] in unquote(u)), "")
+    check(first == f"{base}/pages/{a['pid']}.jpg" and await pg.evaluate(IMG_OK + "(document.querySelector('#scanimg'))") and (await pg.evaluate("document.querySelector('#scanimg').src")).startswith(base + "/pages/"),
+          f"--image-base-url: the page scan is requested first at <base>/pages/<page_id>.jpg and loads from there ({first[-52:]})")
+    await pg.evaluate(f"LKGC.go('/n/' + {a['region']!r})")
+    await pg.wait_for_timeout(1200)
+    cut = await pg.evaluate("(() => { const c = document.querySelector('#v-node .nodecrop .cutout img'); return c ? { src: c.getAttribute('src'), ok: c.complete && c.naturalWidth > 0 } : null; })()")
+    check(bool(cut) and cut["ok"] and cut["src"] == f"{base}/pages/{a['pid']}.jpg" and not any(a["crop"] and a["crop"] in u for u in log),
+          "--image-base-url: a text region is cut out of the page scan at the base (its Drive crop is not requested)")
+    img = await find_entry(pg, CASES["img"])
+    n0 = len(log)
+    await goto_entry(pg, img, 900)
+    uid = await pg.evaluate("(() => { const items = LKGC.visibleItems(LKGC.EM); const i = items.findIndex(it => it.type === 'media' && it.x.length >= 7); LKGC.focusCard(i); return items[i].x[0]; })()")
+    await pg.wait_for_timeout(1200)
+    firstc = next((u for u in log[n0:] if uid in u), "")
+    check(firstc == f"{base}/crops/{uid}.jpg" and await pg.evaluate(IMG_OK + "(document.querySelector('#pbody .rcard.t-media.focus img.crop.thumb'))"),
+          f"--image-base-url: the crop of a multimodal region is requested first at <base>/crops/<region_uid>.jpg and loads ({firstc[-34:]})")
+    await pg.evaluate("LKGC.go('/c/page')")
+    await pg.wait_for_timeout(300)
+    n1 = len(log)
+    await pg.click('#v-class [data-cmode="img"]')
+    await pg.wait_for_timeout(1500)
+    grid = [u for u in log[n1:]]
+    check(len(grid) > 0 and all(u.startswith(base + "/pages/") for u in grid[:6]) and len([u for u in grid if u.startswith(base)]) < 48, f"--image-base-url: the class grid asks the base for the visible thumbnails only ({len(grid)} requests)")
+    await b.close()
+    out.unlink(missing_ok=True)
+    return errs
+
+
+
+# ---------------------------------------------------------------------------------------------------------------
 # one app, two builds: the explorer build shows the same data and decides nothing
 
 SAME_ENTRY = "L17-e0132"
@@ -601,6 +836,7 @@ async def explorer_checks(p, ref):
     # corpus bar: present, four counts, filters the views
     await corpus_bar_checks(pg, "explorer")
     await corpus_checks(pg, [q for q in QUEUES if q != "done"], "explorer")
+    await archive_checks(pg, "explorer")
     # both languages without untranslated keys, the help without decisions
     for lang in ("de", "en"):
         if await pg.evaluate("LKGC.LANG") != lang:
@@ -757,6 +993,8 @@ async def main():
         await severity_checks(pg)
         await corpus_bar_checks(pg, "review")
         await corpus_checks(pg)
+        await archive_checks(pg, "review")
+        source_path = await pg.evaluate("LKGC.G.meta.sourcePath")
         ref = await review_reference(pg)      # what the explorer build must show identically
 
         # the explorer's other views
@@ -807,10 +1045,13 @@ async def main():
         await pg.wait_for_timeout(800)
         check(await pg.locator("#lightbox").is_visible() and await pg.locator("#lightbox .cropfail").count() == 1, "without images: the large view opens and says so")
         await pg.keyboard.press("Escape")
+        await archive_blocked_checks(pg)
         await b.close()
 
         # the explorer build of the same app
         errs3 = await explorer_checks(p, ref)
-        done(errs + errs2 + errs3)
+        # publication option: images from a base URL first
+        errs4 = await base_url_checks(p, source_path)
+        done(errs + errs2 + errs3 + errs4)
 
 asyncio.run(main())
