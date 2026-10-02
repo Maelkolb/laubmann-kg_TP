@@ -5,11 +5,13 @@ Saves 1440x900 screenshots of each type's card to the shots folder.
     python tests/smoke.py [Laubmann_Verknuepfungen.html] [shots dir]
 """
 import asyncio
+import json
+import os
 import re
 import time
 from pathlib import Path
 from playwright.async_api import async_playwright
-from common import PAGE, SHOTS, check, done, open_page, open_first, reload
+from common import PAGE, REPO, SHOTS, check, done, open_page, open_first, reload
 
 HERE = Path(__file__).resolve().parent
 TYPES = ["taxon", "person", "place", "habitat"]
@@ -29,6 +31,118 @@ def static_keys():
     return used, miss
 
 
+def de(n):
+    return f"{n:,}".replace(",", ".")
+
+
+async def corpus_filter(pg):
+    """The corpus filter of the graph validation page: selector, banner, counts, lists, passages, overview."""
+    T = "['taxon','person','place','habitat']"
+    opts = await pg.eval_on_selector_all("#corpsel option", "els => els.map(e => e.textContent)")
+    rec = await pg.evaluate("__lc.D.corpus.rec")
+    check(len(opts) == 4 and "vollständig" in opts[0] and "Kern" in opts[1] and "strenger Kern" in opts[2] and "strenger Kern + Koord." in opts[3] and all(de(rec[c]) in opts[c] for c in range(4)),
+          f"corpus selector with the four corpora and their record counts {opts}")
+    tax = await pg.evaluate("[0,1,2,3].map(c => __lc.ENTS.taxon.filter(e => !e.gone).reduce((a, e) => a + e.nc[c], 0))")
+    check(rec == tax, f"species mentions per corpus = records per corpus {tax}")
+    layer = Path(os.environ.get("LC_REVIEW", REPO / "data" / "cache" / "graph_check" / "review.json"))
+    if layer.exists():
+        cnt = json.loads(layer.read_text(encoding="utf-8"))["meta"]["counts"]
+        want = [sum(cnt.get(f"tier {k}", 0) for k in range(c, 4)) for c in range(4)]
+        check(rec == want and want[0] == cnt["records"], f"records per corpus as in the review layer of the graph page {want}")
+    ok = await pg.evaluate(f"{T}.every(t => __lc.ENTS[t].every(e => e.nc && e.nc[0] === e.n && e.nc[1] <= e.nc[0] && e.nc[2] <= e.nc[1] && e.nc[3] <= e.nc[2] && [0,1,2,3].every(c => e.forms.reduce((a, f) => a + f.nc[c], 0) === e.nc[c])))")
+    check(ok, "every entry and written name carries nested counts for the four corpora; names add up to the entry")
+    check(await pg.evaluate("document.querySelector('#corpbar').hidden") and await pg.evaluate("__lc.corpus()") == 0, "no banner without a filter")
+
+    await pg.select_option("#corpsel", "2")
+    await pg.wait_for_timeout(250)
+    bar = await pg.inner_text("#corpbar")
+    check(await pg.evaluate("__lc.S.ui.corpus") == 2 and not await pg.evaluate("document.querySelector('#corpbar').hidden") and "strenger Kern" in bar and "Filter aufheben" in bar
+          and de(rec[2]) in bar and de(rec[0]) in bar, f"the selector sets the filter and a banner names it ({bar[:90]})")
+    check(await pg.evaluate("document.activeElement.id") != "corpsel" and await pg.evaluate("document.querySelector('#corpsel').classList.contains('on')"), "the selector is marked active and gives the keys back")
+    corp = await pg.evaluate("__lc.D.corpus")
+    for ty in ["taxon", "person", "place", "habitat"]:
+        await pg.click(f'#types [data-type="{ty}"]')
+        await pg.wait_for_timeout(150)
+        await pg.click('#qchips [data-q="suggest"]')
+        await pg.wait_for_timeout(150)
+        st = await pg.evaluate(f"(() => {{ const it = __lc.corpusItems('{ty}'); const p = __lc.typeProgress('{ty}'); const [c] = __lc.queueCounts('{ty}');"
+                               f" return {{n: it.length, all: it.every(e => e.nc[2] > 0), sorted: it.every((e, i) => i === 0 || it[i - 1].nc[2] >= e.nc[2]), pn: p.n, pe: p.ents,"
+                               f" q: ['changed','confirmed','suggest','pipeline','unlinked'].reduce((a, q) => a + c[q].n, 0), list: __lc.listItems('{ty}').length, sum: it.reduce((a, e) => a + e.nc[2], 0)}}; }})()")
+        check(st["all"] and st["sorted"] and st["n"] == corp["ent"][ty][2] and st["sum"] == corp["men"][ty][2], f"[K2] {ty}: {st['n']} entries with a mention in the corpus, sorted by their {st['sum']} mentions in it")
+        check(st["pn"] == corp["men"][ty][2] and st["pe"] == st["n"] == st["q"] and st["n"] < corp["ent"][ty][0] and st["list"] <= st["n"],
+              f"[K2] {ty}: progress and queue counts count the corpus only ({st['pe']} of {corp['ent'][ty][0]} entries, {st['pn']} mentions)")
+        nums = await pg.eval_on_selector_all(".qi .num", "els => els.map(e => e.textContent)")
+        keys = await pg.eval_on_selector_all(".qi", "els => els.map(e => e.dataset.key)")
+        exp = await pg.evaluate(f"{json.dumps(keys)}.map(k => {{ const e = __lc.BYK['{ty}'].get(k); return [e.nc[2], e.n]; }})")
+        got = [[int(x.replace(".", "")) for x in s.split("/")] for s in nums]
+        check(got == exp and all(a[0] > 0 for a in got) and [a[0] for a in got] == sorted((a[0] for a in got), reverse=True), f"[K2] {ty}: rows show 'n im Korpus / n gesamt', most mentions in the corpus first")
+        check(de(st["pe"]) in await pg.inner_text(".pnote"), f"[K2] {ty}: the progress line counts the entries of the corpus")
+    # an entry without a mention in the corpus is hidden, not gone
+    hid = await pg.evaluate("(__lc.ENTS.taxon.find(e => !e.gone && e.nc[2] === 0) || {}).k")
+    check(hid is not None and not await pg.evaluate(f"__lc.corpusItems('taxon').some(e => e.k === {json.dumps(hid)})") and await pg.evaluate(f"__lc.BYK.taxon.has({json.dumps(hid)})"),
+          f"an entry without a mention in the corpus is hidden under the filter ({hid})")
+    # a species card under the filter: both counts, passages of the corpus first, tier chips, reasons in words
+    key = await pg.evaluate("(__lc.corpusItems('taxon').find(e => e.nc[2] < e.n && e.forms.length >= 3 && e.ev.some(m => m.k >= 2) && e.ev.some(m => m.k < 2)) || {}).k")
+    await pg.evaluate(f"__lc.S.ui.q.taxon = __lc.BYK.taxon.get({json.dumps(key)}).q; __lc.openEntity('taxon', {json.dumps(key)})")
+    await pg.wait_for_timeout(500)
+    sub = await pg.inner_text("#cardwrap .sub")
+    ev = await pg.eval_on_selector_all("#cardwrap .men", "els => els.map(e => [e.classList.contains('out'), (e.querySelector('.trc') || {}).textContent || '', (e.querySelector('.trw') || {}).textContent || ''])")
+    outs = [x[0] for x in ev]
+    check("im Korpus" in sub and "/" in sub, f"[K2] card: mentions in the corpus and in total ({sub[:60]})")
+    check(all(" / " in x for x in await pg.eval_on_selector_all("#cardwrap .nm .ct", "els => els.map(e => e.textContent).filter(x => x !== '–')")), "[K2] written names show both counts")
+    check(outs == sorted(outs) and True in outs and False in outs and all(x[1] in ("K0", "K1", "K2", "K3") for x in ev) and all((x[1] in ("K2", "K3")) != x[0] for x in ev),
+          f"[K2] passages of the corpus first, each with its tier chip {[x[1] for x in ev]}")
+    check(all(len(x[2]) > 12 for x in ev if x[0]) and all(not x[2] for x in ev if not x[0]), f"[K2] passages outside the corpus say why ({next((x[2] for x in ev if x[0]), '')[:70]})")
+    check(await pg.locator("#cardwrap .men.on:not(.out)").count() == 1, "[K2] the scan shows a passage of the corpus first")
+    await pg.evaluate("document.querySelector('#cardwrap').scrollTop = 0")
+    await pg.screenshot(path=str(SHOTS / "card_taxon_k2.png"))
+    await pg.evaluate("(() => { const el = [...document.querySelectorAll('#cardwrap .sec')].find(s => s.querySelector('.men')); if (el) el.scrollIntoView(); })()")
+    await pg.wait_for_timeout(200)
+    await pg.screenshot(path=str(SHOTS / "card_taxon_k2_passages.png"))
+    await pg.keyboard.press("ArrowDown")
+    await pg.wait_for_timeout(120)
+    check(await pg.evaluate("__lc.corpusItems('taxon').some(e => e.k === __lc.cur.key)"), "[K2] the arrow keys stay inside the corpus")
+    # overview
+    await pg.click("#brand")
+    await pg.wait_for_timeout(200)
+    card = await pg.inner_text(".grid4 .hc >> nth=0")
+    check(de(corp["ent"]["taxon"][2]) in card and de(corp["men"]["taxon"][2]) in card, "[K2] overview: the type cards count the corpus only")
+    cells = await pg.evaluate("[0,1,2,3].map(c => ['taxon','person','place','habitat'].map(t => ['e','m'].map(x => +document.querySelector('.covt tr[data-corpus=\"' + c + '\"] td[data-cc=\"' + t + '-' + x + '\"]').textContent.replace(/\\D/g, ''))))")
+    exp = [[[corp["ent"][t][c], corp["men"][t][c]] for t in ["taxon", "person", "place", "habitat"]] for c in range(4)]
+    check(cells == exp and await pg.locator('.covt tr.on[data-corpus="2"]').count() == 1, "overview: table of the four corpora per type (entries, mentions), the active one marked")
+    check("K0–K3" in await pg.inner_text(".home") and "nur eine Ansicht" in await pg.inner_text(".home"), "overview explains the corpora in one line")
+    await pg.screenshot(path=str(SHOTS / "overview_k2.png"), full_page=False)
+    await pg.evaluate("document.querySelector('#cardwrap').scrollTop = document.querySelector('.covt').offsetTop - 120")
+    await pg.wait_for_timeout(150)
+    await pg.screenshot(path=str(SHOTS / "overview_k2_corpora.png"))
+    print("CORPUS", json.dumps(corp, ensure_ascii=False))
+    # EN, remembered, row click, clear
+    await pg.click("#btnLang")
+    await pg.wait_for_timeout(200)
+    bar = await pg.inner_text("#corpbar")
+    opts = await pg.eval_on_selector_all("#corpsel option", "els => els.map(e => e.textContent)")
+    check("Corpus filter active: strict core" in bar and "clear the filter" in bar and "Corpus: strict core" in opts[2] and "Corpora" in await pg.inner_text(".home"), "[en] banner, selector and overview in English")
+    await pg.click('#types [data-type="taxon"]')
+    await pg.wait_for_timeout(200)
+    check("in the corpus" in await pg.inner_text("#cardwrap .sub"), "[en] card counts in English")
+    await pg.click("#btnLang")
+    await reload(pg)
+    check(await pg.evaluate("__lc.S.ui.corpus") == 2 and not await pg.evaluate("document.querySelector('#corpbar').hidden") and await pg.evaluate("document.querySelector('#corpsel').value") == "2", "the filter is remembered over a reload")
+    await pg.click("#brand")
+    await pg.wait_for_timeout(150)
+    await pg.click('.covt tr[data-corpus="3"]')
+    await pg.wait_for_timeout(200)
+    check(await pg.evaluate("__lc.S.ui.corpus") == 3 and "strenger Kern mit Koordinaten" in await pg.inner_text("#corpbar"), "a row of the corpora table sets the filter")
+    await pg.click('#types [data-type="place"]')
+    await pg.wait_for_timeout(150)
+    await pg.click('#corpbar [data-act="corpus-off"]')
+    await pg.wait_for_timeout(250)
+    check(await pg.evaluate("__lc.S.ui.corpus") == 0 and await pg.evaluate("document.querySelector('#corpbar').hidden") and await pg.evaluate("__lc.corpusItems('place').length") == await pg.evaluate("__lc.ENTS.place.length")
+          and "/" not in (await pg.eval_on_selector_all(".qi .num", "els => els.map(e => e.textContent)"))[0], "'Filter aufheben' brings everything back")
+    missing = await pg.evaluate("[...__lc.MISSING]")
+    check(not missing, f"no untranslated string under the corpus filter {missing[:10]}")
+
+
 async def main():
     used, miss = static_keys()
     check(not miss, f"all {len(used)} literal string keys exist in German and English {miss[:8]}")
@@ -43,7 +157,7 @@ async def main():
         dt = time.time() - t0
         check(dt < 3.0, f"the page opens in {dt:.2f} s (< 3 s)")
         check(await pg.evaluate("__lc.LANG") == "de" and await pg.evaluate("document.documentElement.dataset.theme") == "light", "German and the light theme are the defaults")
-        check(await pg.locator(".home .hc").count() == 4 and await pg.locator(".home tr.ql").count() == 28, "overview: four types with their seven queues")
+        check(await pg.locator(".grid4 .hc").count() == 4 and await pg.locator(".grid4 tr.ql").count() == 28, "overview: four types with their seven queues")
         check("Konfidenz" in await pg.inner_text(".home") and await pg.locator(".home kbd").count() >= 10, "overview explains the thresholds and the keys")
         await pg.screenshot(path=str(SHOTS / "overview.png"))
         counts = await pg.evaluate("Object.fromEntries(['taxon','person','place','habitat'].map(t => [t, Object.fromEntries(Object.entries(__lc.queueCounts(t)[0]).map(([q, c]) => [q, c.n]))]))")
@@ -152,7 +266,7 @@ async def main():
             check(await pg.locator("#ovModal.show").count() == 0, f"[{lang}] Esc closes the dialog")
             await pg.click("#brand")
             await pg.wait_for_timeout(100)
-            check(await pg.locator(".home .hc").count() == 4, f"[{lang}] the title returns to the overview")
+            check(await pg.locator(".grid4 .hc").count() == 4, f"[{lang}] the title returns to the overview")
         missing = await pg.evaluate("[...__lc.MISSING]")
         check(not missing, f"no untranslated string was rendered {missing[:10]}")
 
@@ -186,6 +300,7 @@ async def main():
         await reload(pg)
         check(await pg.evaluate("document.documentElement.dataset.theme") == "dark" and await pg.evaluate("__lc.cur.type") == "habitat", "theme and the open card are remembered")
         await pg.click("#btnTheme")
+        await corpus_filter(pg)
         await b.close()
         done(errs)
 

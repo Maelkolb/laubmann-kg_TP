@@ -26,6 +26,8 @@ habitat concept) with
 --arbeit             agent work folders, parallel to --rounds ("-" = none): batches, answers, answers_gemini
 --export-review      <export>/review: *_merges.csv (rule-based merges and open candidates), *_link_review.csv
 --reviewed-merges    folder with the earlier reviewed *_merges.csv (decision y/n)
+--review-layer       review.json of the graph validation page (corpus tier of every record) -> corpus filter
+--triples            pickled triples of the graph under review: ties person / place / habitat mentions to records
 
 Every record is keyed by the casefolded entity label; nothing the page stores refers to an index.
 Output: <out>.json (readable) and <out>.b64 (gzip+base64, embedded by assemble.py).
@@ -37,8 +39,10 @@ import base64
 import collections
 import csv
 import gzip
+import hashlib
 import json
 import math
+import pickle
 import re
 import sys
 from datetime import date
@@ -65,6 +69,9 @@ ap.add_argument("--reviewed-merges", default=str(REPO / "data" / "review"))
 ap.add_argument("--drive", nargs="*", default=[str(HERE.parent / "drive_pages.json"), str(REPO / "configs" / "drive_scan_files.json")])
 ap.add_argument("--out", default=str(REPO / "data" / "exports" / "link_check" / "data"))
 ap.add_argument("--built", default=None)
+ap.add_argument("--review-layer", default=str(REPO / "data" / "cache" / "graph_check" / "review.json"),
+                help="review.json of graph_check/build_review.py: corpus tier t and reasons tw of every record")
+ap.add_argument("--triples", default=str(IN / "triples_checked.pkl"), help="pickled triples of the graph under review (load.py): which record a person, place or habitat mention belongs to")
 ap.add_argument("--max-ev", type=int, default=6, help="diary passages per entity")
 ap.add_argument("--min-confidence", type=float, default=0.9)
 ap.add_argument("--min-agreement", type=int, default=2)
@@ -614,6 +621,7 @@ def pick_mentions(G, t, fis, limit):
     """Up to ``limit`` mentions of the forms: located on the scan first, spread over the forms and the years."""
     s = G.sec[t]
     cand = []
+    tiers = MT.get(t) if G is M and CORPUS else None
     for rank, fi in enumerate(fis):
         for mi in G.men_of_form[t].get(fi, []):
             m = s["men"][mi]
@@ -621,26 +629,30 @@ def pick_mentions(G, t, fis, limit):
             has_box = isinstance(box, list) and len(box) >= 5
             q = (2 if has_box and len(box) > 5 and box[5] == 0 else 1 if has_box else 0) + (1 if m[2] >= 0 else 0)
             y = (G.E[m[1]][2] or "")[:4]
-            cand.append((mi, fi, rank, q, int(y) if y.isdigit() else 0))
+            cand.append((mi, fi, rank, q, int(y) if y.isdigit() else 0, tiers[mi] if tiers else 0))
     if not cand:
         return []
+    top = max(c[5] for c in cand)
     if len(cand) > 4000:                       # frequent names: a deterministic thinning keeps the greedy pick cheap
         step = len(cand) / 4000.0
-        cand = [cand[int(i * step)] for i in range(4000)]
+        thin = [cand[int(i * step)] for i in range(4000)]
+        if max(c[5] for c in thin) < top:
+            thin.append(next(c for c in cand if c[5] == top))
+        cand = thin
     out, used_e, forms_seen, years = [], set(), collections.Counter(), []
     while len(out) < limit and cand:
         best, bi = None, -1
-        for i, (mi, fi, rank, q, y) in enumerate(cand):
+        for i, (mi, fi, rank, q, y, tr) in enumerate(cand):
             ei = s["men"][mi][1]
-            if ei in used_e:
+            if ei in used_e or (not out and tr < top):      # the first passage is one of the highest corpus tier
                 continue
             spread = min((abs(y - y0) for y0 in years), default=20) if y else 0
-            sc = q * 3 + min(spread, 20) * 0.5 - forms_seen[fi] * 4 - (rank * 0.2 if forms_seen[fi] else 0) + (6 if not forms_seen[fi] and rank < limit else 0)
+            sc = q * 3 + min(spread, 20) * 0.5 - forms_seen[fi] * 4 - (rank * 0.2 if forms_seen[fi] else 0) + (6 if not forms_seen[fi] and rank < limit else 0) + tr * 4
             if best is None or sc > best:
                 best, bi = sc, i
         if bi < 0:
             break
-        mi, fi, rank, q, y = cand.pop(bi)
+        mi, fi, rank, q, y, tr = cand.pop(bi)
         out.append(mi)
         used_e.add(s["men"][mi][1])
         forms_seen[fi] += 1
@@ -665,8 +677,14 @@ def mention_rec(G, t, mi):
     pages = [page_ref(G, x) for x in (e[8] or [])]
     if p < 0 and pages:
         p = pages[0]
-    return {"d": e[2] or "", "vd": e[3] or "", "id": e[0], "vol": e[5], "tx": snip, "hs": hs, "he": he, "p": p, "b": bx, "pp": pages, "f": name, "ro": m[5] if len(m) > 5 else "",
-            "hp": e[6] or ""}
+    rec = {"d": e[2] or "", "vd": e[3] or "", "id": e[0], "vol": e[5], "tx": snip, "hs": hs, "he": he, "p": p, "b": bx, "pp": pages, "f": name, "ro": m[5] if len(m) > 5 else "",
+           "hp": e[6] or ""}
+    if G is M and CORPUS:                       # corpus tier of the passage, why it is not in the next tier, 1 = tied to the entry
+        rec["k"] = MT[t][mi]
+        rec["kw"] = list(MW[t][mi][0])
+        if MW[t][mi][1]:
+            rec["ke"] = 1
+    return rec
 
 
 def year_hist(G, t, fis):
@@ -875,6 +893,165 @@ ENTS = {t: [] for t in TYPES}
 KEYS = {t: set() for t in TYPES}
 USED_ROWS = set()
 
+# ---------------------------------------------------------------- corpus tiers (the filter of the graph validation page)
+# graph_check/build_review.py gives every record a tier t (0 outside the core, 1 core, 2 strict core, 3 strict core
+# with coordinates) and the reasons tw. A corpus c holds the records with t >= c. A mention of an entity belongs to a
+# corpus when the record it is tied to does (the taxon of a record, a place as its locality / observedAt, a person as
+# its recordedBy, a habitat of a record); a mention tied to the entry (header place, persons mentioned in the entry,
+# places of travel legs) when the entry has at least one record in the corpus.
+MT, MW = {}, {}                 # type -> [tier per mention of the graph under review], [(reason codes, entry-tied)]
+CORPUS = None
+
+
+def build_corpus():
+    rl = Path(args.review_layer)
+    if not rl.exists():
+        log("no review layer at", rl, "- the page is built without the corpus filter")
+        return None
+    RV = json.loads(rl.read_text(encoding="utf-8")).get("entries", {})
+    by_name, by_idx, best = {}, {}, {}
+    totals, why = [0, 0, 0, 0], collections.Counter()
+    for eid, e in RV.items():
+        a, b = {}, {}
+        for k, r in (e.get("rec") or {}).items():
+            x = (max(0, min(3, int(r.get("t") or 0))), tuple(r.get("tw") or ()))
+            a[(lc(r.get("w") or ""), int(r.get("occ") or 0))] = x      # occ counts the casefolded name (build_review.py)
+            b[int(k)] = x
+            for c in range(x[0] + 1):
+                totals[c] += 1
+            for w in x[1]:
+                why[w] += 1
+        by_name[eid], by_idx[eid] = a, b
+        best[eid] = max(b.values(), key=lambda x: x[0]) if b else None
+
+    def entry_tier(eid):
+        x = best.get(eid)
+        return (x[0], x[1], 1) if x else (0, ("no-records",), 1)
+
+    # taxa: one mention per record, the k-th mention of a written name in an entry = its k-th record of that name
+    s = M.sec["taxon"]
+    occ, mt, mw = collections.Counter(), [], []
+    for m in s["men"]:
+        eid, name = M.E[m[1]][0], lc(s["forms"][m[0]][0])
+        r = by_name.get(eid, {}).get((name, occ[(eid, name)]))
+        occ[(eid, name)] += 1
+        if r is None:
+            anom("corpus: taxon mention without a record in the review layer", f"{eid} {name}")
+            r = (0, ("unchecked",))
+        mt.append(r[0])
+        mw.append((r[1], 0))
+    MT["taxon"], MW["taxon"] = mt, mw
+    got = [sum(1 for x in mt if x >= c) for c in range(4)]
+    if got != totals:
+        anom("corpus: taxon mentions per corpus differ from the records of the review layer", f"{got} vs {totals}")
+
+    # persons, places, habitats: the graph says which record a mention belongs to
+    rec_person, rec_place, rec_hab, ent_person = {}, {}, collections.defaultdict(list), set()
+    tp = Path(args.triples)
+    if tp.exists():
+        want = {"identifier", "containsObservation", "recordedBy", "hasLocality", "observedAt", "habitat", "observedTaxon", "verbatimIdentification", "label", "name", "prefLabel",
+                "mentionsPerson", "mentionsCompanion", "mentionsSource", "mentionsCollector", "mentionsCitedAuthor", "mentionsOther"}
+
+        def loc(u):
+            u = str(u)
+            return u.rsplit("#", 1)[-1].rsplit("/", 1)[-1]
+
+        entries, out = [], collections.defaultdict(dict)
+        with open(tp, "rb") as h:
+            triples = pickle.load(h)
+        for s_, p_, o_ in triples:
+            pn = loc(p_)
+            if pn == "type":
+                if loc(o_) == "DiaryEntry":
+                    entries.append(s_)
+            elif pn in want:
+                out[s_].setdefault(pn, []).append(o_)
+        del triples
+
+        def lab(n, keys):
+            d = out.get(n) or {}
+            return next((str(d[k][0]) for k in keys if d.get(k)), "")
+
+        def better(table, key, r):
+            if key not in table or r[0] > table[key][0]:
+                table[key] = r
+
+        lost = 0
+        for s_ in entries:
+            d = out.get(s_) or {}
+            eid, uid = lab(s_, ("identifier",)), loc(s_).replace("entry_", "")
+            idx = by_idx.get(eid, {})
+            for pred in ("mentionsPerson", "mentionsCompanion", "mentionsSource", "mentionsCollector", "mentionsCitedAuthor", "mentionsOther"):
+                for p in d.get(pred, []):
+                    ent_person.add((eid, lc(lab(p, ("label", "name")))))
+            for o in d.get("containsObservation", []):
+                od = out.get(o) or {}
+                tx = (od.get("observedTaxon") or [None])[0]
+                written = lab(o, ("verbatimIdentification",)) or (lab(tx, ("prefLabel", "label", "name")) if tx is not None else "")
+                h_ = loc(o).replace("obs_", "")
+                i_ = next((i for i in range(1000) if hashlib.sha1(f"{uid}|{written}|{i}".encode("utf-8")).hexdigest()[:12] == h_), None)
+                r = idx.get(i_)
+                if r is None:
+                    lost += 1
+                    r = (0, ("unchecked",))
+                for p in od.get("recordedBy", []):
+                    better(rec_person, (eid, lc(lab(p, ("label", "name")))), r)
+                for p in set(od.get("hasLocality", []) + od.get("observedAt", [])):
+                    better(rec_place, (eid, lc(lab(p, ("label",)))), r)
+                for hb in od.get("habitat", []):
+                    if str(hb).startswith("http"):
+                        rec_hab[(eid, lc(lab(hb, ("prefLabel", "label"))))].append(r)
+        if lost:
+            anom("corpus: records of the graph without a tier in the review layer", lost)
+        for v in rec_hab.values():
+            v.sort(key=lambda r: -r[0])
+    else:
+        log("no triples at", tp, "- person / place / habitat mentions follow their entry (at least one record in the corpus)")
+        anom("corpus: triples missing, person / place / habitat mentions counted by their entry")
+    for t in ("person", "place", "habitat"):
+        s = M.sec[t]
+        mt, mw, used = [], [], collections.Counter()
+        for m in s["men"]:
+            eid, label = M.E[m[1]][0], lc(s["ent"][s["forms"][m[0]][2]][0])
+            role = m[5] if len(m) > 5 else ""
+            x = entry_tier(eid)
+            if tp.exists():
+                if t == "person":
+                    r = rec_person.get((eid, label))
+                    if r is not None and (eid, label) not in ent_person:     # observer of single records only
+                        x = (r[0], r[1], 0)
+                elif t == "place" and role == "Beobachtung":
+                    r = rec_place.get((eid, label))
+                    if r is None:
+                        anom("corpus: locality mention without a record in the graph (counted by its entry)", f"{eid} {label}")
+                    else:
+                        x = (r[0], r[1], 0)
+                elif t == "habitat":
+                    lst = rec_hab.get((eid, label))
+                    if not lst:
+                        anom("corpus: habitat mention without a record in the graph (counted by its entry)", f"{eid} {label}")
+                    else:
+                        r = lst[min(used[(eid, label)], len(lst) - 1)]
+                        used[(eid, label)] += 1
+                        x = (r[0], r[1], 0)
+            mt.append(x[0])
+            mw.append((x[1], x[2]))
+        MT[t], MW[t] = mt, mw
+    log("corpus: records per corpus", totals, "| mentions per corpus", {t: [sum(1 for x in MT[t] if x >= c) for c in range(4)] for t in TYPES})
+    return {"rec": totals, "why": dict(why)}
+
+
+CORPUS = build_corpus()
+
+
+def nc_of(t, mis):
+    """Mentions per corpus [all, core, strict core, strict core with coordinates]."""
+    c = [0, 0, 0, 0]
+    for mi in mis:
+        for k in range(MT[t][mi] + 1):
+            c[k] += 1
+    return c
+
 
 def form_how(t, G, name, label):
     """How a written name came to its entity."""
@@ -1060,6 +1237,11 @@ def build_entity(t, G, ei, gone=False):
                 break
     who = who_of(t, G, ei, cur, rows) if not gone else {"by": "machine", "status": "removed"}
     rec = {"k": key, "l": label, "n": n, "q": cat, "cur": cur, "who": who, "forms": forms}
+    if CORPUS:
+        nc_by = {s["forms"][fi][0]: nc_of(t, G.men_of_form[t].get(fi, [])) for fi in fis} if G is M and not gone else {}
+        for fr in forms:
+            fr["nc"] = nc_by.get(fr["f"]) or [fr["n"], 0, 0, 0]
+        rec["nc"] = [sum(fr["nc"][c] for fr in forms) for c in range(4)]
     if sq:
         rec["sq"] = sq
     if gone:
@@ -1158,6 +1340,9 @@ for r in ROWS:
     rec = {"k": key, "l": name, "n": f[1], "q": "changed", "ck": "none", "gone": 1, "cur": None, "who": {"by": "machine", "status": "removed"},
            "before": bl, "bsrc": src.tag, "forms": [{"f": name, "n": f[1], "how": {"k": "label"}}], "m": m,
            "ev": [mention_rec(src, t, mi) for mi in pick_mentions(src, t, [fi], args.max_ev)]}
+    if CORPUS:                                  # not in the graph any more: no record of any corpus
+        rec["nc"] = [f[1], 0, 0, 0]
+        rec["forms"][0]["nc"] = [f[1], 0, 0, 0]
     if lc(s["ent"][ei][0]) != lc(name):
         rec["blabel"] = s["ent"][ei][0]
     if bl:
@@ -1238,17 +1423,22 @@ for t in TYPES:
         STATS[t]["all"] += 1
         STATS[t]["n:all"] += e["n"]
 stats = {t: dict(sorted(c.items())) for t, c in STATS.items()}
+if CORPUS:
+    CORPUS["ent"] = {t: [sum(1 for e in ENTS[t] if e["nc"][c] > 0) for c in range(4)] for t in TYPES}
+    CORPUS["men"] = {t: [sum(e["nc"][c] for e in ENTS[t]) for c in range(4)] for t in TYPES}
 TAXA = [[e[0], e[1], str(e[2]), e[3]] for e in M.sec["taxon"]["ent"] if e[2]]
 payload = {"app": "laubmann-link-check", "v": 1, "built": args.built or date.today().isoformat(), "export": M.export, "base_export": B.export if B else "",
            "r1_export": A.export if A else "", "thresholds": {"conf": args.min_confidence, "agree": args.min_agreement},
            "rounds": [{"n": R["n"], "label": R["label"], "model": R["model"], "built": R["built"], "dir": Path(R["dir"]).name} for R in ROUNDS],
            "PAGES": PAGES, "EUNIS": M.P.get("eunis", []), "TAXA": TAXA, "ents": ENTS, "stats": stats,
            "anomalies": dict(ANOM), "anomaly_examples": dict(ANOM_EX), "unused_rows": {"|".join(k): v for k, v in sorted(UNUSED_BY.items())}}
+if CORPUS:
+    payload["corpus"] = CORPUS
 raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 out = Path(args.out)
 out.parent.mkdir(parents=True, exist_ok=True)
 Path(str(out) + ".json").write_bytes(raw)
 gz = gzip.compress(raw, 9, mtime=0)
 Path(str(out) + ".b64").write_text(base64.b64encode(gz).decode("ascii"), encoding="ascii")
-print(json.dumps({"stats": stats, "anomalies": dict(ANOM), "anomaly_examples": dict(ANOM_EX), "unused_rows": payload["unused_rows"], "pages": len(PAGES)}, ensure_ascii=False, indent=1))
+print(json.dumps({"stats": stats, "corpus": CORPUS, "anomalies": dict(ANOM), "anomaly_examples": dict(ANOM_EX), "unused_rows": payload["unused_rows"], "pages": len(PAGES)}, ensure_ascii=False, indent=1))
 print(f"raw {len(raw) / 1e6:.1f} MB, gz+b64 {len(gz) * 4 / 3 / 1e6:.1f} MB -> {out}.json / .b64")

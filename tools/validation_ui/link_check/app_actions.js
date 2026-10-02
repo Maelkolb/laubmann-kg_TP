@@ -34,6 +34,7 @@ function focusSearch() { const s = $('#sInput'); if (!s) return; s.scrollIntoVie
 function act(k) {
   const ty = cur.type; const e = curEnt();
   if (k === 'undo') return undo();
+  if (k === 'corpus-off') return setCorpus(0);
   if (!e) return;
   if (k === 'confirm') {
     if (e.gone) return setEnt(ty, e, makeDec(ty, e, 'none', 'confirm'));
@@ -214,6 +215,12 @@ function setQueue(ty, q, sub) {
   openEntity(ty, first ? first.k : null);
   const ql = $('#qlist'); if (ql && !first) ql.scrollTop = 0;
 }
+function setCorpus(c) {          // a view: the lists, counts and passages follow; decisions and the export do not
+  S.ui.corpus = Math.max(0, Math.min(3, +c || 0));
+  for (const ty of TYPES) SHOW[ty] = LIST_STEP;
+  save();
+  if (cur.type === 'home') refresh(); else openType(cur.type);
+}
 function setLang(l) { LANG = l === 'en' ? 'en' : 'de'; S.ui.lang = LANG; for (const ty of TYPES) for (const e of ENTS[ty]) delete e._st; save(); refresh(); }
 function setTheme(th) { document.documentElement.dataset.theme = th === 'dark' ? 'dark' : 'light'; try { localStorage.setItem(LS + '-theme', document.documentElement.dataset.theme); } catch (e) { /* private mode */ } }
 
@@ -253,6 +260,7 @@ document.addEventListener('click', ev => {
   if (x.closest('.modal')) return;
   if (x.closest('#brand')) return openType('home');
   const tt = x.closest('[data-type]'); if (tt) return openType(tt.dataset.type);
+  const cr = x.closest('[data-corpus]'); if (cr) return setCorpus(+cr.dataset.corpus);
   const hq = x.closest('[data-home]'); if (hq) return setQueue(hq.dataset.home, hq.dataset.hq);
   const qc = x.closest('.chip[data-q]'); if (qc) return setQueue(ty, qc.dataset.q);
   const sc = x.closest('.chip[data-sub]'); if (sc) return setQueue(ty, 'suggest', S.ui.sub[ty] === sc.dataset.sub ? '' : sc.dataset.sub);
@@ -283,6 +291,7 @@ document.addEventListener('click', ev => {
   if (x.id === 'btnExport') return showExport();
   if (x.id === 'btnImport') return $('#fileImport').click();
 });
+document.addEventListener('change', ev => { if (ev.target.id === 'corpsel') { const v = ev.target.value; ev.target.blur(); setCorpus(v); } });
 document.addEventListener('input', ev => {
   const x = ev.target; const ty = cur.type;
   if (x.id === 'qsearch') { S.ui.find[ty] = x.value; SHOW[ty] = LIST_STEP; clearTimeout(x._t); x._t = setTimeout(() => { save(); renderList(); }, 200); return; }
@@ -344,7 +353,7 @@ normalizeState();
 LANG = S.ui.lang === 'en' ? 'en' : 'de';
 let theme0 = 'light'; try { theme0 = localStorage.getItem(LS + '-theme') || 'light'; } catch (e) { /* private mode */ }
 document.documentElement.dataset.theme = theme0 === 'dark' ? 'dark' : 'light';
-window.__lc = { D, ENTS, BYK, FORMK, cur, STR, MISSING, HIST, view, scan, get S() { return S; }, get LANG() { return LANG; }, openEntity, openType, setQueue, setLang, setTheme, listItems, queueCounts, typeProgress, entDone, mergeDone,
+window.__lc = { D, ENTS, BYK, FORMK, cur, STR, MISSING, HIST, view, scan, get S() { return S; }, get LANG() { return LANG; }, openEntity, openType, setQueue, setLang, setTheme, setCorpus, corpus, corpusItems, listItems, queueCounts, typeProgress, entDone, mergeDone,
   idRows, auditRows, exportFiles, exportIdentities, progressJSON, importAny, act, cf, refresh };
 cur.type = TYPES.includes(S.ui.type) ? S.ui.type : 'home';
 $('#loading').remove();

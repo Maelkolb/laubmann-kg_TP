@@ -50,6 +50,57 @@ wenige Entscheidungen zu häufigen Namen decken den größten Teil des Graphen.
    (gestrichelter Kasten und „ungefähre Zeile“, wenn die Lage geschätzt ist).
 7. Personen: **Nennungen nach Jahr** mit den Lebensdaten des Normdatensatzes.
 
+## Korpusfilter
+
+Derselbe Filter wie auf der Graph-Prüfseite (`graph_check/`, dort Abschnitt „Korpusfilter“). `build_review.py`
+gibt jedem Datensatz eine Stufe `t` und die Gründe `tw`, warum er nicht in der nächsten Stufe ist; diese Seite
+rechnet sie nicht neu, sondern liest sie aus `data/cache/graph_check/review.json`:
+
+| Stufe | Korpus | Gründe (`tw`) |
+|---|---|---|
+| K0 | außerhalb des Kerns | `spurious` eine Scanprüfung findet den Datensatz nicht · `duplicate` Doppel · `no-taxon` kein GBIF-Taxon · `flagged` eine Scanprüfung nennt ein Feld falsch · `unchecked` nicht beurteilt |
+| K1 | Kern | `rank` nicht auf Artniveau · `name` geschriebener Name kein belegter deutscher Name des Taxons · `reading` strittige Lesekorrektur in der Textstelle · `date` Datum des Eintrags falsch beurteilt · `illegible` Scan nicht lesbar |
+| K2 | strenger Kern | `no-coords` Ort ohne Koordinaten |
+| K3 | strenger Kern mit Koordinaten | – |
+
+Die Auswahl in der Kopfzeile (**vollständig · Kern · strenger Kern · strenger Kern mit Koordinaten**, je mit der
+Zahl der Datensätze; im Browser gemerkt) wählt die niedrigste Stufe, die zählt. Ist ein Filter aktiv, steht unter
+der Kopfzeile ein Balken mit Korpus, Zahlen und „Filter aufheben“.
+
+**Was ein Korpus für einen Eintrag (Art, Person, Ort, Lebensraum) heißt:** seine Nennungen, die zu Datensätzen
+des Korpus gehören.
+
+- Eine Nennung, die an einem Datensatz hängt, zählt, wenn dieser Datensatz im Korpus liegt: die Art eines
+  Datensatzes, ein Ort als Fundort (`hasLocality` / `observedAt`), eine Person als Beobachter (`recordedBy`),
+  der Lebensraum eines Datensatzes.
+- Eine Nennung, die am Tagebucheintrag hängt (Kopfzeilen-Ort, im Eintrag genannte Personen, Orte der Reiseetappen),
+  zählt, wenn der Tagebucheintrag mindestens einen Datensatz im Korpus hat.
+
+`build_data.py` schreibt dazu je Eintrag und je geschriebenem Namen die Nennungen der vier Korpora (`nc`) und je
+gezeigtem Beleg seine Stufe (`k`), die Gründe (`kw`) und ob er am Tagebucheintrag hängt (`ke`). Die Arten-Nennungen
+folgen dem Datensatz über Tagebucheintrag + geschriebenen Namen + Vorkommen (wie `rec.w` / `rec.occ` der
+Prüfschicht); Personen, Orte und Lebensräume über den Graph (`--triples`). Im Endstand: 85.631 · 74.909 · 69.150 ·
+44.372 Datensätze = Arten-Nennungen; Einträge mit Nennungen im Korpus: Arten 688 · 491 · 388 · 369, Personen
+3.730 · 3.377 · 3.289 · 2.932, Orte 8.690 · 7.851 · 7.432 · 3.162, Lebensräume 1.861 · 1.622 · 1.528 · 1.145.
+
+Der Filter ist **nur eine Ansicht**:
+
+- Die Listen führen nur Einträge mit mindestens einer Nennung im Korpus, sortiert nach ihren Nennungen **im
+  Korpus**, mit „n im Korpus / n gesamt“. Warteschlangen-Zahlen, der Fortschritt je Typ („x % der Nennungen
+  entschieden“) und die Tabellen der Übersicht zählen nur Nennungen des Korpus.
+- Die Karte zeigt beide Zahlen (Kopf, „Geschriebene Namen“). „Belege“ stellt die Stellen des Korpus voran; jede
+  Stelle trägt ihre Stufe (`K0`–`K3`; bei Stellen, die am Tagebucheintrag hängen: die höchste Stufe seiner
+  Datensätze), Stellen außerhalb sind abgeblendet und nennen den Grund in Worten. Unter den bis zu sechs Belegen
+  ist immer einer der höchsten Stufe, die der Eintrag erreicht.
+- Einträge ohne Nennung im Korpus sind ausgeblendet, behalten aber ihre Entscheidungen. Namen, die die Maschine
+  entfernt hat, stehen in keinem Datensatz mehr und erscheinen nur unter „vollständig“.
+- **Entscheidungen und Export betreffen immer alle Einträge** – `identities.csv`, `link_audit.csv` und der
+  Fortschritt sind unter jedem Filter dieselben (Test).
+- Übersicht: Tabelle der vier Korpora je Typ (Einträge, Nennungen); eine Zeile anklicken wählt den Filter.
+
+Fehlt `review.json`, wird die Seite ohne Filter gebaut; fehlt nur `--triples`, zählen Personen, Orte und
+Lebensräume nach der Regel für den Tagebucheintrag.
+
 ## Tasten
 
 `J` Verknüpfung stimmt (bei unverknüpften: bleibt ohne Verknüpfung; bei entfernten Namen: Entfernen stimmt) ·
@@ -113,7 +164,7 @@ Eintragsentscheidungen sind in der Karte als „bitte kurz prüfen“ markiert; 
 .venv/Scripts/python.exe tools/validation_ui/link_check/assemble.py     # -> data/exports/link_check/Laubmann_Verknuepfungen.html
 ```
 
-`build_data.py` (≈ 40 s) schreibt `data/exports/link_check/data.json` und `.b64` und druckt Zahlen je Typ und
+`build_data.py` (≈ 50 s) schreibt `data/exports/link_check/data.json` und `.b64` und druckt Zahlen je Typ und
 Warteschlange sowie Auffälligkeiten. Eingaben (alle mit Vorgabe, `--help`):
 
 | Schalter | Vorgabe | wozu |
@@ -126,6 +177,8 @@ Warteschlange sowie Auffälligkeiten. Eingaben (alle mit Vorgabe, `--help`):
 | `--arbeit` | die Arbeitsordner dazu (`-` = keiner) | Stimmen (answers / answers_gemini), Kandidaten und Wikidata-/GND-Details aus den Paketen |
 | `--export-review` | `data/exports/kg_exports_2026-10-01_checked/review` | `*_merges.csv` (Regeln, offene Kandidaten), `*_link_review.csv` |
 | `--reviewed-merges` | `data/review` | frühere Entscheidungen zu Merge-Kandidaten (y/n) |
+| `--review-layer` | `data/cache/graph_check/review.json` | Prüfschicht der Graph-Prüfseite: Korpusstufe `t` und Gründe `tw` je Datensatz → Korpusfilter |
+| `--triples` | `data/cache/graph_check/in/triples_checked.pkl` | Tripel des Graphen unter Prüfung (`load.py`): an welchem Datensatz eine Personen-, Orts-, Lebensraum-Nennung hängt |
 | `--drive` | `tools/validation_ui/drive_pages.json`, `configs/drive_scan_files.json` | Drive-Kennungen der Seitenscans |
 
 Fehlt ein Drive-Ordner, wird er übersprungen (dann fehlen Stimmen bzw. das „vorher“ der ersten Runde).
@@ -153,8 +206,8 @@ Drive werden durch ein leeres Bild ersetzt), Scans kommen aus `data/pages_jpg`.
 
 ```bash
 cd tools/validation_ui/link_check
-python tests/smoke.py            [Seite] [shots]   # alle Typen und Warteschlangen, Karten durchblättern, Scan-Zeile, DE/EN, hell/dunkel, keine Konsolenfehler; Screenshots 1440×900
-python tests/export_roundtrip.py [Seite]           # 23 Arten von Entscheidungen, ZIP, Identities.load() + apply_mappings der Pipeline, Undo, Rundreisen, Import aus Laubmann_Validierung
+python tests/smoke.py            [Seite] [shots]   # alle Typen und Warteschlangen, Karten durchblättern, Scan-Zeile, DE/EN, hell/dunkel, Korpusfilter (Zahlen gegen review.json), keine Konsolenfehler; Screenshots 1440×900
+python tests/export_roundtrip.py [Seite]           # 23 Arten von Entscheidungen, ZIP, Identities.load() + apply_mappings der Pipeline, Export unter jedem Korpusfilter identisch, Undo, Rundreisen, Import aus Laubmann_Validierung
 ```
 
 `export_roundtrip.py` ruft `tests/loaders_check.py` mit dem Python des Repos (`.venv`, oder `LC_REPO_PYTHON`);

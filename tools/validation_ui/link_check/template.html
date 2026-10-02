@@ -14,6 +14,7 @@
   --alt:#6541a3; --alt-soft:#ede6f8; --mach:#0c666c; --mach-soft:#def1f2; --pipe:#5a6470; --pipe-soft:#eceff3;
   --hl:#ffe58f; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; --serif:Georgia,"Times New Roman",serif;
   --shadow:0 1px 2px rgba(20,30,50,.05),0 2px 8px rgba(20,30,50,.05); --scanw:31vw; --head:#23446d; --onacc:#fff;
+  --tr0:#8A8F8B; --tr1:#4E7FB5; --tr2:#2F8F86; --tr3:#1E7F3A;
 }
 :root[data-theme="dark"]{
   --bg:#11151b; --panel:#1a2029; --panel2:#202733; --line:#2c3542; --line2:#3d4857;
@@ -22,6 +23,7 @@
   --ok:#62c893; --ok-soft:#173424; --no:#f29186; --no-soft:#3e201e; --unk:#e6b955; --unk-soft:#3b3119;
   --alt:#c0a4ea; --alt-soft:#2e2544; --mach:#73d3d9; --mach-soft:#15373b; --pipe:#aab3bf; --pipe-soft:#262e39;
   --hl:#6b5a14; --shadow:none; --head:#0f2238; --onacc:#0f2238;
+  --tr0:#8D948F; --tr1:#7FAEE0; --tr2:#5CC0B6; --tr3:#5CC57A;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -31,8 +33,8 @@ button{cursor:pointer}
 a{color:var(--acc2)}
 code{font:12.5px var(--mono);background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:0 4px}
 kbd{font:11px var(--mono);border:1px solid var(--line2);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--panel2);color:var(--ink2);white-space:nowrap}
-.app{display:grid;grid-template-rows:48px minmax(0,1fr);height:100vh}
-header{display:flex;align-items:center;gap:6px;padding:0 12px;background:var(--head);color:#fff;min-width:0}
+.app{display:grid;grid-template-rows:48px auto minmax(0,1fr);height:100vh}
+header{grid-row:1;display:flex;align-items:center;gap:6px;padding:0 12px;background:var(--head);color:#fff;min-width:0}
 .brand{font-weight:650;font-size:15px;white-space:nowrap;margin-right:8px;cursor:pointer;flex:none}
 .types{display:flex;height:100%;align-items:stretch;min-width:0}
 .ttab{background:none;border:0;color:rgba(255,255,255,.75);padding:0 11px;border-bottom:3px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:7px}
@@ -44,7 +46,24 @@ header{display:flex;align-items:center;gap:6px;padding:0 12px;background:var(--h
 .hbtn.primary{background:#fff;color:#23446d;border-color:#fff;font-weight:600}
 .saved{font-size:12px;opacity:.85;white-space:nowrap;flex:none}
 .saved.warn{color:#ffd28a;opacity:1}
-.main{display:grid;grid-template-columns:296px minmax(0,1fr) var(--scanw);min-height:0}
+.main{grid-row:3;display:grid;grid-template-columns:296px minmax(0,1fr) var(--scanw);min-height:0}
+/* corpus filter: selector, banner, tier chips (colours and names as on the graph validation page) */
+#corpsel{flex:none;max-width:236px;padding:4px 6px;border:1px solid rgba(255,255,255,.26);border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-size:12.5px;cursor:pointer}
+#corpsel option{color:#161c25;background:#fff}
+#corpsel.on{border-color:#fff;background:var(--tr2);font-weight:600;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+:root[data-theme="dark"] #corpsel.on{color:#10160f}
+#corpbar{grid-row:2;display:flex;align-items:center;gap:9px;padding:5px 14px;font-size:12.5px;background:color-mix(in srgb,var(--tr2) 15%,var(--panel));border-bottom:1px solid var(--tr2);color:var(--ink);min-width:0}
+#corpbar[hidden]{display:none}
+#corpbar .cbt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trc{display:inline-block;padding:0 6px;height:16px;line-height:16px;border-radius:4px;font-size:10.5px;font-weight:700;white-space:nowrap;color:#fff;vertical-align:1px;flex:none}
+.trc.tr0{background:var(--tr0)} .trc.tr1{background:var(--tr1)} .trc.tr2{background:var(--tr2)} .trc.tr3{background:var(--tr3)}
+:root[data-theme="dark"] .trc{color:#10160f}
+.men.out{opacity:.66} .men.out:hover,.men.out.on{opacity:1}
+.men .trw{padding:0 10px 7px;font-size:12px;color:var(--ink2)}
+.qi .num b{font-weight:650;color:var(--ink)}
+.covt td.th{font-weight:650;color:var(--ink);border-left:1px solid var(--line)}
+.covt tr.ql.on td{font-weight:650;background:color-mix(in srgb,var(--tr2) 13%,var(--panel))}
+.covt td.n{padding-left:10px}
 .main.noscan{grid-template-columns:296px minmax(0,1fr) 0}
 .queue{grid-column:1} .work{grid-column:2} .scan{grid-column:3}
 .main.home{grid-template-columns:0 minmax(0,1fr) 0}
@@ -242,6 +261,7 @@ mark{background:var(--hl);color:inherit;border-radius:2px;padding:0 1px}
   <div class="brand" id="brand"></div>
   <nav class="types" id="types"></nav>
   <div class="sp"></div>
+  <select id="corpsel"></select>
   <span class="saved" id="saved"></span>
   <button class="hbtn" id="btnUndo">↶</button>
   <button class="hbtn" id="btnImport"></button>
@@ -251,6 +271,7 @@ mark{background:var(--hl);color:inherit;border-radius:2px;padding:0 1px}
   <button class="hbtn" id="btnTheme">◐</button>
   <input type="file" id="fileImport" accept=".json,.zip,application/json,application/zip" hidden>
 </header>
+<div id="corpbar" hidden></div>
 <div class="main home" id="main">
   <aside class="queue" id="queue"></aside>
   <section class="work" id="work">

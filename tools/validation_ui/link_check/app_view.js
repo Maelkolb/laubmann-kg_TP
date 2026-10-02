@@ -22,8 +22,33 @@ function renderHeader() {
   $('#btnUndo').title = t('hd.undo'); $('#btnImport').textContent = t('hd.import'); $('#btnExport').textContent = t('hd.export');
   $('#btnHelp').title = t('hd.help'); $('#btnTheme').title = t('hd.theme'); $('#btnLang').textContent = LANG === 'en' ? 'DE' : 'EN'; $('#btnLang').title = t('hd.lang');
   $('#scanzoom').textContent = t('scan.zoom'); $('#scanclose').title = t('scan.hide'); $('#scanopen').title = t('scan.open');
+  renderCorpusSel();
   savedLabel();
 }
+// corpus selector and the banner of an active filter
+function renderCorpusSel() {
+  const sel = $('#corpsel'), bar = $('#corpbar'); if (!sel || !bar) return;
+  if (!D.corpus) { sel.style.display = 'none'; bar.hidden = true; return; }
+  const c = corpus();
+  sel.innerHTML = [0, 1, 2, 3].map(k => '<option value="' + k + '"' + (k === c ? ' selected' : '') + '>' + esc(t('corp.sel', t('corp.s.' + k), fmt(D.corpus.rec[k]))) + '</option>').join('');
+  sel.title = t('corp.tip'); sel.classList.toggle('on', c > 0);
+  bar.hidden = c === 0;
+  bar.innerHTML = c === 0 ? '' : '<span class="trc tr' + c + '">K' + c + '</span><span class="cbt">' + esc(t('corp.active', t('corp.' + c), fmt(D.corpus.rec[c]), fmt(D.corpus.rec[0]))) + '</span><button class="nbtn" data-act="corpus-off">' + esc(t('corp.off')) + '</button>';
+}
+const tierName = k => t('tier.' + k);
+const whyText = code => (has('tw.' + code) ? t('tw.' + code) : code);
+function tierWhy(m) {          // why a passage's record is not in the next tier, in words
+  if (m.k == null || m.k >= 3) return '';
+  const codes = (m.kw || []).map(whyText).join('; ');
+  if ((m.kw || []).includes('no-records')) return codes;
+  return (m.ke ? t('tier.entry') + ' ' : '') + (m.k === 0 ? t('tier.out_why') : t('tier.next_why', tierName(m.k + 1))) + ' ' + codes;
+}
+function tierChip(m) {
+  if (m.k == null || !D.corpus) return '';
+  const why = tierWhy(m);
+  return '<span class="trc tr' + m.k + '" title="' + esc(t(m.ke ? 'tier.t.entry' : 'tier.t') + ': ' + tierName(m.k) + (why ? ' — ' + why : '')) + '">K' + m.k + '</span>';
+}
+const countText = e => (corpus() ? t('card.mentions.c', fmt(cn(e)), fmt(e.n)) : e.n === 1 ? t('card.mention1') : t('card.mentions', fmt(e.n)));
 
 // ---------------------------------------------------------------- list
 function searchText(e) {
@@ -34,7 +59,7 @@ function searchText(e) {
 const curQ = ty => S.ui.q[ty] || 'changed';
 function listItems(ty) {
   const q = curQ(ty); const sub = q === 'suggest' ? (S.ui.sub[ty] || '') : ''; const find = fold(S.ui.find[ty] || '');
-  let items = ENTS[ty].filter(e => inQueue(ty, e, q));
+  let items = corpusItems(ty).filter(e => inQueue(ty, e, q));
   if (sub) items = items.filter(e => e.sq === sub);
   if (find) items = items.filter(e => searchText(e).includes(find));
   return items;
@@ -42,7 +67,7 @@ function listItems(ty) {
 function queueCounts(ty) {
   const c = {}; for (const q of QUEUES) c[q] = { n: 0, open: 0 };
   const sub = { change: 0, stale: 0, agree: 0, unsure: 0 };
-  for (const e of ENTS[ty]) {
+  for (const e of corpusItems(ty)) {
     const done = entDone(ty, e);
     c[e.q].n++; if (!done) c[e.q].open++;
     if (e.mg) { c.merge.n++; if (!mergeDone(ty, e)) c.merge.open++; }
@@ -64,7 +89,7 @@ function rowSub(ty, e) {
 }
 function rowHtml(ty, e) {
   return '<div class="qi' + (e.k === cur.key ? ' on' : '') + '" data-key="' + esc(e.k) + '"><span class="dot ' + decClass(ty, e) + '"></span><div><div class="l1">' + esc(e.l) + '</div><div class="l2">' + rowSub(ty, e)
-    + '</div></div><div class="num" title="' + esc(t('list.mentions')) + '">' + fmt(e.n) + '</div></div>';
+    + '</div></div><div class="num" title="' + esc(corpus() ? t('corp.in', fmt(cn(e)), fmt(e.n)) : t('list.mentions')) + '">' + (corpus() ? '<b>' + fmt(cn(e)) + '</b> / ' + fmt(e.n) : fmt(e.n)) + '</div></div>';
 }
 function renderList(scroll) {
   const ty = cur.type; const el = $('#queue'); if (ty === 'home') { el.innerHTML = ''; return; }
@@ -259,7 +284,7 @@ function secNames(ty, e) {
     if (!f.n) why.push(esc(t('names.zero')));
     if (covered && !covered.has(cf(f.f)) && !fd) why.push('<span class="bd unk">' + esc(t(m && !m.ap && m.diff ? 'names.open' : 'names.new')) + '</span>');
     if (fd) why.push('<span class="bd alt">' + esc(t('dec.you')) + ': ' + esc(formDecText(ty, e, fd)) + '</span>');
-    return '<div class="nm' + (f.was ? ' chg' : '') + '"><div><span class="nn">' + esc(f.f) + '</span><span class="ct">' + (f.n ? fmt(f.n) : '–') + '</span></div>'
+    return '<div class="nm' + (f.was ? ' chg' : '') + '"><div><span class="nn">' + esc(f.f) + '</span><span class="ct"' + (corpus() ? ' title="' + esc(t('corp.in', fmt(fcn(f)), fmt(f.n))) + '"' : '') + '>' + (f.n ? (corpus() ? fmt(fcn(f)) + ' / ' : '') + fmt(f.n) : '–') + '</span></div>'
       + (isLabel && !fd ? '<span class="small muted">' + (e.forms.length === 1 ? '' : '') + '</span>' : toggles(ty, e, f.f, fd, covered && covered.has(cf(f.f))))
       + (why.length ? '<div class="why">' + why.join(' · ') + '</div>' : '') + (panelForm === f.f ? '<div class="why" id="formpanel"></div>' : '') + '</div>';
   });
@@ -272,15 +297,17 @@ function secNames(ty, e) {
 }
 const dateText = d => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ''); return m ? (LANG === 'en' ? m[1] + '-' + m[2] + '-' + m[3] : (+m[3]) + '.' + (+m[2]) + '.' + m[1]) : (d || ''); };
 function secEv(ty, e) {
-  const ev = e.ev || [];
-  const body = ev.length ? ev.map((m, i) => {
+  const ev = e.ev || []; const c = corpus();
+  const order = ev.map((m, i) => i); if (c > 0) order.sort((a, b) => (menIn(ev[b]) - menIn(ev[a])) || a - b);     // passages of the corpus first
+  const body = ev.length ? order.map(i => { const m = ev[i]; const out = c > 0 && !menIn(m);
     const tx = m.hs >= 0 && m.he > m.hs ? esc(m.tx.slice(0, m.hs)) + '<mark>' + esc(m.tx.slice(m.hs, m.he)) + '</mark>' + esc(m.tx.slice(m.he)) : esc(m.tx);
     const roles = (m.ro || '').split('/').filter(Boolean).map(r => (has('role.' + r) ? t('role.' + r) : r)).join(', ');
-    return '<div class="men' + (i === curMen ? ' on' : '') + '" data-men="' + i + '" title="' + esc(t('ev.show')) + '"><div class="mh"><b>' + esc(dateText(m.d) || m.vd || '') + '</b><span class="mono">' + esc(m.id) + '</span>' + (cf(m.f) !== e.k ? '<span class="bd">' + esc(m.f) + '</span>' : '')
+    return '<div class="men' + (i === curMen ? ' on' : '') + (out ? ' out' : '') + '" data-men="' + i + '" title="' + esc(t('ev.show')) + '"><div class="mh"><b>' + esc(dateText(m.d) || m.vd || '') + '</b><span class="mono">' + esc(m.id) + '</span>' + (cf(m.f) !== e.k ? '<span class="bd">' + esc(m.f) + '</span>' : '')
       + (roles ? '<span>' + esc(roles) + '</span>' : '') + (ty === 'place' && m.hp && cf(m.hp) !== e.k ? '<span class="muted">' + esc(t('ev.header', m.hp)) + '</span>' : '') + '<span class="sp"></span>'
-      + (m.b ? (m.b[4] ? '<span class="bd unk">' + esc(t('ev.approx')) + '</span>' : '') : '<span class="bd">' + esc(t('ev.noscan')) + '</span>') + '</div><div class="kw">' + tx + '</div></div>';
+      + (m.b ? (m.b[4] ? '<span class="bd unk">' + esc(t('ev.approx')) + '</span>' : '') : '<span class="bd">' + esc(t('ev.noscan')) + '</span>') + tierChip(m) + '</div><div class="kw">' + tx + '</div>'
+      + (out ? '<div class="trw">' + esc(tierWhy(m)) + '</div>' : '') + '</div>';
   }).join('') : '<div class="small muted">' + esc(t('ev.none')) + '</div>';
-  return sec(t('sec.ev'), body, esc(e.n === 1 ? t('card.mention1') : t('card.mentions', fmt(e.n))));
+  return sec(t('sec.ev'), body, esc(countText(e)));
 }
 function secYears(ty, e) {
   if (ty !== 'person' || !e.yrs || !e.yrs.length) return '';
@@ -340,7 +367,7 @@ function renderCard() {
   const mergeFirst = curQ(ty) === 'merge' && e.mg;
   wrap.innerHTML = '<div class="wrap"><div class="crumb"><span>' + esc(t('one.' + ty)) + '</span>' + qb + (pos >= 0 ? '<span>' + fmt(pos + 1) + ' / ' + fmt(items.length) + '</span>' : '')
     + '<span class="nav"><button class="nbtn" data-nav="prev" title="' + esc(t('card.prev')) + '">↑</button><button class="nbtn" data-nav="next" title="' + esc(t('card.next')) + '">↓</button><button class="nbtn primary" data-nav="open">' + esc(t('card.nextopen')) + '</button></span></div>'
-    + '<h1 class="t">' + esc(e.l) + (e.gone ? ' <span class="bd no big">' + esc(t('gone.badge')) + '</span>' : '') + '</h1><p class="sub">' + esc((e.n === 1 ? t('card.mention1') : t('card.mentions', fmt(e.n))) + ' · ' + t('card.names', fmt(e.forms.length)) + yrs
+    + '<h1 class="t">' + esc(e.l) + (e.gone ? ' <span class="bd no big">' + esc(t('gone.badge')) + '</span>' : '') + '</h1><p class="sub">' + esc(countText(e) + ' · ' + t('card.names', fmt(e.forms.length)) + yrs
     + (ty === 'place' && e.kind ? ' · ' + (has('place.kind.' + e.kind) ? t('place.kind.' + e.kind) : e.kind) : '')) + '</p>'
     + stateHtml(ty, e) + (mergeFirst ? secMerge(ty, e) : '') + secGraph(ty, e) + secChange(ty, e) + secSuggest(ty, e) + secDrift(ty, e) + secCands(ty, e) + secNames(ty, e) + (mergeFirst ? '' : secMerge(ty, e)) + secEv(ty, e) + secYears(ty, e) + '</div>';
   if (ty === 'place') initMap(e);
@@ -369,11 +396,21 @@ function renderActbar() {
 }
 
 // ---------------------------------------------------------------- overview
+function corpusTableHtml() {   // the four corpora per type: entries with a mention in the corpus, mentions
+  if (!D.corpus) return '';
+  const c0 = corpus(); const pc = (a, b) => (b ? (100 * a / b).toLocaleString(loc(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' %' : '–');
+  const rows = [0, 1, 2, 3].map(c => {
+    const cells = TYPES.map(ty => { let en = 0, mn = 0; for (const e of ENTS[ty]) { const v = c === 0 ? e.n : (e.nc ? e.nc[c] : 0); if (v > 0) { en++; mn += v; } } return '<td class="n" data-cc="' + ty + '-e">' + fmt(en) + '</td><td class="n" data-cc="' + ty + '-m">' + fmt(mn) + '</td>'; }).join('');
+    return '<tr class="ql' + (c === c0 ? ' on' : '') + '" data-corpus="' + c + '"><td class="q">' + (c ? '<span class="trc tr' + c + '">K' + c + '</span> ' : '') + esc(t('corp.' + c)) + '</td><td class="n">' + fmt(D.corpus.rec[c]) + '</td><td class="n muted">' + pc(D.corpus.rec[c], D.corpus.rec[0]) + '</td>' + cells + '</tr>';
+  }).join('');
+  return '<h2>' + esc(t('home.corp.h')) + '</h2><p>' + t('home.corp.lead') + '</p><div class="hc"><table class="covt"><tr><td class="muted" rowspan="2">' + esc(t('home.corp.c')) + '</td><td class="n muted" rowspan="2" colspan="2">' + esc(t('home.corp.rec')) + '</td>'
+    + TYPES.map(ty => '<td class="n th" colspan="2">' + esc(t('type.' + ty)) + '</td>').join('') + '</tr><tr>' + TYPES.map(() => '<td class="n muted">' + esc(t('home.corp.ent')) + '</td><td class="n muted">' + esc(t('home.corp.men')) + '</td>').join('') + '</tr>' + rows + '</table></div>';
+}
 function renderHome() {
   const cards = TYPES.map(ty => {
     const p = typeProgress(ty); const [c] = queueCounts(ty);
     const mentions = {}; for (const q of QUEUES) mentions[q] = 0;
-    for (const e of ENTS[ty]) { mentions[e.q] += e.n; if (e.mg) mentions.merge += e.n; if (entDone(ty, e)) mentions.done += e.n; }
+    for (const e of corpusItems(ty)) { const w = cn(e); mentions[e.q] += w; if (e.mg) mentions.merge += w; if (entDone(ty, e)) mentions.done += w; }
     const rows = QUEUES.map(q => '<tr class="ql" data-home="' + ty + '" data-hq="' + q + '" title="' + esc(t('q.' + q + '.tip')) + '"><td class="q">' + esc(t('q.' + q)) + '</td><td class="n">' + fmt(c[q].n) + '</td><td class="n">' + fmt(mentions[q]) + '</td><td class="n">'
       + (q === 'done' ? '' : fmt(c[q].n - c[q].open)) + '</td></tr>').join('');
     return '<div class="hc"><h3>' + esc(t('type.' + ty)) + ' <small>' + esc(t('auth.' + ty)) + '</small></h3><div class="cov">' + esc(t('home.entities', fmt(p.ents), fmt(p.n))) + '</div><div class="pbar"><i style="width:' + p.pct + '%"></i></div><div class="cov"><b>' + esc(t('home.cover', p.pct.toLocaleString(loc())))
@@ -382,7 +419,7 @@ function renderHome() {
   let orphan = 0; for (const ty of TYPES) for (const k of Object.keys(S.ent[ty])) if (!BYK[ty].has(k)) orphan++;
   const rounds = (D.rounds || []).map(r => '<span class="bd">' + esc(r.label) + '</span> ' + esc([r.model, (r.built || '').slice(0, 10), r.dir].filter(Boolean).join(' · '))).join(' &nbsp; ');
   $('#cardwrap').innerHTML = '<div class="wrap wide home"><h1>' + esc(t('home.title')) + '</h1><p class="lead">' + esc(t('home.lead')) + '</p><div class="meta">' + esc(t('home.graph', D.export, D.base_export || '–', D.built)) + '</div>'
-    + '<div class="grid4">' + cards + '</div>' + (orphan ? '<p class="small" style="color:var(--unk)">' + esc(t('home.unknown', fmt(orphan))) + '</p>' : '')
+    + '<div class="grid4">' + cards + '</div>' + (orphan ? '<p class="small" style="color:var(--unk)">' + esc(t('home.unknown', fmt(orphan))) + '</p>' : '') + corpusTableHtml()
     + '<h2>' + esc(t('home.h.thresh')) + '</h2><p>' + esc(t('home.thresh', dec2(D.thresholds.conf), D.thresholds.agree)) + '</p><div class="meta">' + esc(t('home.rounds')) + ': ' + rounds + '</div>'
     + '<h2>' + esc(t('home.h.how')) + '</h2><ol>' + t('home.how') + '</ol><h2>' + esc(t('home.h.keys')) + '</h2><p class="kbdrow">' + t('home.keys') + '</p></div>';
 }
@@ -411,6 +448,8 @@ function renderScan() {
   $('#scantitle').innerHTML = esc(pageLabel(scan.p)) + (m ? ' <span>· ' + esc(m.id) + '</span>' : '');
   $('#scanpages').innerHTML = scan.pages.length > 1 ? scan.pages.map((p, k) => '<button class="nbtn' + (p === scan.p ? ' on' : '') + '" data-page="' + p + '" title="' + esc(t('scan.pageOf', k + 1, scan.pages.length)) + '">' + (k + 1) + '</button>').join('') : '';
   $('#scanopen').href = g[7] ? 'https://drive.google.com/file/d/' + g[7] + '/view' : '#'; $('#scanopen').style.display = g[7] ? '' : 'none';
+  const many = scan.pages.length > 6;                    // numbered page buttons up to six pages, ‹ › beyond
+  $('#scanprev').style.display = $('#scannext').style.display = many ? '' : 'none'; $('#scanpages').style.display = many ? 'none' : '';
   const srcs = pageSources(g);
   body.innerHTML = '<div class="scanwrap' + (scan.zoom ? ' z' + scan.zoom : '') + '" id="scanwrap"><img id="scanimg" alt=""></div>';
   const img = $('#scanimg'); let k = 0;
@@ -466,7 +505,8 @@ function refresh(scroll) {
 }
 function pickDefaultMention() {
   const e = curEnt(); if (!e || !e.ev || !e.ev.length) { curMen = -1; scan.p = -1; renderScan(); return; }
-  let i = e.ev.findIndex(m => m.b && !m.b[4]); if (i < 0) i = e.ev.findIndex(m => m.b); if (i < 0) i = 0;
+  const ok = m => !corpus() || menIn(m);                               // under a filter: a passage of the corpus first
+  let i = e.ev.findIndex(m => ok(m) && m.b && !m.b[4]); if (i < 0) i = e.ev.findIndex(m => ok(m) && m.b); if (i < 0) i = e.ev.findIndex(m => m.b && !m.b[4]); if (i < 0) i = e.ev.findIndex(m => m.b); if (i < 0) i = 0;
   showMention(i, true);
 }
 function openEntity(ty, key, scroll) {

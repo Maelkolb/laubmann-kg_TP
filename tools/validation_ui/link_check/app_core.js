@@ -44,6 +44,7 @@ function normalizeState() {
   S.ent = S.ent || {}; S.form = S.form || {}; S.ui = S.ui || {};
   for (const t of TYPES) { S.ent[t] = S.ent[t] || {}; S.form[t] = S.form[t] || {}; }
   const u = S.ui; u.q = u.q || {}; u.sel = u.sel || {}; u.sub = u.sub || {}; u.find = u.find || {}; u.type = u.type || 'home'; if (u.scan == null) u.scan = true;
+  u.corpus = Math.max(0, Math.min(3, u.corpus | 0));
 }
 const stamp = o => Object.assign({}, o, { by: S.who || '', t: new Date().toISOString() });
 let saveT = null;
@@ -66,6 +67,21 @@ function undo() {
   S.n = Math.max(0, (S.n || 0) - 1); save(); toast(t('toast.undone', h.label));
   if (h.type && h.type !== 'home' && BYK[h.type] && BYK[h.type].has(h.key)) { cur.type = h.type; S.ui.type = h.type; cur.key = h.key; S.ui.sel[h.type] = h.key; }
   refresh(true);
+}
+
+// ---------------------------------------------------------------- corpus filter (a view only: decisions and export never depend on it)
+// S.ui.corpus = lowest record tier that counts: 0 vollständig, 1 Kern, 2 strenger Kern, 3 strenger Kern mit Koordinaten.
+// e.nc / f.nc = mentions of an entry / a written name in the records of the four corpora (build_data.py).
+const corpus = () => (D && D.corpus ? (S.ui.corpus | 0) : 0);
+const cn = e => { const c = corpus(); return c === 0 ? e.n : (e.nc ? e.nc[c] : 0); };
+const fcn = f => { const c = corpus(); return c === 0 ? f.n : (f.nc ? f.nc[c] : 0); };
+const menIn = m => (m.k != null && m.k >= corpus() ? 1 : 0);          // is a passage in the chosen corpus
+const CENTS = {};
+function corpusItems(ty) {     // the entries with at least one mention in the corpus, most mentions in the corpus first
+  const c = corpus(); if (c === 0) return ENTS[ty];
+  const key = ty + c;
+  if (!CENTS[key]) CENTS[key] = ENTS[ty].filter(e => e.nc && e.nc[c] > 0).sort((a, b) => b.nc[c] - a.nc[c] || b.n - a.n || a.l.localeCompare(b.l));
+  return CENTS[key];
 }
 
 // ---------------------------------------------------------------- model
@@ -245,12 +261,12 @@ function auditRows() {
 }
 const exportAudit = () => toCSV(AUDIT_HEAD, auditRows());
 function progressJSON() { return JSON.stringify({ app: 'laubmann-link-check', v: 1, export: D.export, built: D.built, saved: new Date().toISOString(), state: { who: S.who, ent: S.ent, form: S.form } }); }
-function typeProgress(ty) {
+function typeProgress(ty, all) {     // mention-weighted; of the chosen corpus unless `all`
   let n = 0, done = 0, ents = 0, dn = 0, unsure = 0;
-  for (const e of ENTS[ty]) { n += e.n; ents++; if (entDone(ty, e)) { done += e.n; dn++; const d = entDec(ty, e); if (d && d.d === 'unsure') unsure++; } }
+  for (const e of (all ? ENTS[ty] : corpusItems(ty))) { const w = all ? e.n : cn(e); n += w; ents++; if (entDone(ty, e)) { done += w; dn++; const d = entDec(ty, e); if (d && d.d === 'unsure') unsure++; } }
   return { n, done, ents, dn, unsure, pct: n ? Math.floor(done / n * 1000) / 10 : 0 };
 }
-function statusLine() { return TYPES.map(ty => { const p = typeProgress(ty); return t('type.' + ty) + ': ' + fmt(p.dn) + '/' + fmt(p.ents) + ' (' + t('list.progress', p.pct.toLocaleString(loc())) + ')'; }).join('\n'); }
+function statusLine() { return TYPES.map(ty => { const p = typeProgress(ty, true); return t('type.' + ty) + ': ' + fmt(p.dn) + '/' + fmt(p.ents) + ' (' + t('list.progress', p.pct.toLocaleString(loc())) + ')'; }).join('\n'); }
 function exportFiles() {
   return [['review/identities.csv', exportIdentities()], ['link_audit.csv', exportAudit()], ['link_progress.json', progressJSON()],
     ['LIESMICH.txt', t('liesmich', new Date().toISOString(), D.export, D.base_export || '-', S.who || '-', statusLine())]];
