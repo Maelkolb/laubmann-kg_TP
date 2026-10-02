@@ -16,6 +16,8 @@ SHOTS = Path(sys.argv[2] if len(sys.argv) > 2 else os.environ.get("GC_SHOTS", RE
 SHOTS.mkdir(parents=True, exist_ok=True)
 REPO_PY = os.environ.get("GC_REPO_PYTHON", str(REPO / ".venv" / "Scripts" / "python.exe"))
 URL = PAGE.as_uri()
+# the explorer build of the same app (build_graph_check.py --mode explorer), next to the review build
+EXPLORER_PAGE = Path(os.environ.get("GC_EXPLORER", PAGE.with_name("Laubmann_Graph_Explorer.html"))).resolve()
 FAILS = []
 
 
@@ -38,9 +40,10 @@ async def ready(pg):
     await pg.wait_for_timeout(150)
 
 
-async def open_page(p, clear=True, locale="de-DE", viewport=(1440, 900), local_scans=True):
+async def open_page(p, clear=True, locale="de-DE", viewport=(1440, 900), local_scans=True, url=None):
     """A fresh browser; the network is blocked (scans from Drive, map tiles), local files are allowed
-    unless ``local_scans`` is False (then the page runs without any image)."""
+    unless ``local_scans`` is False (then the page runs without any image). ``url``: another page than
+    the review build (the explorer build)."""
     b = await p.chromium.launch()
     ctx = await b.new_context(viewport={"width": viewport[0], "height": viewport[1]}, locale=locale, accept_downloads=True)
 
@@ -56,7 +59,7 @@ async def open_page(p, clear=True, locale="de-DE", viewport=(1440, 900), local_s
     pg.on("pageerror", lambda e: errs.append("pageerror: " + str(e)))
     pg.on("console", lambda m: errs.append("console: " + m.text) if m.type == "error" else None)
     pg.on("dialog", lambda d: d.accept())
-    await pg.goto(URL)
+    await pg.goto(url or URL)
     await ready(pg)
     if clear:
         await pg.evaluate("localStorage.clear()")

@@ -3,7 +3,7 @@
 The scans come from the local JPEGs (data/pages_jpg, the page's fallback): the network is blocked."""
 import asyncio
 from playwright.async_api import async_playwright
-from common import SHOTS, check, done, find_entry, focus_item, goto_entry, open_page
+from common import EXPLORER_PAGE, SHOTS, check, done, find_entry, focus_item, goto_entry, open_page
 
 SMALL = "Object.keys(rv.rec || {}).length >= 5 && Object.keys(rv.rec || {}).length <= 12"
 
@@ -25,6 +25,59 @@ async def card_shot(pg, name, pred_entry, pred_item, scan=False):
     await pg.wait_for_timeout(500)
     await pg.screenshot(path=str(SHOTS / name))
     print("shot", name, eid, "card", i)
+
+
+SAME_ENTRY = "L17-e0132"
+
+
+async def entry_shot(pg, name):
+    """The entry both builds are compared on, in the same state: first record card with a line on the scan."""
+    await goto_entry(pg, SAME_ENTRY, 900)
+    if not await pg.locator("#scanpane").is_visible():
+        await pg.keyboard.press("s")
+    await focus_item(pg, "it => it.type === 'rec' && it.o.rec.loc && it.o.rec.g && it.o.rec.g.v === 'wrong'")
+    await pg.wait_for_timeout(600)
+    await pg.screenshot(path=str(SHOTS / name))
+
+
+async def explorer_shots(p):
+    """The explorer build of the same app: overview, the same entry as the review build, corpus bar, notes off."""
+    if not check(EXPLORER_PAGE.exists(), f"the explorer build exists ({EXPLORER_PAGE.name})"):
+        return []
+    b, pg, errs = await open_page(p, viewport=(1440, 900), url=EXPLORER_PAGE.as_uri())
+    await pg.wait_for_timeout(500)
+    await pg.screenshot(path=str(SHOTS / "19a_explorer_uebersicht.png"))
+    await entry_shot(pg, "18b_explorer_eintrag_L17-e0132.png")
+    await pg.keyboard.press("g")
+    await pg.wait_for_timeout(400)
+    await pg.screenshot(path=str(SHOTS / "19d_explorer_tabelle.png"))
+    await pg.keyboard.press("g")
+    await pg.click('#corpbar [data-corpus="2"]')
+    await pg.wait_for_timeout(700)
+    await pg.screenshot(path=str(SHOTS / "19b_explorer_eintrag_strenger_kern.png"))
+    await pg.evaluate("LKGC.go('/')")
+    await pg.wait_for_timeout(700)
+    await pg.screenshot(path=str(SHOTS / "19e_explorer_uebersicht_strenger_kern.png"))
+    await pg.click('#corpbar [data-act="corpus-off"]')
+    await pg.wait_for_timeout(500)
+    await entry_shot(pg, "19f_explorer_eintrag_vor_schalter.png")
+    await pg.locator("#corpbar #notesw").uncheck()
+    await pg.wait_for_timeout(700)
+    await pg.screenshot(path=str(SHOTS / "19c_explorer_ohne_pruefhinweise.png"))
+    await pg.locator("#corpbar #notesw").check()
+    (SHOTS / "19f_explorer_eintrag_vor_schalter.png").unlink(missing_ok=True)
+    # 18c: both builds side by side for the same entry
+    page = SHOTS / "_nebeneinander.html"
+    page.write_text('<!doctype html><meta charset="utf-8"><body style="margin:0;background:#888;display:flex;gap:6px">'
+                    '<img src="18a_pruefung_eintrag_L17-e0132.png" width="1440" height="900"><img src="18b_explorer_eintrag_L17-e0132.png" width="1440" height="900"></body>', encoding="utf-8")
+    pg2 = await b.new_page(viewport={"width": 2886, "height": 900})
+    await pg2.goto(page.as_uri())
+    await pg2.wait_for_timeout(400)
+    await pg2.screenshot(path=str(SHOTS / "18c_pruefung_und_explorer_nebeneinander.png"))
+    page.unlink(missing_ok=True)
+    print("shots 18b, 18c, 19a-e")
+    await b.close()
+    return errs
 
 
 async def main():
@@ -138,7 +191,7 @@ async def main():
         await pg.evaluate("LKGC.setQueue('finding', false)")
         print("shots 11, 12", eid)
         # 13 "strenger Kern" active: an entry (hidden records, then shown dimmed), 14 a taxon node view, 15 the overview
-        await pg.select_option("#corpsel", "2")
+        await pg.click('#corpbar [data-corpus="2"]')
         await pg.wait_for_timeout(600)
         eid = await find_entry(pg, "(rv, s, r) => s.nc && s.nc[2] >= 3 && r.nobs - s.nc[2] >= 2 && r.nobs <= 9 && Object.values(rv.rec || {}).some(x => x.t === 0 && (x.g || {}).v === 'wrong') && Object.values(rv.rec || {}).some(x => x.t === 1)")
         await goto_entry(pg, eid, 700)
@@ -163,6 +216,22 @@ async def main():
         await pg.evaluate("LKGC.setCorpus(0)")
         await pg.wait_for_timeout(600)
         print("shots 13, 14, 15a", eid)
+
+        # ---- 17 the corpus bar (always under the header) in the review build; 18a the entry both builds are compared on
+        await pg.evaluate("LKGC.go('/')")
+        await pg.wait_for_timeout(700)
+        await pg.screenshot(path=str(SHOTS / "17a_korpusleiste_pruefung_uebersicht.png"))
+        await pg.click('#corpbar [data-act="corpus-info"]')
+        await pg.wait_for_timeout(250)
+        await pg.screenshot(path=str(SHOTS / "17c_korpusleiste_info.png"))
+        await pg.keyboard.press("Escape")
+        await entry_shot(pg, "18a_pruefung_eintrag_L17-e0132.png")
+        await pg.click('#corpbar [data-corpus="2"]')
+        await pg.wait_for_timeout(700)
+        await pg.screenshot(path=str(SHOTS / "17b_korpusleiste_pruefung_eintrag_strenger_kern.png"))
+        await pg.click('#corpbar [data-act="corpus-off"]')
+        await pg.wait_for_timeout(500)
+        print("shots 17, 18a")
         # a decided entry: 'von dir entschieden' on cards, nodes and in the list
         eid = await find_entry(pg, f"(rv, s) => s.find.length >= 2 && {SMALL} && Object.values(rv.rec).filter(r => r.g && r.g.v === 'wrong' && r.g.fix && (r.g.fix.count || r.g.fix.locality)).length >= 2")
         await goto_entry(pg, eid, 600)
@@ -202,6 +271,6 @@ async def main():
         await pg.wait_for_timeout(300)
         await pg.screenshot(path=str(SHOTS / "16d_help_english.png"))
         await b.close()
-        done(errs)
+        done(errs + await explorer_shots(p))
 
 asyncio.run(main())

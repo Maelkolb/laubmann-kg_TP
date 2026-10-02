@@ -65,10 +65,10 @@ function recCard(m, it) {
   }
   for (const p of ps) body += srcBlock(p, cur);
   for (const a of auto) body += `<div class="src src-m"><div class="src-h"><span class="who">${t('src_auto')}</span><span class="vd vd-auto">${t('auto_applied')}</span></div><div class="diff"><span class="fl">${esc(fieldLabel(a[0] === 'value' ? 'species' : a[0]))}</span><span class="is">${esc(a[1] || '—')}</span><span class="arr">→</span><span class="to">${esc(a[2])}</span></div>${a[3] ? `<div class="why">${esc(a[3])}</div>` : ''}</div>`;
-  if (ps.some(p => p.georef)) body += `<div class="geonote">${t('geo_note')}</div>`;
+  if (ps.some(p => p.georef) && !EXPLORER) body += `<div class="geonote">${t('geo_note')}</div>`;
   body += tierLine(o);
   let jLab = t('a_apply'), jDis = false;
-  if (!d) {
+  if (!d && !EXPLORER) {   // what J would do: only where something can be decided
     if (mp && mp.drop) body += `<div class="preview">${t('j_drop')}</div>`;
     else if (mp && Object.keys(mp.bad).length) body += `<div class="preview">${esc(t('j_form', Object.keys(mp.bad).map(fieldLabel).join(', ')))}${Object.keys(mp.vals).length ? ' · ' + valsHtml(mp.vals) : ''}</div>`;
     else if (mp && (ps.length > 1 || mp.geo) && Object.keys(mp.vals).length) body += `<div class="preview">${t('j_applies')}: ${valsHtml(mp.vals)}</div>`;
@@ -91,7 +91,7 @@ function missCard(m, it) {
     chips.map(c => `<div class="diff"><span class="fl">${esc(c[0])}</span><span class="to">${esc(c[1])}</span></div>`).join('') +
     (x.note ? `<div class="why">${esc(x.note)}</div>` : '') + (x.text ? `<div class="quote">„${markup(x.text)}“ <span class="qin ${x.in_text ? 'yes' : 'no'}">${t(x.in_text ? 'q_in' : 'q_notin')}</span></div>` : '') + '</div>';
   if (it.also && it.x.src !== it.also.src) body = `<div class="agree both">${t('agree_miss')}</div>` + body;
-  if (!isObs) body += `<div class="hint">${t('miss_other_hint')}</div>`;
+  if (!isObs && !EXPLORER) body += `<div class="hint">${t('miss_other_hint')}</div>`;
   const rec = d && d.rec;
   const mine = d && d.d ? mineHtml('miss', d, rec ? `<span class="hv"><b>${esc(rec.species_de)}</b>${rec.scientific_name ? ` <i>${esc(rec.scientific_name)}</i>` : ''} ${esc([rec.count, rec.locality, rec.date, rec.observer, rec.record_type].filter(Boolean).join(' · '))}</span>` : '') : '';
   const acts = abtn('j', 'J', t('a_add'), 'a-j', !isObs) + abtn('n', 'N', t(isObs ? 'a_noadd' : 'a_noted'), 'a-n');
@@ -115,7 +115,8 @@ function nameCard(m, it) {
   }
   if (x.detail) body += `<div class="why">${esc(x.detail)}</div>`;
   const n = mentionCount(sec, x.form, x.nodes);
-  body += `<div class="scope">${t('name_scope')}${n ? ' · ' + esc(t(sec === 'taxa' ? 'name_mentions' : 'name_uses', fmt(n))) : ''}${x.kind !== 'suggest' && x.kind !== 'confirmed' ? '' : ' · ' + t('name_linkpage')}</div>`;
+  if (EXPLORER) { if (n) body += `<div class="scope">${esc(t(sec === 'taxa' ? 'name_mentions' : 'name_uses', fmt(n)))}</div>`; }
+  else body += `<div class="scope">${t('name_scope')}${n ? ' · ' + esc(t(sec === 'taxa' ? 'name_mentions' : 'name_uses', fmt(n))) : ''}${x.kind !== 'suggest' && x.kind !== 'confirmed' ? '' : ' · ' + t('name_linkpage')}</div>`;
   const mine = d && d.d ? mineHtml('name', d) : '';
   const acts = x.kind === 'suggest' ? abtn('j', 'J', t('a_apply'), 'a-j') + abtn('n', 'N', t('a_reject'), 'a-n')
     : x.kind === 'confirmed' ? abtn('j', 'J', t('a_confirm'), 'a-j') + abtn('n', 'N', t('a_wrong'), 'a-n')
@@ -171,7 +172,7 @@ const qaLabel = r => { const k = 'qa_' + r; return UI[LANG][k] || UI.de[k] || r;
 function qaCard(m, it) {
   const q = it.q; const d = RV.dec[it.key]; const ex = q[1] === 'excluded';
   const head = `<span class="rc-kind k-qa">${t(ex ? 'c_gone' : 'c_qa')}</span><b class="rc-t${ex ? ' strike' : ''}">${esc(q[2] && q[2].length < 60 ? q[2] : qaLabel(q[0]))}</b><span class="rc-sum">${esc(q[2] && q[2].length < 60 ? qaLabel(q[0]) : '')}</span>`;
-  const body = `<div class="why">${esc(q[3] || '')}</div>${q[2] && q[2].length >= 60 ? `<div class="quote">${esc(q[2])}</div>` : ''}${ex ? `<div class="hint">${t(QA_UNDO.has(q[0]) ? 'qa_ex_hint' : 'qa_ex_noeffect')}</div>` : ''}`;
+  const body = `<div class="why">${esc(q[3] || '')}</div>${q[2] && q[2].length >= 60 ? `<div class="quote">${esc(q[2])}</div>` : ''}${ex && !EXPLORER ? `<div class="hint">${t(QA_UNDO.has(q[0]) ? 'qa_ex_hint' : 'qa_ex_noeffect')}</div>` : ''}`;
   const mine = d && d.d ? mineHtml('qa', d) : '';
   return { head, body, mine, acts: abtn('j', 'J', t('a_confirm'), 'a-j') + abtn('n', 'N', t('a_false_alarm'), 'a-n') };
 }
@@ -193,11 +194,13 @@ function markPill(it, done) {   // marker = kind of flag, colour = level; a deci
 function cardHtml(m, it, i) {
   const c = CARD[it.type](m, it); const done = itemDecided(it); const form = RVU.form && RVU.form.key === it.key ? formHtml(m, it) : '';
   const out = it.type === 'rec' && corpusOn() && !inCorpus(it.o.n);
+  if (EXPLORER)   // a read-only annotation: what was found or changed, from -> to, the reason; nothing to decide
+    return `<div class="rcard ro t-${it.type} lv${it.lv}${out ? ' out' : ''}${i === RVU.card ? ' focus' : ''}" data-ci="${i}"><div class="rc-head">${markPill(it, false)}${c.head}</div>${c.body ? `<div class="rc-body">${c.body}</div>` : ''}</div>`;
   return `<div class="rcard t-${it.type} lv${it.type === 'done' ? 'x' : it.lv}${done ? ' done' : ''}${out ? ' out' : ''}${i === RVU.card ? ' focus' : ''}" data-ci="${i}"><div class="rc-head">${it.type === 'done' ? '' : markPill(it, done)}${c.head}</div>${c.mine}${c.body ? `<div class="rc-body">${c.body}</div>` : ''}${form}<div class="rc-acts">${c.acts}</div></div>`;
 }
 function secHead(m, sec, all, shown) {   // heading of a section of the check tab
   const open = all.filter(it => !itemDecided(it)).length;
-  if (sec === 'l3' || sec === 'l2' || sec === 'l1') { const lv = +sec[1]; return `<h3 class="sec gsec lvh">${lvDot(lv)}${lvName(lv)}<span class="cnt" title="${t('sec_cnt_t')}">${fmt(open)} / ${fmt(all.length)}</span></h3>`; }
+  if (sec === 'l3' || sec === 'l2' || sec === 'l1') { const lv = +sec[1]; return `<h3 class="sec gsec lvh">${lvDot(lv)}${lvName(lv)}<span class="cnt"${EXPLORER ? '' : ` title="${t('sec_cnt_t')}"`}>${EXPLORER ? fmt(all.length) : fmt(open) + ' / ' + fmt(all.length)}</span></h3>`; }
   if (sec === 'hint') return `<h3 class="sec gsec lvh">${lvDot(0)}${lvName(0)}<span class="cnt">${fmt(all.length)}</span><span class="link" data-act="hints" title="${t('hints_t')}">${RVU.hints ? t('hints_less') : esc(t('hints_more', fmt(all.length)))}</span></h3>`;
   if (sec === 'done') return '';
   return `<h3 class="sec gsec">${t('g_' + sec)}<span class="cnt">${sec === 'ent' ? '' : fmt(all.length)}</span></h3>`;
@@ -206,8 +209,9 @@ function rvRenderCheck(body) {
   const m = entryModel(S.e); const items = visibleItems(m); RVU.items = items; const keep = body.dataset.e === String(S.e) && body.dataset.tab === 'check' ? body.scrollTop : 0;
   RVU.card = clamp(RVU.card, 0, items.length - 1);
   const chk = m.rv.chk || ''; const nFl = m.obs.filter(o => flagged(o.rec)).length;
-  let s = `<div class="chead"><span>${chk ? esc(t('chk_by', [chk.includes('g') ? srcName('g') : '', chk.includes('s') ? srcName('s') : ''].filter(Boolean).join(' + '))) : `<span class="vd vd-off">${t('chk_none')}</span>`}</span>
-    <span class="muted">${esc(t('chk_counts', fmt(m.obs.length), fmt(nFl)))}</span><span class="sp"></span><button class="btn" data-act="addrec">${t('a_add_rec')}</button></div>`;
+  let s = !RVU.notes ? `<div class="chead"><span class="muted">${esc(t('notes_off_note', fmt(m.obs.length)))}</span></div>`
+    : `<div class="chead"><span>${chk ? esc(t('chk_by', [chk.includes('g') ? srcName('g') : '', chk.includes('s') ? srcName('s') : ''].filter(Boolean).join(' + '))) : `<span class="vd vd-off">${t('chk_none')}</span>`}</span>
+    <span class="muted">${esc(t('chk_counts', fmt(m.obs.length), fmt(nFl)))}</span><span class="sp"></span>${EXPLORER ? '' : `<button class="btn" data-act="addrec">${t('a_add_rec')}</button>`}</div>`;
   if (RVU.form && RVU.form.key === 'new') s += `<div class="rcard t-miss focus"><div class="rc-head"><span class="rc-kind k-miss">${t('c_new')}</span></div>${formHtml(m, { type: 'miss', key: 'new', x: { kind: 'observation', src: 'h' } })}</div>`;
   if (RVU.form && RVU.form.kind === 'rec' && !items.some(it => it.key === RVU.form.key)) {   // a record without a card (edited from the table)
     const o = m.obs.find(x => x.key === RVU.form.key);
@@ -215,9 +219,10 @@ function rvRenderCheck(body) {
   }
   const hiddenOut = outCount(m);
   if (hiddenOut) s += `<p class="gnote corpnote">${esc(t(RVU.showOut ? 'out_cards_shown' : 'out_cards', fmt(hiddenOut), corpusName(RVU.corpus)))} <span class="link" data-act="showout">${t(RVU.showOut ? 'out_hide_s' : 'out_show_s')}</span></p>`;
-  if (!m.items.some(it => it.lv >= 1)) s += `<p class="muted gnote">${t('no_flags')}</p>`;
+  if (RVU.notes && !m.items.some(it => it.lv >= 1)) s += `<p class="muted gnote">${t('no_flags')}</p>`;
+  if (!RVU.notes && !items.length) s += `<p class="muted gnote">${t('no_media')}</p>`;
   for (const sec of SEC_ORDER) {   // schwer, mittel, leicht first; hints collapsed; then own changes, entry header, images, finish
-    const all = m.items.filter(it => it.sec === sec && !(it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n))); if (!all.length) continue;
+    const all = m.items.filter(it => it.sec === sec && (RVU.notes || it.type === 'media') && !(it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n))); if (!all.length) continue;
     s += secHead(m, sec, all);
     for (const it of all) { const i = items.indexOf(it); if (i >= 0) s += cardHtml(m, it, i); }
   }
@@ -310,6 +315,7 @@ function nameDecision(it, d) {   // the machine rows and both links travel with 
   return { d, ref: { section: x.section, form: x.form, nk: x.key }, kind: x.kind, rows: (x.info.rows || []).map(r => Object.assign({}, r)), before: x.info.before || null, now: x.info.now || null, unc: unc || '', n: mentionCount(x.section, x.form, x.nodes) };
 }
 function cardAct(a) {
+  if (EXPLORER) return;
   const m = EM; const items = RVU.items || []; const it = items[RVU.card]; if (!m || !it) return;
   let moved = false;
   if (a === 'reset') {
@@ -356,7 +362,7 @@ function markChecked(m) {
 }
 
 // ------------------------------------------------------------------ forms (inline in the card)
-function openForm(key, kind, opts) { RVU.form = Object.assign({ key, kind }, opts || {}); if (S.tab !== 'check') S.tab = 'check'; renderPanel(); }
+function openForm(key, kind, opts) { if (EXPLORER) return; RVU.form = Object.assign({ key, kind }, opts || {}); if (S.tab !== 'check') S.tab = 'check'; renderPanel(); }
 function cancelForm() { RVU.form = null; renderPanel(); }
 const inp = (name, val, ph, cls) => `<input type="text" name="${name}" value="${esc(val == null ? '' : val)}" placeholder="${esc(ph || '')}" autocomplete="off" spellcheck="false" class="${cls || ''}">`;
 const sel = (name, val, voc, pred, clear) => `<select name="${name}">${(clear ? [''] : []).concat(voc).map(v => `<option value="${v}"${v === (val || '') ? ' selected' : ''}>${v ? esc(cv(pred, v)) : '—'}</option>`).join('')}</select>`;
@@ -481,6 +487,7 @@ function submitForm(f) {
 function rvPanelClick(ev) {
   const card = ev.target.closest('.rcard'); const act = ev.target.closest('[data-act]');
   if (ev.target.closest('.rform') && (!act || act.dataset.act === 'gbif')) return;
+  if (EXPLORER && act && !['hints', 'showout'].includes(act.dataset.act)) return;   // nothing decides in the explorer build
   if (act && act.dataset.act === 'addrec') { openForm('new', 'add'); return; }
   if (act && act.dataset.act === 'hints') { RVU.hints = !RVU.hints; renderPanel(); return; }
   if (act && act.dataset.act === 'showout') { rvHeadAct('showout'); return; }
@@ -508,12 +515,13 @@ function rvKey(ev) {
   if (ev.ctrlKey || ev.metaKey || ev.altKey || S.view !== 'entry') return false;
   const k = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
   if (k === 'ArrowLeft' || k === 'ArrowRight') { ev.preventDefault(); stepEntry(k === 'ArrowLeft' ? -1 : 1); return true; }
-  if (k === 'z') { ev.preventDefault(); undo(); return true; }
+  if (k === 'z' && !EXPLORER) { ev.preventDefault(); undo(); return true; }
   if (k === 's') { ev.preventDefault(); scanToggle(); return true; }
   if (k === 'g') { ev.preventDefault(); rvHeadAct('mid'); return true; }
   if (k === 'Escape' && RVU.form) { cancelForm(); return true; }
   if (S.tab !== 'check') return false;
   if (k === 'ArrowUp' || k === 'ArrowDown') { ev.preventDefault(); moveCard(k === 'ArrowUp' ? -1 : 1); return true; }
+  if (EXPLORER) return false;   // no decision keys
   if ('jnexu'.includes(k) && k.length === 1) { ev.preventDefault(); cardAct(k); return true; }
   if (k === 'Enter') { const it = (RVU.items || [])[RVU.card]; if (it && it.type === 'done' && !entryDec(EM.uid).checked) { ev.preventDefault(); cardAct('done'); return true; } }
   return false;

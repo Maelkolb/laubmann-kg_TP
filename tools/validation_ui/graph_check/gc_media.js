@@ -50,7 +50,7 @@ function mediaCard(m, it) {
   let txt = '';
   if (desc) txt += `<div class="why">${esc(desc)}</div>`;
   if (st === 'readin') txt += `<div class="why">${t('ins_readin_hint')} <span class="link" data-go="/e/${esc(other)}">${esc(other)}</span></div>`;
-  if (st === 'unread' || st === 'partly') txt += `<div class="hint warn">${t('ins_unread_hint')}</div>`;
+  if ((st === 'unread' || st === 'partly') && !EXPLORER) txt += `<div class="hint warn">${t('ins_unread_hint')}</div>`;
   if (vt) txt += `<details class="vt"${vt.length <= 260 ? ' open' : ''}><summary>${t('visible_text')} (${fmt(vt.length)})</summary><pre>${esc(vt)}</pre></details>`;
   const body = `<div class="mrow"><div class="mthumb" data-crop-open="${esc(uid)}" title="${esc(t('crop_open'))}">${cropHtml(uid, 'thumb', 800)}</div><div class="mtext">${txt || `<span class="muted">${t('media_nodesc')}</span>`}</div></div>`;
   return { head, body, mine: '', acts: abtn('big', '', t('crop_open'), '') + abtn('j', 'J', t('a_add_rec'), st === 'unread' || st === 'partly' ? 'a-j' : '') };

@@ -4,7 +4,7 @@
    (RVU.corpus = 0 … 3). It is a VIEW: graphs, table, work list, queue counts, node views, class view and
    overview count only the records of the chosen corpus; decisions and exports are not affected. */
 
-const CORP = { tier: null, n: [0, 0, 0, 0], ent: [0, 0, 0, 0], taxa: [0, 0, 0, 0], why: {} };
+const CORP = { info: false, tier: null, n: [0, 0, 0, 0], ent: [0, 0, 0, 0], taxa: [0, 0, 0, 0], why: {} };
 function corpusIndex() {   // tier of every observation node, counts per corpus, reasons
   const tier = new Int8Array(G.nodes.length).fill(-1); const taxa = [new Set(), new Set(), new Set(), new Set()]; const why = {};
   CORP.n = [0, 0, 0, 0]; CORP.ent = [0, 0, 0, 0];
@@ -48,20 +48,48 @@ function rvEntryCount(r) {   // "5 von 8 Beobachtungen" under a filter
 }
 function outCount(m) { return corpusOn() ? m.obs.filter(o => !inCorpus(o.n)).length : 0; }
 // ---- selector, switching
-function renderCorpusSel() {
-  const sel_ = $('#corpsel'); if (!sel_) return;
-  sel_.innerHTML = [0, 1, 2, 3].map(c => `<option value="${c}"${c === RVU.corpus ? ' selected' : ''}>${esc(t('corp_sel', t('corp_s_' + c), fmt(CORP.n[c])))}</option>`).join('');
-  sel_.classList.toggle('on', corpusOn()); sel_.title = t('corp_t');
-  const bar = $('#corpbar'); if (bar) { bar.hidden = !corpusOn(); const c = RVU.corpus;
-    bar.innerHTML = corpusOn() ? `<span class="trc tr${c}">K${c}</span><span>${esc(t('corp_active', corpusName(c), fmt(CORP.n[c]), fmt(CORP.n[0]), fmt(CORP.ent[c]), fmt(CORP.ent[0])))}</span><button class="btn" data-act="corpus-off">${t('corp_off')}</button>` : ''; }
+function renderCorpusBar() {   // the corpus filter: an always visible segmented control under the header, in every view
+  const bar = $('#corpbar'); if (!bar) return; const c = RVU.corpus;
+  const seg = [0, 1, 2, 3].map(k => `<button type="button" class="cb${k === c ? ' on' : ''}" data-corpus="${k}" aria-pressed="${k === c}" title="${esc(t('corp_def_' + k))}"><span class="cbn">${esc(t('corp_b_' + k))}</span><span class="cbc num">${fmt(CORP.n[k])}</span></button>`).join('');
+  const note = corpusOn() ? t('corp_active', corpusName(c), fmt(CORP.n[c]), fmt(CORP.n[0]), fmt(CORP.ent[c]), fmt(CORP.ent[0])) : t('corp_view');
+  bar.classList.toggle('active', corpusOn());
+  bar.innerHTML = `<span class="cbl" title="${esc(t('corp_t'))}">${t('corp_label')}</span><span class="cseg" role="group" aria-label="${esc(t('corp_label'))}">${seg}</span>` +
+    `<button type="button" class="cinfo${CORP.info ? ' on' : ''}" data-act="corpus-info" aria-expanded="${CORP.info ? 'true' : 'false'}" title="${esc(t('corp_info_t'))}">ⓘ</button>` +
+    `<span class="cnote" title="${esc(note)}">${esc(note)}</span>` +
+    (corpusOn() ? `<button type="button" class="btn" data-act="corpus-off">${t('corp_off')}</button>` : '') +
+    (EXPLORER ? `<label class="cnotes${RVU.notes ? ' on' : ''}" title="${esc(t('notes_t'))}"><input type="checkbox" id="notesw"${RVU.notes ? ' checked' : ''}>${t('notes_on')}</label>` : '') +
+    (CORP.info ? `<div id="corpinfo" role="note"><b>${t('corp_info_h')}</b><dl>${[0, 1, 2, 3].map(k => `<dt>${esc(t('corp_b_' + k))} <span class="num muted">${fmt(CORP.n[k])}</span></dt><dd>${esc(t('corp_def_' + k))}</dd>`).join('')}</dl><p class="muted">${esc(t('corp_info_view'))}</p></div>` : '');
   document.documentElement.classList.toggle('corpus-on', corpusOn());
+}
+function corpusBarWire() {
+  const bar = $('#corpbar');
+  bar.addEventListener('click', ev => {
+    ev.gcCorpusBar = true;   // the bar is redrawn below: the target leaves the document before the click reaches it
+    const b = ev.target.closest('[data-corpus]'); if (b) { CORP.info = false; setCorpus(b.dataset.corpus); return; }
+    const a = ev.target.closest('[data-act]'); if (!a) return;
+    if (a.dataset.act === 'corpus-off') setCorpus(0);
+    else if (a.dataset.act === 'corpus-info') { CORP.info = !CORP.info; renderCorpusBar(); }
+  });
+  bar.addEventListener('change', ev => { if (ev.target.id === 'notesw') setNotes(ev.target.checked); });
+  document.addEventListener('click', ev => { if (CORP.info && !ev.gcCorpusBar) { CORP.info = false; renderCorpusBar(); } });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && CORP.info) { CORP.info = false; renderCorpusBar(); } });
+}
+function setNotes(on) {   // explorer build: "Prüfhinweise zeigen" — off = the graph as it is, without findings, changes, ghost nodes
+  if (!EXPLORER) return;
+  RVU.notes = !!on; store('notes', on ? '1' : '0'); LVC.clear();
+  if (!queueList().includes(RVU.queue)) { RVU.queue = 'all'; store('queue', 'all'); }
+  countQueues(); renderCorpusBar(); renderChips(); rvRenderList();
+  if (S.view === 'entry') EM = null;
+  route(); rvResize(); if (S.view === 'entry') fitView();
 }
 function setCorpus(c) {
   RVU.corpus = clamp(+c || 0, 0, 3); store('corpus', String(RVU.corpus)); RVU.showOut = false;
   G.stats = null; NV.rows = null; CV.rows = null; LVC.clear(); const ov = $('#x-ov'); if (ov) ov.dataset.lang = '';
-  countQueues(); renderCorpusSel(); renderChips(); rvRenderList();
+  countQueues(); renderCorpusBar(); renderChips(); rvRenderList();
   if (S.view === 'entry') EM = null;   // the model keeps no corpus state, but the cards and the head do
   route(); rvResize(); if (S.view === 'entry') fitView();
+  // a selected record that the corpus hides is no longer highlighted on the scan
+  if (S.view === 'entry' && S.sel && S.sel[0] === 'n' && kindOf(+S.sel.slice(1)) === 'obs' && !inCorpus(+S.sel.slice(1)) && !RVU.showOut) selectKey(null);
 }
 // ---- overview
 function corpusTableHtml() {

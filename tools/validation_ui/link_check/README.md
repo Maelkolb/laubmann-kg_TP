@@ -63,9 +63,11 @@ rechnet sie nicht neu, sondern liest sie aus `data/cache/graph_check/review.json
 | K2 | strenger Kern | `no-coords` Ort ohne Koordinaten |
 | K3 | strenger Kern mit Koordinaten | – |
 
-Die Auswahl in der Kopfzeile (**vollständig · Kern · strenger Kern · strenger Kern mit Koordinaten**, je mit der
-Zahl der Datensätze; im Browser gemerkt) wählt die niedrigste Stufe, die zählt. Ist ein Filter aktiv, steht unter
-der Kopfzeile ein Balken mit Korpus, Zahlen und „Filter aufheben“.
+Direkt unter der Kopfzeile steht in jeder Ansicht (Übersicht und alle vier Typen) die Leiste **Korpus** mit vier
+Knöpfen und der Zahl ihrer Datensätze – **Vollständig · Kern · Strenger Kern · Strenger Kern mit Koordinaten** –,
+der gewählte ist gefüllt, die Wahl wird im Browser gemerkt. Sie wählt die niedrigste Stufe, die zählt. **ⓘ** erklärt
+die vier Korpora in Worten. Ist ein Filter aktiv, färbt sich die Leiste, nennt Korpus und Zahlen und bietet
+„Filter aufheben“.
 
 **Was ein Korpus für einen Eintrag (Art, Person, Ort, Lebensraum) heißt:** seine Nennungen, die zu Datensätzen
 des Korpus gehören.

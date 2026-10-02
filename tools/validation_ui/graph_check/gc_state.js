@@ -11,7 +11,8 @@
 
 let R = { meta: {}, pages: [], entries: {}, names: {}, obs: {}, sample: [], graph: {} };
 const RV = { v: 1, who: '', dec: {}, log: [] };
-const RVU = { queue: store('queue') || 'finding', sort: store('qsort') || 'score', vol: 'all', mid: store('mid') === 'table' ? 'table' : 'graph',
+// explorer build: the list starts with all entries in diary order; `notes` = the switch "Prüfhinweise zeigen" (always on in the review build)
+const RVU = { queue: store('queue') || (EXPLORER ? 'all' : 'finding'), sort: store('qsort') || (EXPLORER ? 'diary' : 'score'), notes: !EXPLORER || store('notes') !== '0', vol: 'all', mid: store('mid') === 'table' ? 'table' : 'graph',
   scan: store('scan') !== '0', media: store('media') !== '0', hints: false, corpus: clamp(+store('corpus') || 0, 0, 3), showOut: false,
   lvf: new Set((store('lvf') || '').split(',').filter(Boolean).map(Number)), card: 0, form: null, list: [], counts: {}, lsFail: false, armed: false };
 const LS_STATE = 'laubmann-graphpruefung';
@@ -127,7 +128,9 @@ function forEachName(e, obsNodes, fn) {   // fn(section, key, form, node) for ev
 
 // ------------------------------------------------------------------ summaries of all entries (queues, list badges)
 const RVS = new Map();   // entry node -> summary
-const QUEUES = ['finding', 'auto', 'tc', 'ins', 'img', 'qa', 'sample', 'all', 'done'];
+const QUEUES = ['finding', 'auto', 'tc', 'ins', 'img', 'qa', 'sample', 'all', 'done'].filter(q => !(EXPLORER && q === 'done'));   // no "Geprüft" without decisions
+const NOTE_QUEUES = new Set(['finding', 'auto', 'tc', 'qa']);   // queues that are review notes: gone with "Prüfhinweise zeigen" off
+const queueList = () => (RVU.notes ? QUEUES : QUEUES.filter(q => !NOTE_QUEUES.has(q)));
 function buildSummaries() {
   /* per entry: the keys of its decidable items per queue, and `lv` = [key, level, kind, tier] of every item
      of level >= 1 (gc_severity.js) — the same rules as the cards of the entry (buildItems) */
@@ -186,7 +189,7 @@ function isOpen(s, q) {   // still something to decide for this queue
   if (isChecked(s.uid)) return false; const keys = queueKeys(s, q);
   return keys.length ? keys.some(k => !isDecided(k)) : true;
 }
-const levelOk = s => !RVU.lvf.size || [...RVU.lvf].some(l => openLevels(s)[l] > 0);   // level filter chips (schwer / mittel / leicht)
+const levelOk = s => !RVU.notes || !RVU.lvf.size || [...RVU.lvf].some(l => openLevels(s)[l] > 0);   // level filter chips (schwer / mittel / leicht)
 function countQueues() {
   const c = {}; for (const q of QUEUES) c[q] = { n: 0, open: 0 };
   for (const s of RVS.values()) for (const q of QUEUES) if (inQueue(s, q)) { c[q].n++; if (q !== 'done' && isOpen(s, q)) c[q].open++; }
@@ -310,7 +313,7 @@ function buildItems(m) {   // everything decidable for the entry, in the order o
   const insBy = new Map((rv.ins || []).map(x => [x[0], x])); const media = (rv.media || []).slice();
   for (const x of rv.ins || []) if (!media.some(y => y[0] === x[0])) media.push([x[0], x[1]]);
   media.forEach((x, i) => items.push({ type: 'media', group: 'media', key: 'media:' + uid + '|' + x[0], x, ins: insBy.get(x[0]) || null, i }));
-  items.push({ type: 'done', group: 'done', key: 'done:' + uid });
+  if (!EXPLORER) items.push({ type: 'done', group: 'done', key: 'done:' + uid });
   m.itemByObs = new Map();
   for (const it of items) { it.lv = itemLevel(m, it); it.mk = itemMark(it); it.sec = itemSec(it); if (it.type === 'rec') m.itemByObs.set(it.o.n, it); }
   return items;
@@ -318,7 +321,7 @@ function buildItems(m) {   // everything decidable for the entry, in the order o
 // sections of the check tab: by level (schwer first), then hints (collapsed), own changes, entry header, images, finish
 const SEC_ORDER = ['l3', 'l2', 'l1', 'hint', 'own', 'ent', 'media', 'done'];
 function itemSec(it) { if (it.type === 'done') return 'done'; if (it.lv >= 1) return 'l' + it.lv; if (it.type === 'ent') return 'ent'; if (it.type === 'media') return 'media'; if (it.type === 'rec' || it.type === 'miss') return 'own'; return 'hint'; }
-const itemHidden = it => (it.sec === 'hint' && !RVU.hints && !isDecided(it.key)) || (it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n));
+const itemHidden = it => (!RVU.notes && it.type !== 'media') || (it.sec === 'hint' && !RVU.hints && !isDecided(it.key)) || (it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n));
 function visibleItems(m) { const out = []; for (const sec of SEC_ORDER) for (const it of m.items) if (it.sec === sec && !itemHidden(it)) out.push(it); return out; }
 function openByLevel(m) {   // open items of the entry per level [0, leicht, mittel, schwer]; hidden records of another corpus do not count
   const c = [0, 0, 0, 0]; if (isChecked(m.uid)) return c; const seen = new Set();   // two cards with one key (the same reading correction twice) are one decision
@@ -330,6 +333,7 @@ function itemDecided(it) { if (it.type === 'ent') { const d = RV.dec[it.key] || 
 // ------------------------------------------------------------------ decisions, undo, persistence
 function logLine(key, lab) { RV.log.unshift({ k: key, t: nowIso(), by: RV.who || '', lab: lab || '' }); if (RV.log.length > 3000) RV.log.length = 3000; }
 function decide(key, val, lab) {   // val = null removes the decision
+  if (EXPLORER) return;   // the explorer build decides nothing
   LVC.clear();
   HIST.push([[key, RV.dec[key] ? JSON.parse(JSON.stringify(RV.dec[key])) : null]]); if (HIST.length > 300) HIST.shift();
   if (val == null) delete RV.dec[key]; else RV.dec[key] = Object.assign(val, { by: RV.who || '', t: nowIso() });
@@ -338,12 +342,14 @@ function decide(key, val, lab) {   // val = null removes the decision
   saveSoon(); rvRefresh();
 }
 function undo() {
+  if (EXPLORER) return;
   const h = HIST.pop(); if (!h) { toast(t('undo_none')); return; }
   for (const [k, prev] of h) { if (prev) RV.dec[k] = prev; else delete RV.dec[k]; }
   LVC.clear(); logLine(h[0][0], 'undo'); saveSoon(); if (EM) EM.items = buildItems(EM); rvRefresh(); toast(t('undone'));
 }
 let fileHandle = null, lastSaved = null, dirtyN = 0;
 function saveState() {
+  if (EXPLORER) return;
   try { localStorage.setItem(LS_STATE, JSON.stringify(RV)); RVU.lsFail = false; }
   catch (e) { if (!RVU.lsFail) toast(t('ls_full'), 6000); RVU.lsFail = true; }
   lastSaved = new Date(); writeBackup(); rvSavedLabel();
@@ -355,5 +361,6 @@ const writeBackup = debounce(async () => {
   catch (e) { toast(t('backup_fail'), 5000); }
 }, 1500);
 function loadState() {
+  if (EXPLORER) return;   // no decided state in the explorer build
   try { const raw = localStorage.getItem(LS_STATE); if (raw) { const j = JSON.parse(raw); if (j && j.dec) { RV.who = j.who || ''; RV.dec = j.dec; RV.log = j.log || []; } } } catch (e) { /* no stored state */ }
 }

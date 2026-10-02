@@ -1,13 +1,15 @@
 """Smoke test: the page loads fast, every queue lists entries, an entry with findings renders its cards,
 annotated graph, records table, scan overlay and all tabs; DE/EN without untranslated keys; the properties
 layer and its presets, the table's columns, the gravity levels (pills, order, filter, rules) and the corpus
-filter (counts, work list, entry, node view, overview); the explorer's other views still work; no page
-errors. Works without any scan image."""
+filter (counts, work list, entry, node view, overview) with its always visible bar; the explorer's other
+views still work; no page errors. Works without any scan image. Then the EXPLORER BUILD of the same app
+(--mode explorer): the same entry shows the same nodes, property rows, annotations, cards, table columns
+and scan overlays as the review build, the corpus bar filters the views, and no decision control exists."""
 import asyncio
 import re
 import time
 from playwright.async_api import async_playwright
-from common import SHOTS, check, done, find_entry, goto_entry, open_page, reload
+from common import EXPLORER_PAGE, SHOTS, check, done, find_entry, goto_entry, open_page, reload
 
 # raw i18n keys that would show up if a string were missing
 KEYPAT = re.compile(r"\b(?:q|qt|g|a|d|c|f|tip|lg|ov|ex|im|tck|tcv|nk|ak|as|src|hint|mk|bt|tl|txt|row|link|prec|ins|scan|sort|chk|agree|name|names|finish|err|crop|media|mkind"
@@ -280,33 +282,85 @@ async def severity_checks(pg):
     check(await pg.locator("#help table.sevt tr").count() >= 30, "help: the same table")
     await pg.click("#help h2")
 
+JS_BAR = """[...document.querySelectorAll('#corpbar .cseg .cb')].map(b => ({ c: +b.dataset.corpus, name: b.querySelector('.cbn').textContent, n: b.querySelector('.cbc').textContent, on: b.classList.contains('on'),
+  pressed: b.getAttribute('aria-pressed'), bg: getComputedStyle(b).backgroundColor, tip: b.title, vis: b.getBoundingClientRect().width > 20 }))"""
+BAR_NAMES = ["Vollständig", "Kern", "Strenger Kern", "Strenger Kern mit Koordinaten"]
 
-async def corpus_checks(pg):
-    opts = await pg.evaluate("[...document.querySelectorAll('#corpsel option')].map(o => o.textContent)")
+
+def de(n):
+    return f"{n:,}".replace(",", ".")
+
+
+async def corpus_bar_checks(pg, tag):
+    """The corpus filter is an always visible segmented control directly under the header, in every view."""
+    n = await pg.evaluate("LKGC.CORP.n")
+    btns = await pg.evaluate(JS_BAR)
+    check(len(btns) == 4 and [b["name"] for b in btns] == BAR_NAMES and [b["n"] for b in btns] == [de(x) for x in n] and all(b["vis"] for b in btns),
+          f"[{tag}] the corpus bar has four labelled buttons with their record counts {[b['name'] + ' ' + b['n'] for b in btns]}")
+    check((await pg.locator("#corpbar .cbl").inner_text()).strip().lower() == "korpus", f"[{tag}] ... with the leading label 'Korpus'")
+    on = [b for b in btns if b["on"]]
+    check(len(on) == 1 and on[0]["c"] == 0 and on[0]["pressed"] == "true" and all(b["bg"] != on[0]["bg"] for b in btns if not b["on"]), f"[{tag}] the active corpus is clearly filled ({on[0]['bg'] if on else '-'})")
+    geo = await pg.evaluate("(() => { const h = document.querySelector('header#top').getBoundingClientRect(), b = document.querySelector('#corpbar').getBoundingClientRect(); return [Math.round(b.top - h.bottom), Math.round(b.height), Math.round(b.width), innerWidth]; })()")
+    check(abs(geo[0]) <= 1 and 24 <= geo[1] <= 60 and geo[2] == geo[3], f"[{tag}] the bar is a row of its own directly under the header ({geo})")
+    first = await pg.evaluate("LKGC.G.ent[0].id")
+    tx = await pg.evaluate("LKGC.G.nodes[LKGC.stats().taxa[0].n]")
+    for name, h in (("overview", "/"), ("entry", "/e/" + first), ("classes", "/c/taxon"), ("node view", "/n/" + tx)):
+        await pg.evaluate(f"LKGC.go({h!r})")
+        await pg.wait_for_timeout(350)
+        ok = await pg.evaluate("(() => { const b = document.querySelector('#corpbar'); const r = b.getBoundingClientRect(); return r.height > 20 && r.top >= 0 && document.querySelectorAll('#corpbar .cb').length === 4 && document.elementFromPoint(r.left + 120, r.top + r.height / 2).closest('#corpbar') === b; })()")
+        check(ok, f"[{tag}] the corpus bar is present in the {name}")
+    await pg.keyboard.press("/")
+    await pg.keyboard.type("Kaufbeuren")
+    await pg.wait_for_timeout(450)
+    check(await pg.locator("#qres .r").count() > 0 and await pg.locator("#corpbar .cb").first.is_visible(), f"[{tag}] ... and while searching")
+    await pg.keyboard.press("Escape")
+    await pg.evaluate("document.querySelector('#q').value = ''; document.querySelector('#q').blur()")
+    # the definitions of the four corpora, in words
+    check(all(len(b["tip"]) > 20 for b in btns), f"[{tag}] every button explains its corpus (title)")
+    await pg.click('#corpbar [data-act="corpus-info"]')
+    await pg.wait_for_timeout(200)
+    check(await pg.locator("#corpinfo").is_visible() and await pg.locator("#corpinfo dd").count() == 4 and len(await pg.locator("#corpinfo").inner_text()) > 300, f"[{tag}] ⓘ opens the definitions of the four corpora in words")
+    await pg.keyboard.press("Escape")
+    await pg.wait_for_timeout(150)
+    check(await pg.locator("#corpinfo").count() == 0, f"[{tag}] ... Esc closes them")
+    # choosing a corpus: filled button, explanation and "Filter aufheben" in the bar
+    await pg.click('#corpbar [data-corpus="2"]')
+    await pg.wait_for_timeout(500)
+    btns = await pg.evaluate(JS_BAR)
+    note = await pg.locator("#corpbar .cnote").inner_text()
+    check(await pg.evaluate("LKGC.RVU.corpus") == 2 and [b["c"] for b in btns if b["on"]] == [2] and await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"), f"[{tag}] a click on 'Strenger Kern' sets the filter and fills that button")
+    check(de(n[2]) in note and de(n[0]) in note and await pg.locator('#corpbar [data-act="corpus-off"]').is_visible(), f"[{tag}] the bar explains the active filter and offers 'Filter aufheben' ({note[:70]}…)")
+    await pg.click('#corpbar [data-act="corpus-off"]')
+    await pg.wait_for_timeout(400)
+    check(await pg.evaluate("LKGC.RVU.corpus") == 0 and await pg.locator('#corpbar [data-act="corpus-off"]').count() == 0 and not await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"), f"[{tag}] 'Filter aufheben' returns to the full corpus")
+
+
+async def corpus_checks(pg, queues=QUEUES, tag="review"):
+    opts = [b["name"] + " " + b["n"] for b in await pg.evaluate(JS_BAR)]
     n = await pg.evaluate("LKGC.CORP.n")
     brute = [await pg.evaluate(JS_CORPUS_COUNT, c) for c in range(4)]
-    check(len(opts) == 4 and all(f"{n[c]:,}".replace(",", ".") in opts[c] for c in range(4)), f"the header has the corpus selector with record counts {opts}")
+    check(len(opts) == 4 and all(f"{n[c]:,}".replace(",", ".") in opts[c] for c in range(4)), f"[{tag}] the corpus bar carries the record counts {opts}")
     check(n == [b[0] for b in brute], f"corpus sizes: full {n[0]}, core {n[1]}, strict core {n[2]}, strict core with coordinates {n[3]}")
     if await pg.evaluate("LKGC.G.ent.length") == 9901:
         check(n == FINAL_COUNTS, f"... the numbers of the final build {FINAL_COUNTS}")
     tiers = await pg.evaluate("(() => { const c = [0, 0, 0, 0]; for (const r of LKGC.G.ent) { const flat = LKGC.R.obs[r.id] || []; for (let i = 0; i < flat.length; i += 3) c[LKGC.tierOf(flat[i])]++; } return c; })()")
     print("records per tier 0..3:", tiers, "· entries per corpus:", await pg.evaluate("LKGC.CORP.ent"), "· taxa per corpus:", await pg.evaluate("LKGC.CORP.taxa"))
     full = await pg.evaluate("LKGC.RVU.counts")
-    check(not await pg.locator("#corpbar").is_visible(), "no filter: no banner")
+    check(await pg.locator("#corpbar").is_visible() and not await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"), f"[{tag}] no filter: the bar is there, not marked active")
     for c in (1, 2, 3):
-        await pg.select_option("#corpsel", str(c))
+        await pg.click(f'#corpbar [data-corpus="{c}"]')
         await pg.wait_for_timeout(500)
         cnt = await pg.evaluate("LKGC.RVU.counts")
-        check(await pg.locator("#corpbar").is_visible() and f"{n[c]:,}".replace(",", ".") in await pg.locator("#corpbar").inner_text() and await pg.evaluate("document.querySelector('#corpsel').classList.contains('on')"),
-              f"corpus {c}: the header says that a filter is active")
-        check(cnt["all"]["n"] == brute[c][1] and all(cnt[q]["n"] <= full[q]["n"] for q in QUEUES), f"corpus {c}: queue counts follow the filter (all: {cnt['all']['n']} entries)")
+        check(await pg.locator("#corpbar").is_visible() and f"{n[c]:,}".replace(",", ".") in await pg.locator("#corpbar").inner_text() and await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"),
+              f"[{tag}] corpus {c}: the bar says that a filter is active")
+        check(cnt["all"]["n"] == brute[c][1] and all(cnt[q]["n"] <= full[q]["n"] for q in queues), f"corpus {c}: queue counts follow the filter (all: {cnt['all']['n']} entries)")
         await pg.evaluate("LKGC.setQueue('all', false)")
         await pg.wait_for_timeout(200)
         check(await pg.evaluate(f"LKGC.RVU.list.length === {brute[c][1]} && LKGC.RVU.list.every(r => LKGC.RVS.get(r.n).nc[{c}] > 0)"), f"corpus {c}: the work list holds only entries with a record in the corpus")
         st = await pg.evaluate("(s => [s.kc[2], s.kc[1], s.kc[6], s.obsCount])(LKGC.stats())")
         check(st[0] == n[c] and st[3] == n[c] and st[1] == brute[c][1] and st[2] == await pg.evaluate(f"LKGC.CORP.taxa[{c}]"), f"corpus {c}: the graph statistics count {st[0]} records, {st[1]} entries, {st[2]} taxa")
     # one entry under "strenger Kern": graph, table, cards, switch "n außerhalb zeigen"
-    await pg.select_option("#corpsel", "2")
+    await pg.click('#corpbar [data-corpus="2"]')
     await pg.wait_for_timeout(400)
     check(await pg.locator("#elist-pad .erow .n b").count() > 0, "list rows say 'n im Korpus / n gesamt'")
     eid = await find_entry(pg, "(rv, s, r) => s.nc && s.nc[2] >= 2 && r.nobs - s.nc[2] >= 2 && r.nobs <= 12 && Object.values(rv.rec || {}).some(x => x.t < 2 && (x.g || {}).v === 'wrong')")
@@ -353,6 +407,223 @@ async def corpus_checks(pg):
     await pg.click('#corpbar [data-act="corpus-off"]')
     await pg.wait_for_timeout(500)
     check(await pg.evaluate("LKGC.RVU.corpus") == 0 and await pg.evaluate("LKGC.RVU.counts.all.n") == full["all"]["n"] and await pg.evaluate("LKGC.stats().kc[2]") == n[0], "'Filter aufheben' restores the full corpus")
+
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# one app, two builds: the explorer build shows the same data and decides nothing
+
+SAME_ENTRY = "L17-e0132"
+JS_FACTS = """() => { const S = LKGC.SUB; const nodes = [...S.V.values()].map(v => [v.key, v.kind, (v.rows || []).map(r => (r.k || '') + '|' + r.v).join(' § ')]).sort((a, b) => (a[0] < b[0] ? -1 : 1));
+  const edges = S.E.map(e => e.a.key + '>' + e.b.key + '|' + e.p).sort();
+  const box = r => ['x', 'y', 'width', 'height'].map(a => Math.round(+r.getAttribute(a))).join(',');
+  const ov = { reg: [...document.querySelectorAll('#scanov rect.reg')].map(box), mreg: [...document.querySelectorAll('#scanov rect.mreg')].map(box), line: [...document.querySelectorAll('#scanov rect.line')].map(box), pages: LKGC.SC.pages.map(p => p.idx), page: LKGC.SC.pi };
+  const rings = [...document.querySelectorAll('#gsvg .nd.an')].map(g => g.dataset.key + ':' + [...g.classList].filter(c => c.startsWith('an-')).join('.')).sort();
+  const cards = [...document.querySelectorAll('#pbody .rcard[data-ci]:not(.t-done)')].map(c => [...c.classList].filter(x => /^(t-|lv)/.test(x)).join('.') + ' ' + c.querySelector('.rc-head').innerText.replace(/\\s+/g, ' ').trim());
+  return { nodes, edges, ov, rings, cards, rows: document.querySelectorAll('#gsvg text.pr').length, layers: JSON.stringify(LKGC.S.layers), crops: document.querySelectorAll('#pbody .rcard.t-media .mthumb').length }; }"""
+JS_TABLE = """() => ({ cols: [...document.querySelectorAll('#rtable th[data-col]')].map(th => th.dataset.col + '=' + th.textContent),
+  cells: [...document.querySelectorAll('#rtable tbody tr')].map(tr => [...tr.querySelectorAll('td:not(.racts)')].map(td => td.innerText.replace(/\\s+/g, ' ').trim()).join(' | ')) })"""
+JS_NUMBERS = """() => ({ corp: document.querySelector('#rv-ov tr[data-corpus]').closest('table').innerText, why: [...document.querySelectorAll('#rv-ov table.covt')][2].innerText,
+  tiles: document.querySelector('#x-ov .tiles').innerText, lv: [...document.querySelectorAll('#rv-ov table.lvt td.num')].map(td => td.textContent).join(','), stats: [...LKGC.stats().kc].join(','), n: LKGC.CORP.n, ent: LKGC.CORP.ent, taxa: LKGC.CORP.taxa })"""
+# every control that decides something; none of them may exist in the explorer build
+DECIDE = ("#who, #btn-save, #btn-load, #fileImport, #rvprog, #savedlbl, .abtn, .rc-acts, .rform, .mine, [data-act=addrec], [data-act=txtedit], [data-act=txtdel], [data-act=reset], "
+          "[data-ra], .racts, th.c-acts, [data-acc], .qchip[data-q=done], .qtile[data-queue=done], .rcard.t-done, .rcard.done, .nd.an-dec, .b-ok, #modal [data-m]")
+
+
+async def entry_facts(pg, eid):
+    """What one entry shows: subgraph, property rows, annotations, cards, scan overlays, table."""
+    await goto_entry(pg, eid, 900)
+    await pg.evaluate("(() => { const items = LKGC.visibleItems(LKGC.EM); const i = items.findIndex(it => it.type === 'rec' && it.o.rec.loc); if (i >= 0) LKGC.focusCard(i); })()")
+    await pg.wait_for_timeout(500)
+    f = await pg.evaluate(JS_FACTS)
+    await pg.keyboard.press("g")
+    await pg.wait_for_timeout(350)
+    f["table"] = await pg.evaluate(JS_TABLE)
+    await pg.keyboard.press("g")
+    await pg.wait_for_timeout(250)
+    await pg.click('#gtools [data-act="preset-all"]')
+    await pg.wait_for_timeout(450)
+    f["all"] = await pg.evaluate("(() => { const S = LKGC.SUB; return { nodes: [...S.V.values()].map(v => v.key + ':' + (v.rows || []).length).sort(), edges: S.E.length }; })()")
+    await pg.click('#gtools [data-act="preset-std"]')
+    await pg.wait_for_timeout(300)
+    return f
+
+
+async def review_reference(pg):
+    """The facts of the review build that the explorer build must show identically."""
+    ref = {"entry": await entry_facts(pg, SAME_ENTRY)}
+    img = await find_entry(pg, CASES["img"])
+    ref["img"] = img
+    await goto_entry(pg, img, 700)
+    ref["media"] = await pg.evaluate("({ cards: document.querySelectorAll('#pbody .rcard.t-media .mthumb').length, mreg: document.querySelectorAll('#scanov rect.mreg').length, n: LKGC.EM.rv.media.length })")
+    await pg.evaluate("LKGC.go('/')")
+    await pg.wait_for_timeout(500)
+    ref["numbers"] = await pg.evaluate(JS_NUMBERS)
+    tx = await pg.evaluate("LKGC.G.nodes[LKGC.stats().taxa[2].n]")
+    ref["tx"] = tx
+    await pg.evaluate(f"LKGC.go('/n/' + {tx!r})")
+    await pg.wait_for_timeout(600)
+    ref["node"] = await pg.evaluate("({ usage: document.querySelector('#nv-usage h3').innerText, card: document.querySelector('#v-node .card').innerText })")
+    await pg.evaluate("LKGC.go('/c/taxon')")
+    await pg.wait_for_timeout(400)
+    ref["klass"] = await pg.evaluate("document.querySelectorAll('#v-class table.t tr').length + '|' + document.querySelector('#v-class table.t').innerText.slice(0, 400)")
+    return ref
+
+
+async def no_decision_controls(pg, where):
+    n = await pg.locator(DECIDE).count()
+    found = await pg.evaluate(f"[...document.querySelectorAll({DECIDE!r})].slice(0, 4).map(el => el.tagName + '#' + el.id + '.' + el.className)") if n else []
+    check(n == 0, f"[explorer] no decision control in the {where} {found}")
+
+
+async def explorer_checks(p, ref):
+    if not check(EXPLORER_PAGE.exists(), f"the explorer build exists ({EXPLORER_PAGE.name}; build_graph_check.py --mode explorer)"):
+        return []
+    b, pg, errs = await open_page(p, url=EXPLORER_PAGE.as_uri())
+    t0 = time.time()
+    await reload(pg)
+    load = time.time() - t0
+    print(f"explorer build: load {load:.2f} s, timing {await pg.evaluate('LKGC.timing')}")
+    check(load <= 5, f"[explorer] the page opens in <= 5 s ({load:.2f} s)")
+    meta = await pg.evaluate("({ page: LKGC.META, graph: LKGC.G.meta.mode, layer: LKGC.R.meta.mode, flag: LKGC.EXPLORER, attr: document.documentElement.dataset.mode, title: document.title, h1: document.querySelector('#apptitle').textContent })")
+    check(meta["page"]["mode"] == "explorer" and meta["graph"] == "explorer" and meta["layer"] == "explorer" and meta["flag"] is True and meta["attr"] == "explorer", f"[explorer] the mode flag stands in the embedded meta ({meta['page']})")
+    check(meta["title"] == "Laubmann-KG · Graph-Explorer" == meta["h1"], f"[explorer] title {meta['title']!r}")
+    await no_decision_controls(pg, "overview")
+    check(await pg.locator("#rv-ov .qtile").count() == 8 and await pg.locator("#rv-ov table.prec").count() == 0, "[explorer] overview: eight filter tiles, no 'Geprüft', no precision of decisions")
+    # the same numbers for the graph and the corpora
+    num = await pg.evaluate(JS_NUMBERS)
+    for k, what in (("n", "records per corpus"), ("ent", "entries per corpus"), ("taxa", "taxa per corpus"), ("corp", "table of the corpora"), ("why", "reasons"), ("tiles", "tiles of the graph"), ("stats", "node counts per kind"), ("lv", "notes per level and kind")):
+        check(num[k] == ref["numbers"][k], f"[explorer] overview: same {what} as the review build")
+    # the list: all entries in diary order by default, the queues as filters
+    await pg.evaluate("LKGC.go('/e/' + LKGC.G.ent[0].id)")
+    await pg.wait_for_timeout(500)
+    check(await pg.evaluate("LKGC.RVU.queue === 'all' && LKGC.RVU.sort === 'diary' && LKGC.RVU.list.length === LKGC.G.ent.length"), "[explorer] the list holds all entries by default")
+    check(await pg.evaluate("(l => l.every((r, i) => !i || LKGC.G.entPos.get(l[i - 1].n) < LKGC.G.entPos.get(r.n)))(LKGC.RVU.list)"), "[explorer] ... volume by volume in diary order")
+    chips = await pg.evaluate("[...document.querySelectorAll('#qchips .qchip')].map(c => c.dataset.q)")
+    check(chips == [q for q in QUEUES if q != "done"] and await pg.locator("#qchips .qt").count() == 0, f"[explorer] the queues remain as filters, without 'Geprüft' and without 'offen' {chips}")
+    await pg.click('#qchips [data-q="img"]')
+    await pg.wait_for_timeout(300)
+    check(await pg.evaluate("LKGC.RVU.list.length > 0 && LKGC.RVU.list.every(r => LKGC.RVS.get(r.n).img > 0)"), "[explorer] a queue filters the list")
+    await pg.evaluate("LKGC.setQueue('all', false)")
+    # the same entry shows the same things
+    f = await entry_facts(pg, SAME_ENTRY)
+    r = ref["entry"]
+    check(f["layers"] == r["layers"], f"[explorer] same default layers ({f['layers']})")
+    check(f["nodes"] == r["nodes"] and len(f["nodes"]) > 8, f"[explorer] {SAME_ENTRY}: the same nodes with the same property rows ({len(f['nodes'])} nodes, {f['rows']} rows; review {len(r['nodes'])}, {r['rows']})")
+    check(f["edges"] == r["edges"], f"[explorer] ... the same edges ({len(f['edges'])})")
+    check(f["rings"] == r["rings"] and len(f["rings"]) > 0, f"[explorer] ... the same annotations: colours and markers ({len(f['rings'])} marked nodes)")
+    check(f["cards"] == r["cards"] and len(f["cards"]) > 2, f"[explorer] ... the same cards in the same order ({len(f['cards'])})")
+    check(f["ov"] == r["ov"] and len(f["ov"]["reg"]) > 0 and len(f["ov"]["line"]) == 1, f"[explorer] ... the same scan overlays: regions {len(f['ov']['reg'])}, media {len(f['ov']['mreg'])}, record line {f['ov']['line']}")
+    check(f["table"]["cols"] == r["table"]["cols"] and len(f["table"]["cols"]) >= 12, f"[explorer] ... the same table columns ({len(f['table']['cols'])})")
+    check(f["table"]["cells"] == r["table"]["cells"], f"[explorer] ... the same table rows with the same values and chips ({len(f['table']['cells'])})")
+    check(f["all"] == r["all"], f"[explorer] ... the same graph with 'Alles zeigen' ({len(f['all']['nodes'])} nodes, {f['all']['edges']} edges)")
+    await pg.screenshot(path=str(SHOTS / "smoke_explorer_entry.png"))
+    # read-only annotations: from -> to and reasons, nothing to decide
+    check(await pg.locator("#pbody .rcard.ro").count() == len(f["cards"]) and await pg.locator("#pbody .rcard.ro .diff").count() > 0 and await pg.locator("#pbody .rcard.ro .why").count() > 0, "[explorer] the cards are read-only annotations with from → to and reasons")
+    await no_decision_controls(pg, "entry view (notes tab)")
+    for tab in ("text", "node", "check"):
+        await pg.click(f'#ptabs [data-tab="{tab}"]')
+        await pg.wait_for_timeout(200)
+        await no_decision_controls(pg, f"tab {tab}")
+    await pg.keyboard.press("g")
+    await pg.wait_for_timeout(300)
+    check(await pg.locator("#rtable tr[data-o]").count() > 0 and await pg.locator("#rtable .pchip").count() > 0, "[explorer] the table shows the findings as chips")
+    await no_decision_controls(pg, "records table")
+    await pg.click("#rtable tr[data-o] >> nth=1 >> td >> nth=3")
+    await pg.click("#rtable tr[data-o] >> nth=1 >> td >> nth=3")
+    await pg.wait_for_timeout(200)
+    check(await pg.locator("#rtable input, #rtable select").count() == 0 and await pg.locator("#rtable tr.on").count() == 1, "[explorer] a click on a cell selects the row, nothing becomes editable")
+    await pg.click('#gtools [data-act="cols"]')
+    check(await pg.locator("#colpop label").count() >= 12, "[explorer] the column chooser works")
+    await pg.click('#colpop [data-cp="close"]')
+    await pg.keyboard.press("g")
+    await pg.wait_for_timeout(250)
+    await pg.evaluate("LKGC.focusCard(0)")
+    for key in ("j", "n", "e", "x", "u", "z", "Enter"):
+        await pg.keyboard.press(key)
+    await pg.wait_for_timeout(250)
+    check(await pg.evaluate("Object.keys(LKGC.RV.dec).length") == 0 and await pg.locator("#pbody .rform").count() == 0 and await pg.evaluate("localStorage.getItem('laubmann-graphpruefung')") is None, "[explorer] the decision keys do nothing, nothing is stored")
+    await pg.keyboard.press("ArrowDown")
+    await pg.wait_for_timeout(150)
+    check(await pg.evaluate("LKGC.RVU.card") == 1, "[explorer] ↑ ↓ still step through the cards")
+    # a decided state of the review build is not shown
+    await pg.evaluate("localStorage.setItem('laubmann-graphpruefung', JSON.stringify({ v: 1, who: 'X', dec: { ['entry:' + LKGC.EM.uid]: { checked: { t: '2026-01-01T00:00:00Z' } } }, log: [] }))")
+    await reload(pg)
+    await goto_entry(pg, SAME_ENTRY, 600)
+    check(await pg.evaluate("Object.keys(LKGC.RV.dec).length") == 0 and await pg.locator("#ehead .hstate.ok, .erow.chk").count() == 0, "[explorer] decisions stored by the review build are not loaded: no decided state")
+    await pg.evaluate("localStorage.removeItem('laubmann-graphpruefung')")
+    # images and inserts
+    await goto_entry(pg, ref["img"], 700)
+    med = await pg.evaluate("({ cards: document.querySelectorAll('#pbody .rcard.t-media .mthumb').length, mreg: document.querySelectorAll('#scanov rect.mreg').length, n: LKGC.EM.rv.media.length })")
+    check(med == ref["media"] and med["cards"] > 0, f"[explorer] the same cards and outlines for images and inserts ({med})")
+    await pg.evaluate("(() => { const items = LKGC.visibleItems(LKGC.EM); LKGC.focusCard(items.findIndex(it => it.type === 'media' && it.x.length >= 7)); })()")
+    await pg.wait_for_timeout(800)
+    check(await pg.evaluate("(i => !!i && i.complete && i.naturalWidth > 0)(document.querySelector('#pbody .rcard.t-media.focus img.crop.thumb'))"), "[explorer] the crop loads")
+    await pg.click("#pbody .rcard.t-media.focus .mthumb")
+    await pg.wait_for_timeout(500)
+    check(await pg.locator("#lightbox").is_visible(), "[explorer] ... and opens in the large view")
+    await pg.keyboard.press("Escape")
+    await no_decision_controls(pg, "entry with images")
+    # switch "Prüfhinweise zeigen"
+    await goto_entry(pg, SAME_ENTRY, 600)
+    sw = pg.locator("#corpbar #notesw")
+    check(await sw.count() == 1 and await sw.is_checked() and await pg.locator("#gsvg .nd.an").count() > 0, "[explorer] 'Prüfhinweise zeigen' is on by default")
+    n_obs = await pg.locator("#gsvg .nd.k-obs").count()
+    await sw.uncheck()
+    await pg.wait_for_timeout(500)
+    off = await pg.evaluate("({ an: document.querySelectorAll('#gsvg .nd.an, #gsvg .ring, #gsvg .abadge').length, ghosts: document.querySelectorAll('#gsvg .nd.k-miss, #gsvg .nd.k-gone').length, cards: document.querySelectorAll('#pbody .rcard:not(.t-media)').length, pills: document.querySelectorAll('#elist-pad .lvp, #lvchips .lvchip, #ehead .hstate').length, chips: [...document.querySelectorAll('#qchips .qchip')].map(c => c.dataset.q), obs: document.querySelectorAll('#gsvg .nd.k-obs').length, rows: document.querySelectorAll('#gsvg text.pr').length, tier: document.querySelectorAll('#gsvg .tpill').length })")
+    check(off["an"] == 0 and off["ghosts"] == 0 and off["cards"] == 0 and off["pills"] == 0, f"[explorer] switched off: no rings, markers, ghost nodes, note cards or level pills {off}")
+    check(off["obs"] == n_obs and off["rows"] == f["rows"] and off["tier"] == n_obs and off["chips"] == ["ins", "img", "sample", "all"], "[explorer] ... the graph itself (records, property rows, corpus tiers) stays; the note queues are gone")
+    await pg.keyboard.press("g")
+    await pg.wait_for_timeout(300)
+    check(await pg.locator("#rtable .pchip, #rtable .tbadge, #rtable tr.ghost").count() == 0 and await pg.locator("#rtable tr[data-o]").count() == n_obs, "[explorer] ... the table without chips and markers")
+    await pg.keyboard.press("g")
+    await pg.click('#ptabs [data-tab="text"]')
+    await pg.wait_for_timeout(200)
+    check(await pg.locator("#fnotes .tci, #fnotes del").count() == 0 and len(await pg.locator("#fnotes").inner_text()) > 20, "[explorer] ... the entry text without reading-correction marks")
+    await pg.click('#ptabs [data-tab="check"]')
+    await pg.screenshot(path=str(SHOTS / "smoke_explorer_notes_off.png"))
+    await reload(pg)
+    check(await pg.evaluate("LKGC.RVU.notes") is False, "[explorer] the switch is remembered")
+    await pg.locator("#corpbar #notesw").check()
+    await pg.wait_for_timeout(500)
+    await goto_entry(pg, SAME_ENTRY, 600)
+    check(await pg.locator("#gsvg .nd.an").count() == len(r["rings"]) and await pg.locator("#qchips .qchip").count() == 8, "[explorer] switched on again: the notes are back")
+    # node view, class view, search
+    await pg.evaluate(f"LKGC.go('/n/' + {ref['tx']!r})")
+    await pg.wait_for_timeout(600)
+    check(await pg.evaluate("({ usage: document.querySelector('#nv-usage h3').innerText, card: document.querySelector('#v-node .card').innerText })") == ref["node"], "[explorer] the same node view")
+    await no_decision_controls(pg, "node view")
+    await pg.evaluate("LKGC.go('/c/taxon')")
+    await pg.wait_for_timeout(400)
+    check(await pg.evaluate("document.querySelectorAll('#v-class table.t tr').length + '|' + document.querySelector('#v-class table.t').innerText.slice(0, 400)") == ref["klass"], "[explorer] the same class view")
+    await no_decision_controls(pg, "class view")
+    # corpus bar: present, four counts, filters the views
+    await corpus_bar_checks(pg, "explorer")
+    await corpus_checks(pg, [q for q in QUEUES if q != "done"], "explorer")
+    # both languages without untranslated keys, the help without decisions
+    for lang in ("de", "en"):
+        if await pg.evaluate("LKGC.LANG") != lang:
+            await pg.click("#btn-lang")
+            await pg.wait_for_timeout(300)
+        bad = set()
+        await goto_entry(pg, SAME_ENTRY, 500)
+        for tab in ("text", "node", "check"):
+            await pg.click(f'#ptabs [data-tab="{tab}"]')
+            await pg.wait_for_timeout(150)
+            bad |= set(KEYPAT.findall(await pg.evaluate("document.body.innerText")))
+        await pg.evaluate("LKGC.go('/')")
+        await pg.wait_for_timeout(400)
+        bad |= set(KEYPAT.findall(await pg.evaluate("document.body.innerText")))
+        await pg.click("#btn-help")
+        txt = await pg.locator("#help").inner_text()
+        bad |= set(KEYPAT.findall(txt))
+        check(not bad, f"[explorer {lang}] no untranslated keys {sorted(bad)[:12]}")
+        check("J" not in [k.strip() for k in await pg.evaluate("[...document.querySelectorAll('#help kbd')].map(k => k.textContent)")] and await pg.locator("#help table.sevt").count() == 1, f"[explorer {lang}] the help lists no decision keys and explains the levels")
+        await pg.click("#help h2")
+    await pg.click("#btn-lang")
+    await b.close()
+    return errs
 
 
 async def main():
@@ -484,7 +755,9 @@ async def main():
         eid_p = await props_checks(pg)
         await table_checks(pg, eid_p)
         await severity_checks(pg)
+        await corpus_bar_checks(pg, "review")
         await corpus_checks(pg)
+        ref = await review_reference(pg)      # what the explorer build must show identically
 
         # the explorer's other views
         await pg.evaluate("LKGC.go('/c/taxon')")
@@ -535,6 +808,9 @@ async def main():
         check(await pg.locator("#lightbox").is_visible() and await pg.locator("#lightbox .cropfail").count() == 1, "without images: the large view opens and says so")
         await pg.keyboard.press("Escape")
         await b.close()
-        done(errs + errs2)
+
+        # the explorer build of the same app
+        errs3 = await explorer_checks(p, ref)
+        done(errs + errs2 + errs3)
 
 asyncio.run(main())

@@ -14,7 +14,7 @@ const FLAG_COL = { behav: 'dwc:behavior', behaviour: 'dwc:behavior', call: 'lkg:
 const TCOLS = { hide: null };
 function colPrefs() { if (!TCOLS.hide) { try { TCOLS.hide = JSON.parse(store('tcols') || '{}'); } catch (err) { TCOLS.hide = {}; } } return TCOLS.hide; }
 function flagChips(o) {   // {column id: [chip html]} for flagged fields without an editable column
-  const out = {}; if (RV.dec[o.key] && RV.dec[o.key].d) return out;
+  const out = {}; if (!RVU.notes || (RV.dec[o.key] && RV.dec[o.key].d)) return out;
   for (const c of ['g', 's']) {
     const f = o.rec[c]; if (!f || f.v === 'ok' || !f.v) continue;
     for (const k of f.f || []) {
@@ -34,10 +34,10 @@ function tableCols(m, rows) {   // every column the entry could show: [{id, f | 
     for (let i = G.sOff[o.n], e = G.sOff[o.n + 1]; i < e; i++) { const key = G.preds[G.tP[i]] + (G.tO[i] < 0 ? '' : '>'); if (seen.has(key) || T_COVERED.has(key)) continue; seen.add(key); pc.set(key, (pc.get(key) || 0) + 1); }
     const cur = recVals(o.n); for (const f of T_FIELDS) if (f === 'observer' ? cur.observer || cur.co_observers : cur[f]) by.get(f).n++;
     const d = RV.dec[o.key]; if (d && d.vals) for (const f in d.vals) if (by.has(f)) by.get(f).chip = true;
-    for (const c of ['g', 's']) { const p = d && d.d ? null : proposal(o, c); if (!p) continue; for (const f in p.vals) if (by.has(f)) by.get(f).chip = true; for (const f in p.bad) if (by.has(f)) by.get(f).chip = true; if (p.georef) by.get('locality').chip = true; }
+    for (const c of ['g', 's']) { const p = (d && d.d) || !RVU.notes ? null : proposal(o, c); if (!p) continue; for (const f in p.vals) if (by.has(f)) by.get(f).chip = true; for (const f in p.bad) if (by.has(f)) by.get(f).chip = true; if (p.georef) by.get('locality').chip = true; }
     const fc = flagChips(o); for (const id in fc) if (id.startsWith('p:') && !pc.has(id.slice(2))) pc.set(id.slice(2), 0);
   }
-  for (const it of m.items) if (it.type === 'miss' && it.x.kind === 'observation') for (const f of ['count', 'locality', 'date', 'observer']) if (({ count: it.x.count, locality: it.x.loc, date: it.x.date, observer: it.x.obs })[f]) by.get(f).chip = true;
+  for (const it of RVU.notes ? m.items : []) if (it.type === 'miss' && it.x.kind === 'observation') for (const f of ['count', 'locality', 'date', 'observer']) if (({ count: it.x.count, locality: it.x.loc, date: it.x.date, observer: it.x.obs })[f]) by.get(f).chip = true;
   const rank = k => { const l = T_LAST.indexOf(k); if (l >= 0) return 1000 + l; const base = k.replace(/>$/, ''); return (PROP_RANK.has(base) ? PROP_RANK.get(base) : 400) + (k.endsWith('>') ? 300 : 0); };
   const keys = [...pc.keys()].sort((a, b) => rank(a) - rank(b) || coll.compare(pl(a.replace(/>$/, '')), pl(b.replace(/>$/, ''))));
   for (const k of keys) { const link = k.endsWith('>'); const p = link ? k.slice(0, -1) : k; cols.push({ id: 'p:' + k, p, link, label: pl(p) + (link ? ' →' : ''), n: pc.get(k), title: p + (link ? ' (' + t('col_link') + ')' : '') }); }
@@ -56,18 +56,18 @@ function predCell(o, c) {   // the values of one predicate of a record
 function tdCell(o, f, cur, d, ps) {
   const curv = f === 'observer' ? [cur.observer, cur.co_observers].filter(Boolean).join('; ') : cur[f];
   const hv = d && d.vals ? (f === 'observer' && ('observer' in d.vals || 'co_observers' in d.vals) ? ['observer' in d.vals ? d.vals.observer : cur.observer, 'co_observers' in d.vals ? d.vals.co_observers : cur.co_observers].filter(x => x && !CLEAR.has(x)).join('; ') || t('v_cleared') : f in d.vals ? showVal(f, d.vals[f]) : null) : null;
-  let s = '', chips = '';
+  let s = '', chips = ''; const acc = (k, src) => (EXPLORER ? '' : ` data-acc="${k}|${src}"`); const tip = (src, k) => esc(srcName(src) + (EXPLORER ? '' : ' — ' + t(k)));
   if (hv != null) s = `<span class="was">${esc(showVal(f, curv) || '—')}</span> <span class="hv">${esc(hv)}</span>`;
   else {
     s = esc(showVal(f, curv));
     for (const p of ps) {
       if (f in p.vals || (f === 'observer' && 'co_observers' in p.vals)) { const pv = f === 'observer' ? [p.vals.observer || cur.observer, p.vals.co_observers || ''].filter(Boolean).join('; ') : showVal(f, p.vals[f]);
-        s = ''; chips += `<span class="pchip pc-${p.src}" data-acc="${f}|${p.src}" title="${esc(srcName(p.src) + ' — ' + t('chip_accept'))}">${esc(showVal(f, curv) || '—')} → ${esc(pv)}</span>`; }
+        s = ''; chips += `<span class="pchip pc-${p.src}"${acc(f, p.src)} title="${tip(p.src, 'chip_accept')}">${esc(showVal(f, curv) || '—')} → ${esc(pv)}</span>`; }
       else if (f in p.bad) { s = ''; chips += `<span class="pchip bad" title="${esc(srcName(p.src) + ' — ' + t('bad_format'))}">${esc(showVal(f, curv) || '—')} → ${esc(p.bad[f])}</span>`; }
-      if (f === 'locality' && p.georef) chips += `<span class="pchip geo" data-acc="georef|${p.src}" title="${esc(srcName(p.src) + ' — ' + t('geo_chip_t'))}">${esc(fieldLabel('georef'))} → ${esc(p.georef)}</span>`;
-      if (f === 'species' && p.drop) chips += `<span class="pchip drop" data-acc="drop|${p.src}" title="${esc(srcName(p.src) + ' — ' + t('drop_chip_t'))}">${t('v_spurious')}?</span>`;
+      if (f === 'locality' && p.georef) chips += `<span class="pchip geo"${acc('georef', p.src)} title="${tip(p.src, 'geo_chip_t')}">${esc(fieldLabel('georef'))} → ${esc(p.georef)}</span>`;
+      if (f === 'species' && p.drop) chips += `<span class="pchip drop"${acc('drop', p.src)} title="${tip(p.src, 'drop_chip_t')}">${t('v_spurious')}?</span>`;
     }
-    if (f === 'species') for (const a of o.rec.auto || []) if (a[0] === 'value') chips += `<span class="pchip auto" title="${esc(t('src_auto'))}">${esc(a[1])} → ${esc(a[2])}</span>`;
+    if (f === 'species' && RVU.notes) for (const a of o.rec.auto || []) if (a[0] === 'value') chips += `<span class="pchip auto" title="${esc(t('src_auto'))}">${esc(a[1])} → ${esc(a[2])}</span>`;
   }
   return [s, chips];
 }
@@ -77,26 +77,27 @@ function rvRenderTable() {
   if (!on || !EM) { closeColChooser(); return; }
   const m = EM; const keep = box.dataset.e === String(m.e) ? [box.scrollTop, box.scrollLeft] : [0, 0];
   let rows = m.obs; if (corpusOn() && !RVU.showOut) rows = rows.filter(o => inCorpus(o.n));
-  if (RVU.tflag) rows = rows.filter(o => (m.itemByObs.get(o.n) || {}).lv >= 1 || RV.dec[o.key]);
+  if (RVU.tflag && RVU.notes) rows = rows.filter(o => (m.itemByObs.get(o.n) || {}).lv >= 1 || RV.dec[o.key]);
+  const acts = !EXPLORER;   // the explorer build has no action column and no editable cell
   const selN = S.sel && S.sel[0] === 'n' ? +S.sel.slice(1) : -1;
   const all = tableCols(m, rows); TCOLS.cols = all; const cols = all.filter(c => c.on);
-  let s = `<table class="t rt"><thead><tr><th class="c-nr">#</th><th class="c-bd"></th>${cols.map(c => `<th class="${c.f ? 'c-' + c.f : c.id === 'tier' ? 'c-tier' : 'c-p'}" data-col="${esc(c.id)}" title="${esc(c.title || c.label)}">${esc(c.label)}</th>`).join('')}<th class="c-acts"></th></tr></thead><tbody>`;
+  let s = `<table class="t rt"><thead><tr><th class="c-nr">#</th><th class="c-bd"></th>${cols.map(c => `<th class="${c.f ? 'c-' + c.f : c.id === 'tier' ? 'c-tier' : 'c-p'}" data-col="${esc(c.id)}" title="${esc(c.title || c.label)}">${esc(c.label)}</th>`).join('')}${acts ? '<th class="c-acts"></th>' : ''}</tr></thead><tbody>`;
   rows.forEach(o => {
-    const d = RV.dec[o.key]; const cur = recVals(o.n); const ps = d && d.d ? [] : ['g', 's'].map(c => proposal(o, c)).filter(Boolean); const an = recAnn(m, o); const fc = flagChips(o); const out = corpusOn() && !inCorpus(o.n);
+    const d = RV.dec[o.key]; const cur = recVals(o.n); const ps = (d && d.d) || !RVU.notes ? [] : ['g', 's'].map(c => proposal(o, c)).filter(Boolean); const an = RVU.notes ? recAnn(m, o) : null; const fc = flagChips(o); const out = corpusOn() && !inCorpus(o.n);
     s += `<tr data-o="${o.n}" class="${o.n === selN ? 'on ' : ''}${an ? 'an-' + an.cls : ''}${d && d.d === 'x' ? ' dropped' : ''}${out ? ' out' : ''}"><td class="num muted c-nr">${o.idx < 1e6 ? o.idx + 1 : '?'}</td><td class="c-bd">${annBadge(an)}</td>`;
     for (const c of cols) {
       if (c.f) { const [v, chips] = tdCell(o, c.f, cur, d, ps); s += `<td data-f="${c.f}"${c.f === 'species' ? ' class="c-species"' : ''}>${v}${chips}${(fc[c.id] || []).join('')}</td>`; }
       else if (c.id === 'tier') { const why = tierWhy(o); s += `<td class="c-tier">${tierChip(o)}${why && tierOf(o.n) < 3 ? `<span class="trwhy" title="${esc(why)}">${esc(why)}</span>` : ''}</td>`; }
       else { const v = predCell(o, c); s += `<td class="c-p${c.link ? ' lk' : ''}"${v.length > 34 ? ` title="${esc(v)}"` : ''}><span class="pv">${esc(v)}</span>${(fc['p:' + c.p] || []).join('')}</td>`; }
     }
-    s += `<td class="racts"><button class="mini" data-ra="ok" title="${t('a_rec_ok')}">✓</button><button class="mini" data-ra="edit" title="${t('a_edit')}">✎</button><button class="mini" data-ra="drop" title="${t('a_drop')}">✕</button></td></tr>`;
+    s += (acts ? `<td class="racts"><button class="mini" data-ra="ok" title="${t('a_rec_ok')}">✓</button><button class="mini" data-ra="edit" title="${t('a_edit')}">✎</button><button class="mini" data-ra="drop" title="${t('a_drop')}">✕</button></td>` : '') + '</tr>';
   });
-  for (const it of m.items) if (it.type === 'miss' && it.x.kind === 'observation') {
+  for (const it of RVU.notes ? m.items : []) if (it.type === 'miss' && it.x.kind === 'observation') {
     const d = RV.dec[it.key]; const r = d && d.rec; const x = it.x; const an = rvAnn({ kind: 'miss', item: it.key });
     const val = { species: esc(r ? r.species_de : x.de || '?') + ` <span class="muted">${t('ghost_missing')}</span>`, count: esc(r ? r.count : x.count || ''), locality: esc(r ? r.locality : x.loc || ''), date: esc(r ? r.date : x.date || ''), observer: esc(r ? r.observer : x.obs || ''), record_type: esc(r && r.record_type ? showVal('record_type', r.record_type) : '') };
     s += `<tr class="ghost${d && d.d === 'add' ? ' an-dec' : d && d.d === 'no' ? ' dropped' : ''}" data-item="${esc(it.key)}"><td class="c-nr"></td><td class="c-bd">${annBadge(an)}</td>` +
       cols.map(c => `<td${c.id === 'species' ? ' class="c-species"' : ''}>${c.f ? val[c.f] || '' : c.id === 'tier' && x.src !== 'h' ? `<span class="muted">${esc(srcName(x.src))}</span>` : ''}</td>`).join('') +
-      `<td class="racts"><button class="mini" data-ra="add" title="${t('a_add')}">+</button></td></tr>`;
+      (acts ? `<td class="racts"><button class="mini" data-ra="add" title="${t('a_add')}">+</button></td>` : '') + '</tr>';
   }
   const hidden = all.filter(c => !c.on).length; const outN = outCount(m);
   box.innerHTML = s + `</tbody></table>${rows.length ? '' : `<p class="muted" style="padding:12px">${t(RVU.tflag ? 't_none_flagged' : 'no_records')}</p>`}` +
@@ -151,8 +152,9 @@ function editCell(td, o, f) {
 }
 function tableClick(ev) {
   const m = EM; if (!m) return; const tr = ev.target.closest('tr[data-o], tr[data-item]'); if (!tr) return;
-  if (tr.dataset.item) { const it0 = m.items.find(it => it.key === tr.dataset.item); if (it0 && it0.sec === 'hint') RVU.hints = true; const i = visibleItems(m).findIndex(it => it.key === tr.dataset.item); if (i >= 0) { S.tab = 'check'; RVU.card = i; if (ev.target.closest('[data-ra="add"]')) openForm(tr.dataset.item, 'add'); else { renderPanel(); focusCard(i); } } return; }
+  if (tr.dataset.item) { const it0 = m.items.find(it => it.key === tr.dataset.item); if (it0 && it0.sec === 'hint') RVU.hints = true; const i = visibleItems(m).findIndex(it => it.key === tr.dataset.item); if (i >= 0) { S.tab = 'check'; RVU.card = i; if (ev.target.closest('[data-ra="add"]') && !EXPLORER) openForm(tr.dataset.item, 'add'); else { renderPanel(); focusCard(i); } } return; }
   const o = m.byNode.get(+tr.dataset.o); if (!o) return;
+  if (EXPLORER) { selectKey('n' + o.n, { center: true }); return; }   // a click selects the record; nothing is edited
   const chip = ev.target.closest('.pchip[data-acc]'); const ra = ev.target.closest('[data-ra]'); const td = ev.target.closest('td[data-f]');
   if (ev.target.closest('input,select')) return;
   if (chip) {

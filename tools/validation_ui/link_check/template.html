@@ -48,13 +48,24 @@ header{grid-row:1;display:flex;align-items:center;gap:6px;padding:0 12px;backgro
 .saved.warn{color:#ffd28a;opacity:1}
 .main{grid-row:3;display:grid;grid-template-columns:296px minmax(0,1fr) var(--scanw);min-height:0}
 /* corpus filter: selector, banner, tier chips (colours and names as on the graph validation page) */
-#corpsel{flex:none;max-width:236px;padding:4px 6px;border:1px solid rgba(255,255,255,.26);border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-size:12.5px;cursor:pointer}
-#corpsel option{color:#161c25;background:#fff}
-#corpsel.on{border-color:#fff;background:var(--tr2);font-weight:600;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
-:root[data-theme="dark"] #corpsel.on{color:#10160f}
-#corpbar{grid-row:2;display:flex;align-items:center;gap:9px;padding:5px 14px;font-size:12.5px;background:color-mix(in srgb,var(--tr2) 15%,var(--panel));border-bottom:1px solid var(--tr2);color:var(--ink);min-width:0}
+#corpbar{grid-row:2;display:flex;align-items:center;gap:9px;padding:6px 12px;font-size:12.5px;background:var(--panel);border-bottom:1px solid var(--line2);color:var(--ink);min-width:0}
+#corpbar.active{background:color-mix(in srgb,var(--tr2) 15%,var(--panel));border-bottom-color:var(--tr2)}
 #corpbar[hidden]{display:none}
-#corpbar .cbt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#corpbar .cbl{font-weight:700;font-size:13px;flex:none}
+#corpbar .cseg{display:inline-flex;flex:none;border:1.5px solid var(--acc);border-radius:8px;overflow:hidden;background:var(--panel)}
+#corpbar .cbtn{border:0;border-left:1.5px solid var(--acc);background:transparent;padding:4px 11px;font-size:13px;font-weight:600;color:var(--acc);white-space:nowrap;display:inline-flex;gap:6px;align-items:baseline}
+#corpbar .cbtn:first-child{border-left:0}
+#corpbar .cbtn small{font-weight:500;font-size:12px;opacity:.8;font-variant-numeric:tabular-nums}
+#corpbar .cbtn:hover{background:var(--acc-soft)}
+#corpbar .cbtn.on{background:var(--acc);color:var(--onacc)}
+#corpbar.active .cseg{border-color:var(--tr2)} #corpbar.active .cbtn{border-left-color:var(--tr2)}
+#corpbar.active .cbtn.on{background:var(--tr2);color:#fff}
+:root[data-theme="dark"] #corpbar.active .cbtn.on{color:#10160f}
+#corpbar .cinfo{flex:none;border:1px solid var(--line2);background:var(--panel);border-radius:50%;width:24px;height:24px;padding:0;font-size:14px;line-height:1;color:var(--acc2)}
+#corpbar .cinfo:hover{background:var(--acc-soft)}
+#corpbar .cbt{flex:1;min-width:0;overflow:hidden;font-size:12px;line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.cdef{border-collapse:collapse;width:100%} .cdef td{padding:7px 10px 7px 0;vertical-align:top;border-top:1px solid var(--line);color:var(--ink2)} .cdef td:nth-child(2){white-space:nowrap;color:var(--ink)}
+@media (max-width:1100px){#corpbar{flex-wrap:wrap}#corpbar .cseg{flex-wrap:wrap}}
 .trc{display:inline-block;padding:0 6px;height:16px;line-height:16px;border-radius:4px;font-size:10.5px;font-weight:700;white-space:nowrap;color:#fff;vertical-align:1px;flex:none}
 .trc.tr0{background:var(--tr0)} .trc.tr1{background:var(--tr1)} .trc.tr2{background:var(--tr2)} .trc.tr3{background:var(--tr3)}
 :root[data-theme="dark"] .trc{color:#10160f}
@@ -261,7 +272,6 @@ mark{background:var(--hl);color:inherit;border-radius:2px;padding:0 1px}
   <div class="brand" id="brand"></div>
   <nav class="types" id="types"></nav>
   <div class="sp"></div>
-  <select id="corpsel"></select>
   <span class="saved" id="saved"></span>
   <button class="hbtn" id="btnUndo">↶</button>
   <button class="hbtn" id="btnImport"></button>

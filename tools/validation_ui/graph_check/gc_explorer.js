@@ -14,8 +14,14 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+// [GC] one app, two builds: the embedded meta says which. review = Graph-Prüfung (decide, export);
+// explorer = Graph-Explorer: the same display, nothing that decides (EXPLORER is respected by every module)
+const GC_META = (() => { try { return JSON.parse(document.getElementById('gc-meta').textContent) || {}; } catch (e) { return {}; } })();
+const EXPLORER = GC_META.mode === 'explorer';
+document.documentElement.dataset.mode = EXPLORER ? 'explorer' : 'review';
+const LS_PREFIX = EXPLORER ? 'lkge.' : 'lkgc.';   // the two builds keep their view settings apart
 function store(k, v) {
-  try { if (v === undefined) return localStorage.getItem('lkgc.' + k); localStorage.setItem('lkgc.' + k, v); } catch (e) { /* storage unavailable */ }
+  try { if (v === undefined) return localStorage.getItem(LS_PREFIX + k); localStorage.setItem(LS_PREFIX + k, v); } catch (e) { /* storage unavailable */ }
   return null;
 }
 const debounce = (f, ms) => { let h; return (...a) => { clearTimeout(h); h = setTimeout(() => f(...a), ms); }; };
@@ -376,7 +382,7 @@ function applyStatic() {
   $$('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   $$('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
   $('#btn-lang').textContent = LANG === 'de' ? 'EN' : 'DE';
-  $('#apptitle').textContent = t('app_title');
+  $('#apptitle').textContent = t('app_title'); document.title = t('app_title');
   rvApplyStatic();   // [GC]
 }
 

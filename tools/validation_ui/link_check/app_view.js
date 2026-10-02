@@ -25,15 +25,22 @@ function renderHeader() {
   renderCorpusSel();
   savedLabel();
 }
-// corpus selector and the banner of an active filter
+// corpus bar under the header, in every view: label, four buttons with their record counts, ⓘ, and - under a filter - what it does and "Filter aufheben"
 function renderCorpusSel() {
-  const sel = $('#corpsel'), bar = $('#corpbar'); if (!sel || !bar) return;
-  if (!D.corpus) { sel.style.display = 'none'; bar.hidden = true; return; }
-  const c = corpus();
-  sel.innerHTML = [0, 1, 2, 3].map(k => '<option value="' + k + '"' + (k === c ? ' selected' : '') + '>' + esc(t('corp.sel', t('corp.s.' + k), fmt(D.corpus.rec[k]))) + '</option>').join('');
-  sel.title = t('corp.tip'); sel.classList.toggle('on', c > 0);
-  bar.hidden = c === 0;
-  bar.innerHTML = c === 0 ? '' : '<span class="trc tr' + c + '">K' + c + '</span><span class="cbt">' + esc(t('corp.active', t('corp.' + c), fmt(D.corpus.rec[c]), fmt(D.corpus.rec[0]))) + '</span><button class="nbtn" data-act="corpus-off">' + esc(t('corp.off')) + '</button>';
+  const bar = $('#corpbar'); if (!bar) return;
+  if (!D.corpus) { bar.hidden = true; return; }
+  const c = corpus(); bar.hidden = false; bar.classList.toggle('active', c > 0);
+  const note = c === 0 ? t('corp.hint') : t('corp.active', t('corp.' + c), fmt(D.corpus.rec[c]), fmt(D.corpus.rec[0]));
+  bar.innerHTML = '<span class="cbl" title="' + esc(t('corp.tip')) + '">' + esc(t('corp.label')) + '</span><div class="cseg" role="group" aria-label="' + esc(t('corp.label')) + '">'
+    + [0, 1, 2, 3].map(k => '<button class="cbtn' + (k === c ? ' on' : '') + '" data-corpus="' + k + '" aria-pressed="' + (k === c) + '" title="' + esc(t('corp.def.' + k)) + '">' + esc(t('corp.b.' + k)) + ' <small>' + fmt(D.corpus.rec[k]) + '</small></button>').join('')
+    + '</div><button class="cinfo" data-act="corpus-info" title="' + esc(t('corp.info.t')) + '" aria-label="' + esc(t('corp.info.t')) + '">ⓘ</button><span class="cbt' + (c ? '' : ' muted') + '" title="' + esc(note) + '">' + esc(note) + '</span>'
+    + (c ? '<button class="nbtn" data-act="corpus-off">' + esc(t('corp.off')) + '</button>' : '');
+}
+function showCorpusInfo() {
+  $('#modal').innerHTML = '<button class="nbtn x" data-close="1">' + esc(t('btn.close')) + '</button><h2>' + esc(t('corp.info.h')) + '</h2><p>' + esc(t('corp.info.lead')) + '</p><table class="cdef">'
+    + [0, 1, 2, 3].map(k => '<tr><td>' + (k ? '<span class="trc tr' + k + '">K' + k + '</span>' : '') + '</td><td><b>' + esc(t('corp.b.' + k)) + '</b><br><span class="muted">' + fmt(D.corpus.rec[k]) + ' ' + esc(t('home.corp.rec')) + '</span></td><td>' + esc(t('corp.def.' + k)) + '</td></tr>').join('')
+    + '</table><h3>' + esc(t('corp.info.h2')) + '</h3><p>' + esc(t('corp.info.rule')) + '</p><p>' + esc(t('corp.info.view')) + '</p>';
+  $('#ovModal').classList.add('show');
 }
 const tierName = k => t('tier.' + k);
 const whyText = code => (has('tw.' + code) ? t('tw.' + code) : code);

@@ -113,5 +113,5 @@ function sevTableHtml() {
 }
 function markLegendHtml() {   // colour = level, marker = kind
   return `<span class="li lgh" title="${esc(t('lg_level_t'))}">${t('lg_level')}</span>` + [3, 2, 1, 0].map(lv => `<span class="li">${lvDot(lv)}${lvName(lv)}</span>`).join('') +
-    `<span class="li lgh" title="${esc(t('lg_kind_t'))}">${t('lg_kind')}</span>` + [['!', 'lg_err'], ['M', 'lg_auto'], ['?', 'lg_sugg'], ['×', 'lg_gone'], ['✓', 'lg_ok']].map(([m, k]) => `<span class="li"><span class="mk${m === '✓' ? ' mk-ok' : ''}">${m}</span>${t(k)}</span>`).join('');
+    `<span class="li lgh" title="${esc(t('lg_kind_t'))}">${t('lg_kind')}</span>` + [['!', 'lg_err'], ['M', 'lg_auto'], ['?', 'lg_sugg'], ['×', 'lg_gone'], ['✓', 'lg_ok']].filter(x => !(EXPLORER && x[0] === '✓')).map(([m, k]) => `<span class="li"><span class="mk${m === '✓' ? ' mk-ok' : ''}">${m}</span>${t(k)}</span>`).join('');
 }

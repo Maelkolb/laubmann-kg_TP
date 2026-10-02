@@ -12,7 +12,15 @@ rejects or corrects; the decisions are exported in the pipeline's review
 contracts (see README.md).
 
     python tools/validation_ui/graph_check/build_graph_check.py <graph.ttl> <review.json> <out.html>
-        [--scans drive | local:<dir relative to out.html>] [--no-cache]
+        [--mode review | explorer] [--scans drive | local:<dir relative to out.html>] [--no-cache]
+
+One app, two builds. ``--mode review`` (default) is the Graph-Prüfung: everything is displayed AND can
+be decided and exported. ``--mode explorer`` is the Graph-Explorer: the same code, data and display
+(subgraph with property rows, table, scan pane, crops, corpus filter, node / class / search views,
+overview numbers), nothing that decides (no decision buttons, keys or forms, no reviewer name, no
+export, no stored decisions); findings and automatic changes are read-only annotations behind the
+switch "Prüfhinweise zeigen". The mode is written into the embedded meta (``<script id="gc-meta">``,
+graph meta, review-layer meta); the modules read it as ``EXPLORER``.
 
 What the builder adds to the review layer:
 
@@ -54,6 +62,7 @@ JS_FILES = ["gc_explorer.js", "gc_i18n.js", "gc_state.js", "gc_severity.js", "gc
             "gc_boot.js"]
 CSS_FILES = ["gc_explorer.css", "gc_review.css", "gc_levels.css"]
 TEMPLATE = "graph_check_template.html"
+TITLES = {"review": "Laubmann-KG · Graph-Prüfung", "explorer": "Laubmann-KG · Graph-Explorer"}
 SAMPLE_MOD = 33
 
 
@@ -204,10 +213,14 @@ def main(argv=None) -> int:
                          "relative to the HTML; fallback when a crop does not load from Drive "
                          "(default: data/region_crops of this repository, if it exists; 'none' = no local crops)")
     ap.add_argument("--ontology-dir", default=str(REPO / "ontologies"))
-    ap.add_argument("--title", default="Laubmann-KG · Graph-Prüfung")
+    ap.add_argument("--mode", choices=("review", "explorer"), default="review",
+                    help="review = Graph-Prüfung (decisions, export); explorer = the same display, read-only")
+    ap.add_argument("--title", default=None, help="page title (default: by mode)")
     ap.add_argument("--format", default=None, help="rdflib parser format (default: from the file extension)")
     ap.add_argument("--no-cache", action="store_true", help="parse the graph even when a cached packing exists")
     args = ap.parse_args(argv)
+    if args.title is None:
+        args.title = TITLES[args.mode]
 
     t0 = time.time()
     src, out = Path(args.graph), Path(args.out)
@@ -217,6 +230,7 @@ def main(argv=None) -> int:
     meta.update(X.ontology_info(Path(args.ontology_dir)))
     meta["prefixes"] = X.PREFIXES
     meta["title"] = args.title
+    meta["mode"] = args.mode
     meta["source"] = src.name
     meta["sourcePath"] = (str(src.resolve().relative_to(REPO)).replace("\\", "/")
                           if src.resolve().is_relative_to(REPO) else src.name)
@@ -256,6 +270,7 @@ def main(argv=None) -> int:
              "names": review.get("names", {}), "crops": review.get("crops", {}), "obs": obs_map, "sample": sorted(sample),
              "graph": {"source": meta["sourcePath"], "entries": stats.get("entries in the graph", 0),
                        "records": stats.get("records in the graph", 0)}}
+    layer["meta"] = dict(layer["meta"], mode=args.mode)
     export = (review.get("meta") or {}).get("export")
     if export and export not in meta["sourcePath"]:
         print(f"WARNING: review.json was built for export {export!r}, the graph file is {meta['sourcePath']!r}", file=sys.stderr)
@@ -270,7 +285,10 @@ def main(argv=None) -> int:
     js = "\n".join((HERE / f).read_text(encoding="utf-8") for f in JS_FILES)
     lf_js = (REPO / "tools" / "validation_ui" / "leaflet.js").read_text(encoding="utf-8")
     lf_css = (REPO / "tools" / "validation_ui" / "leaflet.css").read_text(encoding="utf-8")
+    page_meta = json.dumps({"mode": args.mode, "title": args.title}, ensure_ascii=False).replace("<", "\\u003c")
     html = (tpl.replace("{{TITLE}}", args.title.replace("<", "&lt;"))
+               .replace("{{MODE}}", args.mode)
+               .replace("{{META}}", page_meta)
                .replace("/*{{LEAFLET_CSS}}*/", lf_css)
                .replace("/*{{APP_CSS}}*/", css)
                .replace("/*{{LEAFLET_JS}}*/", lf_js.replace("</script", "<\\/script"))
@@ -281,7 +299,7 @@ def main(argv=None) -> int:
     out.write_text(html, encoding="utf-8")
     mb = 1024 * 1024
     print(json.dumps(stats, indent=1), file=sys.stderr)
-    print(f"wrote {out} - {len(html) / mb:.1f} MB (graph {len(b64) / mb:.1f} MB base64, review layer {len(rv_raw) / mb:.1f} MB raw / "
+    print(f"wrote {out} [{args.mode}] - {len(html) / mb:.1f} MB (graph {len(b64) / mb:.1f} MB base64, review layer {len(rv_raw) / mb:.1f} MB raw / "
           f"{len(rv_b64) / mb:.1f} MB base64); {meta['triples']:,} triples, {len(layer['entries']):,} entries with review data, "
           f"{len(sample):,} sample entries, {len(scans['drive']):,} pages with Drive id ({len(pages):,} pages in the graph, {len(extra):,} more in the "
           f"review layer), {len(layer['crops']):,} region crops with Drive id, local crops: {scans['crops'] or '-'}; {time.time() - t0:.1f} s",

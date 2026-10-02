@@ -35,6 +35,7 @@ function act(k) {
   const ty = cur.type; const e = curEnt();
   if (k === 'undo') return undo();
   if (k === 'corpus-off') return setCorpus(0);
+  if (k === 'corpus-info') return showCorpusInfo();
   if (!e) return;
   if (k === 'confirm') {
     if (e.gone) return setEnt(ty, e, makeDec(ty, e, 'none', 'confirm'));
@@ -260,7 +261,7 @@ document.addEventListener('click', ev => {
   if (x.closest('.modal')) return;
   if (x.closest('#brand')) return openType('home');
   const tt = x.closest('[data-type]'); if (tt) return openType(tt.dataset.type);
-  const cr = x.closest('[data-corpus]'); if (cr) return setCorpus(+cr.dataset.corpus);
+  const cr = x.closest('[data-corpus]'); if (cr) { if (cr.blur) cr.blur(); return setCorpus(+cr.dataset.corpus); }
   const hq = x.closest('[data-home]'); if (hq) return setQueue(hq.dataset.home, hq.dataset.hq);
   const qc = x.closest('.chip[data-q]'); if (qc) return setQueue(ty, qc.dataset.q);
   const sc = x.closest('.chip[data-sub]'); if (sc) return setQueue(ty, 'suggest', S.ui.sub[ty] === sc.dataset.sub ? '' : sc.dataset.sub);
@@ -291,7 +292,6 @@ document.addEventListener('click', ev => {
   if (x.id === 'btnExport') return showExport();
   if (x.id === 'btnImport') return $('#fileImport').click();
 });
-document.addEventListener('change', ev => { if (ev.target.id === 'corpsel') { const v = ev.target.value; ev.target.blur(); setCorpus(v); } });
 document.addEventListener('input', ev => {
   const x = ev.target; const ty = cur.type;
   if (x.id === 'qsearch') { S.ui.find[ty] = x.value; SHOW[ty] = LIST_STEP; clearTimeout(x._t); x._t = setTimeout(() => { save(); renderList(); }, 200); return; }

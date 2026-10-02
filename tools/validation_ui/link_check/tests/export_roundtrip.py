@@ -300,7 +300,7 @@ async def main():
                                    " if (e && e.nc && e.nc[3] === 0) out.push(t + ':' + k); } return out; })()")
         same = []
         for c in ("1", "2", "3"):
-            await pg.select_option("#corpsel", c)
+            await pg.click(f'#corpbar .cbtn[data-corpus="{c}"]')
             await pg.wait_for_timeout(200)
             same.append(await pg.evaluate("__lc.exportIdentities()") == text and await pg.evaluate("__lc.exportFiles().find(f => f[0] === 'link_audit.csv')[1]") == files["link_audit.csv"])
         check(all(same), f"identities.csv and link_audit.csv are identical under every corpus filter {same}")
@@ -309,8 +309,9 @@ async def main():
         check(files3["review/identities.csv"] == text and files3["link_audit.csv"] == files["link_audit.csv"] and st0 == st3, "the ZIP exported under 'strenger Kern mit Koordinaten' equals the unfiltered one")
         gone_ = [h for h in hidden if not await pg.evaluate(f"__lc.corpusItems({json.dumps(h.split(':', 1)[0])}).some(e => e.k === {json.dumps(h.split(':', 1)[1])})")]
         check(hidden and gone_ == hidden and await n_decisions(pg) == n_before, f"{len(hidden)} decided entries without a mention in the corpus are hidden but keep their decisions")
-        await pg.select_option("#corpsel", "0")
+        await pg.click('#corpbar [data-act="corpus-off"]')
         await pg.wait_for_timeout(200)
+        check(await pg.evaluate("__lc.S.ui.corpus") == 0, "'Filter aufheben' in the corpus bar clears the filter")
 
         L = run_loader(text)
         if not check(L is not None, "the pipeline's Identities.load() reads the exported file"):

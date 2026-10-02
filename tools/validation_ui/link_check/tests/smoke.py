@@ -38,10 +38,24 @@ def de(n):
 async def corpus_filter(pg):
     """The corpus filter of the graph validation page: selector, banner, counts, lists, passages, overview."""
     T = "['taxon','person','place','habitat']"
-    opts = await pg.eval_on_selector_all("#corpsel option", "els => els.map(e => e.textContent)")
+    await pg.click("#brand")
+    await pg.wait_for_timeout(150)
+    opts = await pg.eval_on_selector_all("#corpbar .cbtn", "els => els.map(e => e.textContent.replace(/\\s+/g, ' ').trim())")
     rec = await pg.evaluate("__lc.D.corpus.rec")
-    check(len(opts) == 4 and "vollständig" in opts[0] and "Kern" in opts[1] and "strenger Kern" in opts[2] and "strenger Kern + Koord." in opts[3] and all(de(rec[c]) in opts[c] for c in range(4)),
-          f"corpus selector with the four corpora and their record counts {opts}")
+    check(opts == [f"{n} {de(rec[c])}" for c, n in enumerate(["Vollständig", "Kern", "Strenger Kern", "Strenger Kern mit Koordinaten"])] and (await pg.inner_text("#corpbar .cbl")) == "Korpus",
+          f"corpus bar: label 'Korpus' and four labelled buttons with their record counts {opts}")
+    box = await pg.evaluate("(() => { const r = document.querySelector('#corpbar').getBoundingClientRect(), h = document.querySelector('header').getBoundingClientRect(); return [Math.round(r.top - h.bottom), Math.round(r.width), Math.round(r.height)]; })()")
+    seen = [await pg.locator("#corpbar .cbtn:visible").count()]
+    for ty in ["taxon", "person", "place", "habitat"]:
+        await pg.click(f'#types [data-type="{ty}"]')
+        await pg.wait_for_timeout(120)
+        seen.append(await pg.locator("#corpbar .cbtn:visible").count())
+    check(box[0] == 0 and box[1] >= 1400 and box[2] >= 30 and seen == [4] * 5, f"the corpus bar sits directly under the header in every view (overview and the four types) {box} {seen}")
+    await pg.click('#corpbar [data-act="corpus-info"]')
+    await pg.wait_for_timeout(150)
+    info = await pg.inner_text("#modal")
+    check(await pg.locator("#ovModal.show .cdef tr").count() == 4 and all(w in info for w in ["Vollständig", "Strenger Kern mit Koordinaten", "Scanprüfung", "Artniveau", "Koordinaten", "nur eine Ansicht"]), "ⓘ gives the definitions of the four corpora in words")
+    await pg.keyboard.press("Escape")
     tax = await pg.evaluate("[0,1,2,3].map(c => __lc.ENTS.taxon.filter(e => !e.gone).reduce((a, e) => a + e.nc[c], 0))")
     check(rec == tax, f"species mentions per corpus = records per corpus {tax}")
     layer = Path(os.environ.get("LC_REVIEW", REPO / "data" / "cache" / "graph_check" / "review.json"))
@@ -51,14 +65,18 @@ async def corpus_filter(pg):
         check(rec == want and want[0] == cnt["records"], f"records per corpus as in the review layer of the graph page {want}")
     ok = await pg.evaluate(f"{T}.every(t => __lc.ENTS[t].every(e => e.nc && e.nc[0] === e.n && e.nc[1] <= e.nc[0] && e.nc[2] <= e.nc[1] && e.nc[3] <= e.nc[2] && [0,1,2,3].every(c => e.forms.reduce((a, f) => a + f.nc[c], 0) === e.nc[c])))")
     check(ok, "every entry and written name carries nested counts for the four corpora; names add up to the entry")
-    check(await pg.evaluate("document.querySelector('#corpbar').hidden") and await pg.evaluate("__lc.corpus()") == 0, "no banner without a filter")
+    check(await pg.locator('#corpbar .cbtn.on').count() == 1 and await pg.locator('#corpbar .cbtn.on[data-corpus="0"]').count() == 1 and await pg.locator('#corpbar [data-act="corpus-off"]').count() == 0
+          and await pg.evaluate("__lc.corpus()") == 0 and not await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"), "without a filter 'Vollständig' is the filled button, no 'Filter aufheben'")
 
-    await pg.select_option("#corpsel", "2")
+    await pg.click('#corpbar .cbtn[data-corpus="2"]')
     await pg.wait_for_timeout(250)
-    bar = await pg.inner_text("#corpbar")
-    check(await pg.evaluate("__lc.S.ui.corpus") == 2 and not await pg.evaluate("document.querySelector('#corpbar').hidden") and "strenger Kern" in bar and "Filter aufheben" in bar
-          and de(rec[2]) in bar and de(rec[0]) in bar, f"the selector sets the filter and a banner names it ({bar[:90]})")
-    check(await pg.evaluate("document.activeElement.id") != "corpsel" and await pg.evaluate("document.querySelector('#corpsel').classList.contains('on')"), "the selector is marked active and gives the keys back")
+    bar = await pg.inner_text("#corpbar .cbt")
+    check(await pg.evaluate("__lc.S.ui.corpus") == 2 and "Korpusfilter aktiv: strenger Kern" in bar and de(rec[2]) in bar and de(rec[0]) in bar and "Export bleiben vollständig" in bar
+          and await pg.locator('#corpbar [data-act="corpus-off"]').count() == 1, f"a button sets the filter; the bar explains it and offers 'Filter aufheben' ({bar[:80]})")
+    fill = await pg.evaluate("[...document.querySelectorAll('#corpbar .cbtn')].map(b => getComputedStyle(b).backgroundColor)")
+    check(await pg.locator('#corpbar .cbtn.on').count() == 1 and await pg.locator('#corpbar .cbtn.on[data-corpus="2"]').count() == 1 and fill[2] != fill[0] and fill[0] == fill[1] == fill[3]
+          and await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')") and await pg.evaluate("document.activeElement.tagName") == "BODY",
+          f"the active corpus is the one filled button {fill}")
     corp = await pg.evaluate("__lc.D.corpus")
     for ty in ["taxon", "person", "place", "habitat"]:
         await pg.click(f'#types [data-type="{ty}"]')
@@ -120,24 +138,26 @@ async def corpus_filter(pg):
     await pg.click("#btnLang")
     await pg.wait_for_timeout(200)
     bar = await pg.inner_text("#corpbar")
-    opts = await pg.eval_on_selector_all("#corpsel option", "els => els.map(e => e.textContent)")
-    check("Corpus filter active: strict core" in bar and "clear the filter" in bar and "Corpus: strict core" in opts[2] and "Corpora" in await pg.inner_text(".home"), "[en] banner, selector and overview in English")
+    opts = await pg.eval_on_selector_all("#corpbar .cbtn", "els => els.map(e => e.textContent.replace(/\\s+/g, ' ').trim())")
+    check("Corpus filter active: strict core" in bar and "clear the filter" in bar and bar.startswith("Corpus") and opts[2].startswith("Strict core ") and opts[3].startswith("Strict core with coordinates")
+          and "Corpora" in await pg.inner_text(".home"), "[en] corpus bar and overview in English")
     await pg.click('#types [data-type="taxon"]')
     await pg.wait_for_timeout(200)
     check("in the corpus" in await pg.inner_text("#cardwrap .sub"), "[en] card counts in English")
     await pg.click("#btnLang")
     await reload(pg)
-    check(await pg.evaluate("__lc.S.ui.corpus") == 2 and not await pg.evaluate("document.querySelector('#corpbar').hidden") and await pg.evaluate("document.querySelector('#corpsel').value") == "2", "the filter is remembered over a reload")
+    check(await pg.evaluate("__lc.S.ui.corpus") == 2 and await pg.locator('#corpbar .cbtn.on[data-corpus="2"]').count() == 1 and await pg.locator('#corpbar [data-act="corpus-off"]').count() == 1, "the filter is remembered over a reload")
     await pg.click("#brand")
     await pg.wait_for_timeout(150)
     await pg.click('.covt tr[data-corpus="3"]')
     await pg.wait_for_timeout(200)
-    check(await pg.evaluate("__lc.S.ui.corpus") == 3 and "strenger Kern mit Koordinaten" in await pg.inner_text("#corpbar"), "a row of the corpora table sets the filter")
+    check(await pg.evaluate("__lc.S.ui.corpus") == 3 and await pg.locator('#corpbar .cbtn.on[data-corpus="3"]').count() == 1 and "strenger Kern mit Koordinaten" in await pg.inner_text("#corpbar .cbt"), "a row of the corpora table sets the filter")
     await pg.click('#types [data-type="place"]')
     await pg.wait_for_timeout(150)
     await pg.click('#corpbar [data-act="corpus-off"]')
     await pg.wait_for_timeout(250)
-    check(await pg.evaluate("__lc.S.ui.corpus") == 0 and await pg.evaluate("document.querySelector('#corpbar').hidden") and await pg.evaluate("__lc.corpusItems('place').length") == await pg.evaluate("__lc.ENTS.place.length")
+    check(await pg.evaluate("__lc.S.ui.corpus") == 0 and await pg.locator('#corpbar .cbtn.on[data-corpus="0"]').count() == 1 and await pg.locator('#corpbar [data-act="corpus-off"]').count() == 0
+          and await pg.evaluate("__lc.corpusItems('place').length") == await pg.evaluate("__lc.ENTS.place.length")
           and "/" not in (await pg.eval_on_selector_all(".qi .num", "els => els.map(e => e.textContent)"))[0], "'Filter aufheben' brings everything back")
     missing = await pg.evaluate("[...__lc.MISSING]")
     check(not missing, f"no untranslated string under the corpus filter {missing[:10]}")

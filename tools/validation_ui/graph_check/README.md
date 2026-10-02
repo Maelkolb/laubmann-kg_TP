@@ -1,4 +1,4 @@
-# Graph-Prüfung (`Laubmann_Graphpruefung.html`)
+# Graph-Prüfung (`Laubmann_Graphpruefung.html`) und Graph-Explorer (`Laubmann_Graph_Explorer.html`)
 
 Eine einzelne HTML-Seite, mit der eine Historikerin oder ein Historiker den exportierten Wissensgraphen **Eintrag für Eintrag am Scan prüft**. Bisher ist nichts von einem Menschen geprüft: Die Bildlesung hat Transkriptionen korrigiert, die Maschinenprüfung hat Namensentscheidungen automatisch angewendet (Konfidenz ≥ 0,9 und ≥ 2 Quellen), und zwei Scanprüfungen (Gemini auf allen Einträgen, Claude auf der Stichprobe) haben die Datensätze des Graphen mit den Seiten verglichen. Jede dieser Änderungen und jeder Befund ist eine Behauptung – die Seite zeigt sie neben Graph und Scan und lässt sie annehmen, ablehnen oder korrigieren.
 
@@ -10,11 +10,18 @@ Die Seite ist ein **Fork des Graph-Explorers** (`tools/explorer/`): gleiche Date
 # 1. Prüfschicht (liest Export, Korpus, Seitengeometrie, Maschinenprüfung, Scanprüfungen) -> review.json
 .venv\Scripts\python.exe tools\validation_ui\graph_check\build_review.py --help
 
-# 2. Seite
+# 2. Seite: Graph-Prüfung (entscheiden, exportieren)
 .venv\Scripts\python.exe tools\validation_ui\graph_check\build_graph_check.py `
     data\exports\kg_exports_2026-10-01_checked\rdf\laubmann_sample.ttl `
     data\cache\graph_check\review.json `
     data\exports\graph_check\Laubmann_Graphpruefung.html
+
+# 3. dieselbe Anwendung als Graph-Explorer (nur lesen): --mode explorer
+.venv\Scripts\python.exe tools\validation_ui\graph_check\build_graph_check.py `
+    data\exports\kg_exports_2026-10-01_checked\rdf\laubmann_sample.ttl `
+    data\cache\graph_check\review.json `
+    data\exports\graph_check\Laubmann_Graph_Explorer.html --mode explorer
+#   --mode review|explorer   review (Standard) = Graph-Prüfung; explorer = dieselbe Anzeige ohne Entscheidungen
 #   --scans drive            (Standard) Drive-Vorschau je Seite, lokale JPEGs als Rückfall
 #   --scans local:<Ordner>   <Ordner>/<Seiten-ID>.jpg relativ zur HTML-Datei zuerst
 #   --local-crops <Ordner>   Ausschnitte der multimodalen Regionen, <region_uid>.jpg, relativ zur HTML-Datei
@@ -25,6 +32,21 @@ Die Seite ist ein **Fork des Graph-Explorers** (`tools/explorer/`): gleiche Date
 Der erste Lauf parst die Turtle-Datei (ca. 30 s für 2 Mio. Tripel), jeder weitere braucht ca. 5 s. Ergebnis: eine Datei von rund 20 MB (Graph 13,7 MB, Prüfschicht 6 MB, jeweils gzip + base64), die in etwa 1 s öffnet. Sie läuft ohne Server direkt aus dem Dateisystem (`file://`) in Edge und Chrome; Netz braucht sie nur für Scans von Google Drive, Kartenkacheln und die GBIF-Suche. Der Builder gibt aus, wie Graph und Prüfschicht zusammenpassen (Einträge/Datensätze ohne Prüfdaten, abweichende Namen) und warnt, wenn `review.json` für einen anderen Export gebaut wurde.
 
 Der Builder nimmt die Drive-Kennungen aller Seiten der Prüfschicht auf (auch der Seiten, die nur Bilder eines Eintrags tragen und im Graph keine `lkg:DiaryPage` sind) und trägt den lokalen Ordner der Ausschnitte in die Seite ein (`meta.scans.crops`). Er ergänzt die Prüfschicht um drei Dinge: `obs` (je Eintrag Knoten, Extraktionsindex und Vorkommen jedes Datensatzes – der Index wird aus der IRI zurückgerechnet: `sha1("<entry_uid>|<Name wie geschrieben>|<Index>")[:12]`), `sample` (die feste Stichprobe: `sha1(entry_uid) mod 33 == 0`) und `graph` (Quelle, Zahlen).
+
+## Eine Anwendung, zwei Builds: Graph-Prüfung und Graph-Explorer
+
+Derselbe Code, dieselben Daten, zwei Seiten – der Builder schreibt den Modus in die eingebetteten Metadaten (`<script id="gc-meta">`, außerdem `meta.mode` von Graph und Prüfschicht), die Module lesen ihn als `EXPLORER`. Es gibt keine zweite Codebasis.
+
+| | `--mode review` (Standard) | `--mode explorer` |
+|---|---|---|
+| Datei, Titel | `Laubmann_Graphpruefung.html`, „Laubmann-KG · Graph-Prüfung“ | `Laubmann_Graph_Explorer.html`, „Laubmann-KG · Graph-Explorer“ |
+| Anzeige | Teilgraph mit Eigenschaftszeilen und Voreinstellungen, Tabelle mit allen Spalten, Scan mit Regionen, Zeile des Datensatzes und Rahmen der Bilder, Ausschnitte und Karten für Bilder und Einlagen, Korpusleiste, Knoten-, Klassenansicht, Suche, Zahlen der Übersicht für Graph und Korpora | **identisch** (der Test vergleicht für denselben Eintrag Knoten, Zeilen, Kanten, Markierungen, Karten, Tabellenspalten und -zellen, Scan-Overlays und die Zahlen der Übersicht) |
+| Entscheiden | Knöpfe und Tasten `J N E X U`, Formulare, „Datensatz hinzufügen“, Name der Prüferin, „Sichern & Export“, „Laden“, „Eintrag geprüft“, Warteschlange „Geprüft“, „von dir entschieden“ | **nichts davon**: keine Entscheidungsknöpfe, -tasten oder Formulare, keine bearbeitbare Zelle, kein Export; gespeicherte Entscheidungen der Graph-Prüfung werden nicht geladen |
+| Befunde, automatische Änderungen | Karten mit Entscheidung | dieselben Karten **nur lesend** (gleiche Farben und Zeichen, „ist → soll“, Begründung), Reiter „Hinweise“; Schalter **„Prüfhinweise zeigen“** in der Korpusleiste (Standard: an) – aus = der Graph ohne Ringe, Marken, Geisterknoten, Hinweiskarten, Chips und Lesekorrektur-Marken |
+| Liste links | Arbeitsliste, Standard „Befund der Maschine“, schwer zuerst, Zahlen „offen / gesamt“ | alle Einträge Band für Band in Tagebuchfolge; die Warteschlangen bleiben als Filter (Zahl der Einträge) |
+| Einstellungen im Browser | Präfix `lkgc.` | Präfix `lkge.` (die beiden Seiten stören sich nicht) |
+
+Der alte, einfache Explorer aus `tools/explorer/` ist eine andere Seite (andere Ebenen, keine Eigenschaftszeilen, keine Ausschnitte, kein Korpusfilter); wer dieselben Daten wie in der Graph-Prüfung sehen will, nimmt `Laubmann_Graph_Explorer.html`.
 
 ## Aufbau der Seite
 
@@ -115,7 +137,7 @@ Wirkung: Kartenrand, Marke und Knotenring in der Farbe der Stufe · Reiter *Prü
 | K2 | strenger Kern | `no-coords` Ort ohne Koordinaten |
 | K3 | strenger Kern mit Koordinaten | – |
 
-Die Auswahl in der Kopfzeile (**vollständig · Kern · strenger Kern · strenger Kern mit Koordinaten**, je mit der Zahl der Datensätze; im Browser gemerkt) wählt die niedrigste Stufe, die gezeigt wird. Im Endstand: 85.631 · 74.909 · 69.150 · 44.372 Datensätze in 9.148 · 8.607 · 8.198 · 6.743 Einträgen mit 642 · 491 · 388 · 369 Taxa. Ist ein Filter aktiv, steht unter der Kopfzeile ein Balken mit Korpus, Zahlen und „Filter aufheben“.
+**Die Korpusleiste** steht in beiden Builds als eigene Zeile direkt unter der Kopfzeile und ist in jeder Ansicht da (Übersicht, Einträge, Klassen, Knotenansicht, Suche): links „Korpus“, dann vier beschriftete Knöpfe mit der Zahl ihrer Datensätze – **Vollständig 85.631 · Kern 74.909 · Strenger Kern 69.150 · Strenger Kern mit Koordinaten 44.372** –, der gewählte ist gefüllt. Der Knopf wählt die niedrigste Stufe, die gezeigt wird; die Wahl bleibt im Browser gemerkt. `ⓘ` daneben öffnet die Erklärung der vier Korpora in Worten (jeder Knopf trägt sie auch als Tooltip, die Hilfe ebenso). Ist ein Filter aktiv, färbt sich die Leiste, nennt „n von m Datensätzen, n von m Einträgen“ und bietet „Filter aufheben“. Im Explorer-Build steht rechts in der Leiste der Schalter „Prüfhinweise zeigen“. Im Endstand liegen die 85.631 · 74.909 · 69.150 · 44.372 Datensätze in 9.148 · 8.607 · 8.198 · 6.743 Einträgen mit 642 · 491 · 388 · 369 Taxa.
 
 Der Filter ist **nur eine Ansicht**:
 
@@ -173,14 +195,14 @@ Die Dateien aus `review/` gehören nach `data/review/` (an vorhandene Dateien an
 | Datei | Zweck |
 |---|---|
 | `build_review.py` | Prüfschicht `review.json` (Schema im Modul-Docstring) |
-| `build_graph_check.py` | Builder der Seite; importiert Packung, Ontologie-Labels und Blob-Format aus `tools/explorer/build_graph_explorer.py` |
+| `build_graph_check.py` | Builder beider Seiten (`--mode review` / `explorer`); importiert Packung, Ontologie-Labels und Blob-Format aus `tools/explorer/build_graph_explorer.py` |
 | `graph_check_template.html` | **Fork** von `tools/explorer/graph_explorer_template.html` (Arbeitsliste, Scan-Bereich, Reiter, Export-Knöpfe, zweiter Datenblock) |
 | `gc_explorer.js` | **Fork** von `tools/explorer/graph_explorer.js`; jede Änderung ist mit `[GC]` markiert (Einstieg in die Prüfmodule, Markierungsschicht, Geisterknoten, Reiter, Tasten, Start) |
 | `gc_explorer.css` | **Fork** (unveränderte Kopie) von `tools/explorer/graph_explorer.css` |
-| `gc_i18n.js` | Texte DE/EN der Prüfmodule |
+| `gc_i18n.js` | Texte DE/EN der Prüfmodule; `GX_DE`/`GX_EN` = abweichende Wortlaute des Explorer-Builds |
 | `gc_state.js` | Prüfschicht, Zustand, Formate der Verträge, Eintragsmodell, Warteschlangen, Entscheiden/Rückgängig/Speichern |
 | `gc_severity.js` | **die Tabelle der Schwere** (`SEV`), Stufe und Zeichen je Befund, Tabelle für Hilfe/Übersicht, Legende |
-| `gc_corpus.js` | Korpusfilter: Stufe je Datensatz, Auswahl, Zählungen für Explorer-Ansichten, Gründe in Worten, Tabellen der Übersicht |
+| `gc_corpus.js` | Korpusfilter: Stufe je Datensatz, die Korpusleiste (vier Knöpfe, ⓘ, „Filter aufheben“, im Explorer-Build „Prüfhinweise zeigen“), Zählungen für Explorer-Ansichten, Gründe in Worten, Tabellen der Übersicht |
 | `gc_props.js` | Ebene „Eigenschaften“ / „Verweise“: Zeilen aus den Tripeln, kompakt/alle, „Alles zeigen“/„Standard“, Hinweis auf Spalten außerhalb des Fensters |
 | `gc_scan.js` | Scan-Bereich |
 | `gc_media.js` | multimodale Regionen: Ausschnitte mit Rückfallkette, Karten, Großansicht |
@@ -204,10 +226,11 @@ $py = "C:\Users\totom\Projects\laubmann-kg_TP\.venv\Scripts\python.exe"
 & $py tools\validation_ui\graph_check\tests\smoke.py               # [Seite.html] [Ordner für Bilder]
 & $py tools\validation_ui\graph_check\tests\interaction_export.py
 & $py tools\validation_ui\graph_check\tests\reload.py
-& $py tools\validation_ui\graph_check\tests\screenshots.py         # 1440×900-Bilder nach data\exports\graph_check\shots
+& $py tools\validation_ui\graph_check\tests\screenshots.py         # 1440×900-Bilder beider Builds nach data\exports\graph_check\shots
 ```
 
-- `smoke.py` – Ladezeit ≤ 5 s, jede Warteschlange, Karten jedes Typs, Markierungen im Graph, Tabelle, Scan-Overlay, **Eigenschaften** (jedes Literal jedes gezeichneten Knotens ist eine Zeile; kompakt/alle; „Alles zeigen“: jedes Tripel ist Kante oder Zeile; „Standard“), **Spalten der Tabelle** (jedes Prädikat der Datensätze hat eine Spalte, Standard, Spaltenwahl, feste erste Spalte, Chips in ihrer Zelle), **Schwere** (Regeltabelle, Stufen einzelner Fälle, Zahlen je Zeile, Sortierung, Stufen-Chips allein und mit Warteschlange, Kopf, Reihenfolge der Karten, eingeklappte Hinweise, Ringfarbe, „entschieden zählt nicht mehr“, Legende, Übersicht, Hilfe), **Korpusfilter** (Zahlen der Auswahl gegen die Prüfschicht und gegen 85.631 / 74.909 / 69.150 / 44.372, Balken, Warteschlangen, Arbeitsliste, Statistik, Eintrag mit „n außerhalb zeigen“, Tabelle, Knotenansicht eines Taxons, Klassenansicht, Übersicht, gemerkt nach Neuladen, Aufheben), Bilder und Einlagen (Karten, lokaler Ausschnitt, Großansicht, Rahmen auf dem Scan, Knoten-Reiter und Knotenansicht), alle Reiter, DE/EN (gleiche Schlüssel, keine unübersetzten), die übrigen Explorer-Ansichten, der größte Eintrag (391 Datensätze), Betrieb ganz ohne Bilder, keine Konsolenfehler.
+- `smoke.py` – prüft BEIDE Builds. Graph-Prüfung: Ladezeit ≤ 5 s, jede Warteschlange, Karten jedes Typs, Markierungen im Graph, Tabelle, Scan-Overlay, **Eigenschaften** (jedes Literal jedes gezeichneten Knotens ist eine Zeile; kompakt/alle; „Alles zeigen“: jedes Tripel ist Kante oder Zeile; „Standard“), **Spalten der Tabelle** (jedes Prädikat der Datensätze hat eine Spalte, Standard, Spaltenwahl, feste erste Spalte, Chips in ihrer Zelle), **Schwere** (Regeltabelle, Stufen einzelner Fälle, Zahlen je Zeile, Sortierung, Stufen-Chips allein und mit Warteschlange, Kopf, Reihenfolge der Karten, eingeklappte Hinweise, Ringfarbe, „entschieden zählt nicht mehr“, Legende, Übersicht, Hilfe), **Korpusfilter** (Zahlen der Auswahl gegen die Prüfschicht und gegen 85.631 / 74.909 / 69.150 / 44.372, Balken, Warteschlangen, Arbeitsliste, Statistik, Eintrag mit „n außerhalb zeigen“, Tabelle, Knotenansicht eines Taxons, Klassenansicht, Übersicht, gemerkt nach Neuladen, Aufheben), Bilder und Einlagen (Karten, lokaler Ausschnitt, Großansicht, Rahmen auf dem Scan, Knoten-Reiter und Knotenansicht), alle Reiter, DE/EN (gleiche Schlüssel, keine unübersetzten), die übrigen Explorer-Ansichten, der größte Eintrag (391 Datensätze), Betrieb ganz ohne Bilder, keine Konsolenfehler.
+  Dazu die **Korpusleiste** (vier Knöpfe mit Namen und Zahlen, Beschriftung „Korpus“, gefüllter aktiver Knopf, eigene Zeile unter der Kopfzeile, in Übersicht / Eintrag / Klassen / Knotenansicht / Suche vorhanden, ⓘ mit vier Erklärungen, Wahl und „Filter aufheben“). **Explorer-Build** (`Laubmann_Graph_Explorer.html` neben der Seite, sonst `GC_EXPLORER`): Modus in den Metadaten, Titel; derselbe Eintrag (`L17-e0132`) zeigt dieselben Knoten mit denselben Eigenschaftszeilen, Kanten, Markierungen, Karten, Tabellenspalten und -zellen und Scan-Overlays wie die Graph-Prüfung, „Alles zeigen“ denselben Graphen, die Übersicht dieselben Zahlen; kein Entscheidungselement in Übersicht, Eintrag (alle Reiter), Tabelle, Knoten- und Klassenansicht; Entscheidungstasten wirkungslos, nichts wird gespeichert, ein gespeicherter Stand der Graph-Prüfung wird nicht geladen; Liste in Tagebuchfolge, Warteschlangen als Filter; „Prüfhinweise zeigen“ aus/an; Korpusleiste und Korpusfilter wie oben; DE/EN; keine Konsolenfehler.
 - `interaction_export.py` – mindestens eine Entscheidung jeder Art per Tastatur und Maus, Export (derselbe unter dem strengsten Korpusfilter), ZIP; dann liest `tests/loaders_check.py` jede `review/*.csv` mit dem Lader der Pipeline und wendet Wert- und Datensatzkorrekturen in der Reihenfolge der Pipeline auf Modell-Einträge an. Geprüft wird, dass die Zeilen mit den richtigen Werten ankommen und genau die gemeinten Datensätze ändern.
 - `reload.py` – Rückgängig, Neuladen, Fortschritt aus JSON und ZIP in ein frisches Browserprofil, identischer Re-Export, „neuer gewinnt“ beim Zusammenführen.
 
