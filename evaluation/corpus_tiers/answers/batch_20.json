@@ -1,0 +1,178 @@
+{"batch": 20, "entries": [
+  {"entry_id": "L19-e0058", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "weather/move sentence slightly misread ('teils bedeckt ... teils Sonnenschein', 'siedelten ... über'); bird passages correct",
+   "records": [
+     {"record_id": "obs_79e53f5c24b5", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Beim Harlachinger Kirchle ruft ein Kuckuck.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L16-e0170", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "deceased's name may read 'Karl Boden' rather than 'Böhm'; irrelevant to bird record",
+   "records": [
+     {"record_id": "obs_31c68f96d20c", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Nachmittags auf dem Waldfriedhof (Beisetzung ...) Gimpel gehört.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L32-e0419", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "header 'Bad Schnifis'; small wording differences only",
+   "records": [
+     {"record_id": "obs_3fd175ce7a37", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Verhört und beobachtet: Buchfinken, Gartenbaumläufer, Mehlschwalben, Hausrotschwänze und Gartenrotschwänze'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0015b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "typed carbon copy of Walter Wüst's Ismaning journal (signed 'Wüst' in blue ink, p.111; 'meine Schüler'), not Laubmann's own observation",
+   "records": [
+     {"record_id": "obs_0af4ac80d56e", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst", "record_type": "third-party-report"}, "evidence": "typed report: 'Flußseeschwalbe geh.'; signed by hand 'Wüst'; 'traf ich noch meine Schüler APFELBACHER'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L07-e0024", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Bergente: scan 'Alle 6 liegen' (6 omitted); Eisvogel passage correct",
+   "records": [
+     {"record_id": "obs_df4b95c88fc5", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '4.) Eisvogel, ein einzelnes Stück fliegt dem rechten Ufer entlang flußaufwärts.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L34-e0004", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan has 'im Hangwald an der Harlachinger Straße' (not Pfarrwald) and 'Zaun-grasmücken' (not Baum-); Star passage itself correct",
+   "records": [
+     {"record_id": "obs_54eafdf52aa0", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auf den Wiesen viele junge Staren.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L22-e0104", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_ef2611837481", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Lisl hörte heute Vormittag in den Gärten an der Geiselgasteigstraße noch eine Amsel richtig singen.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L07-e0007", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "header 'Innsbruck - Seefeld (1180 m)'; 'Hüttchen' probably 'Heustadel'",
+   "records": [
+     {"record_id": "obs_d07eab35e6f5", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Kohlmeisen, Tannenmeisen, Haubenmeisen, Wintergoldhähnchen zahlreicher' on walk Seefeld-Mösern", "confidence": 0.85}
+   ]},
+  {"entry_id": "L22-e0226", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "reporter reads 'Dr Engel'; second harrier likely '1 ♂ Wiesenweihe', transcribed as a duplicate 'Rohrweihe'. Brachvogel linked to genus acceptable",
+   "records": [
+     {"record_id": "obs_13048e004473", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'meldet vom 20. 5. aus Ismaning ... 2-3 Brachvögel'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L27-e0195", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Ornithologisch nicht viel los'; 'Im Perlacher Forst am Pieringer Waldsaumweg mehrmals Fich-/tenkreuzschnäbel und einmal eine Weidenmeise lockend verhört' - no 'Parus ater'",
+   "records": [
+     {"record_id": "obs_332f2d8fe701", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Fichtenkreuzschnabel (Loxia curvirostra)"}, "evidence": "scan: 'am Pieringer Waldsaumweg mehrmals Fich-tenkreuzschnäbel und einmal eine Weidenmeise lockend verhört'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L15-e0177", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "underlined bird at Kehl looks like 'Grauammer', not Kiebitz; second bird at Vernon is a shorter word, not 'Rauchschwalben' (probably 'Rotschenkel'); text ends in map-label JSON junk",
+   "records": [
+     {"record_id": "obs_d79fa4270a06", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "probably Rotschenkel (Tringa totanus); not Rauchschwalbe"}, "evidence": "scan: 'bei Mantes 2 Rauchschwalben und bei Vernon an der Seine 5 Rotschenkel(?)' - different word", "confidence": 0.6}
+   ]},
+  {"entry_id": "L29-e0089", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'trüb und bedeckt' not 'feucht'",
+   "records": [
+     {"record_id": "obs_292dd6ae0cfd", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'einige Rauch- und Mehlschwalben, Kleiber und Kohlmeisen.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L30-e0009", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan says 'im Hangwald an der Harlachingerstraße', not 'im Flaucher'",
+   "records": [
+     {"record_id": "obs_65553f26a5ae", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Hangwald an der Harlachinger Straße (Harlaching, München)"}, "evidence": "scan: 'Vormittags im Hangwald an der Harlachingerstraße unter anderem verhört und beobachtet Gartenbaumläufer'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0222b", "entry_date_ok": false, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "header day cut off ('..ril 1956'), but preceding entry is Ostersonntag = 1.IV.1956, so this is >=2.IV. Header line reads 'Wolkenlos schön. Nachfolgend Wüst's(?) Bericht' (not 'Hohenlohebräu', 'Kurt'). Typed report is Wüst's 581. Speichersee-Begehung, Kar-Sa. 31.III.1956; transcription skips its first page (narrative, Haubentaucher-Grauspecht) and stops at Rotkehlchen",
+   "records": [
+     {"record_id": "obs_85fc5e4afb6d", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1956-03-31", "observer": "Walter Wüst"}, "evidence": "typed: 'Kar-Sa. 31.III.1956 ... 581.Speichersee-Begehung'; 'Rotkehlchen: 1 s. Hirschau vorm.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L29-e0007", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "minor", "note": "typed insert 'Beobachtungen von Mai. Ismaning' by another observer ('Mit Heinz' = Heinz Remold, author probably Werner Rathmayer); transcription also contains the 15/22 May section",
+   "records": [
+     {"record_id": "obs_4673dfbb4195", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "author of typed Ismaning report (with Heinz [Remold]; probably Werner Rathmayer)", "record_type": "third-party-report"}, "evidence": "typed: '8.Mai.55.Mit Heinz vom VKL ab ... Krickente:8 Ex im WB'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L13-e0254", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_486664bd6802", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'am Kleinhesseloher See 6 + x Zwergtaucher und 1 Bläßhuhn am Einlauf im eisfreien Teil'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L32-e0528", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Hausrotschwanz und Zilpzalp am Perlacher Forst' (not Stieglitz/Erlacher), later 'Weidenmeise rufend' (not Heidelerche), last bird looks like 'Haubenmeisen' (not Grauschnäpper)",
+   "records": [
+     {"record_id": "obs_f1cd575bc5ad", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auch bei unserem Haus in der Karolinger Allee singt immer noch ein Hausrotschwanz.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L19-e0152", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_85894abf5e27", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Hangwald singt noch ein Weidenlaubvogel.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0174", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "underlined bird is 'Zilpzalp' ('noch einen Zilpzalp'), not Weidenmeise",
+   "records": [
+     {"record_id": "obs_d24c1720014c", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Zilpzalp (Phylloscopus collybita)"}, "evidence": "scan: 'im Hangwald an der Harlachinger Straße noch einen Zilpzalp kurz singend verhört'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L32-e0264", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan '2 Lachmöwen' (number dropped); Zwergtaucher passage correct",
+   "records": [
+     {"record_id": "obs_58607fe8dc32", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Am See einen Zwergtaucher und 2 Lachmöwen beobachtet.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L15-e0269", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "many place/date misreadings (Jochberg, Benediktenwand, Grauspecht 24.VII not IV, 9.) is 'Berglaubvogel' 28.VII not Baumfalke, Gänsesäger dates VII). Uhu text: 'es sei denn, daß man ... Rupfung ... auf Rechnung des Uhus setzen ... muß' = indirect evidence",
+   "records": [
+     {"record_id": "obs_d9e19190a420", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "wrong", "other": "right",
+      "correct": {"date": "1938-07-17/1938-08-11", "locality": "Jachenau (Rotwand-Ostseite)", "status": "present (indirect: Rupfung of ♀ Wanderfalke attributed to Uhu)"}, "evidence": "scan: 'Uhu: kein positives Ergebnis ..., es sei denn, daß man eine an der Rotwand-Ostseite gefundene Rupfung'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L13-e0264", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan '1 ♂ Löffelente' (not 15); Kormoran line reads '... und 1 juv. Balzspiel trat auf beim Tafelberg' (not 'Balgstück'), so basis PreservedSpecimen looks wrong; Tafelberg is in the Ismaning reservoir, coordinates point near Altötting",
+   "records": [
+     {"record_id": "obs_502ab3f16a5e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"georef": "Tafelberg, Ismaninger Speichersee approx. 48.21, 11.72"}, "evidence": "scan: 'Adolf Müller berichtet unterm 28. II. aus Ismaning: 3 Kormorane, darunter ein ♂♀ und 1 juv.'", "confidence": 0.8}
+   ]}
+]}

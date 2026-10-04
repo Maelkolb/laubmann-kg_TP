@@ -6,7 +6,8 @@ import csv
 from pathlib import Path
 
 from laubmann_kg.kg.model import DiaryEntry, Observation, Place, Taxon, TravelEvent, TravelLeg
-from laubmann_kg.normalization.corrections import FIELDS, Correction, apply_corrections, load_corrections
+from laubmann_kg.normalization.corrections import (FIELDS, Correction, apply_corrections, load_corrections,
+                                                   place_merge_aliases)
 from laubmann_kg.pipeline import run_pipeline
 from laubmann_kg.qa import run_qa
 
@@ -82,6 +83,29 @@ def test_place_correction_keeps_own_localities_and_fixes_travel() -> None:
     apply_corrections([e], [Correction("place", "Kaufbeuern", "Kaufbeuren", entry_uid="e")])
     assert e.place.name == "Kaufbeuren" and o1.place is e.place and o2.place is own
     assert e.travel_events[0].legs[0].arrival_place is e.place
+
+
+def test_place_correction_finds_the_name_the_resolution_merges(tmp_path: Path) -> None:
+    merges = tmp_path / "place_merges.csv"
+    with merges.open("w", newline="", encoding="utf-8") as h:
+        w = csv.DictWriter(h, fieldnames=["merge_id", "variant", "canonical", "status", "decision"])
+        w.writeheader()
+        w.writerow({"merge_id": "places: Riederau -> Riedrau", "variant": "Riederau", "canonical": "Riedrau", "status": "candidate", "decision": "y"})
+        w.writerow({"merge_id": "places: Muenchen -> München", "variant": "Muenchen", "canonical": "München", "status": "auto", "decision": ""})
+        w.writerow({"merge_id": "places: Pöcking -> Söcking", "variant": "Pöcking", "canonical": "Söcking", "status": "candidate", "decision": ""})
+    aliases = place_merge_aliases(merges)
+    assert aliases["riedrau"] == {"Riederau"} and aliases["münchen"] == {"Muenchen"} and "söcking" not in aliases
+    riederau, munich = Place(verbatim="Riederau"), Place(verbatim="München")
+    o1, o2 = _obs(Taxon("Star"), place=riederau), _obs(Taxon("Amsel"), place=munich, i=1)
+    o2.locality = munich
+    e = _entry("e", [o1, o2], place=riederau)
+    n, flags = apply_corrections([e], [Correction("place", "Riedrau", "Rietrau", entry_uid="e")], aliases)
+    assert n and e.place.name == "Rietrau" and o1.place is e.place and o2.place is munich
+    assert flags[0].reason == "value_corrected"
+    e2 = _entry("e2", [_obs(Taxon("Star"), place=Place(verbatim="Riedrau"))], place=Place(verbatim="Riedrau"))
+    e2.observations[0].locality = Place(verbatim="Riederau")
+    apply_corrections([e2], [Correction("place", "Riedrau", "Rietrau", entry_uid="e2")], aliases)
+    assert e2.place.name == "Rietrau" and e2.observations[0].locality.name == "Riederau"   # its own name found: no alias needed
 
 
 def test_unmatched_correction_is_reported() -> None:

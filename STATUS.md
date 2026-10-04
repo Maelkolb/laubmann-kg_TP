@@ -6,7 +6,15 @@
 |---|---|---|---|---|---|
 | `kg_exports_2026-10-01` (pipeline only) | 9,901 | 86,037 | 1,986,310 | 0 violations, 450 warnings | 0 errors |
 | `kg_exports_2026-10-01_machine` (+ machine review rounds 1–3) | 9,901 | 85,636 | 1,979,656 | 0 violations, 464 warnings | 0 errors |
-| `kg_exports_2026-10-01_checked` (+ round 4, current) | 9,901 | 85,631 | 1,979,492 | 0 violations, 464 warnings | 0 errors |
+| `kg_exports_2026-10-01_checked` (+ round 4) | 9,901 | 85,631 | 1,979,492 | 0 violations, 464 warnings | 0 errors |
+| `kg_exports_2026-10-04_text` (+ machine text layer, current) | 9,901 | 85,896 | 1,987,196 | 0 violations, 461 warnings | 0 errors |
+
+**Text layer** (2026-10-04, `review/better_readings.py`, CHANGELOG): the checks' better readings and the scan
+agent's corrections go into the text, 2,416 changes in 1,907 entries patched after the extraction, 1,894 in
+1,169 entries read anew (`data/review/machine/text_layer_machine.csv`, `value_corrections_text_machine.csv`).
+Gemini record check re-run for the 1,563 entries whose records changed ($6.96, `data/cache/machine_review_r5`).
+Corpus tiers 85,896 / 60,793 / 27,464 / 16,834 records, error estimates 35.3 / 27.5 / 9.2 / 6.9 %.
+Next: human validation, `docs/human_validation_plan.md` (section 0: pages and order of work; section 6: re-run).
 
 **Round 4** (`docs/validation_round4_report.md`): Gemini checked every record
 against the scan (9,590 entries, 85,604 records, $30.14): 88.7 % right, 10.2 %

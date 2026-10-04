@@ -1,0 +1,202 @@
+{"batch": 28, "entries": [
+  {"entry_id": "L11-e0188", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'Rohrweihe, Heidelerchen und vermutlich...' - transcription has 'Steinkäuze'; also 'ein ♂ Eisente'.",
+   "records": [
+     {"record_id": "obs_79fcd71a4e4d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Außerdem sah er am See ... vermutlich einen alten und einen jüngeren Schwarzhalstaucher'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L16-e0340", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan has 'Rabenkrähen' where transcription has 'Rotkehlchen', and 'Haussperling' not 'Weidensperling'. Summary of common species of the stay.",
+   "records": [
+     {"record_id": "obs_f3b31b7f2edf", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'An häufigen Arten sind in und um Oberammergau nun noch zu erwähnen: Rauchschwalben'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L03-e0145", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Header is 'Kaufbeuren - Ulm a. D.' (travel day); Kaufbeuren is the start.",
+   "records": [
+     {"record_id": "obs_da13e8e874b7", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Bei Au/Ill. fliegt ein durch den Zug aufgescheuchter Wachtelkönig laut schnarrend'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L29-e0203", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed carbon report pasted in (author unnamed, went 'mit Heinz, Gauckler, Hantge und Walther'); not Laubmann's handwritten diary.",
+   "records": [
+     {"record_id": "obs_070637342d72", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "unnamed author of the typed report (with Heinz, Gauckler, Hantge, Walther)", "record_type": "third-party-report"},
+      "evidence": "typed sheet: 'Vom E-Werk ab mit Heinz,Gauckler,Hantge und Walther'; 'Beide Arten am Birkenhof gehört'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L29-e0014", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan list has 'Neuntöter' where transcription has 'Zaunkönig'; Müller report: 'Fischteichen' (not Lichtrichen), 'Schafstelze' (not Uferschwalbe), 'Kiebitze 4 ♂♀'.",
+   "records": [
+     {"record_id": "obs_a21ae4d0ed70", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags wieder im Forst im Geräumt VI. Von den Heidelerchen wieder nichts zu entdecken.'", "confidence": 0.9},
+     {"record_id": "obs_61251053b23f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'An sonstigen Arten im Forst verhört oder beobachtet: ... Gimpel. Buchfink.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L15-e0215", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "p.123 ends with the Bogdanowicz note; p.124 starts mid-sentence ('waren, viel in der Nähe...') with a different excursion (Weiher, Neu-See, Bernrieder Filz, Hallerweiher) whose beginning/date is missing. Many misreadings (Bläßhühner, Wiesenpieper, Fitislaubvögel).",
+   "records": [
+     {"record_id": "obs_a5f63072cd4f", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Weiher near the Bernrieder Filz (Bernried, Starnberger See), pond before the Neu-See", "date": "day of the excursion on pp.124-125, not 18.VI.1938 (header missing; probably 19.VI.1938)"},
+      "evidence": "scan p.124: 'Es war hier vieles ganz herrlich, trotz des Fehlens der ... erhofften Reiherenten. 5.) Neu-See'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L29-e0059c", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report (author not named in crops). 'Vkl.' expansion as 'Verbindungskanal' uncertain (possibly Vorklärteich); Haubentaucher coordinates are in Mannheim.",
+   "records": [
+     {"record_id": "obs_fa91631c7c4f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: '1 ♂♀ mit einem etwa 3/4 erwachsenen pull. im Vkl.'", "confidence": 0.7},
+     {"record_id": "obs_511c761cd549", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: 'Teichhuhn: 1 ad. im westlichen Wb. ... weiteres an den westlichen Ft. ges.'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L28-e0199c", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed monthly summary by another observer. Site is 'Eching und Moosburg' (Isar reservoirs); coordinates 48.08, 11.11 are Eching am Ammersee.",
+   "records": [
+     {"record_id": "obs_fecd2ec1b8f0", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: '18.IV.Eching und Moosburg. ... 10 Rohrammern,2 Baumpieper,8 Wasserpieper'", "confidence": 0.8},
+     {"record_id": "obs_843e520899cc", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: '252 Reiher-,1 Schel-te,4 Gänsesäger'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L04-e0153", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Record passage fine (omits 'am'); elsewhere 'Polarseetaucher' read as 'Eistaucher', 'Madersee' as 'Mändlesee', 'Henseler' as 'Thumser'.",
+   "records": [
+     {"record_id": "obs_d805a6f89483", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1922 (summer 1922)"},
+      "evidence": "scan: 'Alpensegler: haben sich im Sommer 1922 am „Schwabentor“ in Schaffhausen angesiedelt. (p. 68)'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L17-e0291", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan 'in der Jachenau' (transcription 'Hagenau'), 'Kesselberg' (not 'Kirchberg'); route place names partly misread.",
+   "records": [
+     {"record_id": "obs_1d46a109a53e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Außerdem in der Jachenau ... noch festgestellt: 1 Schwarzspecht, Buntspecht zweimal, Waldbaumläufer'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L13-e0228", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Record passage correct; elsewhere 'im nördlichen Frankenwald' read as 'nordsächsischen Urwald'.",
+   "records": [
+     {"record_id": "obs_0e0d4fe49e3a", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1917"},
+      "evidence": "scan: 'für das Jahr 1917 ... Nach O. v. H. dagegen soll in den unterfränkischen Gebirgen der Bestand ... gut sein'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L24-e0145", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_a6c3d6648822", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in einem Garten an der St. Magnusstraße ... Singdrossel. Ebenda auch Stare singend.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0162", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Record passage correct, but scan has 'Mäusebussard' where transcription has 'Mauerläufer' and 'Hänflingen' for 'Baumpiepern'; text gap between p.68 and p.69.",
+   "records": [
+     {"record_id": "obs_fd40a651a49b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in Gstadt am See eine einzelne Flußseeschwalbe'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L25-e0043", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Record passage correct; species list has misread names (5 Bluthänfling->Waldlaubsänger, 19 Wacholderdrossel->Nachtigallrohrsänger, 20 Amsel->[illegible]).",
+   "records": [
+     {"record_id": "obs_4a71430a1c35", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'daß Fräulein Fröhlich am 13.IX. im Luitpoldpark ... 2 Wiedehopfe und Steinschmätzer beobachtet hat'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L22-e0207", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan 'Bedeckt bis schön'; site name looks like 'Mittergeräumt' (transcription 'Wintergeräumt'), a Geräumt in the Perlacher Forst.",
+   "records": [
+     {"record_id": "obs_bb4ef912ca41", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'im Forst beim ...geräumt ... dagegen mehrere Baumpieper lebhaft singend, ebenso Misteldrosseln'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L27-e0169a", "entry_date_ok": null, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "good", "note": "Typed report page 67; starts mid-list at Flußuferläufer, date header and earlier species are on a previous sheet. Signature partly visible ('Ri...').",
+   "records": [
+     {"record_id": "obs_7e0935c1c964", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: 'Star: Hirschau; abends zuerst ein kleiner Trupp, dann eine Wolke von gegen 1000 Stück'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L12-e0211", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Cumulative list of Dr (Walter) Wüst up to 1.VIII.1934. Items 104/167 correct, but e.g. 26 Wasserpieper->Kernbeißer, 27 Rotkehlpieper->Nachtigall, 168 Mittlere Raubmöwe->Mantelmöwe. 'Brutvögel' is a margin note.",
+   "records": [
+     {"record_id": "obs_74fea6935a74", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "before 1934-08-01 (cumulative list up to 1.VIII.1934)", "observer": "Dr. Walter Wüst"},
+      "evidence": "scan: 'Dr Wüst hat bis zum 1. VIII. 1934 im Ismaninger Teichgelände ... beobachtet: ... 167.) Heringsmöwe'", "confidence": 0.75},
+     {"record_id": "obs_9b004892b5b5", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "before 1934-08-01 (cumulative list up to 1.VIII.1934)", "observer": "Dr. Walter Wüst"},
+      "evidence": "scan: 'Dr Wüst hat bis zum 1. VIII. 1934 ... beobachtet: ... 104.) Spießente' (red dot = breeding)", "confidence": 0.75}
+   ]},
+  {"entry_id": "L16-e0233", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Krickente line correct; elsewhere dates misread (scan '22. I. 1938' and '9. X. 1939' read as V), '10.V.1939: ♀ mit juv.' read as '8 mal juv.'.",
+   "records": [
+     {"record_id": "obs_d6ab1d426f18", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Krickente: ... 27. III. 1939: 1 ♂♀.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L30-e0087", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Ismaning-Bericht', 'Fischadler, 1 im westlichen Wb. fischend' (not Eistaucher), 'Feldschwirl' (not Flussseeschwalbe), Kolbenente '1 ♀'. 'Obersee' = part of the Ismaninger Speichersee; coordinates are the Obersee near Königssee.",
+   "records": [
+     {"record_id": "obs_dbb825978d17", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst"},
+      "evidence": "scan: 'Walter Wüst meldet mir ... Aus Wüst's Ismaning-Bericht vom 18.VII. ... Sichelstrandläufer 1 ad. am Obersee'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L10-e0170", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Record passage correct; elsewhere 'Föhringer Kanal' read as 'Ismaninger Kanal' and '[Waldwasserläufer wurde nicht beobachtet]' read as 'wohl beobachtet'.",
+   "records": [
+     {"record_id": "obs_2450111ac254", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '37.) Teichwasserläufer ... haben wir aller Wahrscheinlichkeit nach in einem einzelnen Exemplar beobachtet'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L28-e0232b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Typed report signed 'E. Bezzel' (transcription 'E. Wessel').",
+   "records": [
+     {"record_id": "obs_ec6eb5563189", "verdict": "spurious",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {}, "evidence": "typed: 'Blaukehlchen ... 1 M mit Futter gesehen. Pull. aber wohl schon flügge.' - young not seen", "confidence": 0.6}
+   ]},
+  {"entry_id": "L28-e0161b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed '546. Speichersee-Begehung', author not named in crop (probably Dr. Walter Wüst); no 'Heinrich Wüst' anywhere.",
+   "records": [
+     {"record_id": "obs_6130feb9ee13", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "author of the typed report (probably Dr. Walter Wüst)"},
+      "evidence": "typed: 'Krickente: Nach Ra/Re 160 im Wb.-Westende. Ich zählte sie nicht mehr. Die ♂♂ klingelten schön'", "confidence": 0.5}
+   ]}
+]}

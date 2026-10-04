@@ -216,32 +216,108 @@ function rvGhosts(e, add, link, ev, records) {   // what the graph lacks (sugges
 }
 
 // ------------------------------------------------------------------ entry text with reading corrections
+// what the graph holds at a correction's place (review layer tc[12]; older layers: what the reading stage left there),
+// and whether the machine layer of the text changed it (tc[13]: the checks' better reading, the scan agent's correction)
+const tcNow = c => (c.length > 12 ? c[12] || '' : c[2] ? c[1] : c[0]);
+const tcAtNow = (fn, c) => { const cur = tcNow(c); return cur && c[3] >= 0 && fn.substr(c[3], cur.length) === cur ? c[3] : -1; };
+const tcMachine = c => !!c[13];
 function tcState(m, c, key) {
   const d = RV.dec[key]; if (d && d.d) return d.d === 'accept' ? 'acc' : d.d === 'reject' ? 'rej' : 'edt';
+  if (tcMachine(c)) return 'mach';
   if (['markup', 'punctuation', 'case'].includes(c[4]) && !c[5]) return 'minor';
   const vs = [c[6], c[7]]; return vs.includes('wrong') ? 'wrong' : vs.includes('partly') || vs.includes('unclear') ? 'partly' : vs.includes('right') ? 'right' : 'open';
+}
+function tcTip(c, d) {   // hover text of a correction in the entry text: the checks' verdicts, their better reading, the decision
+  const out = [];
+  if (c[6]) out.push(srcName('s') + ': ' + t('tcv_' + c[6])); if (c[7]) out.push(srcName('g') + ': ' + t('tcv_' + c[7]));
+  if (c[8]) out.push(t('tc_better') + ' „' + c[8] + '“');
+  if (d && d.d) out.push(t('mine') + ': ' + t('d_tc_' + (d.how === 'better' ? 'better' : d.d)));
+  return out.join('; ');
 }
 function textSpans(m) {   // {fn, tcAt, obsAt}: which reading correction / record passage covers each character
   const e = m.e; const fn = pref(e, 'dwc:fieldNotes') || ''; const n = fn.length; const tcAt = new Int32Array(n).fill(-1), obsAt = new Int32Array(n).fill(-1);
   (RVU.notes ? m.rv.tc || [] : []).forEach((c, i) => {
-    if (!c[2] || !c[1]) return; let p = c[3];
-    if (p < 0 || fn.substr(p, c[1].length) !== c[1]) p = -1;   // only where the layer's position really holds the new text
-    if (p < 0) return; for (let j = p; j < p + c[1].length; j++) if (tcAt[j] < 0) tcAt[j] = i;
+    if (TC_FIELD.test(c[0] || '')) return;
+    const p = tcAtNow(fn, c); const cur = tcNow(c);
+    if (p < 0 || (cur === c[0] && !tcMachine(c))) return;   // the transcription stands here unchanged: nothing to mark
+    for (let j = p; j < p + cur.length; j++) if (tcAt[j] < 0) tcAt[j] = i;
   });
   for (const [o, h] of textPos(e)) if (h) for (let j = h[0]; j < h[0] + h[1] && j < n; j++) if (obsAt[j] < 0) obsAt[j] = o;
   return { fn, tcAt, obsAt };
 }
-function textHtml(m) {
-  const { fn, tcAt, obsAt } = textSpans(m); const n = fn.length; const tcs = m.rv.tc || []; const selN = S.sel && S.sel[0] === 'n' ? +S.sel.slice(1) : -1;
+const inText = s => esc(s).replace(/&lt;(\/?)u&gt;/g, '<$1u>');
+function locateIn(text, old, taken, whole) {   // first occurrence of old outside the taken ranges (whole: as a whole word, whitespace tolerant, as the pipeline locates it)
+  const q = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const isWord = ch => !!ch && /[\p{L}\p{N}]/u.test(ch);
+  const pats = whole ? [q(old), old.split(/\s+/).filter(Boolean).map(q).join('\\s+')] : [q(old)];
+  for (const pat of pats) {
+    if (!pat) continue; const re = new RegExp(pat, 'gu'); let hit;
+    while ((hit = re.exec(text))) {
+      const a = hit.index, b = a + hit[0].length; if (b === a) { re.lastIndex++; continue; }
+      if (whole && ((isWord(old[0]) && isWord(text[a - 1])) || (isWord(old[old.length - 1]) && isWord(text[b])))) continue;
+      if (!taken.some(([x, y]) => a < y && b > x)) return [a, b];
+    }
+  }
+  return null;
+}
+function textEdits(m, fn, tcAt) {   // the reviewer's decisions over the graph text, in text order: {a, b, text, tc, key, was, kept, by}
+  const out = []; const taken = [];
+  if (EXPLORER) return out;
+  const marked = []; for (let i = 0; i < fn.length; i++) if (tcAt[i] >= 0 && (i === 0 || tcAt[i - 1] !== tcAt[i])) { let j = i; while (j < fn.length && tcAt[j] === tcAt[i]) j++; marked.push([i, j]); }
+  const add = (a, b, text, x) => { if (taken.some(([p, q]) => a < q && b > p)) return; taken.push([a, b]); out.push(Object.assign({ a, b, text }, x)); };
+  (m.rv.tc || []).forEach((c, i) => {
+    if (TC_FIELD.test(c[0] || '')) return;   // a header field, not the text
+    const key = 'tc:' + m.uid + '|' + c[0] + '|' + c[1]; const d = RV.dec[key]; if (!d || !d.d) return;
+    const fin = d.d === 'reject' ? c[0] : d.d === 'edit' ? d.final || '' : c[1];
+    const cur = tcNow(c); const p = tcAtNow(fn, c);
+    if (p >= 0) add(p, p + cur.length, fin, { tc: i, key, was: cur, kept: fin === cur, by: 'mine' });   // where the graph holds this correction
+    else if (fin !== c[0]) {   // the graph holds the old text: the pipeline applies the decision where it stands
+      const hit = locateIn(fn, c[0], taken.concat(marked), true);
+      if (hit) add(hit[0], hit[1], fin, { tc: i, key, was: fn.slice(hit[0], hit[1]), by: 'mine' });
+    }
+  });
+  for (const k of Object.keys(RV.dec)) if (k.startsWith('txt:' + m.uid + '|')) {   // own text corrections: the first occurrence, as the pipeline replaces it
+    const d = RV.dec[k]; const hit = d && d.ref ? locateIn(fn, d.ref.old, taken.concat(marked), false) : null;
+    if (hit) add(hit[0], hit[1], d.new, { key: k, was: d.ref.old, own: true, by: 'mine' });
+  }
+  return out.sort((x, y) => x.a - y.a);
+}
+function editTip(x, c) {
+  const was = x.kept ? '' : t('tc_before') + ' „' + x.was.replace(/<\/?u>/g, '') + '“';
+  return [was, x.own ? t('txt_own') : c ? tcTip(c, RV.dec[x.key]) : ''].filter(Boolean).join('; ');
+}
+function originalText(m) {   // the transcription before the reading stage: every correction the graph holds taken back
+  const fn = pref(m.e, 'dwc:fieldNotes') || ''; let s = fn;
+  const back = (m.rv.tc || []).map(c => [tcAtNow(fn, c), c]).filter(([p, c]) => p >= 0 && tcNow(c) !== c[0] && !TC_FIELD.test(c[0] || '')).sort((x, y) => y[0] - x[0]);
+  let end = Infinity;
+  for (const [p, c] of back) { const cur = tcNow(c); if (p + cur.length > end) continue; s = s.slice(0, p) + c[0] + s.slice(p + cur.length); end = p; }
+  return s;
+}
+function correctedPlain(m) {   // the corrected text without marks
+  const { fn, tcAt } = textSpans(m); let s = '', i = 0;
+  for (const x of textEdits(m, fn, tcAt)) { s += fn.slice(i, x.a) + x.text; i = x.b; }
+  return s + fn.slice(i);
+}
+function textHtml(m) {   // the corrected text: the graph text with the machine layer and the reviewer's decisions
+  if (EXPLORER) return inText(correctedPlain(m));   // the explorer: the corrected text without marks
+  if (RVU.textLayer === 'orig') return inText(originalText(m));
+  const { fn, tcAt, obsAt } = textSpans(m); const n = fn.length; const tcs = m.rv.tc || [];
+  const edits = textEdits(m, fn, tcAt); let ei = 0; const selN = S.sel && S.sel[0] === 'n' ? +S.sel.slice(1) : -1;
   const isTag = j => fn.charCodeAt(j) === 60 && (fn.startsWith('<u>', j) || fn.startsWith('</u>', j));
-  let s = '', i = 0, u = false, lastTc = -1;
+  let s = '', i = 0, u = false;
   while (i < n) {
+    if (ei < edits.length && edits[ei].a === i) {   // a passage the reviewer decided: the reading that stands
+      const x = edits[ei++]; const c = x.tc != null ? tcs[x.tc] : null;
+      s += `<span data-s="${i}" class="tci k-${x.by}${u ? ' u' : ''}"${x.tc != null ? ` data-tc="${x.tc}"` : ''} title="${esc(editTip(x, c))}">${inText(x.text)}</span>`;
+      for (let j = i; j < x.b; j++) if (isTag(j)) u = fn[j + 1] === 'u';
+      i = x.b; continue;
+    }
     if (isTag(i)) { u = fn[i + 1] === 'u'; i += u ? 3 : 4; continue; }   // underline markup of the transcription
-    const tc = tcAt[i], ob = obsAt[i]; let j = i + 1;
-    while (j < n && tcAt[j] === tc && obsAt[j] === ob && !isTag(j)) j++;
+    const tc = tcAt[i], ob = obsAt[i]; const stop = ei < edits.length ? edits[ei].a : n; let j = i + 1;
+    while (j < n && j < stop && tcAt[j] === tc && obsAt[j] === ob && !isTag(j)) j++;
     const cls = []; let attr = '';
-    if (tc >= 0) { const c = tcs[tc]; const st = tcState(m, c, 'tc:' + m.uid + '|' + c[0] + '|' + c[1]); cls.push('tci', 'v-' + st); attr += ` data-tc="${tc}"`;
-      if (tc !== lastTc && c[4] !== 'markup') s += `<del class="tcd v-${st}" data-tc="${tc}" title="${esc(t('tc_was'))}">${markup(c[0])}</del>`; lastTc = tc; }
+    if (tc >= 0) { const c = tcs[tc]; const key = 'tc:' + m.uid + '|' + c[0] + '|' + c[1]; const st = tcState(m, c, key);
+      cls.push('tci', tcMachine(c) ? 'k-check' : st === 'wrong' || st === 'partly' ? 'k-contested' : st === 'minor' ? 'k-minor' : 'k-machine'); attr += ` data-tc="${tc}" title="${esc(t('tc_before') + ' „' + c[0].replace(/<\/?u>/g, '') + '“; ' + tcTip(c))}"`; }
     if (ob >= 0) { cls.push('m'); if (ob === selN) cls.push('on'); attr += ` data-obs="${ob}"`; }
     if (u) cls.push('u');
     s += `<span data-s="${i}"${cls.length ? ` class="${cls.join(' ')}"` : ''}${attr}>${esc(fn.slice(i, j))}</span>`;
@@ -252,10 +328,15 @@ function textHtml(m) {
 function rvTextBlock(e) {
   const m = entryModel(e); const own = Object.keys(RV.dec).filter(k => k.startsWith('txt:' + m.uid + '|'));
   const unloc = (m.rv.tc || []).filter(c => c[2] && c[3] < 0).length;
-  let s = `<h3 class="sec" style="margin-top:0">${t('field_notes')}<span class="sp"></span>${EXPLORER ? '' : `<button class="btn" data-act="txtedit" title="${t('txt_edit_t')}">${t('txt_edit')}</button>`}</h3>
-    <div class="tlegend">${RVU.notes ? `<span class="tci v-open">${t('tl_corr')}</span><span class="tci v-wrong">${t('tl_wrong')}</span><span class="tci v-partly">${t('tl_partly')}</span>${EXPLORER ? '' : `<span class="tci v-acc">${t('tl_acc')}</span>`}<del class="tcd">${t('tl_old')}</del>` : ''}<span class="m">${t('tl_rec')}</span></div>
-    <div class="fieldnotes" id="fnotes">${textHtml(m) || `<span class="muted">${t('no_text')}</span>`}</div>`;
-  if (unloc && RVU.notes) s += `<p class="muted gnote">${esc(t('tc_unlocated', fmt(unloc)))}</p>`;
+  const body = textHtml(m); const orig = !EXPLORER && RVU.textLayer === 'orig';
+  const ed = EXPLORER ? [] : textEdits(m, textSpans(m).fn, textSpans(m).tcAt);
+  const mine = ed.filter(x => x.by === 'mine' && !x.kept).length;
+  const check = EXPLORER ? 0 : (m.rv.tc || []).filter(c => tcMachine(c) && tcAtNow(textSpans(m).fn, c) >= 0).length;
+  const layer = EXPLORER ? '' : `<span class="seg tlayer" title="${esc(t('tlayer_t'))}"><button data-act="tlayer" data-layer="final" class="${orig ? '' : 'on'}">${t('tlayer_final')}</button><button data-act="tlayer" data-layer="orig" class="${orig ? 'on' : ''}">${t('tlayer_orig')}</button></span>`;
+  let s = `<h3 class="sec" style="margin-top:0">${t('field_notes')}<span class="sp"></span>${layer}${EXPLORER || orig ? '' : `<button class="btn" data-act="txtedit" title="${t('txt_edit_t')}">${t('txt_edit')}</button>`}</h3>` +
+    (EXPLORER || orig ? '' : `<div class="tlegend"><span class="tci k-machine">${t('tl_corr')}</span><span class="tci k-contested">${t('tl_wrong')}</span><span class="tci k-check">${esc(t('tl_check', fmt(check)))}</span><span class="tci k-mine">${esc(t('tl_mine', fmt(mine)))}</span><span class="m">${t('tl_rec')}</span></div>`) +
+    `<div class="fieldnotes" id="fnotes">${body || `<span class="muted">${t('no_text')}</span>`}</div>`;
+  if (unloc && !EXPLORER && !orig) s += `<p class="muted gnote">${esc(t('tc_unlocated', fmt(unloc)))}</p>`;
   if (RVU.form && RVU.form.kind === 'txt') s += `<div class="rcard focus">${formHtml(m, { key: 'txt' })}</div>`;
   if (own.length) s += `<h3 class="sec">${t('txt_own')}</h3>` + own.map(k => { const d = RV.dec[k]; return `<div class="tcdiff own"><del>${markup(d.ref.old)}</del><span class="arr">→</span><ins>${markup(d.new)}</ins><span class="link reset" data-act="txtdel" data-key="${esc(k)}">${t('reset')}</span></div>`; }).join('');
   return s;
@@ -265,7 +346,8 @@ function textEditStart() {   // the selected passage of the entry text -> form f
   const box = $('#fnotes'); const sl = window.getSelection(); const m = EM;
   if (!box || !sl || sl.isCollapsed || !box.contains(sl.anchorNode) || !box.contains(sl.focusNode)) { toast(t('txt_select'), 3500); return; }
   const off = (node, o) => { const sp = (node.nodeType === 3 ? node.parentNode : node).closest('[data-s]'); if (!sp || sp.tagName === 'DEL') return null; return +sp.dataset.s + (node.nodeType === 3 ? o : 0); };
-  if ((sl.anchorNode.parentNode.closest && sl.anchorNode.parentNode.closest('del')) || (sl.focusNode.parentNode.closest && sl.focusNode.parentNode.closest('del'))) { toast(t('txt_overlap'), 4500); return; }
+  const inTc = nd => { const el = nd.nodeType === 3 ? nd.parentNode : nd; return !!(el.closest && el.closest('del, .tci')); };
+  if (inTc(sl.anchorNode) || inTc(sl.focusNode)) { toast(t('txt_overlap'), 4500); return; }
   let a = off(sl.anchorNode, sl.anchorOffset), b = off(sl.focusNode, sl.focusOffset); if (a == null || b == null) { toast(t('txt_select'), 3500); return; }
   if (a > b) [a, b] = [b, a];
   const { fn, tcAt } = textSpans(m); while (a < b && /\s/.test(fn[a])) a++; while (b > a && /\s/.test(fn[b - 1])) b--;

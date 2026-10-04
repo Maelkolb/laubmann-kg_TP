@@ -1,0 +1,212 @@
+{"batch": 27, "entries": [
+  {"entry_id": "L33-e0491", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Wüst list on scan reads 'Feldlerche lockend; Weidenmeise' (transcription: 'Pfeifente, Reiherent., Knäkmeise'). Closing Liesl/13.III note is written inside the same entry block.",
+   "records": [
+     {"record_id": "obs_f3b5bea7f311", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"written_name": "Weidenmeise", "taxon_de": "Weidenmeise", "taxon_sci": "Poecile montanus"},
+      "evidence": "scan: 'Feldlerche lockend; Weidenmeise, Singdrossel, Goldammer' (initial W as in 'Wüst')", "confidence": 0.7}
+   ]},
+  {"entry_id": "L15-e0028", "entry_date_ok": null, "entry_place_ok": null, "boundary_ok": null,
+   "transcription_quality": null,
+   "note": "No scan crop supplied; per transcription all fields right. Weinhalde is near Kaufbeuren-Hirschzell (Germaringer Keller, Wertach); coordinates are a GeoNames Weinhalde forest near Burgau.",
+   "records": [
+     {"record_id": "obs_55f59a06c708", "verdict": "unclear",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"coordinates": "near Kaufbeuren-Hirschzell, ca. 47.88, 10.64"},
+      "evidence": "transcription only: 'an der Weinhalde beim Aufgang zum Germaringer Keller ... einen Baumpieper bemerkt'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L28-e0044", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Typed Bezzel report matches; only the handwritten tail on p.43 is garbled. 'Ki' expanded as Kolonieinsel cannot be verified from the scan, but it is inside the Ismaning area.",
+   "records": [
+     {"record_id": "obs_694fbe421373", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "typed: '4o)Löffelente, bei der Ki 7 Ex. gezählt;' report dated 13.11.54, signed Einhard Bezzel", "confidence": 0.85}
+   ]},
+  {"entry_id": "L32-e0517", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "The Pöcking passage is right. Elsewhere the scan reads 'Neben den Lachmöven und ... einen Zwergtaucher' (transcription: 'Badewiese und Fischerhütten ... Zwergmöve').",
+   "records": [
+     {"record_id": "obs_1e9b745d72b9", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'nach Pöcking gegangen ... Sonst im Ort noch Stare, Rauch- und Mehlschwalben.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L02-e0211", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "The feathers are pasted on p.149. The 'wohl' hedge is about the bird's age, not the species identification.",
+   "records": [
+     {"record_id": "obs_ef345b41f3ac", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auf der ersten Wiese finde ich eine Menge Federn aus dem Kleingefieder eines Mauerseglers'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L24-e0113", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_9003949dae4f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'in den Perlacher Forst, der Saatkrähen zuliebe, kann aber nicht ein einziges Exemplar ... beobachten'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L03-e0089", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'infolge der großen Anzahl Hohltauben, die ich im ganzen Forst verhören konnte' (transcription: 'Flohlöcher'). The text of footnote 1) at the page foot is missing.",
+   "records": [
+     {"record_id": "obs_c8cf450deb42", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Sachsenrieder Forst", "coordinates": "ca. 47.85, 10.85 (Sachsenrieder Forst)"},
+      "evidence": "scan: 'Excursion in den Sachsenrieder Forst ... Namentlich von dem Dreizehenspecht ... kann ich keine Spur entdecken'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L06-e0132", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'Einöd Eichen' (same as the 12.VIII entry: 'über Einöd Eichen'), not Eichsee. Hinterseehof is on the Simssee (Krottenmühl station). Also 'Steinkäuzchen' and 'Nonnenmeisen' are misread as 'Steinkauzschrei' and 'Haubenmeisen'.",
+   "records": [
+     {"record_id": "obs_198115b023af", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Einöde Eichen am Simssee (bei Hinterseehof)", "coordinates": "Simssee, ca. 47.87, 12.23"},
+      "evidence": "scan: 'Abends am See im Winkel bei der Einöd Eichen zahlreiche Bläßhühner'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L33-e0530", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Last bird is 'Waldlaubvogel' on the scan (transcription: 'Halsbandvogel'). The street name is hard to read but compatible with Fürstenstraße.",
+   "records": [
+     {"record_id": "obs_28e49d8bc83c", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'eine Zaun- und eine Mönchsgrasmücke. Abends in der Fürstenstraße die gleichen Arten wieder gehört'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L30-e0111", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Every 'Eistaucher' in the transcription is 'Fischadler' on the scan (31.VIII, 1.IX, 2.IX). Further misreads: 'Löffelente, 1 Eist.' and 'Küstenseeschw.'.",
+   "records": [
+     {"record_id": "obs_943f1b5c8e58", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"written_name": "Fischadler", "taxon_de": "Fischadler", "taxon_sci": "Pandion haliaetus"},
+      "evidence": "scan 1.IX.: 'Höckerschwan 3, ...ente, Fischadler, Abendfalke!, Tüpfelsumpfhuhn'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L07-e0074", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "The footnotes are not visible in the crop. The ♀ is one of 3 specimens delivered (♂ white-spot, ♂ red-spot, ♀).",
+   "records": [
+     {"record_id": "obs_dd4055ec9c67", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vogl liefert an die Sammlung 3 Blaukehlchen vom Moos bei Feldmoching vom 14. April ... und um ein ♀'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L08-e0076", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan has 'Wildente' where the transcription has 'Stockente', and 'Buschwerk' where it has 'Birkenbruch'. Bird-name misreads elsewhere: 3 + 1 Limose (not Löffler); 'Fasanen balzen' (not Erlenzeisige); 'Zwergtaucher trillert' (not Zwergschnepfe).",
+   "records": [
+     {"record_id": "obs_578ab9a63005", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'viele Lachmöwen, ♂♀ Wildente' and in the Schirm '♂♀ Wildente' at Maisinger See", "confidence": 0.85},
+     {"record_id": "obs_754e57d1783c", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'im Buschwerk beim Seehof etliche ♂♀ Feldsperlinge'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L33-e0086", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_85a6f4b9932d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'am Futterbrett am Küchenfenster wieder ein oder der Buntspecht - ♂'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L17-e0189", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'Umgebung von Maising' (transcription: 'Meining'; record: Münsing). Other misreads: 'Wiesenpieper: 2 Stück' (not Sturmmöve) and 'Polartaucher' (not Polarbirkenzeisig).",
+   "records": [
+     {"record_id": "obs_89d404fc86a3", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "1941-11-01/1941-11-03", "locality": "Maising", "coordinates": "47.9859, 11.2898"},
+      "evidence": "scan: 'aus der Umgebung von Maising ... Singdrossel: noch bis zum 3. XI. beobachtet!'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L21-e0242", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'noch ein ♂♀ Erlenzeisige' (transcription: 'erst ein ♂ Erlenzeisig'). Other misreads: 'Polartaucher' (not Kolbenente), 'Ringamseln' (not Ringeltauben), 'Weindrosseln' (not Wacholderdrosseln).",
+   "records": [
+     {"record_id": "obs_1fdd399591e2", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"count": "2", "sex": "male | female"},
+      "evidence": "scan: 'im Botanischen Garten noch ein ♂♀ Erlenzeisige, das ♂ eifrig singend'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L13-e0267", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Limose here practically means Uferschnepfe, but the genus link is acceptable. Elsewhere: '17.) Wacholderdrossel' is misread as Waldwasserläufer and the Saatkrähe count '5 + X' as '5 + 1'.",
+   "records": [
+     {"record_id": "obs_d236512e4f98", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '40.) Limose: in einem Fischteich 2 Stück, eines davon schon rotfarben'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L21-e0245", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'in den Forst' (transcription: 'Park'). This is probably the Perlacher Forst rook colony, but it is unnamed, so the entry place München is accepted.",
+   "records": [
+     {"record_id": "obs_6fabf7038d2e", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Ich gehe vormittags in den Forst, um nach den Saatkrähen zu sehen ... Kolonie wieder reichlich besetzt'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L32-e0005", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_83ab06e86831", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Morgens singt wieder ein Weidenlaubvogel beim Haus. Stare ebenda.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L16-e0125", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "minor",
+   "note": "The 1st crop is a recto page (p.67) and the 2nd is p.69, so p.68 is missing: the Plakat quote breaks off. The p.69 text (Schwarzer Milan, afternoon car trip to Heiligenberg, evening thunderstorm) is evidently another day.",
+   "records": [
+     {"record_id": "obs_8bffb036d98c", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Am Neuweiher Ringeltauben, Buntspecht, ... Fitislaubvogel, Rotkehlchen, Waldbaumläufer im Föhrenbestand'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L33-e0235", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_c75d4180d30f", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'In den Ahornbäumen treiben sich wieder Gimpel herum.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L28-e0189d", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "This is a typed report pasted into the diary.",
+   "records": [
+     {"record_id": "obs_c154e2df7b84", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "typed: 'Feldmochinger Baggersee am 18.April 1955 ... l Mäusebussard ... Heinz Remold.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L28-e0209a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Typed report '551. Speichersee-Begehung' by someone other than Laubmann: first-person ringer living near Nymphenburg/Lierstraße; the 9.V report says 'sah ich LAUBMANN'. Probably Walter Wüst. The transcription contains long garbled show-through fragments.",
+   "records": [
+     {"record_id": "obs_ace460690b06", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "author of the typed Ismaning report (not Laubmann; probably Walter Wüst)", "record_type": "third-party-report"},
+      "evidence": "typed: 'Löffelente: 3 Paare und 1 ♂ im Goldachsee'; same series: 'sah ich LAUBMANN und O.Kl. MÜLLER'", "confidence": 0.8},
+     {"record_id": "obs_55bb46f89082", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "author of the typed Ismaning report (not Laubmann; probably Walter Wüst)", "record_type": "third-party-report"},
+      "evidence": "typed: 'Schilfrohrsänger: 1 Ex. an der gleichen Stelle ... (Pappelhain am Vkl.) ... fing ich im Spiegelnetz'", "confidence": 0.8}
+   ]}
+]}

@@ -1,0 +1,182 @@
+{"batch": 5, "entries": [
+  {"entry_id": "L23-e0082a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_4a018a32ffca", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in den Flaucher-Auen ein kleiner Flug Schwanzmeisen'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L14-e0067", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_58f85a5a7815", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Kurz hinter Traubing beobachte ich einen Raubwürger auf einer Hochspannungsleitung'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L04-e0062", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Excerpts from 'Hege und Jagd' Jg. 1, 1921; scan has 'Polarseetaucher', 'auf einem Bock an' (minor).",
+   "records": [
+     {"record_id": "obs_3a07e1114704", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1921"}, "evidence": "scan: 'Collectaneen aus Hege und Jagd Jahrgang 1, 1921 ... Haselhuhn: Standwild im Bayrischen Wald (p. 352)'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L15-e0087", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'Weidenmeisen' where transcription has 'Heidelerchen'; scan says S.O. Wand (locality_as_written 'Westwänden' not in text).",
+   "records": [
+     {"record_id": "obs_8d3f37915dee", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'A. Müller beobachtete am 30. IX. an der S.O. Wand des Breitenstein ... Wasserpieper'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L30-e0247", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Haubenlerche' (not Raubwürgerin), 'Schwarzstirnwürger' (not Schwarzstorch), 'Berichten aus Ismaning', 'Fischadler', date '29. VI. 56', 'im Moor in der Hirschauer Bucht'.",
+   "records": [
+     {"record_id": "obs_fee5076a4374", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1956-06-29"}, "evidence": "scan: 'E. Franck beobachtete am 29. VI. 56 im Moor in der Hirschauer Bucht am Chiemsee eine Große Sumpfschnepfe'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L10-e0096a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "'Blaukehlchen ... nistend am -' are line ends of the facing left page (earlier entry), not this entry; newspaper clipping text transcribed; Auerhuhn list misread (Weidenberg, geschossen, Föhren-Nadeln).",
+   "records": [
+     {"record_id": "obs_931a81b39d3d", "verdict": "spurious",
+      "species": "n/a", "count": "n/a", "date": "n/a", "locality": "n/a", "georef": "n/a",
+      "observer": "n/a", "record_type": "n/a", "status": "n/a", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Blaukehlchen / nistend am -' only as cut-off line ends on facing page, outside 10. Mai 1932 entry", "confidence": 0.85}
+   ]},
+  {"entry_id": "L14-e0241", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Observers Markwitz and Keller; record names only Markwitz.",
+   "records": [
+     {"record_id": "obs_b7b08373aa1a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'vom 15.-21. V. im Ismaninger Gebiet ... 1 Kiebitzregenpfeifer'", "confidence": 0.9},
+     {"record_id": "obs_fc3df234cebb", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'konnten während dieser Zeit dort beobachten: 1 Fischadler'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L14-e0125", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_0bf54d5c0cba", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'E. Schuhmacher meldet aus Ismaning vom 24. IX. ... 2 Bogenschnäblige Strandläufer beobachtet'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L15-e0180", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Header reads '6. Mai 1938. München'; a folded map hides most of p. 96; Rouen passage is the continuation at top of p. 97 before '7. Mai 1938. Rouen', so 6 May is the only possible day.",
+   "records": [
+     {"record_id": "obs_4cd5be47fc96", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan p.97: 'Abends noch ein Bummel durch Rouen ... Wir beobachten noch Mauersegler, Dohlen'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L30-e0268", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "List of 1957 arrival dates; '(Lbm.)' misread as Ebm./Kbm./Eben., 'Wüst' as 'Wörz', Ismaning/Isarauen/Fürstenau as 'Germering', 'Braunelle' as 'Heckenbeller'.",
+   "records": [
+     {"record_id": "obs_42029442d6a7", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Uferschwalbe: 5. V. - (Walther) 5. V. - (Bezzel)', ditto of 'Ismaning'", "confidence": 0.85},
+     {"record_id": "obs_d06daf4149ac", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Braunkehlchen: 25. IV. - ; 26. V. - (Bezzel)', ditto of 'Ismaning'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L28-e0137b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report by Heinz Remold; expansion 'Oberbecken Querdrän' of 'Ob.Qud.' is doubtful (more likely Ostbecken/Querdamm), as-written kept.",
+   "records": [
+     {"record_id": "obs_4ca227ffbb83", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Zaunkönig,1 Vkl.,1 Stichrohr,... 2 Neufinsing,1 Ob.Qud.'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L24-e0031", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_f1af672b589b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Nachmittags beim Haus 3+2 Rauchschwalben überhin'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L09-e0025", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan has '♂ juv. Reiherente' (transcribed '1 juv.').",
+   "records": [
+     {"record_id": "obs_07a8fbc43c8c", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"identification_qualifier": ""}, "evidence": "scan: 'Der Taucher war nirgends mehr zu entdecken, also wohl wieder abgewandert' - 'wohl' hedges departure, not identification", "confidence": 0.6}
+   ]},
+  {"entry_id": "L30-e0190", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Ruinenwiese auf Geräumt VI/1' (not Grünwalder F. st. p.), 'H. Wüst's' (not Wolf's), 'Höckerschwan' (not Stockenten), 'Grauspecht'. Observation in the (Perlacher) Forst, ~9 km S of the München point.",
+   "records": [
+     {"record_id": "obs_52a5f84d4ce6", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Sonst noch an wichtigeren Arten verhört oder beobachtet: Stare, Goldammern, mehrfach singend'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L30-e0014", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'Heidelerchen' (transcribed 'Flüelerlerchen') and 'Geräumt VI/1' (transcribed II/1). Site is the Forst south of München.",
+   "records": [
+     {"record_id": "obs_df34df2d656d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags im Forst, ohne von den Heidelerchen etwas zu hören oder zu sehen'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L21-e0207", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Ofterschwang' (not Gschwendwang), 'Alpenleinzeisig' (not Alpenleingörig). Steinhuhn hearsay follows Jäger H. Högel's statement in Tietze's report.",
+   "records": [
+     {"record_id": "obs_2b8a12e3eb41", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "ca. 1930"}, "evidence": "scan: 'Um 1930 herum soll noch einmal im Retterschwanger Tal ein Steinhuhn gesehen worden sein'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L18-e0259", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan: 'besuchte uns', '♂♀ Alpenmauerläufer'. locality_as_written 'Oeythales bei Oberstdorf' not in text.",
+   "records": [
+     {"record_id": "obs_8b9082de5a7f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'meldet, daß der Steinadler-Horst im Oytal ein Junges enthält'", "confidence": 0.85},
+     {"record_id": "obs_740ff6d8e4c3", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'der Horst im Rappenalptal 2 Jungvögel. Hier brachte einer der alten Vögel ... Schneehuhn zum Horst'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L27-e0170", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Vormittags im Forst im Geräumt 5/9 von den Heidelerchen nichts zu hören' (transcribed 'Horizont', 'Blaufichten'); Forst lies south of the München point.",
+   "records": [
+     {"record_id": "obs_b734adb237b0", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'nur einige Fichtenkreuzschnäbel konnte ich hören lockend'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L12-e0210", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'am Maisinger See' (not Ismaninger See), 'Nachtigallschwirl', 'Rohrweihe' (not Rohrammer), 'F. Tischler, Heilsberg', 'Heinrich Dathe'; footnote missing.",
+   "records": [
+     {"record_id": "obs_9d67383aad4a", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Maisinger See (bei Pöcking)", "coordinates": "ca. 47.95, 11.33"}, "evidence": "scan: 'Adolf Müller hat am 6. IX. am Maisinger See folgende Arten beobachtet ... Schafstelze'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L16-e0148", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Scan: 'einen Flug von 3♂♂, 1♀ Bluthänflinge'; 'auf dem Sohlacker-Sattel' (not Schauinsland-Sattel); transcription appends upside-down text ('1) Hausgarten ...') from another page.",
+   "records": [
+     {"record_id": "obs_0dc0d3233c63", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "4"}, "evidence": "scan: 'in den Kleingärten einen Flug von 3♂♂, 1♀ Bluthänflinge beobachtet'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L08-e0084", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header reads 'Pöcking', not Fischen; excursion through the Moos to the Maisinger See; scan 'Traubing-Wieling' (not Tutzing).",
+   "records": [
+     {"record_id": "obs_741d688b6378", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Moos am Maisinger See bei Pöcking", "coordinates": "ca. 47.95, 11.32"}, "evidence": "scan: '4. Mai 1930. Pöcking ... durch das ... Moos an den Maisinger See ... Im Moos selbst Wacholderdrosseln'", "confidence": 0.85}
+   ]}
+]}

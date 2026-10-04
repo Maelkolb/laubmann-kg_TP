@@ -56,12 +56,15 @@ Derselbe Filter wie auf der Graph-Prüfseite (`graph_check/`, dort Abschnitt „
 gibt jedem Datensatz eine Stufe `t` und die Gründe `tw`, warum er nicht in der nächsten Stufe ist; diese Seite
 rechnet sie nicht neu, sondern liest sie aus `data/cache/graph_check/review.json`:
 
-| Stufe | Korpus | Gründe (`tw`) |
+| Stufe | Korpus | heißt |
 |---|---|---|
-| K0 | außerhalb des Kerns | `spurious` eine Scanprüfung findet den Datensatz nicht · `duplicate` Doppel · `no-taxon` kein GBIF-Taxon · `flagged` eine Scanprüfung nennt ein Feld falsch · `unchecked` nicht beurteilt |
-| K1 | Kern | `rank` nicht auf Artniveau · `name` geschriebener Name kein belegter deutscher Name des Taxons · `reading` strittige Lesekorrektur in der Textstelle · `date` Datum des Eintrags falsch beurteilt · `illegible` Scan nicht lesbar |
-| K2 | strenger Kern | `no-coords` Ort ohne Koordinaten |
-| K3 | strenger Kern mit Koordinaten | – |
+| K0 | außerhalb des Kerns | der Nachweis selbst (Art, Anzahl, Datum, Status) ist zweifelhaft |
+| K1 | Kern | der Nachweis ist unstrittig, ein anderes Feld (Beobachter, Ort, Bestimmung, Lesung) nicht |
+| K2 | strenger Kern | kein Feld ist zweifelhaft, die Koordinaten fehlen oder sind nicht verlässlich |
+| K3 | strenger Kern mit Koordinaten | dazu verlässliche Koordinaten |
+
+Die Gründe (`tw`) und ihr Wortlaut kommen aus `graph_check/corpus_tiers.py` (`RULES`), die Eichung an einer
+blinden Scanprüfung steht in `docs/corpus_tiers.md`.
 
 Direkt unter der Kopfzeile steht in jeder Ansicht (Übersicht und alle vier Typen) die Leiste **Korpus** mit vier
 Knöpfen und der Zahl ihrer Datensätze – **Vollständig · Kern · Strenger Kern · Strenger Kern mit Koordinaten** –,
@@ -81,9 +84,9 @@ des Korpus gehören.
 `build_data.py` schreibt dazu je Eintrag und je geschriebenem Namen die Nennungen der vier Korpora (`nc`) und je
 gezeigtem Beleg seine Stufe (`k`), die Gründe (`kw`) und ob er am Tagebucheintrag hängt (`ke`). Die Arten-Nennungen
 folgen dem Datensatz über Tagebucheintrag + geschriebenen Namen + Vorkommen (wie `rec.w` / `rec.occ` der
-Prüfschicht); Personen, Orte und Lebensräume über den Graph (`--triples`). Im Endstand: 85.631 · 74.909 · 69.150 ·
-44.372 Datensätze = Arten-Nennungen; Einträge mit Nennungen im Korpus: Arten 688 · 491 · 388 · 369, Personen
-3.730 · 3.377 · 3.289 · 2.932, Orte 8.690 · 7.851 · 7.432 · 3.162, Lebensräume 1.861 · 1.622 · 1.528 · 1.145.
+Prüfschicht); Personen, Orte und Lebensräume über den Graph (`--triples`). Im Endstand: 85.896, 60.793, 27.464 und
+16.834 Datensätze = Arten-Nennungen; Einträge mit Nennungen im Korpus: Arten 613, 456, 322, 300; Personen
+3.728, 2.627, 1.443, 1.242; Orte 8.623, 6.462, 3.931, 1.458; Lebensräume 1.878, 1.455, 822, 557.
 
 Der Filter ist **nur eine Ansicht**:
 
@@ -177,7 +180,7 @@ Warteschlange sowie Auffälligkeiten. Eingaben (alle mit Vorgabe, `--help`):
 | `--identities` | `data/review/machine/identities_machine.csv` | die Zeilen, die die Pipeline liest; übernommen = Konfidenz ≥ `--min-confidence` und Quellen ≥ `--min-agreement` |
 | `--rounds`, `--round-labels` | die vier `machine_review*`-Ordner in der Reihenfolge von `combine_rounds.py` | Urteile (`machine_review.json`); Spalte `round` = Position |
 | `--arbeit` | die Arbeitsordner dazu (`-` = keiner) | Stimmen (answers / answers_gemini), Kandidaten und Wikidata-/GND-Details aus den Paketen |
-| `--export-review` | `data/exports/kg_exports_2026-10-01_checked/review` | `*_merges.csv` (Regeln, offene Kandidaten), `*_link_review.csv` |
+| `--export-review` | `data/exports/kg_exports_2026-10-04_text/review` | `*_merges.csv` (Regeln, offene Kandidaten), `*_link_review.csv` |
 | `--reviewed-merges` | `data/review` | frühere Entscheidungen zu Merge-Kandidaten (y/n) |
 | `--review-layer` | `data/cache/graph_check/review.json` | Prüfschicht der Graph-Prüfseite: Korpusstufe `t` und Gründe `tw` je Datensatz → Korpusfilter |
 | `--triples` | `data/cache/graph_check/in/triples_checked.pkl` | Tripel des Graphen unter Prüfung (`load.py`): an welchem Datensatz eine Personen-, Orts-, Lebensraum-Nennung hängt |

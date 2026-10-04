@@ -78,6 +78,11 @@ review:                       # validation UI decisions (tools/validation_ui, "A
     min_agreement: 2          #   ... and this many independent sources (text agent, scan agent, Gemini, Opus) agreeing
     value_corrections: data/review/machine/value_corrections_machine.csv   # single mentions the scan agent read differently
     observation_corrections: data/review/machine/observation_corrections_machine.csv   # record fields two scan checks agree on
+    text_layer: data/review/machine/text_layer_machine.csv   # the checks' better readings (cut to the correction's span) and the scan
+                                             #   agent's corrections of the text (build_review.py --machine-text-layer): apply=after is
+                                             #   patched into the extracted entry, apply=before goes in before the extraction (read anew);
+                                             #   a reviewer's decision wins, an entry with one is read anew
+    text_values: data/review/machine/value_corrections_text_machine.csv   # the species and places the after-changes correct
     min_correction_confidence: 0.9    #   (rows with an agreement column also need min_agreement)
 
 qa:

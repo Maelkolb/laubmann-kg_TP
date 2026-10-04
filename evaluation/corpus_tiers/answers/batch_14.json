@@ -1,0 +1,204 @@
+{"batch": 14, "entries": [
+  {"entry_id": "L27-e0101a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report handed over by E. Bezzel (diary 11.VI.1954 p.85: 'Besuch von E. Bezzel, der mir die nachfolgenden Berichte überbringt'); pipeline read 'Ruppel'.",
+   "records": [
+     {"record_id": "obs_0bcca8b33e38", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Einhard Bezzel"},
+      "evidence": "'16.)Rohrweihe,1 W.im Grossen Schilffeld'; diary: 'Besuch von E. Bezzel, der mir die nachfolgenden Berichte überbringt'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L13-e0116", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Checked item 35 is correct; but item 49 reads 'Lachmöwe' on scan, transcribed 'Baumfalke'.",
+   "records": [
+     {"record_id": "obs_d7f1dd51d1a8", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "'In der näheren Umgebung unseres Hauses in Pöcking ... 35.) Hausrotschwanz'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L16-e0341", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Dead stork from newspaper clipping (Miesbacher Anzeiger Nr. 199, late Aug 1940); 'Am Freitag ... am nächsten Morgen' = c. 24 Aug 1940, not 1 Sept.",
+   "records": [
+     {"record_id": "obs_c39b5b77731a", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "1940-08-24 (approx.; Saturday after the Friday shot, clipping of late Aug 1940)"},
+      "evidence": "clipping Nr. 199: 'Am Freitag hörte man ... Flintenschuß, und am nächsten Morgen fand man einen Storch tot'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L14-e0025", "entry_date_ok": null, "entry_place_ok": false, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "False split: text is the continuation of '11. Mai 1936. München' (L14-e0024), a list of specimens in a stuffed-bird collection from Krumbach given to the Zool. Sammlung; starts mid item 3. Header not in crops. Scan has 'Langschwanz-Raubmöwe', not 'Langschnauz'.",
+   "records": [
+     {"record_id": "obs_1addc818df43", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "", "record_type": "literature-record"},
+      "evidence": "collection specimen list: '7.) Purpurreiher: ein junges Exemplar vom 21. II. 1928 aus Pfarrkirchen a. d. Rott'", "confidence": 0.8},
+     {"record_id": "obs_9410a3557c14", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"species": "Stercorarius longicaudus (Falkenraubmöwe; diary 'Langschwanz-Raubmöwe')"},
+      "evidence": "scan: '10.) Langschwanz-Raubmöwe: ein Exemplar vom 18. X. 1906 aus Arnstorf in Niederbayern'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L06-e0024", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'Am See und der Haubentaucher' = 'Am See sind die Haubentaucher'.",
+   "records": [
+     {"record_id": "obs_e0c7526c7780", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "walk along the south shore of the Überlinger See, Bodman – Wallhausen – Dingelsdorf"},
+      "evidence": "'gehen nun am Südufer des Sees entlang über Wallhausen nach Dingelsdorf ... Graue Fliegenschnäpper entlang dem ganzen Weg'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L02-e0116", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan p.79 and p.81 say 'Tauchenten' (diving ducks), transcribed 'Taucher'.",
+   "records": [
+     {"record_id": "obs_e31af09185e0", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Tauchenten = diving ducks (Aythyini / Anatidae), not grebes (Podicipedidae)"},
+      "evidence": "scan: 'in der Bucht bei Sachsenbach ... 3 dunkle Tauchenten mit weißem Flügelspiegel'; p.81 'die 3 Tauchenten vom Vormittag'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L20-e0219", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Companion name reads 'Lisl' (his wife; same glyph as 'Lisl und Elisabeth' on scan 0089_L), transcribed 'Dirk'.",
+   "records": [
+     {"record_id": "obs_13b851c9a8e2", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Alfred Laubmann | Lisl (Laubmann)"},
+      "evidence": "scan: 'Lisl und mir fällt das völlige Fehlen der großen Raben- und Saatkrähen-Schwärme ... auf'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L10-e0097", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Same sentence: scan has 'eine Wasserralle ruft beim Schirm', transcribed 'ein Wasserfrosch'.",
+   "records": [
+     {"record_id": "obs_94e1c209e814", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Um 9 h balzt noch eine Bekassine, ein Kiebitz klagt'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L25-e0014", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Bezzel's Ammer tour was 'in den letzten Tagen' before his letter of 5.VIII. Last sentence on scan: 'ein Flug Fichtenkreuzschnäbel', transcribed 'eine stetig südwärts ziehende Rauchschwalbe'.",
+   "records": [
+     {"record_id": "obs_69bd6483760e", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "1952-08-01/1952-08-05 (tour in the last days before the letter of 5.VIII.)"},
+      "evidence": "'E. Bezzel meldet mir mit Brief vom 5.VIII. von einer in den letzten Tagen unternommenen Tour ... ca 70 Bläßhühner'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L25-e0186", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'Vormittags um 11 h' shortened.",
+   "records": [
+     {"record_id": "obs_843682b8d83d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'höre ich in einem Garten an der Geiselgasteigstraße den ersten Gartenrotschwanz singen'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L33-e0520", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'auf der Hochleite' (Harlaching, frequent Laubmann site), transcribed 'auf der Flaucher'.",
+   "records": [
+     {"record_id": "obs_9be0bd36a74f", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Hochleite (München-Harlaching)"},
+      "evidence": "scan: 'Vormittags auf der Hochleite beobachtet oder verhört: Stare, Grünfinken, Buchfinken'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L11-e0099", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Kampfläufer flock on scan is '(3 ♀♀, 1 ♂)', transcribed 3♂♂ 1♀; several other species misread (e.g. 26 Wildente->Wachtel, 14 Fitislaubvogel->Beutelmeise, 44-46 names).",
+   "records": [
+     {"record_id": "obs_bd468427335c", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '39.) Kampfläufer, am Süddamm ein Flug von 4 (3♀♀, 1♂)'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L27-e0164", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Müller's 13.VIII report runs p.129-130 and ends 'Im Ganzen nur 49 Arten' before the 18. August header; 'Baumpieper lockte wieder. Freund W. Wüst übergibt ...' is p.131 (18 Aug entry) and is spliced in. Many names garbled.",
+   "records": [
+     {"record_id": "obs_a42e5d2f3b09", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Müller report of 13.VIII: 'Rabenkrähe, 2 am Strand'", "confidence": 0.85},
+     {"record_id": "obs_19c3c700c282", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Adolf Müller", "date": "1954-08-13"},
+      "evidence": "p.130, still Müller's report: 'Rotkehlchen, rufend auf den Föhren ... Im Ganzen nur 49 Arten'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L28-e0180d", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'549. Speichersee-Begehung' is Walter Wüst's numbered report series (diary: W. Wüst sends reports of 6. and 8. IV.), written in his first person, not Laubmann's.",
+   "records": [
+     {"record_id": "obs_775b100a2b86", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst", "record_type": "third-party-report"},
+      "evidence": "typed Wüst report: '549.Speichersee-Begehung ... Star: Viele vor ihren Nisthöhlen in der Hirschau s. g.g.'", "confidence": 0.8},
+     {"record_id": "obs_e23a8a7edf8c", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst", "record_type": "third-party-report"},
+      "evidence": "same typed Wüst report: '63. Feldsperling: Einige am E-Werk'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L34-e0241", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Ring recovery from SZ clipping; capture date not given.",
+   "records": [
+     {"record_id": "obs_3b176860a84e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "clipping: 'Einer der beiden Vögel wurde bei dem Ort Arasuk, im Gebiet von Nowosibirsk ... gefangen'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L29-e0026d", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Part of Walter Wüst's '557. Speichersee-Begehung' 25./26.VI.1955 ('Walter sandte mir den nachfolgenden Bericht aus Ismaning vom 25./26. VI.').",
+   "records": [
+     {"record_id": "obs_06d41418cf69", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst"},
+      "evidence": "Wüst report: 'Morgens sah ich ein ♀ mit pull. im Vorfluter sich wegdrücken'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L20-e0017", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_b10a06e64a8d", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Feldlerche (bei Ober-Dillach auf den Feldern)'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L28-e0158d", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Checked Stockente line correct; elsewhere numbers misread (Zwergtaucher 'etwa 40', not '4♂'; Pfeifente 'ca 15', not '1♂'). Record is the Wb (Westbecken) part; 'Speicherweiher' misexpands Wb.",
+   "records": [
+     {"record_id": "obs_9c244f3ebcd2", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "signed Bezzel: '4)Stockente, im Wb ca.200 + ca 150 im Ob'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L30-e0037", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header place is 'Ismaning' (transcribed 'Ermaring'); '1.) Elster' transcribed 'Erlen'; '53.) Limose' transcribed 'Kiebitz'; Schwarzhalstaucher '1' not '8'. Fischadler coordinates (12.80 E) are far from the Ismaning Tafelberg.",
+   "records": [
+     {"record_id": "obs_2b30539e4ac9", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '36.) Stockente.'", "confidence": 0.9},
+     {"record_id": "obs_77927ee53e2e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '34.) Schwarzmilan, 1 beim 2. Turm über dem Wb.'", "confidence": 0.85},
+     {"record_id": "obs_2b495b69a95e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '35.) Fischadler 1 am Tfb., 1 beim 2. Turm.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L21-e0271", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_7d9a4e129617", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'In der Geiselgasteigstraße zwischen der Menterschwaige und Großhesselohe kann ich 2 Waldlaubvögel verhören'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L20-e0027", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "The dated list (30.III Ismaning, 5.IV Murnau, 11.IV Brannenburg, 15.IV ...) is Frau Baur's report; Laubmann's own 5.IV.1947 entry has him in München.",
+   "records": [
+     {"record_id": "obs_2e60aa2e4b0e", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "Frau W. Baur", "record_type": "third-party-report"},
+      "evidence": "'Frau W. Baur meldet vom 30. III. aus Ismaning ... Am 5. IV. bei Murnau Kiebitze und 4 Rotschenkel'", "confidence": 0.75}
+   ]}
+]}

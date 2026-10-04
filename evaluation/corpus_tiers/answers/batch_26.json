@@ -1,0 +1,194 @@
+{"batch": 26, "entries": [
+  {"entry_id": "L19-e0115", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan reads Karolingerstraße (transcription Karolingenstraße)",
+   "records": [
+     {"record_id": "obs_8fc5d770ce91", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'In der Ahornallee in der Karolingerstraße wieder mehrfach Gimpel und Distelfinken verhört'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L24-e0216", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'in den Forst' and 'Im Forst beim ... Waldhaus' (not 'Park'); 'Heidelerchen'; '1 ♂♀ Rebhühner'",
+   "records": [
+     {"record_id": "obs_6042be95c0e6", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'in den Forst ..., kann aber von den Heidelerchen nichts mehr hören oder sehen'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L23-e0246", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'meldet mir Adolf Müller' (not Adersmüller); 'einzelne Girlitze' (not Quälitze)",
+   "records": [
+     {"record_id": "obs_c022ce204fe7", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Adolf Müller"}, "evidence": "scan: 'Nachmittags meldet mir Adolf Müller ... heute vormittags im Englischen Garten ... Erlenzeisige'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L15-e0035", "entry_date_ok": null, "entry_place_ok": null, "boundary_ok": null,
+   "transcription_quality": null, "note": "no scan crop; page 16 image missing in pages_jpg; page 17 shows the entry continues ('Ruf der Wachtel'), not in transcription",
+   "records": [
+     {"record_id": "obs_f5a4dd97c57d", "verdict": "unclear",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "transcription only: 'Aus der Märzburg herüber höre ich den Kukkuck rufen.' (scan page missing)", "confidence": 0.5}
+   ]},
+  {"entry_id": "L25-e0021", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'meldet mir auf Karte vom 17. VIII. vom 15. VIII. vom Falkenstein bei Pfronten'; '1 ♂♀ mit ... Nestjungen'",
+   "records": [
+     {"record_id": "obs_2a0dd0428396", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst"}, "evidence": "scan: 'Walter Wüst meldet mir auf Karte ... vom 15. VIII. vom Falkenstein ... einzelne Tannenhäher beobachtet'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L23-e0211", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan: 'An Arten beobachtet' (not 'Am Boden'); 'ein ♂♀ Junge ... fütternd'; Ringeltaube 'mehrfach' (not massenhaft)",
+   "records": [
+     {"record_id": "obs_ba23cbbaaedb", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan list: 'Distelfinken, bei der Aumühle; Buchfink; Haussperling'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L30-e0162", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan observer '(Wüst)' transcribed as '(Hurt)'; '(Lbm.)' as Eben./Abm./Klem.; 'Hirschau' as Kirchrän",
+   "records": [
+     {"record_id": "obs_f41816ff4348", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst"}, "evidence": "scan: 'Uferschwalbe: 4./5. IV. Ismaning (Rathmayer) 16. IV. Ismaning (Wüst)'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L31-e0026", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'auf den Feldern bei Geräumt VI/6' (not Gaimersheim); 'von W. Wüst' (not H.)",
+   "records": [
+     {"record_id": "obs_900e6f01a82c", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "not given; observation published 1949 (Ornith. Berichte II,1, p. 57), so ≤1949"}, "evidence": "scan: 'Ein 2. Nachweis durch Herbert Ringleben auf Scharhörn findet sich in Ornith. Berichte, II, 1, 1949'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L23-e0093", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan: 'In den Auen bei den Überfällen'; the trilling bird line may read 'Kleiber' rather than Erlenzeisige (not checked record)",
+   "records": [
+     {"record_id": "obs_82f760d38061", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Morgens in den Bäumen beim Haus einige Gimpel.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L29-e0150a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "typed report pasted under 24 Dec 1955: 'Werner Rathmayer schickt mir noch gute Berichte' (page 7896ddd3_0197)",
+   "records": [
+     {"record_id": "obs_31bf4d10d684", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "Werner Rathmayer", "record_type": "third-party-report"}, "evidence": "typed sheet 'Beobachtungen in Eching/Moosburg ... Eisvogel,Bussard'; diary: 'Werner Rathmayer schickt mir noch gute Berichte'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L13-e0027", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Waldkauz passage correct; elsewhere scan has Maisinger See, 'eine Weindrossel und 1 Heidelerche' (not Moorente/Knäkente)",
+   "records": [
+     {"record_id": "obs_8622b9edce18", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Gegen Morgen ruft ein Waldkauz im Garten an der Amalienstraße 54.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L25-e0041", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Adolf Müller schickt mir mit Brief vom 10. IX.' (not Willi); Kuckuck juv. (not Kiebitze); Mauersegler (not Moorsegler)",
+   "records": [
+     {"record_id": "obs_512702342ea3", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Adolf Müller", "georef": "Ismaning/Finsing pond area ca. 48.22, 11.75; given point is at Moosburg"}, "evidence": "scan: 'Adolf Müller schickt mir ... 3. IX. ... Fischadler 2 fliegend bei der Baracke'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L04-e0019", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan likely 'Hausschwalben' where transcription has Rauchschwalben",
+   "records": [
+     {"record_id": "obs_2c3e782491a3", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Von Urigen bis zum Passhotel ... als einzige Arten Wasserpieper und Alpenbraunellen'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L01-e0181", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan: 'über seine Herkunft beinahe im Zweifel' (not Verwechslung)",
+   "records": [
+     {"record_id": "obs_f28b344b2272", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'übliche Frühlingskonzert: Kleiber, Blaumeise, ... Singdrossel und Buchfink, Grünfink'", "confidence": 0.95},
+     {"record_id": "obs_75ee140ce77f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Beim Biedersteiner Schloss höre ich das Trommeln des Zwergspechts aus einem hohen alten Baum'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L05-e0137", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_cceba8af8e2a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Am Bach beobachtet: Wasseramseln und Gebirgsbachstelzen.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L16-e0096", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "contains 3 May 1939 text (Kirschkernbeißer, Zahnarzt); duplicated fragments; list names wrong (40 Rauchschwalbe, 41 Mehlschwalbe, 42 Mauersegler, 43 Buntspecht, 60 Birkhahn)",
+   "records": [
+     {"record_id": "obs_34071a674cc5", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Von den Scharen über der bekannten vermeintlichen Brutstelle bei Grafrath - Kottgeisering ist heute gar nichts zu sehen'", "confidence": 0.8},
+     {"record_id": "obs_51124f83e83e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan list: '19.) Blaumeise' without site", "confidence": 0.9}
+   ]},
+  {"entry_id": "L30-e0255", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "two diary days (8 and 11 June) merged; scan 'im Forst' (not Park); 'zahlreiche Neuntöter'(?) not 'unzählige Singvögel'; second clipping omitted",
+   "records": [
+     {"record_id": "obs_7a749a86b8f6", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "ca. 1956 (release at Wilhelmshaven, exact date not given; clipping Münchner Merkur 5.VI.1957)"}, "evidence": "clipping: Singschwan 'vor eineinhalb Jahren' found, later 'zusammen mit einem Höckerschwan freigelassen'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L33-e0264", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'An der Floßlände bei Hinterbrühl' (not Thalkirchen); site name read Griesenplatz is uncertain (Griechenplatz?)",
+   "records": [
+     {"record_id": "obs_fa0d643930d7", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Vormittags an der Floßlände und am Grie...platz einen Grünspecht rufen'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L32-e0407", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "route on scan is along the Perlacher Forst (Harlaching streets), not Lindwurmstraße/Sendlinger Tor",
+   "records": [
+     {"record_id": "obs_7f0572b15dde", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan list: 'Gimpel. Buchfink. Haussperling.'", "confidence": 0.9},
+     {"record_id": "obs_074ffcb78ba9", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan list: 'Gartenrotschwanz, Hausrotschwanz. Rotkehlchen'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L15-e0165", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "list names wrong elsewhere: 44 Brachvogel (not Baumpieper), 45 Uferschnepfe (not Schafstelze), end Wacholderdrosseln/Fischreiher (not Bachstelzen/Kiebitze)",
+   "records": [
+     {"record_id": "obs_68556a85161f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '19.) Wintergoldhähnchen: im Hochwald und an der Lände. 20.) Sommergoldhähnchen: ebenda.'", "confidence": 0.8},
+     {"record_id": "obs_185dd94b69c4", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '38.) Turmfalke: ... und 1 ♂♀ im Randwäldchen bei Ka...brunn'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L28-e0183", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Walter übergibt mir nachfolgenden Isma-ning-Bericht vom 14. IV. 55' (no Gümbel); report author unnamed, presumably Walter Wüst",
+   "records": [
+     {"record_id": "obs_5f5cc22e7ae1", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst (report handed over by 'Walter'; author not otherwise named)"}, "evidence": "scan: 'Walter übergibt mir nachfolgenden Ismaning-Bericht'; typed 'Bläßhuhn: Überall g.g., Scharen im westlichen Wb.'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L13-e0194", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header is Pöcking (summer stay Pöcking Jul-Aug 1935), misread Töcking -> Töging am Inn",
+   "records": [
+     {"record_id": "obs_f6a6fbc720d4", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Pöcking (Starnberger See)"}, "evidence": "scan: '28. August 1935. Pöcking. ... frühmorgens lockend überhin-fliegende Fichtenkreuzschnäbel'", "confidence": 0.9}
+   ]}
+]}

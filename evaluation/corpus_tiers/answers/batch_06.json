@@ -1,0 +1,210 @@
+{"batch": 6, "entries": [
+  {"entry_id": "L02-e0188", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Header 'Hindelang - Oberstdorf' (travel day; Oberstdorf = destination). Transcription: 'Heidenlaubvogel' should be Weidenlaubvogel; 'Bei Hindelang kurz vor Sonthofen' is 'Bei Binswang'; 'schmettern' (2nd Berglaubvogel) is 'schwirren'. Crop _1 is p.130 (previous day), not part of entry.",
+   "records": [
+     {"record_id": "obs_2fa270424180", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Aus den Auen am Oybach ... Hier kann ich auch den Waldbaumläufer, anscheinend einem kleinen Flug'", "confidence": 0.9},
+     {"record_id": "obs_ec0f1e91fc84", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'In Sonthofen: Mauersegler, Rauch- und Mehlschwalben.'", "confidence": 0.9},
+     {"record_id": "obs_f6535e78c9a6", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Hindelang nach Sonthofen im Ostrachflußgebiet ... und Zaunkönig recht häufig'; point lies on Iller near Blaichach, not Ostrach valley", "confidence": 0.85}
+   ]},
+  {"entry_id": "L23-e0222", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan: 'im Mittergewand auf den Feldern gegen Unterhaching', transcribed as 'Mittelgewand auf den Sektoren gegen Lauterbachweg'.",
+   "records": [
+     {"record_id": "obs_a959218378c1", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'im Perlacher Forst im Mittergewand auf den Feldern gegen Unterhaching wieder die Wachtel verhört'", "confidence": 0.85},
+     {"record_id": "obs_be04b57a8013", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Sonst hier noch Goldammer, Waldbaumläufer, Gartengrasmücke ...'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L05-e0208", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_5f370ba9de5e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Am Zusammenfluß von Inn und Donau etliche Lachmöwen.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L01-e0108", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan: 'In den Weiden an den Wertachufern treiben sich Kohlmeisen herum' (transcribed 'Gärten an der Wertachstraße weiden viele'). 'Ebenso' is 'Ebenda'.",
+   "records": [
+     {"record_id": "obs_821bd25176dc", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Wertachufer (Kaufbeuren)"}, "evidence": "scan: 'In den Weiden an den Wertachufern treiben sich Kohlmeisen herum.'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L31-e0066", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_f46a3787aea5", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Trotzdem morgens um 6 h schon frühlingshaftes Amsel-Konzert.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L03-e0248", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Checked items correct. Elsewhere: no. 24 on scan is 'Nonnenmeise', transcribed 'Weidenmeise'.",
+   "records": [
+     {"record_id": "obs_17b893360aaf", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '11.) Feldsperling' in list of I. Halbinsel-Excursion, Kaufbeuren", "confidence": 0.9},
+     {"record_id": "obs_2c600de0e088", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '10.) Haussperling' in list of I. Halbinsel-Excursion, Kaufbeuren", "confidence": 0.9}
+   ]},
+  {"entry_id": "L03-e0038", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Checked passage correct. Elsewhere errors: no. 42 is Haubenmeise (not Kohlmeise); 74 Krickente/75 Wildente shifted to Rohrweihe/Krickente; 27 'Weißhaus' not 'Hopfensee'.",
+   "records": [
+     {"record_id": "obs_0170c50a5b63", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Am 14. Juni 1904 im Torfmoor bei Moos ... 1 ad Exemplar mit 1 ad Rabenkrähe und 3 juv.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L19-e0097", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Passage fine ('Graue Fliegenfänger'). Elsewhere: 'Karwinskystraße' is Karolingerstraße; 'Ein grüner Specht am 23.III.98' is 'Ein größerer Flug am 23.III.97'.",
+   "records": [
+     {"record_id": "obs_b1acac76e042", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Beim Häuschen an der Lände Graue Fliegenfänger.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L24-e0144", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_1256ff24b44b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'An den Überfällen 10 Silbermöwen, juv.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L13-e0087", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_e782e8f0c186", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'beginnt das Amsel-Konzert morgens um 4 15 h.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L19-e0052", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Checked passage correct. Elsewhere: 'ca 8 Rohrweihen' is 'ein ♀ Rohrweihe'; 'In Stütgen Meisinger See' garbled ('Im Schilf am Maisinger See'); 'Kernbeissern' is 'Kirschkernbeißern'.",
+   "records": [
+     {"record_id": "obs_3e43dacda438", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Am 25. III. beobachtete A. Müller am Speichersee ... Vorklärteichen ... 1 ♂ Spießente'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L11-e0131", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Header reads 'Pöcking' (transcribed 'Fröcking'); observations at Maisinger See. 'Bergrain' could also read 'Bergwiese' (L12-e0192 has the same word as Bergwiese). Elsewhere: Brachwasserläufer is Bruchwasserläufer; Bläßhuhn 'vom 18. VII.' not 18. VI.",
+   "records": [
+     {"record_id": "obs_a422ea7af387", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Gimpel locken an der Bergrain.' (last word hard to read, maybe Bergwiese)", "confidence": 0.6}
+   ]},
+  {"entry_id": "L24-e0210", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Checked passage correct; Wb. = Westbecken (cf. L24-e0215 scan). Elsewhere: Gelbspötter/Gartengrasmücke '1 am Goldachsee' not 'Grabenweg'; no. 39 looks like Mäusebussard, not Mauersegler.",
+   "records": [
+     {"record_id": "obs_d135496258c0", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '66.) Bruchwasserläufer, am 17. V. ... am 18. V. 1+2+8 im Wb.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L06-e0022", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Checked passage correct. Preceding sentence garbled: scan 'Obstbaumhainen beim Haus ein Grünspecht und ein Wendehals. Letzteren kann ich sogar noch schreien hören'; last list item is Mäusebussard, not Mauersegler.",
+   "records": [
+     {"record_id": "obs_bbf4502c54fd", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Sonst kann ich hier noch notieren: Feld- und Haussperlinge, ... rotrückige Würger, Graue Fliegenschnäpper'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L12-e0192", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Checked passage correct. Elsewhere: 'Zwergfalken und Zwergdommeln' is 'Turmfalken und Zwergrohrdommeln'; '2 Waldwasserläufer ... Ankerungsplatz' is '2 Helle Wasserläufer ... Aschheringer Filz'.",
+   "records": [
+     {"record_id": "obs_cefd79a7030a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Bekassinen fliegen hin und wieder, ich zähle vom Schirm aus allein 1+3+2+1 Stück.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L19-e0411", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan list: '15 Stare, 15 Feldlerchen, Bachstelzen, Schwanzmeisen, ... 1 Kampfläufer ♂ im Winterkleid' (transcribed weisse Bachstelzen/Schwarzmilan/Rauhfußkauz). Companion is 'Dr Wüst', not 'Fr. Wüst'. Word after 'ca 50' only plausibly Pfeifenten.",
+   "records": [
+     {"record_id": "obs_2bfcb1545907", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'E. Schuhmacher meldet vom 5. III. ... Speichersee gemeinsam mit Dr Wüst ... ca 50 Pfeifenten'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L26-e0001", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Nos. 19/20 'im Gebüsche' are 'am Goldachsee'; 21 is Zaungrasmücke, 22 Dorngrasmücke (not Sperbergrasmücke); bus to Neufinsing. '63.) Ringeltaube' not visible on crops.",
+   "records": [
+     {"record_id": "obs_feef8e498c46", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "1"}, "evidence": "scan: '20.) Mönchsgrasmücke, nur 1 am Goldachsee verhört.'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L03-e0367", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Checked passage correct. Elsewhere 'Kaiserslautern' (twice) is 'Kaufbeuren' on the scan.",
+   "records": [
+     {"record_id": "obs_f2de75e8a222", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'am Heimweg in den Gärten von Neuhausen noch eine einzelne singende Amsel.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L31-e0236", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_b4eb14cdf357", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags am Fütterfenster wieder ein Kernbeißer.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L24-e0215", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Header reads 'Ismaning. (66)', transcribed 'Brunnenberg'. Item 5 is Pirol (Fitis is no. 21); 'Nordbecken' is 'Westbecken' throughout; no. 8 looks like Bluthänfling.",
+   "records": [
+     {"record_id": "obs_a0a19571588e", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Pirol (Oriolus oriolus)", "coordinates": "Tafelberg at Ismaninger Speichersee, ca. 48.22, 11.74"},
+      "evidence": "scan: '5.) Pirol, 1 am Norddamm bei Neufinsing ... weiter 1+1+1+1 am Tafelberg verhört'; coords 12.80 E near Altötting", "confidence": 0.8}
+   ]},
+  {"entry_id": "L28-e0204a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report, author not visible on crop.",
+   "records": [
+     {"record_id": "obs_d934134d7cd4", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typescript: 'Limose,2 K2/4,1 Ob.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L28-e0232a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report signed by hand (signature hard to read, possibly Bezzel); site is the großes Schilffeld.",
+   "records": [
+     {"record_id": "obs_ff0594808fcf", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typescript: '2o)Lachmöwe,tagsüber am gr. Schilffeld etwa 5o, darunter auch einige ad.'", "confidence": 0.85}
+   ]}
+]}

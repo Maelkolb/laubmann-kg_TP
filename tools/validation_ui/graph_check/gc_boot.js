@@ -31,7 +31,7 @@ function rvWire() {
   Object.assign(window.LKGC, { R, RV, RVU, RVS, SC, QUEUES, entryModel, buildModel, visibleItems, entCur, entProposal, makeZip, exportFiles, auditRows, importState, setQueue, decide, undo, cardAct, focusCard, countQueues, progressJSON,
     go, entryHash, proposal, mergedProposal, recVals, listRows, t, UI, MEDIA, cropErr, cutErr, cropSources, openCrop, closeCrop, selectMedia, scanMediaAt,
     SEV, CORP, LEVELS, openLevels, openByLevel, levelTotals, setCorpus, setLevelFilter, setPreset, sevDoc, tableCols, nodeProps, stats, itemLevel, tierOf, inCorpus, openFindings, itemDecided, usageRows, propMode, entryInCorpus, setNotes, queueList, META: GC_META, EXPLORER,
-    pageErr, pageLoaded, openPage, pageRegions, pageIndex, regionBox, scanSources, pageEntries, regionEntries, thumbsSync, ARCH, pageNode, regionNode, pageTitle, kindOf });
+    pageErr, pageLoaded, openPage, pageRegions, pageIndex, regionBox, scanSources, pageEntries, regionEntries, thumbsSync, ARCH, pageNode, regionNode, pageTitle, kindOf, betterOf });
   Object.defineProperty(window.LKGC, 'SUB', { get: () => SUB });
   Object.defineProperty(window.LKGC, 'EM', { get: () => EM });
   Object.defineProperty(window.LKGC, 'LANG', { get: () => LANG });

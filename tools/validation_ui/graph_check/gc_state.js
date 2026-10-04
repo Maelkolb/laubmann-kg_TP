@@ -153,7 +153,7 @@ function buildSummaries() {
       if (asName) lv('name:' + nk, nameLevel(nk, R.names[nk]), 'name');
       else if (!((q[0] === 'value_corrected' || q[0] === 'record_corrected') && hasAuto)) lv(key, qaLevel(q), 'qa');
     }
-    for (const c of rv.tc || []) { const key = 'tc:' + uid + '|' + c[0] + '|' + c[1]; if (c[2] && c[5]) s.tc.push(key); lv(key, tcLevel(c), 'tc'); }
+    for (const c of rv.tc || []) { const key = 'tc:' + uid + '|' + c[0] + '|' + c[1]; if ((c[2] || c[11] === 'scan') && c[5]) s.tc.push(key); lv(key, tcLevel(c), 'tc'); }
     for (const i of rv.ins || []) { if (i[3] === 'unread' || i[3] === 'partly') s.unread++; lv('media:' + uid + '|' + i[0], insLevel(i[3].startsWith('read-in') ? 'read' : i[3]), 'ins'); }
     const flat = R.obs[r.id] || []; const obs = []; for (let i = 0; i < flat.length; i += 3) obs.push(flat[i]);
     forEachName(r.n, obs, (section, key) => { const k = nameKind(key, R.names[key]); if ((k === 'changed' || k === 'removed') && !s.auto.includes('name:' + key)) s.auto.push('name:' + key); lv('name:' + key, nameLevel(key, R.names[key]), 'name'); });

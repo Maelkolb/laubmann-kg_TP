@@ -1,0 +1,203 @@
+{"batch": 4, "entries": [
+  {"entry_id": "L28-e0034", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "Typed Remold reports correct. Handwritten p.39 paragraph garbled: scan has 'Adolf Müller', and Tafelenten/Gänsesäger. The Wasseramsel sentence seems taken from the 14 Nov entry (p.38).",
+   "records": [
+     {"record_id": "obs_471665fc948a", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "typed report 'Ismaning, den 7. November 1954 ... Stockente; Krickente; Schnatterente' gez. Heinz Remold", "confidence": 0.9}
+   ]},
+  {"entry_id": "L05-e0027", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Header 'Kalamos - Meganisi'. Scan has 'lockende Haubenlerchen' at the NE cape of Meganisi; the transcription has 'Steinhühner'. Checked passage correct.",
+   "records": [
+     {"record_id": "obs_a2e624867502", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'In den Felswänden wieder singende Blaudrosseln und Felsenkleiber' (bay on Kalamos)", "confidence": 0.92}
+   ]},
+  {"entry_id": "L20-e0148", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan has 'Weidenlaubvogel' where the transcription has 'Hauslaubvogel'. Goldammer passage correct. Site is the factory yard in Munich.",
+   "records": [
+     {"record_id": "obs_2c82b67cb370", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Ebenda noch ein Star laut pfeifend, Goldammern lockend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L14-e0237", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_6aa97470b1a6", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Sonst noch viele Gartenspötter, Mönchs-, Garten- und Dorngrasmücken' (in den Auen)", "confidence": 0.9}
+   ]},
+  {"entry_id": "L03-e0310", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "The two-column list was transcribed as separate blocks, so names and annotations no longer line up. Page 193 (Cygnus olor, Ardea etc.) is missing from the transcription and crops. List predates 1860.",
+   "records": [
+     {"record_id": "obs_7f54dc7c4c5e", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"count": "", "date": "c. 1848-1860 (Büchner list compiled before 1860)", "record_type": "literature-record"},
+      "evidence": "scan p.192: 'Emberiza citrinella - Sehr gemein'; '2 Exemplare' belongs to Columba palumbus", "confidence": 0.85}
+   ]},
+  {"entry_id": "L30-e0210", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_d6fce581830d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'im Forst auf Geräumt VI/1 wieder von den Heidelerchen nichts zu sehen oder zu hören'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L28-e0004", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'einen Hausrotschwanz und eine Amsel singen' (not 'oder') and 'Auch Stare fliegen' (not 'Sehr viele Stare').",
+   "records": [
+     {"record_id": "obs_e814d8ce27f4", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"identification_qualifier": ""},
+      "evidence": "scan: 'mehrmals einen Hausrotschwanz und eine Amsel singen' - no hedge", "confidence": 0.75}
+   ]},
+  {"entry_id": "L16-e0294", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan has 'Steinsperling' where the transcription has 'Steinschmätzer', and 'Brachpieper' where it has 'Graupieper'. The Salzburg is the castle at Bad Neustadt a. d. Saale, not Salzburg in Austria and not Lohr.",
+   "records": [
+     {"record_id": "obs_a2b90ee26478", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"species": "Steinsperling (Petronia petronia)", "locality": "Salzburg (Burg) bei Bad Neustadt a. d. Saale", "coordinates": "c. 50.326, 10.230"},
+      "evidence": "scan: 'Vorkommen vom Steinsperling bei Neustadt a. S.' ... '1937 fand W. Dunkel die Art wieder auf der Salzburg'", "confidence": 0.92}
+   ]},
+  {"entry_id": "L32-e0095", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan list has 'Wasserralle' where the transcription has 'Knäkente'. The reporter is W. (Walter) Wüst.",
+   "records": [
+     {"record_id": "obs_52c49b34cfe2", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "W. (Walter) Wüst"},
+      "evidence": "scan: 'Aus W. Wüst, Ismaning-Bericht vom 1. XI. folgende Hinweise: Gänsezüge, Bläßgans'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L25-e0004", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Count 560 ± 15 stored as lower bound 545 with range 545-575, which follows the range convention. The initial 'K. Müller' may be 'A.' (Adolf) Müller; not decidable at crop resolution.",
+   "records": [
+     {"record_id": "obs_61d3fe4386a8", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'am 18. VII. ... Lachmöwen, im K 2/4 gezählt 560 ± 15'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L25-e0132", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'W. Wüst teilt mit Karte vom 8.II. mit ... in Stadtbergen am Futter', not 'H. Utz' and 'Stadthagen'. The Kernbeißer was seen in the weeks before 8 Feb.",
+   "records": [
+     {"record_id": "obs_fbea1ae5814d", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "wrong", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "W. Wüst", "locality": "Stadtbergen (bei Augsburg)", "date": "1953-01/1953-02-08 (letzte Wochen vor Karte vom 8.II.)"},
+      "evidence": "scan: 'W. Wüst teilt mit Karte vom 8.II. mit, daß er heuer in Stadtbergen am Futter'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L28-e0038", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "Laubmann's handwritten text is hidden under a pasted typed report; it ends 'Fr...' / 'Berich...', i.e. someone else's report. The typed lines are cut off in the transcription. The report's date is not visible.",
+   "records": [
+     {"record_id": "obs_93255e13aff7", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "unclear", "locality": "wrong", "georef": "wrong",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"locality": "nördlich des Werkbeckens, Speichersee Ismaning (Nymphenburg only 'gehört')", "observer": "author of the pasted typed report (name not visible), not Laubmann", "record_type": "third-party-report"},
+      "evidence": "typed: 'Saatkrähe: Schon über Nymphenburg geh., draußen einen Trupp von etwas über 20 Ex. nördlich des Wb.'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L22-e0166", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Site: fields between Eichamt and Moosach (within München).",
+   "records": [
+     {"record_id": "obs_354487f9f167", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'auf den Feldern zwischen dem Eichamt und Moosach neben einigen Saatkrähen'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L18-e0082", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan has 'Von den Fischreihern wieder nichts zu sehen' where the transcription has 'Fischweihern'. Item numbers 25/26 read 28/29 in the scan. Bachstelze item correct.",
+   "records": [
+     {"record_id": "obs_ec330f56aacf", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan p.35: '11.) Bachstelze' in list of species observed on the Isarauen excursion", "confidence": 0.85}
+   ]},
+  {"entry_id": "L33-e0294", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "The site reads 'an der Hochleite' (Harlaching, near the Seybothstraße), not 'Isarhalde'. Species list correct.",
+   "records": [
+     {"record_id": "obs_0f9d8b9fc567", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Hochleite (München-Harlaching)"},
+      "evidence": "scan: 'Vormittags an der Hochleite verhört und beobachtet: Stare, Grünfinken, Buchfinken, Haussperling'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L23-e0019", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Many misreadings outside the record: item 4 Pirol (not Fink), 11 Schafstelze (not a second Bachstelze), 34 Krickente (not Reiherente), Werkbecken read as 'Verlanden'. Turmfalke item correct.",
+   "records": [
+     {"record_id": "obs_c62f8969b38d", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan p.11: '26.) Turmfalke: mehrfach;'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L26-e0072", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "The street may read 'Giesinger Waldhausstraße ... vor dem Waldhaus' rather than 'Waldheim'. Same spot either way.",
+   "records": [
+     {"record_id": "obs_c797ee80003a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'fliegt auf der Giesinger Wald...straße kurz vor dem Wald... plötzlich ein Wendehals vor mir auf'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L07-e0002", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Header 'München - Ehrwald (996 m)'.",
+   "records": [
+     {"record_id": "obs_e2b0308a231f", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'auf den Dächern der Häuser überall zahlreiche Weiße Bachstelzen' (evening walk in Ehrwald)", "confidence": 0.92}
+   ]},
+  {"entry_id": "L07-e0022", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Site: Isar reservoir near Bogenhausen bridge / Maffei works (sketch), within München.",
+   "records": [
+     {"record_id": "obs_6abf79d01373", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Nach Prof. Braili, den ich antraf, waren aber auch Tafelenten und 1 Schellente da.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L32-e0420", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Header reads 'Bad Schmeis(?)', with a 'Sch...-Berg' reached by Bergbahn and 'in Richtung Thüringen'. It does not read 'Schandau' and the context does not fit. Real place unidentified. A pressed leaf covers the middle of the page.",
+   "records": [
+     {"record_id": "obs_255b67a297d6", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "spa written 'Bad Schmeis(?)' near the Thuringian border (unidentified), not Bad Schandau"},
+      "evidence": "scan header '1. Juni 1961. Bad Schm..ß'; list ends '2 Ringeltauben, Tannenmeisen, Zilpzalp'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L29-e0067", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "The crop cuts off the right half of the page. The street name ('Lützenstraße') cannot be confirmed at this resolution.",
+   "records": [
+     {"record_id": "obs_2fab0c4b249f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Morgens singen beim Haus in der L...straße eine Goldammer und ein [Weiden]laubvogel'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L25-e0081", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Errors outside the record: item 11 is Haussperling am Birkenhof (not Kleinspecht), 48 Alpenstrandläufer (not Alpikrähe), Föhringer (not Pshinger) Kanal, Goldachm. read as 'Gelbachm.', and 'W. Wüst'.",
+   "records": [
+     {"record_id": "obs_75d056c01368", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Heinz Remold war am 9. XI. am Speichersee ... 5.) Star, 1 am Gärtnersee'", "confidence": 0.8}
+   ]}
+]}

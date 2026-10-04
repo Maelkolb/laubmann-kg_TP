@@ -37,12 +37,40 @@ function tierLine(o) {   // chip + reason, for cards and tooltips
   const tr = tierOf(o.n); if (tr < 0) return ''; const why = tierWhy(o);
   return `<div class="trline">${tierChip(o)}${tr < 3 && why ? `<span class="trwhy">${esc(t(tr === 0 ? 'tier_out_why' : 'tier_next_why', tierName(Math.min(3, tr + 1))))} ${esc(why)}</span>` : ''}</div>`;
 }
+// ---- what belongs to an entry or to a used node follows it
+const ENTRY_PARTS = new Set(['weather', 'travel', 'leg', 'region', 'mmregion']);
+const OWNED = new Set([...ENTRY_PARTS, 'page', 'volume', 'geom', 'auth']);
+const OWNERS = new Map();
+function ownersOf(n, k) {
+  let o = OWNERS.get(n); if (o) return o;
+  if (k === 'region' || k === 'mmregion') o = regionEntries(n);
+  else if (k === 'page') o = pageEntries(n);
+  else if (k === 'volume') o = (G.entByVol.get(n) || []).map(i => G.ent[i].n);
+  else if (k === 'geom') o = incoming(n, 'gsp:hasGeometry');
+  else if (k === 'auth') o = uniq([].concat(...MATCH.concat(['owl:sameAs']).map(p => incoming(n, p))));
+  else { const e = entryOf(n); o = e >= 0 ? [e] : []; }
+  OWNERS.set(n, o); return o;
+}
+const ownerOk = x => (G.kind[x] === KI.entry ? rvSrcOk(x) : rvUses(x) > 0);
 // ---- hooks of the forked explorer code
 const rvObsShown = o => inCorpus(o) || RVU.showOut;
-function rvSrcOk(s) { const k = G.kind[s]; if (k === KI.obs) return inCorpus(s); if (k === KI.entry) { const x = RVS.get(s); return !x || entryInCorpus(x); } return true; }
+function rvSrcOk(s) {   // under a filter: records of the corpus, entries with a record in it, and what belongs to such an entry
+  if (!corpusOn()) return true;
+  const k = G.kind[s];
+  if (k === KI.obs) return inCorpus(s);
+  if (k === KI.entry) { const x = RVS.get(s); return !!x && entryInCorpus(x); }
+  if (ENTRY_PARTS.has(KIND_LIST[k])) return ownersOf(s, KIND_LIST[k]).some(rvSrcOk);
+  return true;
+}
 function rvInCount(n, name) { if (!corpusOn()) return inCount(n, name); const p = PI(name); if (p < 0) return 0; let c = 0; for (let i = G.inOff[n], e = G.inOff[n + 1]; i < e; i++) if (G.inP[i] === p && rvSrcOk(G.inS[i])) c++; return c; }
 function rvUses(n) { if (!corpusOn()) return G.inOff[n + 1] - G.inOff[n]; let c = 0; for (let i = G.inOff[n], e = G.inOff[n + 1]; i < e; i++) if (rvSrcOk(G.inS[i])) c++; return c; }
-function rvClassOk(n, k) { if (!corpusOn()) return true; if (k === 'obs' || k === 'entry') return rvSrcOk(n); if (k === 'taxon' || k === 'place' || k === 'person' || k === 'habitat') return rvUses(n) > 0; return true; }
+function rvClassOk(n, k) {
+  if (!corpusOn()) return true;
+  if (k === 'obs' || k === 'entry') return rvSrcOk(n);
+  if (k === 'taxon' || k === 'place' || k === 'person' || k === 'habitat') return rvUses(n) > 0;
+  if (OWNED.has(k)) return ownersOf(n, k).some(ownerOk);
+  return true;
+}
 function rvEntryCount(r) {   // "5 von 8 Beobachtungen" under a filter
   const s = RVS.get(r.n); return corpusOn() && s && s.nc ? t('obs_of', fmt(s.nc[RVU.corpus]), fmt(r.nobs)) : fmt(r.nobs) + ' ' + t('observations');
 }
@@ -96,8 +124,8 @@ function corpusTableHtml() {
   const pct = (a, b) => (b ? (100 * a / b).toFixed(1).replace('.', LANG === 'de' ? ',' : '.') + ' %' : '–');
   let s = `<table class="t covt"><tr><th>${t('corp_h')}</th><th class="r">${t('corp_h_rec')}</th><th class="r"></th><th class="r">${t('corp_h_ent')}</th><th class="r">${t('corp_h_taxa')}</th></tr>` +
     [0, 1, 2, 3].map(c => `<tr class="click${c === RVU.corpus ? ' on' : ''}" data-corpus="${c}"><td>${c === RVU.corpus ? '● ' : ''}${esc(corpusName(c))}</td><td class="num r">${fmt(CORP.n[c])}</td><td class="num r muted">${pct(CORP.n[c], CORP.n[0])}</td><td class="num r">${fmt(c === 0 ? G.ent.filter(r => r.nobs > 0).length : CORP.ent[c])}</td><td class="num r">${fmt(CORP.taxa[c])}</td></tr>`).join('') + '</table>';
-  const order = ['spurious', 'duplicate', 'no-taxon', 'flagged', 'unchecked', 'rank', 'name', 'reading', 'date', 'illegible', 'no-coords'];
-  const from = { spurious: 0, duplicate: 0, 'no-taxon': 0, flagged: 0, unchecked: 0, rank: 1, name: 1, reading: 1, date: 1, illegible: 1, 'no-coords': 2 };
+  const order = ['spurious', 'flagged', 'unchecked', 'duplicate', 'no-taxon', 'list', 'literature-date', 'entry-checks', 'ungrounded', 'long-entry', 'flagged-attribution', 'flagged-place', 'flagged-georef', 'attribution', 'identification', 'count', 'absence', 'reading', 'entry', 'entry-place', 'no-coords', 'georef-unconfirmed', 'place-doubt'];
+  const from = { 'spurious': 0, 'flagged': 0, 'unchecked': 0, 'duplicate': 0, 'no-taxon': 0, 'list': 0, 'literature-date': 0, 'entry-checks': 0, 'ungrounded': 0, 'long-entry': 0, 'flagged-attribution': 1, 'flagged-place': 1, 'flagged-georef': 1, 'attribution': 1, 'identification': 1, 'count': 1, 'absence': 1, 'reading': 1, 'entry': 1, 'entry-place': 1, 'no-coords': 2, 'georef-unconfirmed': 2, 'place-doubt': 2 };
   const codes = order.filter(k => CORP.why[k]).concat(Object.keys(CORP.why).filter(k => !order.includes(k)));
   s += `<h3 style="margin-top:14px">${t('corp_why_h')}</h3><table class="t covt"><tr><th>${t('corp_why_reason')}</th><th>${t('corp_why_keeps')}</th><th class="r">${t('corp_h_rec')}</th></tr>` +
     codes.map(k => `<tr><td>${esc(whyText(k))}</td><td class="muted">${esc(tierName(Math.min(3, (from[k] == null ? 0 : from[k]) + 1)))}</td><td class="num r">${fmt(CORP.why[k])}</td></tr>`).join('') + '</table>';

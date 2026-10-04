@@ -81,12 +81,12 @@ function rvNodeExtra(n) {   // what the node view and the node tab show above th
   const k = kindOf(n);
   if (k === 'obs') { const rec = recOfNode(n); return rec ? tierLine({ n, rec }) : ''; }
   if (k === 'page') {
-    const pid = pageIdOf(n); const pi = pageIndex(pid); const regs = pi >= 0 ? pageRegions(pi) : []; const ents = pageEntries(n);
+    const pid = pageIdOf(n); const pi = pageIndex(pid); const regs = pi >= 0 ? pageRegions(pi) : []; const ents = pageEntries(n).filter(rvSrcOk);
     return `<div class="pagefig">${pageFigHtml(pid)}</div><div class="muted arhint"><span class="link" data-page-open="${esc(pid)}">⤢ ${t('ar_open_page')}</span> · ${esc(t('ar_regions', fmt(regs.filter(r => !r.media).length), fmt(regs.filter(r => r.media).length)))} · ${t('ar_hint')}</div>` +
       `<h3 class="sec">${esc(t('ar_entries_page', fmt(ents.length)))}</h3>${ents.length ? entryRowsHtml(ents) : `<p class="muted">${t('ar_no_entries')}</p>`}`;
   }
   if (k === 'region' || k === 'mmregion') {
-    const uid = regionUid(n); const mm = MEDIA.get(uid); const pg = regionPageNode(n); const pid = regionPageId(n); const ents = regionEntries(n); const b = regionBox(uid);
+    const uid = regionUid(n); const mm = MEDIA.get(uid); const pg = regionPageNode(n); const pid = regionPageId(n); const ents = regionEntries(n).filter(rvSrcOk); const b = regionBox(uid);
     return `<div class="nodecrop" data-crop-open="${esc(uid)}" title="${esc(t('crop_open'))}">${cropHtml(uid, 'node', 1000)}</div>` +
       `<div class="muted arhint">${esc(k === 'mmregion' ? mediaKind(mm ? mm.x[1] : '') : t('ar_textregion'))} · ${t('ar_page')}: ${pg >= 0 ? `<span class="link" data-n="${pg}">${esc(pageTitle(pg))}</span>` : esc(pid || '–')}` +
       `${pid && b ? ` · <span class="link" data-page-open="${esc(pid)}" data-on="${esc(uid)}">${t('ar_on_page')}</span>` : ''}${b ? '' : ` · ${t('media_nobox')}`}</div>` +
@@ -141,7 +141,7 @@ function rvClassOrd(n, k) {   // order of the image grid: page by page, regions 
   if (k === 'region' || k === 'mmregion') { const b = regionBox(regionUid(n)); const pg = regionPageNode(n); return (pg >= 0 ? pageTitle(pg) : '~') + ' | ' + (b ? String(Math.round(b[2] * 1000)).padStart(4, '0') : '9999'); }
   return '';
 }
-function volPages(n) { return incoming(n, 'dcterms:isPartOf').filter(x => isKind(x, 'page')).sort((a, b) => coll.compare(pageIdOf(a), pageIdOf(b))); }
+function volPages(n) { return incoming(n, 'dcterms:isPartOf').filter(x => isKind(x, 'page') && rvClassOk(x, 'page')).sort((a, b) => coll.compare(pageIdOf(a), pageIdOf(b))); }
 function volGridHtml(n) {
   const pages = volPages(n); const per = ARCH.GRID; const np = Math.max(1, Math.ceil(pages.length / per)); ARCH.vol.page = clamp(ARCH.vol.page, 0, np - 1); const p = ARCH.vol.page;
   return `<h3 class="sec">${esc(t('ar_vol_pages', fmt(pages.length)))}</h3><div class="pager"><button class="btn" data-vpage="-1" ${p <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', p + 1, np)}</span><button class="btn" data-vpage="1" ${p >= np - 1 ? 'disabled' : ''}>▶</button></div>` +

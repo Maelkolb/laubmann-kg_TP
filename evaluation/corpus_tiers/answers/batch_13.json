@@ -1,0 +1,224 @@
+{"batch": 13, "entries": [
+  {"entry_id": "L33-e0475", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "22 Feb text ends on p.151 ('Gegen Abend singen ... einige'); a newspaper clipping covers the left part of the next two entries (dates hidden, both before '25. Februar 1964'). The transcription merges these entries into 22 Feb, and its '[Ausschnitt]' lines misread the covered text.",
+   "records": [
+     {"record_id": "obs_8f8ce8f0db14", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1964-02-23 (header covered by clipping; entry after 22 Feb, before the 24 Feb entry)"},
+      "evidence": "scan p.151: new entry 'München. ...Grünfinken, Erlenzei-[sig]' after 22 Feb text, date hidden by clipping",
+      "confidence": 0.7}
+   ]},
+  {"entry_id": "L24-e0004", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Clipping passage is transcribed correctly. The opening handwritten lines are partly misread ('Nymphenburger Schlosspark', 'im gelben' for 'einzelne').",
+   "records": [
+     {"record_id": "obs_ae88989f7a50", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "clipping: 'Ein stattlicher Storch ... Margareten-Kirche in Sendling'; 'Beobachtungstag 16. VIII. 1951'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L23-e0034", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Header place reads 'Riederau' (Ortsteil of Dießen am Ammersee), not 'Dießen'. The transcription also writes Dießen for Riederau in 'Dampfer nach ...' and '19,29 h mit Dampfer ab ...'.",
+   "records": [
+     {"record_id": "obs_812caf2f5b19", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Sonst noch Flüge von Staren und Rauch- und Mehlschwalben beobachtet.' (excursion Riederau–Dießen)",
+      "confidence": 0.7}
+   ]},
+  {"entry_id": "L25-e0156", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Record passage is correct. The opening is badly misread: the scan has 'neben einer singenden Misteldrossel verhört. Ebenso wie am 5. III. mehrfache Grünspechte'.",
+   "records": [
+     {"record_id": "obs_455178dead43", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Am 27. II. im gleichen Areal ... 50 Reiherenten und ca 60 Tafelenten im Vkl.'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L05-e0085", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "'An der Wertach, unterhalb des Durchbruches' is the caption of a pasted photo, misread as 'unterhalb der Eisenbahnbrücke' and joined to item 14. '22.) Sumpfmeise' is 'Nonnenmeise' in the scan (same species).",
+   "records": [
+     {"record_id": "obs_c52520b01537", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Kaufbeuren (walk Wertach–Halbinsel–Hirschzell; no site given for Feldlerche)"},
+      "evidence": "scan: '14.) Feldlerche' without site; next page photo caption 'An der Wertach, unterhalb des Durchbruches.'",
+      "confidence": 0.85}
+   ]},
+  {"entry_id": "L03-e0199", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "'3 & 2 Misteldrosseln' is '3 + 2' in the scan.",
+   "records": [
+     {"record_id": "obs_eb4a0e7ab8e2", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'beim Leinauer Blick sowie am Hacken und beim Mooser beobachte ich 1+2+1+1+1+1 Zwergtaucher'",
+      "confidence": 0.8}
+   ]},
+  {"entry_id": "L23-e0096", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_de9aaf591187", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Liselotte beobachtet beim Haus in der Karolingerstraße einen Flug Schwanzmeisen.'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0222", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_7701c8964090", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'am Futterfenster wieder 2 Kernbeißer ... 2 Gimpel, Kleiber.'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L18-e0171", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_a546662e4bc1", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auch heute noch Turmfalken an der Frauenkirche beobachtet.'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L27-e0209", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'beim Haus', not 'beim Stau'. The number of Stare is faint (read as 20-30).",
+   "records": [
+     {"record_id": "obs_977f4424d927", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags beim Haus wieder ein kleiner Flug von 20-30 Staren'",
+      "confidence": 0.75}
+   ]},
+  {"entry_id": "L09-e0116", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Header reads 'Tüching' (as in L10 1932 'Tüching-Maising'), not Tutzing; the lake is the Maisinger See, not the 'Bernrieder See'. Also misread: Pasing for Maising, Teichrohrsänger for Heuschreckensänger, Blaukehlchen for Blaumeisen, Bachstelze for Wacholderdrosseln. He was at the Damm 30 min after leaving at 4 h, so Tutzing (~8 km away) is impossible.",
+   "records": [
+     {"record_id": "obs_2b7e49a95848", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Maisinger See (Fichtenwäldchen zwischen Schirm und Birkenbänkchen), near Maising", "coordinates": "approx. 47.98, 11.30"},
+      "evidence": "scan: '3 Schwirle, wohl alle Nachtigallrohrsänger ... einen zweiten beim Fichtenwäldchen'; lake 'Maisinger See'",
+      "confidence": 0.7}
+   ]},
+  {"entry_id": "L14-e0181", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads '3 Bläßgänse, etliche Haubentaucher, viele ...'; the transcription's '7 Rothalstaucher' is a misreading. 'aus Amerang' looks like 'aus Ismaning' in the scan.",
+   "records": [
+     {"record_id": "obs_be00c9caa6d5", "verdict": "wrong",
+      "species": "wrong", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Haubentaucher (Podiceps cristatus)", "count": ""},
+      "evidence": "scan: '3 Bläßgänse, etliche Haubentaucher, viele ...'",
+      "confidence": 0.7}
+   ]},
+  {"entry_id": "L19-e0347", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Record passage is correct. Elsewhere 'Weidenlaubsänger' is 'Weidenlaubvögel' and 'Leonbergstraße' looks like 'Lindwurmstraße'.",
+   "records": [
+     {"record_id": "obs_18a14b78c6e6", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'ein Gartenbaumläufer lockend in den Auen.'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L14-e0214", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Header 'Ampermoos' (transcription 'Angermoor'). 'an der Kante' is 'an der Lände' throughout. Items 15-18 are duplicated and garbled; the scan has 16 Nonnenmeise, 17 Tannenmeise nur im Hochwald, 18 Haubenmeise dito.",
+   "records": [
+     {"record_id": "obs_8c58d196292a", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Grafrath (Hochwald und an der Lände)"},
+      "evidence": "scan: '13.) Kleiber: im Hochwald und an der Lände. 14.) Kohlmeise: ebenda'",
+      "confidence": 0.6}
+   ]},
+  {"entry_id": "L03-e0300", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_1d5492d55a24", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Garten zeigen sich heute zum erstenmal wieder die Stare'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L33-e0109", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Several bird names are misread: 'viele Lachmöwen und Flußseeschwalben' (transcription: Bachstelzen, Uferschwalben). The underlined pair with young reads 'Höckerschwäne ... mit den 5 Kindern', not 'Kolbenenten ... Küken'.",
+   "records": [
+     {"record_id": "obs_106a77b8ae6c", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Höckerschwan (Cygnus olor)"},
+      "evidence": "scan: 'Abends erscheinen auch die Höckerschwäne ♂♀ mit den 5 Kindern beim Haus.'",
+      "confidence": 0.6}
+   ]},
+  {"entry_id": "L21-e0115", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_cde08d5b5613", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Ein Weidenlaubvogel singt noch beim Giesinger Waldhaus.'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L24-e0147", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "The scan writes 'Weidenlaubvogel' (transcription: Weidenlaubsänger), the same species.",
+   "records": [
+     {"record_id": "obs_af682fc7efd6", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Am Harlachinger Berg wieder ein oder der gestrige Weidenlaubvogel singend.'",
+      "confidence": 0.85}
+   ]},
+  {"entry_id": "L10-e0100", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "The list summarises all species of the Pfingsttage 'um Tüching-Maising' (Maisinger See area, Lkr. Starnberg). Record coordinates point to Freising. List misreadings: 29 Heuschreckensänger (not Buschspötter), 30-31 Drosselrohrsänger/Teichrohrsänger, 32 Gartenspötter (not Grauspecht), 56 Wildente, 57 Krickente.",
+   "records": [
+     {"record_id": "obs_98557c3301ab", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "interval of the Pfingsttage, c. 1932-05-14/1932-05-17", "coordinates": "near Maising / Maisinger See (approx. 47.98, 11.30), not Freising"},
+      "evidence": "scan: 'alle in diesen Pfingsttagen um Tüching-Maising beobachteten Arten ... 28.) Berglaubvogel'",
+      "confidence": 0.6}
+   ]},
+  {"entry_id": "L23-e0127", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Weather words are misread ('verschneit', 'Schnee verschwindet wieder gänzlich'). The record passage is correct.",
+   "records": [
+     {"record_id": "obs_8abcdef09746", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Abends um 18,20 h singt eine einzelne Amsel in den Gärten an der Greifensteinstraße.'",
+      "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0100", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "The scan has '1 ♂♀ Hausrotschwanz' (one pair), which the transcription gives as '1 ♂'.",
+   "records": [
+     {"record_id": "obs_5bba5ff4337b", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"count": "2", "sex": "male and female (1 ♂♀ = one pair)"},
+      "evidence": "scan: 'Auf der Düne 1 ♂ Steinschmätzer und 1 ♂♀ Hausrotschwanz.'",
+      "confidence": 0.7}
+   ]},
+  {"entry_id": "L34-e0120", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_b6d181101c7b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags trieben sich wieder beim Haus 2 Elstern herum.'",
+      "confidence": 0.9}
+   ]}
+]}

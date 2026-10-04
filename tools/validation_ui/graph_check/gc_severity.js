@@ -52,7 +52,8 @@ const recLevel = rec => Math.max(recFindingLevel(rec), recAutoLevel(rec));
 const missLevel = x => (x.src === 'h' ? 0 : x.kind === 'observation' ? SEV.miss.observation : SEV.miss.other);
 function entLevel(ent) { let lv = 0; for (const c of ['g', 's']) { const f = (ent || {})[c]; if (!f) continue; for (const k of ['date', 'place', 'kind']) if (f[k + '_ok'] === false) lv = Math.max(lv, SEV.ent[k]); } return lv; }
 function tcLevel(c) {
-  if (!c[2]) return 0; const contested = [c[6], c[7]].some(v => v === 'wrong' || v === 'partly'); if (!contested) return 0;
+  const scan = c[11] === 'scan';   // the scan agent's correction: the machine layer applies it, like a contested one it wants a look
+  if (!c[2] && !scan) return 0; const contested = scan || [c[6], c[7]].some(v => v === 'wrong' || v === 'partly'); if (!contested) return 0;
   return /[bn]/.test(c[5] || '') ? SEV.tc.birdOrNumber : c[5] ? SEV.tc.place : SEV.tc.other;
 }
 const qaLevel = q => (SEV.qa[q[0]] != null ? SEV.qa[q[0]] : SEV.qa.other);

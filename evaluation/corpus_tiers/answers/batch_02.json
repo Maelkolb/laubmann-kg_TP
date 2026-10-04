@@ -1,0 +1,192 @@
+{"batch": 2, "entries": [
+  {"entry_id": "L29-e0079", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan has 'gelbfüssige Silbermöven', transcription 'gelbschnäbl. Silbermöve'",
+   "records": [
+     {"record_id": "obs_3b3b48bd3097", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'im Hafen von Ika noch ein grösserer Flug Rauch- und Mehlschwalben'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L27-e0087", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header 'Ismaning'; many species misread in transcription (1.) Rabenkrähe read as Rohrammer, 6.) Distelfink as Kiebitz, 58.) Fasan as Kuckuck)",
+   "records": [
+     {"record_id": "obs_4f22b13b0544", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "2 (1 ♂ at the street + 1 at the Wb.)"}, "evidence": "scan: '29.) Braunkehlchen, 1 ♂ an der ...Straße und 1 am Wb. singend' (transcription has '-' for 1)", "confidence": 0.6}
+   ]},
+  {"entry_id": "L28-e0177", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "typed carbon report pasted in, not Laubmann's own; per neighbouring diary text the Moosburg/Eching and Ismaning typed reports are sent by Werner Rathmayer; Laubmann's own 19.III.55 entry is München",
+   "records": [
+     {"record_id": "obs_c876ab0fb2fe", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "author of the typed report (probably Werner Rathmayer), not Laubmann", "record_type": "third-party-report"},
+      "evidence": "typed sheet '19.III.55.Sps.Moosburg und Eching ... 55 Lachmöven'; coordinates at Moosburg town, not the reservoirs", "confidence": 0.75},
+     {"record_id": "obs_77fae81d48d9", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "author of the typed report (probably Werner Rathmayer), not Laubmann", "record_type": "third-party-report"},
+      "evidence": "typed sheet: '347 Tafel-,502 Reiher-,2 Berg-und 7 Schellenten'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L25-e0176a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "'1 Löffler(?)' is a misreading of '8 Limosen'; other names/places also misread (am Tafelberg, Ostbecken)",
+   "records": [
+     {"record_id": "obs_ddc8175cf4a7", "verdict": "wrong",
+      "species": "wrong", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"species": "Uferschnepfe, Limosa limosa (scan 'Limosen')", "count": "8", "observer": "Walter Wüst (W. Wüst)", "identification_qualifier": "none (no '?' in scan)"},
+      "evidence": "scan: 'W. Wüst sah am 30. III. ... noch 8 Limosen, 25 Kampfläufer, 1 Rotschenkel'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L25-e0079", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_86bb808edb8e", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'vor dem Haus in der Karolingerstraße zahlreiche Gimpel'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L33-e0034", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "pressed fern covers the street name (only '...tStraße' visible); scan seems 'auf einem Dach'",
+   "records": [
+     {"record_id": "obs_b6ed53685721", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Gegen Abend a[...]tStraße auf einem Dach einen Star singen gehört und beobachtet'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L21-e0282", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "list has 'Schwanzmeise' (transcribed Sumpfmeise); 'Dr. H. Engel' transcribed 'H. H. Engel'",
+   "records": [
+     {"record_id": "obs_d6e6642fff2e", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Dr. H. Engel war am 4. V. wieder am Speichersee ... Kuckuck; Schnatterente;'", "confidence": 0.85},
+     {"record_id": "obs_b3f023a2c78d", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'die Harlachinger Straße entlang ... Grünfink. Stieglitz. Gimpel. Buchfink.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0268", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "'Gramat II/I' is 'Geräumt VI/I' (forest aisle) in the scan",
+   "records": [
+     {"record_id": "obs_a410577cb329", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Geräumt VI/I (forest aisle in the Forst)"},
+      "evidence": "scan: 'Vormittags wieder im Forst auf Geräumt VI/I, ohne von den Heidelerchen etwas zu entdecken'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L16-e0136", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan has 'Rotrückenwürger', transcribed 'Rotkehlchen schlagen'; 'mit Lisl' read as 'nur hier'",
+   "records": [
+     {"record_id": "obs_153721224e65", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Abends auf dem Weg zum Milchholen noch 2 Fasanen aufgegangen'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L07-e0165", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header 'Bludenz - Lüner-See'; 'Kreuzschnäbeln' appears transcribed as 'Königshähnchen', 'Wettertannen' as 'Fichten Tannen'",
+   "records": [
+     {"record_id": "obs_a94fb8502c1a", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'berichtet der Hüttenwart ..., daß in der Umgebung der Hütte Schneehühner nicht allzu selten seien'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L17-e0168", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header place is München (literature summary written at home); many species misread elsewhere in list (Waldbaumläufer, Wasseramsel, Nordseetaucher, Polartaucher)",
+   "records": [
+     {"record_id": "obs_066f942b62d0", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst (cited as 'Dr. W. Wüst')"},
+      "evidence": "scan: 'von Dr. W. Wüst (Verh. Ornith. Ges. Bayern 21...)'; '30.) Spießenten: ... am 2. XII. 34 ... 5 ♂♂, 1 ♀ am Stauweiher'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L29-e0072a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "typed report; author not on crop, attribution to Werner Rathmayer consistent with Laubmann's note on these reports",
+   "records": [
+     {"record_id": "obs_a8c61f364c2f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: 'Buchfink:Am Turm ein M verhört;'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L19-e0149", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_a07327e85ed8", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Über den Wiesen am Hang an der Harlachinger Straße noch vereinzelte Rauchschwalben'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L33-e0426", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan reads 'Aus W. Wüst' Ismaning-Berichten', transcribed 'H. Kürk's'; first reporter/place also misread",
+   "records": [
+     {"record_id": "obs_fa78e0661247", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst (W. Wüst)"},
+      "evidence": "scan: 'Aus W. Wüst' Ismaning-Berichten: (siehe Beilage!) ... 3. IX.: Kormoran.'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L20-e0300", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Polartaucher' (not Odinshühnchen), 'Dr. W. Wüst' (not Dr. H. Kürz), 'Zwergmöwe am K2/6' (not Zwergreiher)",
+   "records": [
+     {"record_id": "obs_6e3dc7b643ca", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Braunkehlchen fehlen auch zwischen Aschering und Maising, nur am 2. V. am Einlauf ein Durchzügler'; absence refers to stays 16.-23.V.", "confidence": 0.6},
+     {"record_id": "obs_96ed554b8031", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Bei Ismaning am 1. V. Uferschnepfen und 1 Hellen Wasserläufer beobachtet'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L14-e0206", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "person names misread ('Dr. Fr. Uhl', 'Dr. Wüst, Schuhmacher')",
+   "records": [
+     {"record_id": "obs_2c5da2a41213", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "winter 1936/37 (e.g. 1936-12-01/1937-03-31), not the letter date"},
+      "evidence": "scan: 'An Alz und Inn/Salzachmündung hielt sich fast den ganzen Winter ... je eine große Rohrdommel'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L03-e0355", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan 'Wacholderdrosseln' transcribed 'Bachstelzenstelzen'; 'Berglaubvogel' = Berglaubsänger",
+   "records": [
+     {"record_id": "obs_e9a0414602ad", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Dagegen gelang es mir heute nicht ... den Berglaubvogel zu konstatieren'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L22-e0029", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header place 'München' but excursion to Ismaninger Teichgebiet; scan has Zaungrasmücke (not Baumpieper), Fischreiher (not Fischtaucher), Kolbenente (not Krickente)",
+   "records": [
+     {"record_id": "obs_5860ecddd20f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '36.) Brachvogel, nur 2 Stück rufend über dem Westbecken hinfliegend'", "confidence": 0.85},
+     {"record_id": "obs_0b5303fe9cef", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '5.) Haussperling, beim Bauhof'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L12-e0194", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header place is Pöcking (not Tutzing); observations from the hide at the Maisinger See; several names misread (Trauerfliegenschnäpper, Rupert Walter)",
+   "records": [
+     {"record_id": "obs_3ebfd0249301", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"count": "9 (minimum; 1+1+1+3+2+1+x)", "locality": "Maisinger See"},
+      "evidence": "scan: 'Schilfrohrsänger; ich kann 1+1+1+3+2+1+X ... zählen'; 'wieder an den Maisinger See'", "confidence": 0.85},
+     {"record_id": "obs_5f06dbf874d4", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Maisinger See"},
+      "evidence": "scan: 'Sonst beobachtete, bzw. hörte ich vom Schirm aus noch: Rohrammern, Bläßhühner'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L22-e0161", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "transcription includes the pasted Neue Zeitung clipping (twice) and a long run of dashes; list items 28, 48, 49 and the Seeadler sentence misread",
+   "records": [
+     {"record_id": "obs_d2f7548302f9", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Alfred Laubmann with companions; 'Heinrich Wüst' should be Walter Wüst (Dr. W. Wüst), 'Fr. Engel' is Dr. Engel"},
+      "evidence": "scan: 'mit Dr. W. Wüst, Dr. Engel ...'; '41.) Haubentaucher, 2 Stück.'", "confidence": 0.6}
+   ]}
+]}

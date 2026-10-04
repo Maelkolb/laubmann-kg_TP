@@ -1,0 +1,204 @@
+{"batch": 19, "entries": [
+  {"entry_id": "L29-e0223", "entry_date_ok": null, "entry_place_ok": null, "boundary_ok": false,
+   "transcription_quality": "minor",
+   "note": "Typed report pasted in; crop shows only the end of a handwritten intro ('...[fol]genden Bericht aus Ismaning vom 25. III'), so the diary header date/place are not visible and the transcription misses that intro line. The report is a third-party report by someone who went 'mit Heinz'.",
+   "records": [
+     {"record_id": "obs_2e7ec2f2610d", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "author of the pasted typed Ismaning report (name not on crop; not Laubmann)", "record_type": "third-party-report"},
+      "evidence": "handwritten '...genden Bericht aus Ismaning vom 25. III'; typed 'Im ganzen Gebeit 793 Ex.(466 MM 327 WW)'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L23-e0089", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Street names hard to read (Freitalstraße / Seringerstraße uncertain).",
+   "records": [
+     {"record_id": "obs_4bd92d513a28", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'in einem Flug Haussperlinge u. einige Feldsperlinge beobachtet'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L15-e0065", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "Scan entry ends with 'Eine Erlegungszeit ist leider nicht angegeben.'; the numbered list 66.-76. (Wertach/Kaufbeuren records 1901-1917) is not on this entry's scan and was appended from elsewhere. Also 'Utz' = Uhl, 'Forstmeister Park' = Forstenrieder Park.",
+   "records": [
+     {"record_id": "obs_290247aa602f", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "unclear", "record_type": "unclear", "status": "right", "other": "right",
+      "correct": {"locality": "Wehr an der Wertach (Kaufbeuren area), not München"},
+      "evidence": "'Flußuferläufer. Brutvogel an der Wertach ... Am 11. V. 17. ein Stück am Wehr' (not on this scan)", "confidence": 0.55}
+   ]},
+  {"entry_id": "L08-e0072", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Bird-name misreads elsewhere: 36.) is Heckenbraunelle (not Mehlschwalbe), 20.) Nonnenmeise; 'Mairinger' = Maisinger See, 'Iscking' = Pöcking. Brachvogel passage correct.",
+   "records": [
+     {"record_id": "obs_193693a56c60", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'51.) Brachvogel: vom Schirm aus gehört, auf der Westseite nochmals aufgegangen.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L05-e0100", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_63dbb74eed18", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'Nachmittags, 6h kreist ein Wanderfalke über dem Akademiegebäude'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L19-e0049", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Bike-tour list Großhadern-Krailling; München centroid is coarse but acceptable as entry place.",
+   "records": [
+     {"record_id": "obs_94f5564e3f26", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "species list '... Tannenmeise, Schwanzmeise, Wintergoldhähnchen ...'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L08-e0065", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Ismaning reporter is 'W. Wüst' on the scan, not 'H. Knorre'.",
+   "records": [
+     {"record_id": "obs_7a96a9f9e12e", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"georef": "Lech near Augsburg (~48.37, 10.90); given point is Lech am Arlberg, Austria"},
+      "evidence": "'der gestern mit A. Fischer, Augsburg, am Lech war ... Flußseeschwalben'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L16-e0108", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Observation 'in diesem Frühjahr', no day given; entry date accepted.",
+   "records": [
+     {"record_id": "obs_20a61f5b311a", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'in diesem Frühjahr am Walchensee wieder den Schwarzen Milan angetroffen'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L27-e0177", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan: 'H. Remold meldet mit Brief vom 2. IX. unterm 27. VIII. von den Altwässern von Simbach-Braunau'; transcription has 'darinnen er u. a.' and 'Siebach-Steinach'. Simbach = Simbach am Inn.",
+   "records": [
+     {"record_id": "obs_5e9385cbda7d", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1954-08-27", "georef": "Simbach am Inn (~48.27, 13.02), not Simbach near Landau"},
+      "evidence": "'unterm 27. VIII. von den Altwässern von Simbach-Braunau ... in Simbach 1 Fischadler'", "confidence": 0.75},
+     {"record_id": "obs_550ad0df3c63", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1954-08-27", "georef": "Simbach am Inn (~48.27, 13.02), not Simbach near Landau"},
+      "evidence": "'unterm 27. VIII. ... in Simbach 1 Fischadler, 3-4 Rohrweihen, Tafelenten'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L15-e0100", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan says 'beobachteten Eule einen jungen Uhu' (not Adler); 'W. Schröter ... berichtet unterm 17. X.' (17 Oct 1937 was a Sunday).",
+   "records": [
+     {"record_id": "obs_ef0144368fa2", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1937-10-17 (report 'unterm 17. X.'; not the entry day 18 X.)"},
+      "evidence": "'W. Schröter, cand. zool. berichtet unterm 17. X. aus Ismaning ... Tafel- und Reiherenten'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L26-e0031", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Many bird-name misreads elsewhere (e.g. 28.) Wacholderdrossel read as Nachtrohrsänger, 46.) Haubentaucher as Kuckuckskauz). A second Schilfrohrsänger 'westlich vom Tfb. singend' follows the passage.",
+   "records": [
+     {"record_id": "obs_d57e1f1921d9", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'22.) Schilfrohrsänger, 1 zwischen Kiesinsel und Tfb.; einer westlich vom Tfb. singend'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L27-e0129", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Remold's typed report pasted in; checked passages match.",
+   "records": [
+     {"record_id": "obs_2b75d5ffd0bb", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'Ismaning, den 27. Juni 1954 ... Fischreiher,60 im Wb.'", "confidence": 0.95},
+     {"record_id": "obs_3c44c83c09cb", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'Ismaning, den 20. Juni 1954 ... Schnatterente;Löffelente'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L05-e0017", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Mytikas opposite Kalamos island (Akarnania, ~38.67, 20.94); coordinates point to the Mytikas near Preveza.",
+   "records": [
+     {"record_id": "obs_dd39f9e49048", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"georef": "Mytikas, Aitoloakarnania ~38.67, 20.94"},
+      "evidence": "'Am Heimweg machte sich im Gestrüpp der Macchie noch ein Flug Distelfinken bemerkbar'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L29-e0135", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'Isb.' is 'Tfb.' on the scan.",
+   "records": [
+     {"record_id": "obs_c08d7fd08571", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "unresolved 'Brachvogel oder Goldregenpfeifer' (not identifiable to species; Charadriiformes)"},
+      "evidence": "'Brachvogel oder Goldregenpfeifer abends im Dunkeln verhört jenseits vom Nordt.'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L02-e0144", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan has Wasseramsel (not Hausrotschwanz) at the Hirschzeller Lettenwand and Turmfalken (not Baumfalken); 'Fichte Wies'' = 'Dicke Wies''.",
+   "records": [
+     {"record_id": "obs_90fae44c8e75", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'Spaziergang im Dietrichloh ... vielleicht eine Heckenbraunelle gewesen sein kann'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L22-e0026", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan: 'Leopold K..., den ich vorigen Tags im Zoo treffe'; the '?' after 'Zeit' is a misread final t, no hedge in the diary.",
+   "records": [
+     {"record_id": "obs_1e7721d67d77", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"identification_qualifier": "none (scan: 'längere Zeit habe beobachten können')"},
+      "evidence": "'am 11.6. im Ampermoos bei Stegen eine Rohrdommel längere Zeit habe beobachten können'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L32-e0337", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_2009f42f1756", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'Adolf Müller meldet mir heute ... die erste tüchtig singende Amsel ... Kummelstraße'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L20-e0248", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan lists Nonnenmeise where the transcription has Blaumeise.",
+   "records": [
+     {"record_id": "obs_75eb48d6b975", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'Gang in den Perlacherforst ... Misteldrossel, recht zahlreich singend. Singdrossel.'", "confidence": 0.9},
+     {"record_id": "obs_6443d038e836", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "p.133: 'Turmfalke, Ringeltaube, ein Stück, die erste für heuer, verhört.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L21-e0261", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Bike-tour list Perlacher/Grünwalder Forst; München centroid coarse but acceptable as entry place.",
+   "records": [
+     {"record_id": "obs_043c1967c121", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "species list '... Feldlerche, Kohlmeise, Tannenmeise, Sumpfmeise ...'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L16-e0042", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "If a separate record for the ca. 12 Gänsesäger exists, this one is a spurious sub-record duplicate.",
+   "records": [
+     {"record_id": "obs_f9b0bb898735", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"count": "12 (ca.)", "sex": "mixed (6 ♂♂ among ca. 12)"},
+      "evidence": "'am Hafen in Starnberg 3 Sturmmöwen und ca 12 Gänsesäger darunter 6 ♂♂'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L07-e0106", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan has 'zahlreiche Mauersegler' (not Mäusebussarde) and Rotschenkel where the transcription has Stockenten; page 79 not in crops.",
+   "records": [
+     {"record_id": "obs_8ccb6a82e90e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'3 junge Elstern im Wald an der Straße Bachern-Güntering'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L34-e0025", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_a18788b5f38b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "'Nahe beim Haus singt ein Spötter und ein Mönchlein'", "confidence": 0.9}
+   ]}
+]}

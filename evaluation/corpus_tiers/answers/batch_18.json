@@ -1,0 +1,195 @@
+{"batch": 18, "entries": [
+  {"entry_id": "L24-e0005", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "minor", "note": "Trailing 'wieder eine Erkältung' is not in this entry on the scan (entry ends with Waldkauz, then 21 Aug header). 'Karwinskistraße' looks like 'Karolingerstraße'; 'Brief Brief' duplicated.",
+   "records": [
+     {"record_id": "obs_d9e8fdbd8dec", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst (diary: 'W. Wüst')"}, "evidence": "scan: 'Freund W. Wüst meldet mir mit Brief vom 17. VIII. vom gleichen Tag aus Ismaning … 3 Pfeifenten'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L14-e0033", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Life list of all species the diarist ever saw free-living; crop shows only header and item 1, items 7 and 10 not visible. The list probably continues beyond item 14.",
+   "records": [
+     {"record_id": "obs_29b5ce01ba61", "verdict": "spurious",
+      "species": "right", "count": "n/a", "date": "n/a", "locality": "n/a", "georef": "n/a",
+      "observer": "n/a", "record_type": "n/a", "status": "n/a", "other": "n/a",
+      "correct": {}, "evidence": "header: 'Zusammenstellung aller von mir im Laufe der Zeit im freilebenden Zustand beobachteten Vogelarten'", "confidence": 0.75},
+     {"record_id": "obs_a4699ed9a5de", "verdict": "spurious",
+      "species": "right", "count": "n/a", "date": "n/a", "locality": "n/a", "georef": "n/a",
+      "observer": "n/a", "record_type": "n/a", "status": "n/a", "other": "n/a",
+      "correct": {}, "evidence": "life list item '10.) Star', no dated observation at München", "confidence": 0.75}
+   ]},
+  {"entry_id": "L25-e0149", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan has 'meldet mit Brief vom 26. II.', not 'aus Leipzig'.",
+   "records": [
+     {"record_id": "obs_77d9247f2147", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'ein Grünspecht ruft in den Ahornbäumen' (beim Haus, München)", "confidence": 0.95}
+   ]},
+  {"entry_id": "L27-e0110", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Handwriting: 'Freund E. Bessel übermittelt mir die folgenden Ismaning-Berichte' (transcribed 'E. Bogel', 'Manning-Berichte'). Typed report is transcribed well.",
+   "records": [
+     {"record_id": "obs_289e507669d3", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed report 'Ismaning, den 13.6.53 … 14)Teichrohrsänger;' signed E. Bessel", "confidence": 0.85}
+   ]},
+  {"entry_id": "L33-e0104", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Buchfink, Amsel, Haus- und Gartenrotschwanz' (transcribed 'Star - und Gartenrotschwanz'); 'Rauch- und Mehlschwalben überhin. Ebenso Mauersegler' garbled into duplicates.",
+   "records": [
+     {"record_id": "obs_228619842207", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Rauch- und Mehlschwalben überhin. Ebenso Mauersegler.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L28-e0188", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_96054650ac58", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Geviert VI/1 … wieder eine Heidelerche … ebenso auch wieder ein Baumpieper singend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L03-e0123", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Header reads 'Riederau' (entry_place 'Riedrau' is a spelling variant). The Rohrdommel was heard after midnight, i.e. the night of 28/29 May. The entry date is accepted.",
+   "records": [
+     {"record_id": "obs_0382ae77ca28", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'höre ich von der Herrschinger Gegend her das dumpfe Brüllen einer Rohrdommel'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L12-e0076", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Stuffed-bird list on scan: Polartaucher, Haubentaucher, Ohrentaucher, Zwergtaucher, Teichhuhn, Wasserralle, Auerhahn, Waldohreule, Waldkauz, Steinkauz, Eisvogel, Reiherente, Waldschnepfe, Krickente. The transcription has Schwarztaucher, Sturmtaucher, Rohrdommel and Tafelente. Brachvogel is linked at genus level, but the diary means Numenius arquata.",
+   "records": [
+     {"record_id": "obs_428057d8cbf6", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"record_type": "literature-record (stuffed specimen in inn collection, provenance per innkeeper's son)", "observer": "", "date": "unknown (specimen collected before 1934-03-31)"},
+      "evidence": "scan: 'In der Wirtschaft … fanden sich ausgestopft und aus der Gegend stammend … Steinkauz'", "confidence": 0.65},
+     {"record_id": "obs_2a3eb296d384", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Brachvogel, ein Paar und noch ein einzelner Vogel im Moos nördlich und südlich vom See'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L16-e0260", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Finsinger Allee', 'Föhringer Kanal' (transcribed 'Eittinger'), 'Gänsesäger: 1♂ ad + 4♀' (transcribed Grauspecht), 'Mittelsäger' (transcribed Mittelspecht), 'Limosen'.",
+   "records": [
+     {"record_id": "obs_2616086e03f0", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Finsinger Allee (Ismaning/Speichersee area); scan does not read 'Eittinger'"}, "evidence": "scan: 'Bluthänfling: viele bei der Finsinger Allee.'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L03-e0246", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "The excursion route runs from Kaufbeuren via Irsee and Eggenthal to Friesenried. Kaufbeuren as locality is acceptable as the start and end point.",
+   "records": [
+     {"record_id": "obs_1fbe93db5166", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan list: '35.) Hausrotschwanz' on excursion from Kaufbeuren", "confidence": 0.85}
+   ]},
+  {"entry_id": "L15-e0186", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan has 'Bussardhorst' (transcribed 'Bazaardhorst'), 'Wald von Brotonne', 'gemeinsam mit Dr. Kleiner beobachtet' (transcribed 'Br. Kehlchen') and 'mehrere ♂♀ Steinschmätzer' (transcribed Schwarzkehlchen). For the Bussard, only a nest visit is mentioned.",
+   "records": [
+     {"record_id": "obs_a30213bd4dd1", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Provence-Grasmücke (Sylvia undata …) … hörten wir … Lockruf zi-zi-tschä'", "confidence": 0.85},
+     {"record_id": "obs_043d40c1d95a", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in den Wald von Brotonne zu einem Bussardhorst' (nest; no bird explicitly seen)", "confidence": 0.55}
+   ]},
+  {"entry_id": "L09-e0136", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: '1 ♀ Tafelente' (transcribed '17 Tafelenten'), 'die Möwen sind fort' (transcribed 'der Mond wird fahl'), 'Pöckinger Fußweg', 'Aschheringer Moos'. The Star absence is at the Maisinger See, which lies within Gemeinde Pöcking.",
+   "records": [
+     {"record_id": "obs_21faf00f63dd", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Die Stare müssen kurz vor meiner Ankunft am See … abgeflogen sein, da ich keine Flüge mehr beobachten kann'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L06-e0127", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Count 3 is right for the juveniles only; the brood is 1 ad + 3 juv = 4. The adult must be a separate record.",
+   "records": [
+     {"record_id": "obs_762db1e56678", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'nahe an Tauchenten heran, die ich für Tafelenten halte, 1 ad, 3 juv.'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L07-e0057", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_40fd64f30040", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags an der Isar die Lachmöwen beobachtet'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L17-e0020", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Author is 'Dr. H. Bogdanowicz' (transcribed 'Prof.'). Items 37-75 (p. 7) are missing from the crops and the transcription. Items 104 and 116-121 differ from the scan (e.g. scan 104 Saatgans, 116 Haubentaucher, 119 Hohltaube). The list states its status as of 21 VI 1940.",
+   "records": [
+     {"record_id": "obs_5bc29e2e1231", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "observations up to 1940-06-21 ('nach dem Stand der Beobachtungen vom 21. VI. 1940')"}, "evidence": "scan: 'Liste der Vögel … nach dem Stand der Beobachtungen vom 21. VI. 1940: … 5.) Eichelhäher'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L12-e0206", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header place is 'Pöcking' (transcribed 'Freitag'), and the observations are at the Maisinger See. Scan also has 'am Damm', 'im neuen Schirm', 'und zwar das ♂', 'Im Dorfe singen überall Hausrotschwänzchen'.",
+   "records": [
+     {"record_id": "obs_7eea52f49f3a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Bei meinem Kommen gehen auf der Blänke 6 Wildenten hoch.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L27-e0015", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Several bird names are misread: scan 6 Bergfink, 7 Haussperling, 14 Kohlmeise, 18 Mäusebussard, 20 Fischreiher. The flock of 7 Brachvögel moved in Ost-West direction. Brachvogel is linked at genus level, but the diary means N. arquata.",
+   "records": [
+     {"record_id": "obs_27a0eb672e38", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '36.) Brachvogel, im Ostwinkel des Ob. verhört, ein Flug von 7 Stück …'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L01-e0122", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_5d1e1fe0ae4a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Man sieht auf den Feldern nur Scharen von Rabenkrähen'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L05-e0092", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_90d41ff03a68", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Nachmittags 5 1/4 h erscheinen plötzlich … 6 Mauersegler im Akademiehof'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L10-e0164", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan item 2 is 'Steinschmätzer', and item 1 refers to 'Dr. Wüst und der beiden Stimmelmayr', not Steinwälzer. No observation date is given; the article is from 1932.",
+   "records": [
+     {"record_id": "obs_1351b85110bf", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Steinschmätzer (Oenanthe oenanthe)"}, "evidence": "scan: '2.) Steinschmätzer' (underlined), not Steinwälzer", "confidence": 0.9}
+   ]},
+  {"entry_id": "L17-e0295", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'über Seeseiten - Seeshaupt', 'Vor Seeseiten … nach Seeseiten in den Schilfwiesen am See wieder Teichrohrsänger' (transcribed 'Gewitter', 'viele'), 'Zaunkönig und Hohltaube' beim Haus (transcribed Kohlmeise) and 'eine Heckenbraunel-le' (transcribed 'Hohltaube 4.').",
+   "records": [
+     {"record_id": "obs_ba8f898aad50", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Seeseiten (Starnberger See shore between Bernried and Seeshaupt)"}, "evidence": "scan: 'nach Seeseiten in den Schilfwiesen am See wieder Teichrohrsänger'", "confidence": 0.65},
+     {"record_id": "obs_519512fdcc38", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Heckenbraunelle (Prunella modularis)"}, "evidence": "scan: 'Zwischen Seeshaupt und Staltach … und eine Heckenbraunel-le.'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L17-e0048", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'über dem Süddamm' (Speichersee), not 'Südsaum'. Other misread names: 9 Sumpfohreule, 10 Rauhfußbussard, 11 Fischreiher, 14 Sanderling.",
+   "records": [
+     {"record_id": "obs_b795cd6d99a4", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Rotkehlpieper: am 20. X. vermutlich zweimal den Ruf über dem Süddamm gehört'", "confidence": 0.8}
+   ]}
+]}

@@ -39,17 +39,14 @@ Output (JSON; coordinates are fractions of the page width/height, 0-1):
                             auto [[layer, from, to, why], ...] changes applied to this record without a human}}
                v = ok | wrong | spurious | unsure; f = wrong fields; fix = proposed values; c = confidence;
                q = quoted words of the page; qin 1 = the quote stands in the transcription
-               t = corpus tier of the record (with --dwca), tw = why it is not in the next tier:
-                 0 outside the core   spurious (a check finds no such record) | duplicate (same event, taxon, count,
-                                      place, date, sex, stage, behaviour as an earlier record) | no-taxon (no GBIF
-                                      taxon) | flagged (a check calls a field wrong) | unchecked (no verdict)
-                 1 core               the record check calls every field right and the Claude check does not object;
-                                      tw: rank (not at species level) | name (written name neither an attested German
-                                      name of the linked taxon nor confirmed by two sources) | reading (a contested
-                                      reading correction inside the record's passage, or the passage cannot be found
-                                      and the entry has one) | date (entry date judged wrong, record without own
-                                      date) | illegible (scan not legible)
-                 2 strict core        tw: no-coords
+               t = corpus tier of the record (with --dwca), tw = the reasons that keep it out of the next tier,
+                 codes and rules in corpus_tiers.py (RULES), calibration in docs/corpus_tiers.md:
+                 0 outside the core   the occurrence is in doubt: spurious | flagged (species, count, date, status) |
+                                      unchecked | duplicate | no-taxon | list | literature-date | entry-checks |
+                                      ungrounded | long-entry
+                 1 core               another field is in doubt: flagged-attribution | flagged-place | flagged-georef |
+                                      attribution | identification | count | absence | reading | entry | entry-place
+                 2 strict core        no-coords | georef-unconfirmed | place-doubt
                  3 strict core with coordinates
         gone   [[reason, value, detail], ...]            what QA or a review decision removed from the entry (QA flags
                                                          with action excluded: non_bird, review_not_taxon, value_dropped …)
@@ -91,6 +88,10 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "machine_review"))
 from common import load_payload  # noqa: E402
 from prepare_entries import GraphView, graph_records  # noqa: E402
+import corpus_tiers  # noqa: E402
+from laubmann_kg.extraction.reading import _locate  # noqa: E402
+from laubmann_kg.review.better_readings import (LAYER_FIELDS, classify, commentary, doubled_edges, doubled_in_reading,  # noqa: E402
+                                                 fold, machine_decision, name_indexes, overrun_in_reading, place)
 
 csv.field_size_limit(10 ** 9)
 TAG = re.compile(r"</?[a-zA-Z][^>]*>")
@@ -156,8 +157,24 @@ def main() -> None:
     ap.add_argument("--machine", default=None, help="data/review/machine (identities_machine.csv)")
     ap.add_argument("--record-check", default=None, help="record_check.py output folder (record_checks*.csv)")
     ap.add_argument("--sonnet-check", default=None, help="merge.py output folder (graph_checks*.csv, transcript_checks.csv)")
+    ap.add_argument("--sonnet-stale", default=None, help="file with entry ids or uids whose records changed after the Sonnet "
+                                                          "check: its record and missing-record findings are left out there")
     ap.add_argument("--drive-regions", default=None, help="drive_ids.py --regions: crop path -> Drive file id")
-    ap.add_argument("--dwca", default=None, help="the export's dwca/ (occurrence.txt): needed for the corpus tiers")
+    ap.add_argument("--dwca", default=None, help="the export's dwca/ (occurrence.txt, event.txt): needed for the corpus tiers")
+    ap.add_argument("--tiers-csv", default=None, help="also write the corpus tier of every occurrence (record_tiers.csv)")
+    ap.add_argument("--text-layer", default=None,
+                    help="the machine layer of the text this export applied (data/review/machine/text_layer_machine.csv): the "
+                         "reading corrections are then taken from --reading-base under their original keys, each with what the graph "
+                         "holds at its place")
+    ap.add_argument("--reading-base", default=None,
+                    help="the reading stage's corrections the text layer refers to (data/review/machine/reading_corrections_base.csv)")
+    ap.add_argument("--transcript-checks", default=None,
+                    help="the checks' verdicts on the reading corrections, when they come from another check run than --record-check "
+                         "(their keys are the original corrections)")
+    ap.add_argument("--machine-text-layer", default=None,
+                    help="also write the machine layer of the text into this folder (data/review/machine): the checks' better "
+                         "readings and the scan agent's corrections, each with how it reaches the graph (text_layer_machine.csv), "
+                         "and the species and places the patched changes correct (value_corrections_text_machine.csv)")
     ap.add_argument("--min-confidence", type=float, default=0.9)
     ap.add_argument("--min-agreement", type=int, default=2)
     ap.add_argument("--out", required=True)
@@ -245,29 +262,66 @@ def main() -> None:
     # ------------------------------------------------------------ inputs per entry
     review = Path(args.review)
     corr = collections.defaultdict(list)
-    for r in read_csv(review / "transcript_corrections.csv"):
+    if args.text_layer and not args.reading_base:
+        sys.exit("--text-layer needs --reading-base (the reading corrections the layer refers to)")
+    for r in read_csv(Path(args.reading_base) if args.reading_base else review / "transcript_corrections.csv"):
         corr[r["entry_uid"]].append(r)
+    layer_check, layer_scan = {}, collections.defaultdict(list)   # the text layer this export applied
+    for r in read_csv(Path(args.text_layer)) if args.text_layer else []:
+        if r["source"] == "check":
+            layer_check[(r["entry_uid"], r["old_text"], r["new_text"])] = r
+        else:
+            layer_scan[r["entry_uid"]].append(r)
+    scan_text = collections.defaultdict(list)   # the scan agent's corrections of the corrected text (machine layer, applied after the reading)
+    for r in read_csv(Path(args.machine) / "text_corrections_machine.csv") if args.machine else []:
+        if r.get("old_text") and r.get("new_text") and r["old_text"] != r["new_text"]:
+            scan_text[r["entry_uid"]].append(r)
+    layer_rows, value_rows = [], []
+    if args.machine_text_layer and any("Maschinenprüfung" in (r.get("detail") or r.get("message") or "")
+                                       for r in read_csv(review / "qa_flags.csv") if r.get("reason") == "reading_corrected"):
+        sys.exit("--machine-text-layer needs the export WITHOUT the text layer (its changes are computed on the reading stage's "
+                 "text); this export already applied one")
+    taxa_idx, places_idx = name_indexes(P)
+    places_used = collections.defaultdict(set)   # every place form an entry uses: header, records, travel legs
+    for men in P["place"]["men"]:
+        places_used[P["E"][men[1]][0]].add(fold(P["place"]["forms"][men[0]][0]))
     qa = collections.defaultdict(list)
     for r in read_csv(review / "qa_flags.csv"):
         qa[r["entry_uid"]].append(r)
+
+    def unmangle(v):   # "RabenkrÃ¤he": UTF-8 read as cp1252 by one of the agents
+        if isinstance(v, str) and "Ã" in v:
+            try:
+                return v.encode("cp1252").decode("utf-8")
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                return v
+        return v
 
     def checks(folder, records, missing, entries, tchecks):
         d = Path(folder) if folder else None
         rec = collections.defaultdict(dict)
         for r in read_csv(d / records) if d else []:
+            r = {k: unmangle(v) for k, v in r.items()}
             if r["obs_index"] not in ("", None):
                 rec[r["entry_uid"]][int(r["obs_index"])] = r
+        clean = lambda rows: [{k: unmangle(v) for k, v in r.items()} for r in rows]
         mis = collections.defaultdict(list)
-        for r in read_csv(d / missing) if d else []:
+        for r in clean(read_csv(d / missing)) if d else []:
             mis[r["entry_uid"]].append(r)
-        ent = {r["entry_uid"]: r for r in (read_csv(d / entries) if d else [])}
-        tc = {(r["entry_uid"], r["old_text"], r["new_text"]): r for r in (read_csv(d / tchecks) if d else [])}
+        ent = {r["entry_uid"]: r for r in (clean(read_csv(d / entries)) if d else [])}
+        tpath = Path(tchecks) if Path(tchecks).is_absolute() or Path(tchecks).exists() else (d / tchecks if d else None)
+        tc = {(r["entry_uid"], r["old_text"], r["new_text"]): r for r in (clean(read_csv(tpath)) if tpath else [])}
         return rec, mis, ent, tc
 
     g_rec, g_mis, g_ent, g_tc = checks(args.record_check, "record_checks.csv", "record_checks_missing.csv",
-                                       "record_checks_entries.csv", "transcript_checks_gemini.csv")
+                                       "record_checks_entries.csv", args.transcript_checks or "transcript_checks_gemini.csv")
     s_rec, s_mis, s_ent, s_tc = checks(args.sonnet_check, "graph_checks.csv", "graph_checks_missing.csv",
                                        "graph_checks_entries.csv", "transcript_checks.csv")
+    s_stale = set(Path(args.sonnet_stale).read_text(encoding="utf-8").split()) if args.sonnet_stale else set()
+    pre_reading = {}   # the transcription the reading stage corrects
+    if args.machine_text_layer:
+        with open(corpus / "entries.csv", encoding="utf-8-sig", newline="") as h:
+            pre_reading = {r["entry_uid"]: r["text_clean"] for r in csv.DictReader(h)}
 
     def finding(r, src):
         if not r or r.get("verdict") in ("", "unchecked", None):
@@ -309,6 +363,7 @@ def main() -> None:
 
     # ------------------------------------------------------------ text inserts
     inserts = collections.defaultdict(list)
+    insert_texts = collections.defaultdict(list)
     media = collections.defaultdict(list)
     crops: dict = {}
     drive_regions = json.loads(Path(args.drive_regions).read_text(encoding="utf-8")) if args.drive_regions else {}
@@ -343,6 +398,7 @@ def main() -> None:
                 crops[r["region_uid"]] = drive_regions[r["crop"]]
             if r.get("kind") not in ("text-insert", "list") or not (r.get("visible_text") or "").strip():
                 continue
+            insert_texts[uid].append(r["visible_text"])
             w = words(r["visible_text"])
             grams = [" ".join(w[i:i + 5]) for i in range(0, max(1, len(w) - 4), 5)]
             where = collections.Counter(u for g in grams for u in index.get(g, ()))
@@ -386,6 +442,16 @@ def main() -> None:
                 if key in seen:
                     duplicates.add(d["occurrenceID"])          # as tools/validate_export.py: same event, taxon, count, place, date …
                 seen.add(key)
+    events, place_uses = {}, collections.Counter()
+    if args.dwca:
+        with open(Path(args.dwca) / "event.txt", encoding="utf-8", newline="") as h:
+            rd = csv.reader(h, delimiter="\t", quoting=csv.QUOTE_NONE)
+            head = next(rd)
+            for row in rd:
+                d = dict(zip(head, row))
+                events[d["eventID"]] = d
+                place_uses[d["locality"]] += 1
+    tiers = corpus_tiers.Tiers(place_uses)
     data_ns = next(iter(occ_rows), "obs_").rsplit("obs_", 1)[0]
     form_class = {}
     for f in P["taxon"]["forms"]:
@@ -398,6 +464,7 @@ def main() -> None:
 
     # ------------------------------------------------------------ entries
     entries = {}
+    tier_ids = {}
     counts = collections.Counter()
     for ei, e in enumerate(E):
         uid = e[1]
@@ -410,6 +477,34 @@ def main() -> None:
         obs = graph["observations"]
         occ = collections.Counter()
         aligned = len(men) == len(obs)
+        def match_checks(table, src):   # a check belongs to the record with its written name (and occurrence), else to its index if the species agree
+            by_name = collections.defaultdict(list)
+            for o in obs:
+                by_name[fold(o["written"])].append(o)
+            at_index = {o["index"]: o for o in obs}
+            out = {}
+            for idx, r in sorted(table.items()):
+                named = by_name.get(fold(r.get("written")), [])
+                occ = int(r.get("occurrence") or 0) if str(r.get("occurrence") or "0").isdigit() else 0
+                o = named[occ] if occ < len(named) else (named[0] if len(named) == 1 else None)
+                if o is None:
+                    o = at_index.get(idx)
+                    if o is None or fold(o.get("taxon")) != fold(r.get("taxon")):
+                        counts[f"record checks ({src}) dropped: no record with that name or species"] += 1
+                        continue
+                    counts[f"record checks ({src}) matched by index and species"] += 1
+                elif o["index"] != idx:
+                    counts[f"record checks ({src}) moved to the record of that name"] += 1
+                if o["index"] in out:
+                    counts[f"record checks ({src}) dropped: two checks for one record"] += 1
+                    continue
+                out[o["index"]] = r
+            return out
+
+        stale = uid in s_stale or e[0] in s_stale
+        if stale and (s_rec.get(uid) or s_mis.get(uid)):
+            counts["record checks (s) left out: the entry's records changed after the check"] += len(s_rec.get(uid, {})) + len(s_mis.get(uid, []))
+        g_map, s_map = match_checks(g_rec.get(uid, {}), "g"), match_checks({} if stale else s_rec.get(uid, {}), "s")
         for k, o in enumerate(obs):
             name = o["written"].casefold()
             item = {"w": o["written"], "occ": occ[name]}
@@ -420,16 +515,28 @@ def main() -> None:
                 f = frac(pid, loc[1:5])
                 if f:
                     item["loc"] = [page(pid)] + f + [loc[5], loc[6], loc[7]]
-            for src, table in (("g", g_rec), ("s", s_rec)):
-                fd = finding(table.get(uid, {}).get(o["index"]), src)
+            for src, mapped in (("g", g_map), ("s", s_map)):
+                fd = finding(mapped.get(o["index"]), src)
                 if fd:
                     item[src] = fd
             rec[str(o["index"])] = item
             counts["records"] += 1
             counts["records located"] += "loc" in item
-        # reading corrections
-        tcs, at = [], 0
+        # reading corrections: each with what the graph holds at its place (cur, its position) and whether the
+        # machine layer changed it there (the checks' better reading, the scan agent's correction)
+        tcs, at, changes = [], 0, []
         g_seen, s_seen = uid in g_ent, uid in s_ent
+
+        def find_cur(cands, start):
+            for cand in cands:
+                for probe in (cand, TAG.sub("", cand)) if cand else ():
+                    q = text.find(probe, start)
+                    if q < 0:
+                        q = text.find(probe)
+                    if q >= 0:
+                        return q, probe
+            return -1, ""
+
         for c in corr.get(uid, []):
             old, new, applied = c["old_text"], c["new_text"], 1 if c.get("applied") == "y" else 0
             kind = change_kind(old, new)
@@ -437,32 +544,141 @@ def main() -> None:
             if kind not in ("markup", "punctuation", "case"):
                 cw = changed_words(old, new)
                 rel = ("b" if stem_in(cw, taxon_names) else "") + ("n" if kind == "number" else "") + ("p" if stem_in(cw, place_names) else "")
-            p = -1
-            if applied:
-                p = low.find(new, at) if new else -1
-                if p < 0:
-                    p = low.find(new) if new else -1
-                if p >= 0:
-                    at = p
+            lr = layer_check.get((uid, old, new))
+            stage = new if applied else old                 # what the reading stage left at this place
+            p, cur = find_cur(([lr["final_text"]] if lr else []) + [stage], at if applied else 0)
+            if applied and p >= 0:
+                at = p
+            machine_in = bool(lr) and cur in (lr["final_text"], TAG.sub("", lr["final_text"])) and lr["final_text"] != stage
             sv = (s_tc.get((uid, old, new)) or {}).get("verdict", "") if s_seen else ""
             gr = g_tc.get((uid, old, new)) or {}
             better = gr.get("better_text") or (s_tc.get((uid, old, new)) or {}).get("better_text") or ""
-            tcs.append([old, new, applied, p, kind, rel, sv, gr.get("verdict", ""), better])
+            # the checks' better reading on the correction's span ('' none, None not placeable; then the loosely cut
+            # reading for the reviewer's form). With a text layer: the reading the layer put there.
+            if lr:
+                placed = lr["final_text"] if (machine_in or cur == stage == lr["final_text"]) else None
+                loose = lr["final_text"] if placed is None else ""
+            else:
+                placed = place(old, new, bool(applied), p if cur == new else -1, better, text)
+                loose = place(old, new, bool(applied), p if cur == new else -1, better, text, loose=True) if placed is None else ""
+            tcs.append([old, new, applied, p, kind, rel, sv, gr.get("verdict", ""), better, placed, loose, "", cur, int(machine_in)])
             counts["corrections"] += 1
             counts["corrections record-relevant"] += bool(rel)
-        # corpus tier of every record
-        contested = [(t[3], t[1]) for t in tcs if t[2] and t[5] and ("wrong" in (t[6], t[7]) or "partly" in (t[6], t[7]))]
+            counts["corrections changed in the graph by the text layer"] += machine_in
+            if lr and not machine_in:
+                counts["text layer changes not found in the graph"] += 1
+            if args.text_layer:
+                continue
+            md = machine_decision(old, new, bool(applied), placed)
+            if md and not (new if applied else old):   # an insertion without text to stand on: left to the reviewer
+                md = None
+            at_old = _locate(text, old) if md and not applied else None
+            if md and not (at_old if not applied else (p >= 0 or _locate(text, new))):
+                counts["better readings whose place is not in the graph text, left to the reviewer"] += 1
+                md = None
+            if md:
+                changes.append({"entry_uid": uid, "entry_id": e[0], "source": "check", "old_text": old, "new_text": new, "decision": md[0],
+                                "final_text": md[1], "text_now": new if applied else old,
+                                "pos": p if applied else (at_old[0] if at_old and not at_old[2] else -1),
+                                "header": (p == 0) if applied else text.startswith(old),
+                                "note": "bessere Lesung der Prüfung", "reviewed_by": "machine:" + ("gemini" if gr.get("better_text") else "claude") + " (scan)"})
+                counts["corrections, better reading applied by the machine layer"] += 1
+            elif better and placed is None:
+                counts["corrections, better reading not placeable"] += 1
+        scan_rows = layer_scan.get(uid, []) if args.text_layer else []
+        scan_layered = {(r["old_text"], r["new_text"]) for r in scan_rows}
+        for r in scan_text.get(uid, []):   # the scan agent's corrections
+            old, new = r["old_text"], r["new_text"]
+            if any(t[0] == old and t[1] == new for t in tcs):
+                continue
+            kind = change_kind(old, new)
+            cw = changed_words(old, new)
+            rel = ("b" if stem_in(cw, taxon_names) else "") + ("n" if kind == "number" else "") + ("p" if stem_in(cw, place_names) else "")
+            doubt = commentary(old, new)   # "vermutlich Bidingen", "(unsicher)": a note of the agent, not a reading
+            in_layer = (old, new) in scan_layered
+            pc, cur = find_cur(([new] if in_layer else []) + [old], 0)
+            machine_in = in_layer and cur in (new, TAG.sub("", new))
+            tcs.append([old, new, 0, pc, kind, rel, "", "", "", "" if doubt else new, "", "scan", cur, int(machine_in)])
+            counts["scan agent text corrections"] += 1
+            counts["corrections changed in the graph by the text layer"] += machine_in
+            if in_layer and not machine_in:
+                counts["text layer changes not found in the graph"] += 1
+            if doubt:
+                counts["scan agent text corrections with a doubt, left to the reviewer"] += 1
+                continue
+            if args.text_layer:
+                continue
+            at_old = _locate(text, old)
+            if not at_old:   # made on an earlier version of the text: the words are not there any more
+                counts["scan agent text corrections not in this text, left out"] += 1
+                continue
+            changes.append({"entry_uid": uid, "entry_id": e[0], "source": "scan", "old_text": old, "new_text": new, "decision": "accept",
+                            "final_text": new, "text_now": old, "pos": at_old[0] if at_old and not at_old[2] else -1,
+                            "header": text.startswith(old), "note": r.get("note") or "",
+                            "reviewed_by": r.get("reviewed_by") or "machine:scan agent"})
+        here = {fold(x) for o in obs for x in (o.get("locality"), o.get("place")) if x} | {fold(e[6]), fold(e[9] if len(e) > 9 else "")}
+        here |= places_used.get(e[0], set())
+        here.discard("")
+
+        def judge(cs):
+            return [classify(c["text_now"], c["final_text"], header=c["header"], records=obs, places_here=here, taxa=taxa_idx,
+                             places=places_idx, entry_place=e[6] or "", location_raw=(e[9] if len(e) > 9 else "") or "") for c in cs]
+
+        def leave_out(cs, twice, why="better readings that would double a word at their edge, left to the reviewer"):
+            counts[why] += len(twice)   # cut one word too wide: the word stands twice in the text then
+            return [c for i, c in enumerate(cs) if i not in twice]
+
+        if changes and (twice := doubled_edges(text, changes)):   # in the graph text, where they are patched
+            changes = leave_out(changes, twice)
+        judged = judge(changes)
+        if any(j[0] == "before" for j in judged) and uid in pre_reading and \
+                (twice := doubled_in_reading(pre_reading[uid], [(t[0], t[1]) for t in tcs], changes)):   # in the reading stage
+            changes = leave_out(changes, twice)
+            judged = judge(changes)
+        if any(j[0] == "before" for j in judged) and uid in pre_reading and \
+                (hit := overrun_in_reading(pre_reading[uid], [(t[0], t[1]) for t in tcs], changes)):
+            changes = leave_out(changes, hit, "better readings a later correction of the reading would land in, left to the reviewer")
+            judged = judge(changes)
+        if changes:   # how each change of the machine layer reaches the graph: patched after the extraction, or read anew
+            mode = "before" if any(j[0] == "before" for j in judged) else "after"
+            counts[f"text layer entries {mode}"] += 1
+            placed_once = set()
+            for c, (_, vals) in zip(changes, judged):
+                spot = (c["source"], c["old_text"], c["new_text"], c["pos"])
+                if spot in placed_once:   # the reading listed one correction twice: one change at one place
+                    continue
+                placed_once.add(spot)
+                hp = next((v["header"] for v in vals if v.get("header")), "")
+                layer_rows.append({k: c.get(k, "") for k in LAYER_FIELDS} | {"apply": mode, "header_place": hp})
+                counts[f"text layer changes {mode}"] += 1
+                if mode == "after":
+                    for v in vals:
+                        if any(x["entry_uid"] == uid and x["kind"] == v["kind"] and x["old_value"] == v["old_value"] and x["new_value"] == v["new_value"] for x in value_rows[-20:]):
+                            continue
+                        value_rows.append({"kind": v["kind"], "entry_uid": uid, "entry_id": e[0], "old_value": v["old_value"], "occurrence": "",
+                                           "action": "replace", "new_value": v["new_value"], "scientific_name": v.get("scientific_name", ""),
+                                           "gbif_key": v.get("gbif_key", ""), "is_bird": "", "reason": "bessere Lesung der Prüfung",
+                                           "note": f"„{c['text_now']}“ → „{c['final_text']}“", "reviewed_by": c["reviewed_by"], "reviewed_at": ""})
+                        counts[f"text layer value corrections ({v['kind']})"] += 1
+        # signals of the corpus tiers (corpus_tiers.py); the tiers themselves are decided after the last entry
+        contested = [(t[3], t[12]) for t in tcs if (t[2] or t[13]) and t[5] and ("wrong" in (t[6], t[7]) or "partly" in (t[6], t[7]))]   # also where the machine layer put the better reading: only a person settles it
         flags_e = {f["reason"] for f in qa.get(uid, [])}
         ge = g_ent.get(uid) or {}
-        date_bad = truthy(ge.get("date_ok")) is False or bool(flags_e & {"implausible_date", "date_from_position"})
-        illegible = truthy(ge.get("scan_legible")) is False or "transcript_illegible" in flags_e
+        eg = entry_finding(ge, "g", {"date": e[2], "place": e[6], "kind": e[4]}) or {}
+        ev_row = events.get(data_ns + "entry_" + uid, {})
+        facts = corpus_tiers.entry_facts(
+            text=text, date=ev_row.get("eventDate") or e[2] or "", kind=e[4] or "", entry_id=e[0], n_records=len(obs),
+            flags_by_index={o["index"]: rec[str(o["index"])].get("g", {}).get("v") in ("wrong", "spurious") for o in obs},
+            poor="transcript_poor" in flags_e, illegible=truthy(ge.get("scan_legible")) is False or "transcript_illegible" in flags_e,
+            date_bad=eg.get("date_ok") is False or bool(flags_e & {"implausible_date", "date_from_position"}),
+            kind_bad=eg.get("kind_ok") is False, place_bad=eg.get("place_ok") is False,
+            place=ev_row.get("locality") or "", header_place=ev_row.get("verbatimLocality") or "", inserts=insert_texts.get(uid, []))
         cursor = 0
         for o in obs:
             item = rec[str(o["index"])]
             d = occ_rows.get(data_ns + "obs_" + hashlib.sha1(f"{uid}|{o['written']}|{o['index']}".encode("utf-8")).hexdigest()[:12])
             if d is None:
                 continue                                      # no archive row: no tier
-            gv, sv = item.get("g", {}).get("v"), item.get("s", {}).get("v")
             name = o["written"].casefold()
             notes = o.get("notes") or ""
             a = text.find(notes, cursor) if notes else -1
@@ -473,19 +689,11 @@ def main() -> None:
             # a contested correction inside the record's passage; a passage that cannot be found cannot be cleared
             touched = any(a - 2 <= pos <= a + len(notes) if a >= 0 and pos >= 0 else bool(new) and TAG.sub("", new) in TAG.sub("", notes)
                           for pos, new in contested) or (a < 0 and bool(contested))
-            why = ([code for code, hit in (("spurious", "spurious" in (gv, sv)), ("duplicate", d["occurrenceID"] in duplicates),
-                                           ("no-taxon", not d["taxonID"]), ("flagged", "wrong" in (gv, sv)),
-                                           ("unchecked", gv not in ("ok", "wrong", "spurious"))) if hit]
-                   or [code for code, hit in (("rank", d["taxonRank"] not in ("species", "subspecies")),
-                                              ("name", form_class.get(name) != "A" and applied_taxa.get(name) != "same"),
-                                              ("reading", touched), ("date", date_bad and not o.get("event_date")),
-                                              ("illegible", illegible)) if hit]
-                   or ([] if d["decimalLatitude"] else ["no-coords"]))
-            item["t"] = (0 if why and why[0] in ("spurious", "duplicate", "no-taxon", "flagged", "unchecked")
-                         else 1 if why and why[0] != "no-coords" else 2 if why else 3)
-            if why:
-                item["tw"] = why
-            counts[f"tier {item['t']}"] += 1
+            checks = tuple((item.get(src, {}).get("v", ""), item.get(src, {}).get("f") or []) for src in ("g", "s"))
+            tiers.add(item, index=o["index"], occ=d, entry=facts, record=o, checks=checks, reading_contested=touched,
+                      name_attested=form_class.get(name) == "A" or applied_taxa.get(name) == "same",
+                      duplicate=d["occurrenceID"] in duplicates)
+            tier_ids[(e[0], o["index"])] = d["occurrenceID"]
         # automatic changes on single records, from the QA flags
         gone = []
         for f in qa.get(uid, []):
@@ -502,7 +710,7 @@ def main() -> None:
             if f["action"] == "excluded":
                 gone.append([f["reason"], f["value"], f["detail"]])
         miss = []
-        for src, table in (("g", g_mis), ("s", s_mis)):
+        for src, table in (("g", g_mis), ("s", {} if stale else s_mis)):
             for m in table.get(uid, []):
                 miss.append({k: v for k, v in {"src": src, "kind": m.get("kind"), "text": m.get("text"), "de": m.get("species_de"),
                                                "sci": m.get("sci"), "count": m.get("count"), "loc": m.get("locality"), "date": m.get("date"),
@@ -526,6 +734,26 @@ def main() -> None:
         for src in ("g", "s"):
             counts[f"records flagged ({src})"] += sum(1 for r in rec.values() if r.get(src, {}).get("v") in ("wrong", "spurious"))
         counts["missing records suggested"] += sum(1 for m in miss if m.get("kind") == "observation")
+
+    if args.machine_text_layer:
+        out = Path(args.machine_text_layer)
+        out.mkdir(parents=True, exist_ok=True)
+        for name, fields, rows in (("text_layer_machine.csv", LAYER_FIELDS, layer_rows),
+                                   ("value_corrections_text_machine.csv", ["kind", "entry_uid", "entry_id", "old_value", "occurrence", "action",
+                                                                           "new_value", "scientific_name", "gbif_key", "is_bird", "reason", "note",
+                                                                           "reviewed_by", "reviewed_at"], value_rows)):
+            with open(out / name, "w", encoding="utf-8", newline="") as h:
+                w = csv.DictWriter(h, fieldnames=fields)
+                w.writeheader()
+                w.writerows(rows)
+            print(f"{out / name}: {len(rows)} rows")
+
+    # ------------------------------------------------------------ corpus tiers (needs every record: place doubt)
+    if args.dwca:
+        counts.update(tiers.assign())
+        if args.tiers_csv:
+            corpus_tiers.write_csv(args.tiers_csv, corpus_tiers.tier_rows(entries, tier_ids))
+            print(f"{args.tiers_csv}: {len(tier_ids)} records")
 
     # ------------------------------------------------------------ names: machine rows, link before / now
     names: dict = {}

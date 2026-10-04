@@ -26,6 +26,9 @@ async def decide_some(pg):
     if i >= 0:
         await pg.keyboard.press("j")
         await pg.wait_for_timeout(220)
+        if await pg.locator("#pbody .rform").count():      # J opened the reading form (a better reading the page cannot place): save it
+            await pg.keyboard.press("Enter")
+            await pg.wait_for_timeout(220)
     return eid
 
 

@@ -1,0 +1,199 @@
+{"batch": 16, "entries": [
+  {"entry_id": "L02-e0031", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Checked passage correct; elsewhere misreadings (e.g. 'dornumsetzten Wiesen und Karnickellöchern', 'Lohmühle' vs scan 'Löwengrube'). Excursion is in the Gennach moor/ridge E of Kaufbeuren.",
+   "records": [
+     {"record_id": "obs_b6b2efc9ed28", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Dagegen habe ich hier nirgends die Heidelerche angetroffen, die hier vorkommen soll.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0120", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "good", "note": "Transcription merges Laubmann's handwritten 9.XI note with a pasted typed sheet 'Ismaninger Teichgebiet 163' (tail of a W. Wüst Speichersee report of another, undated Begehung; mentions 'gestern von Ra/Re').",
+   "records": [
+     {"record_id": "obs_5cc2e8aaab6a", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "unclear", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst", "record_type": "third-party-report"},
+      "evidence": "typed pasted report p.163: 'Saatkrähe: In München geh., vorm. überm Vkl. geh.' - not Laubmann's handwriting; date of report not visible", "confidence": 0.75}
+   ]},
+  {"entry_id": "L29-e0105a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": null,
+   "transcription_quality": "good", "note": "Typed 568. Speichersee-Begehung So. 16.X.1955 signed 'Wüst' (transcribed 'Wüstl'). Trailing handwritten Laubmann note (Magazinstraße, Stare, Weidenlaubvogel) belongs to his own diary day, date not visible.",
+   "records": [
+     {"record_id": "obs_bac28225ccc7", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Wacholderdrosseln: 1 K2/1, 3 K2/7, viele im Wäldchen an der Erlmühle'; report signed Wüst (record 'Wüstl' = name variant)", "confidence": 0.8}
+   ]},
+  {"entry_id": "L26-e0153a", "entry_date_ok": null, "entry_place_ok": null, "boundary_ok": null,
+   "transcription_quality": "poor", "note": "Date-list pp.144-153 written just before '11. Januar 1954', so its dates refer to 1953. Header of list not in crops. Many names misread (e.g. scan 'Hänfling' -> 'Grünfink', 'Bergfink' -> 'Grünspecht', 'Buchfink' -> 'Buntspecht', '8.VI' -> '8.12').",
+   "records": [
+     {"record_id": "obs_5e900dbe897b", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "1953-05-10"},
+      "evidence": "scan p.144: 'Buchfink: 10.V. Ismaning (A. Müller)'; list ends before '11. Januar 1954', so 10.V = 1953", "confidence": 0.75}
+   ]},
+  {"entry_id": "L34-e0203", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan list reads '... Uferschwalbe, Weidenmeise, Beutelmeise, Gartenrotschwanz ...' and '... Teichrohrsänger, Schilfrohrsänger, Gartengrasmücke ...'; transcription has Wiesenpieper, Bachstelze and Schwarzmilan instead. Report is by W. (Walter) Wüst.",
+   "records": [
+     {"record_id": "obs_b44c2f018336", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"species": "Beutelmeise (Remiz pendulinus)", "observer": "Walter Wüst"},
+      "evidence": "scan: 'Aus W. Wüst's Ismaning-Bericht vom 9. V.: ... Uferschwalbe, Weidenmeise, Beutelmeise, Gartenrotschwanz'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L31-e0230", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Seidenschwanz items all come from A. Müller's letter of 3.II; 'Heute' therefore = 3.II.",
+   "records": [
+     {"record_id": "obs_571b4040cb8a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Am Futterfenster noch immer Kernbeißer und Gimpel neben den anderen Arten.'", "confidence": 0.9},
+     {"record_id": "obs_bc445f0eb48c", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"count": "52", "date": "1959-02-03"},
+      "evidence": "scan: 'meldet mit Brief vom 3. d. ... ein Flug von 52 Stück. Heute sah Adolf ebenda den gleichen Flug'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L14-e0042", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_0b0a222c316a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Jäger Hofherr aus Ruhpolding meldet Alpenkrähen vom Hochgern.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L12-e0160", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_c1e1c91cb22e", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Garten- und Mönchsgrasmücke, Rauch- und Mehlschwalbe, alle in der Umgebung unseres Hauses'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L16-e0066", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_ee3c80f0bd4f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'am 1. II. 39 bei Forstenried bei München schwer verletzt aufgefundene ... Lachmöve ... Finder war Johann Moser'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L34-e0006", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_735704c77e3d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'In der Söltlstraße wieder einen Gartenspötter verhört' (record spells 'Söllstraße')", "confidence": 0.7}
+   ]},
+  {"entry_id": "L08-e0019", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Header place is München; the whole entry is in the Englischer Garten.",
+   "records": [
+     {"record_id": "obs_2ebfbcf4d345", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Auf den Wiesen stolzieren violett glänzende Saatkrähen mit ihren koketten Schnabelmasken.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L21-e0230", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'an der Magazinstraße die Amseln' (transcribed 'Maria-Theresia-Straße die Amerik.'); also 'Seidenschwanz' (not Heidelerche) on 4.III and '1 ♂ Grauspecht' (not Schwarzspecht).",
+   "records": [
+     {"record_id": "obs_309930129d0e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Nachmittags Nachsuche nach den Seidenschwänzen leider ergebnislos verlaufen.'", "confidence": 0.85},
+     {"record_id": "obs_cdf2ebfc2263", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Nur etwa 400 m von der ersten Örtlichkeit ... am 2. III. 49 zwei Exemplare des Trupps wieder. Zeit 16,00'", "confidence": 0.85},
+     {"record_id": "obs_48e4a7bfddd4", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Magazinstraße (München)"},
+      "evidence": "scan: 'Abends gegen 19h singen und jubeln laut und froh an der Magazinstraße die Amseln.'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L31-e0267", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'ohne von den Heidelerchen etwas zu hören' (transcribed 'Hohltauben').",
+   "records": [
+     {"record_id": "obs_c1d978d63487", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Dafür beim Giesinger Waldhaus den ersten Fitis und einen Gartenrotschwanz verhört.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L04-e0203", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Ein Haubenlerche auf den Eisenbahnschienen bei Laim' (transcribed 'Rauchschwalbe'); list ends '... Waldbaumläufer. Das ist alles.'",
+   "records": [
+     {"record_id": "obs_f7515b97297c", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Wald zwischen Lochham und Planegg (Gräfelfing/Planegg, W of München)"},
+      "evidence": "scan: 'nachmittags in den Waldungen zwischen Lochham und Planegg ... Singdrossel, Amsel, Rotkehlchen'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L28-e0008a", "entry_date_ok": null, "entry_place_ok": true, "boundary_ok": null,
+   "transcription_quality": "good", "note": "Typed Ismaning report sheet; its header (date, author) is not in the crops. Same series as W. Wüst's Speichersee-Begehung reports.",
+   "records": [
+     {"record_id": "obs_5fdd4238d6f5", "verdict": "unclear",
+      "species": "right", "count": "right", "date": "unclear", "locality": "right", "georef": "wrong",
+      "observer": "unclear", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"coordinates": "c. 48.21, 11.73 (Tafelberg in the Ismaninger Teichgebiet), not 12.80 E"},
+      "evidence": "scan: 'Weidenmeise: An den K2-Teichen und am Tafelberg geh.'; observer empty, report author (prob. W. Wüst) not visible", "confidence": 0.5}
+   ]},
+  {"entry_id": "L14-e0062", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan list has 'Nonnenmeisen' (transcribed 'Blaumeisen') and 'Lachmöwen fliegen zwischen Maisinger- und Starnberger See' (transcribed 'Bachstelze').",
+   "records": [
+     {"record_id": "obs_416a25ca9015", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Man hört und sieht bei dem Haus ... Rauchschwalben, Stare, Gartenrotschwanz'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0059b", "entry_date_ok": null, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "good", "note": "Typed Wüst report pp.135-136 (first person: 'Ich ließ mein Rad stehen', Leica); header not in crops. Transcription includes 'Nachtrag zum 12.VIII.1955' (another day); that Nachtrag directly follows, so the report may itself be of 12.VIII.1955 rather than 30.VII.",
+   "records": [
+     {"record_id": "obs_ec4c330993e2", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "unclear", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "Walter Wüst", "record_type": "third-party-report"},
+      "evidence": "typed report: 'Baumfalke: Überquert abends von N nach S das Wb. bei der Hütte'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L32-e0320", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Street name may read 'Kunterweg' rather than 'Hinterweg' (same word as in L33-e0203).",
+   "records": [
+     {"record_id": "obs_ab72d2b8b750", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'im Wäldchen am ...weg wieder Erlenzeisige verhört und beobachtet. Ebenda noch Gimpel und Grünfinken.'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L10-e0085", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_b27ad3f9d22b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'ein ♂♀ Turmfalken an der Salvatorkirche zur Brut eingestellt hat ... Balzspiele beobachten'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L28-e0041", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'von der Klausenbrücke ... bis zur Großhesseloher Brücke' (transcribed 'Marienbrücke'). Walk along the Isar in S München.",
+   "records": [
+     {"record_id": "obs_face9b0bde26", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Auf dem ganzen Weg an der Isar nur 2 Bergstelzen und 1 Wasseramsel beobachtet.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L24-e0226", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan list (32 species): Rabenkrähe, Dohle, Eichelhäher, Star, Stieglitz, Buchfink, Goldammer, Feldlerche, Baumpieper, Kohlmeise, Tannenmeise, Winter-/Sommergoldhähnchen, ... Schwarzspecht, Mäusebussard, Ringeltaube, Hohltaube; transcription has Falke, Heidelerche, Braunkehlchen, Mauerläufer etc.",
+   "records": [
+     {"record_id": "obs_51cd1e6fcba8", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"species": "Dohle (Coloeus monedula), rank species"},
+      "evidence": "scan: 'verhört und beobachtet: Rabenkrähe. Doh-|le. Eichelhäher. Star.'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L33-e0203", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'zwei Hau-|benlerchen verhört' (transcribed 'Steinschmätzer'); street reads like 'Kunterweg' (transcribed 'Kräuterweg').",
+   "records": [
+     {"record_id": "obs_3ae5b8a3d976", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Morgens in den Ahornbäumen beim Haus wieder einige Gimpel verhört und beobachtet.'", "confidence": 0.9}
+   ]}
+]}

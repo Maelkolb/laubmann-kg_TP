@@ -1,0 +1,194 @@
+{"batch": 24, "entries": [
+  {"entry_id": "L14-e0096", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan 'leiser Herbstgesang' (transcribed 'beim Herbstgesang'); photo page 74 between pages not transcribed (fine)",
+   "records": [
+     {"record_id": "obs_083a5280dfd8", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Beim Haus leiser Herbstgesang einer Amsel und eines Buchfinken'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L02-e0178", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header reads 'Aitrang am Elbsee' (Ostallgäu), not Osterzell; 'Elm' is a misreading of 'Elbsee'; 'Riedratshofen' = Ruderatshofen",
+   "records": [
+     {"record_id": "obs_6fa3855a863d", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Elbsee bei Aitrang (Ostallgäu), ca. 47.82 N, 10.55 E"}, "evidence": "scan: 'eine Excursion an den Elbsee ... Gimpel, Kuckuck, Bussard'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L31-e0273", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_eb37e29b0409", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'am Hangwald an der Harlachingerstraße einen Fitis, einen Gartenrotschwanz'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L25-e0048", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "checked items fine (item 43 scan 'am Kanal am Tfb.' not 'Vb.'); elsewhere many errors: Wettersteinplatz/Harlachinger Str. misread, 9.) Haussperling not Hänfling, 21.) Wacholderdrossel not Hausrotschwanz, 32.) Fischreiher not Entenarten",
+   "records": [
+     {"record_id": "obs_1cf5c1d7f524", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '7.) Erlenzeisig, ein kleiner Flug im Hain beim Einlauf am Vkt.'", "confidence": 0.9},
+     {"record_id": "obs_4bb5ae077aac", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '43.) Flußuferläufer, mehrfach verhört am Querdamm, am Kanal am Tfb. und in den Fischteichen'", "confidence": 0.8},
+     {"record_id": "obs_537bb8e01fbe", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '18.) Weidenmeise, 1 auf der 2. Insel verhört'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L33-e0331", "entry_date_ok": true, "entry_place_ok": null, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan 'Seidenreiher' (not Seidenschwanz); 'Flachkormoran' doubtful; no place written in crop, locality of list unknown",
+   "records": [
+     {"record_id": "obs_33ca1c0e18b4", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "n/a", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '26. V. 63: ... Sturmmöve. Trauerseeschwalbe. Weißflügelseeschwalbe'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L33-e0503", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan reads 'auf der Hochleite', not 'Westleite'",
+   "records": [
+     {"record_id": "obs_ffb2c413ead8", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Hochleite (München-Harlaching)"}, "evidence": "scan: 'Gegen Abend auf der Hochleite Rotkehlchen, Singdrosseln, Zilpzalpe'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L23-e0162", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "street is 'Hart-hauserstraße' (Harthauser Straße, Harlaching), not Kastlbauerstraße",
+   "records": [
+     {"record_id": "obs_1b6ff879a5d8", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Harthauser Straße (München-Harlaching)"}, "evidence": "scan: 'In einem Garten in der Harthauserstraße singt eine Mönchsgrasmücke'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L28-e0199b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "typed list '11.IV.Eching und Moosburg' (Isar reservoirs); coordinates are Eching am Ammersee; reporter not visible in crop",
+   "records": [
+     {"record_id": "obs_26fb0b3b8af1", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "n/a", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'ca.4 PP Gartenrötel,1 M.Blaukehlchen,Rotkehlchen'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L32-e0138", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_012a45ff7f28", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'wieder 1 ♂ Erlenzeisig beobachtet, der auch mittags noch einmal erscheint'", "confidence": 0.9},
+     {"record_id": "obs_7652415c19b1", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'am Futterbrett am Küchenfenster zusammen mit einem ♂ Gimpel'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L02-e0109", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan 'Hellmayr' (transcribed 'Stellmayr')",
+   "records": [
+     {"record_id": "obs_c5e62f4f64b3", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "wrong", "other": "right",
+      "correct": {"status": "present"}, "evidence": "only song not yet heard: 'Höchstens durch sein bekanntes tit tit macht er sich hie und da bemerkbar'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L03-e0147", "entry_date_ok": false, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "header reads '17. Juli 1920' (next entry is 18. Juli 1920); 'Jengler' = Gengler",
+   "records": [
+     {"record_id": "obs_37f745a96637", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1920-07-17"}, "evidence": "scan header: '17. Juli 1920. Auf der rauhen Alb'", "confidence": 0.8},
+     {"record_id": "obs_23cfaf26d990", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1920-07-17"}, "evidence": "scan header: '17. Juli 1920'; 'Ringeltaube (noch ruckend), Weidenlaubvogel, Goldammer'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L29-e0072b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Fischadler is under '17.Juli.Eching' paragraph; locality_as_written 'Echinger Flur bei Freising' not in text; coordinates are Eching am Ammersee",
+   "records": [
+     {"record_id": "obs_3d93294b6b13", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "n/a", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '17.Juli.Eching: ... Grauschnäpper mit Jungen,1 Fischadler,13 Fischreiher'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L01-e0142", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan 'Von den vielen Wildenten, ♂♀' (not Waldkäuzen); also 'Heinroth' not 'Steinroth', 'Fischen' not 'Eching'",
+   "records": [
+     {"record_id": "obs_2b1dd3841aaa", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Stockente (Anas platyrhynchos), written 'Wildenten'"}, "evidence": "scan: 'Von den vielen Wildenten, ♂♀, die sich an der Isar herumtreiben'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L13-e0021", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'Hr. Wüst' is 'Fr. Wüst' on scan",
+   "records": [
+     {"record_id": "obs_0cf05651e427", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"date": "not stated (museum specimen, not 1934-10-22)", "record_type": "literature-record"}, "evidence": "scan: 'Ein Exemplar befindet sich aus Redwitz im Erlanger Museum'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L11-e0103", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "checked item fine; elsewhere bird-name errors: 33.) scan Wasserpieper (not Mauerläufer), 36.) Hohltaube (not Waldlaubsänger)",
+   "records": [
+     {"record_id": "obs_c748bedf0f61", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '18.) Wintergoldhähnchen 19.) Sommergoldhähnchen'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L25-e0184", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "checked item fine; last line scan 'singt ein Girlitz' (transcribed Zeisig)",
+   "records": [
+     {"record_id": "obs_0c69adf27883", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Ismaning, Tafelberg (Speichersee)"}, "evidence": "scan: 'Ismaning,den 28.3.1953 ... 6)Grünling,1 über den Tfb fliegend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0133a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_1573d96b985e", "verdict": "spurious",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "n/a", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Ebenso ist nicht sicher, ob nicht ein oder die andere Bläßgans dabei gewesen ist'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L33-e0411a", "entry_date_ok": null, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "undated summary 'Frühlingserwachen 1963'; '(Wirt)' is '(Wüst)' on scan; Hochleite (Lbm.) is in Harlaching, ca. 48.09 N 11.56 E",
+   "records": [
+     {"record_id": "obs_de76f055b0f3", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Mönchsgrasmücke: 18. IV. Hochleite (Lbm.) / 20. IV. - -'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L11-e0194", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "checked passage fine; elsewhere 31.) scan Zwergscharbe (not Zwergsehrle), 50.) Fasan ♀♀ (not Schwan: 22); Tafelberg coordinates point near Altötting, not Ismaning",
+   "records": [
+     {"record_id": "obs_811a48670f56", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Später aber können wir drei an der gleichen Stelle einen unzweifelhaften Vertreter dieser Art beobachten'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L24-e0198", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan 'Nach Mitteilung von Adolf Müller' (not 'vom Vogelmüller'); place 'Mö-ring' hard to read; many bird-name errors elsewhere (e.g. 37.) Gänsesäger, 53.) Bläßhühner)",
+   "records": [
+     {"record_id": "obs_07a3f8a1ac32", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Adolf Müller"}, "evidence": "scan: 'Nach Mitteilung von Adolf Müller ist die Türkentaube aus dem Garten von Stuck'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L03-e0027", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "scan 'Die Vögel streichen mit lauten Lockrufen ab mit sämtlichen Bachstelzen'; 'Oswald-Weiher' misread as 'Oswalt-Leiten'",
+   "records": [
+     {"record_id": "obs_6ae9c5bd6481", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auf dem Schleusenhaus und am Mühlbach ... vermutlich hier auch zwei Wasserpieper'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0253", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "scan 'An Arten noch beobachtet'",
+   "records": [
+     {"record_id": "obs_2511ebaf5a12", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'im Forst auf Geviert 51/1 ... Goldammer, Kohlmeise, Blaumeise'", "confidence": 0.9}
+   ]}
+]}

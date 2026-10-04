@@ -123,18 +123,31 @@ function nameCard(m, it) {
       : abtn('j', 'J', t('a_confirm'), 'a-j') + abtn('n', 'N', t('a_revert'), 'a-n');
   return { head, body, mine, acts };
 }
+const TC_FIELD = /^(location_header|date|text|previous_entry_ends): /;   // corrections of a header field, not of the text
+// the checks' better reading, placed on the correction's span by build_review.py (laubmann_kg.review.better_readings):
+// '' = none, null = it cannot be placed (loose: the loosely cut reading for the reviewer's form)
+function betterOf(c, m, loose) {
+  if (c[11] === 'scan') return '';
+  if (c.length <= 9) return c[8] ? null : '';
+  return c[9] === null && loose ? c[10] || null : c[9];
+}
+const hasBetter = (c, m) => { const b = betterOf(c, m); return b === null || (!!b && b !== c[1]); };
 function tcCard(m, it) {
   const c = it.c; const d = RV.dec[it.key]; const rel = (c[5] || '').split('').map(ch => `<span class="fchip rel">${t('rel_' + ch)}</span>`).join('');
-  const head = `<span class="rc-kind k-tc">${t('c_tc')}</span><span class="rc-t">${t('tck_' + c[4])}</span>${rel}${c[2] ? '' : `<span class="vd vd-off">${t('tc_unapplied')}</span>`}`;
-  let body = `<div class="tcdiff"><del>${markup(c[0])}</del><span class="arr">→</span><ins>${markup(c[1])}</ins></div>`;
+  const head = `<span class="rc-kind k-tc">${t('c_tc')}</span><span class="rc-t">${t('tck_' + c[4])}</span>${rel}${c[11] === 'scan' ? `<span class="vd vd-tc-partly">${t(c[13] ? 'tc_scan_in' : 'tc_scan')}</span>` : c[2] || c[13] ? '' : `<span class="vd vd-off">${t('tc_unapplied')}</span>`}`;
+  const st = tcState(m, c, it.key);   // the same colours as in the entry text
+  let body = `<div class="tcdiff">${st === 'rej' ? `<span class="tcs">${markup(c[0])}</span>` : `<del>${markup(c[0])}</del>`}<span class="arr">→</span><ins class="v-${st}">${markup(c[1])}</ins></div>`;
   const vs = [];
   if (c[6]) vs.push(`<span class="who">${srcName('s')}</span><span class="vd vd-tc-${c[6]}">${t('tcv_' + c[6])}</span>`);
   if (c[7]) vs.push(`<span class="who">${srcName('g')}</span><span class="vd vd-tc-${c[7]}">${t('tcv_' + c[7])}</span>`);
   else if ((m.rv.chk || '').includes('g')) vs.push(`<span class="who">${srcName('g')}</span><span class="vd vd-tc-none">${t('tcv_none')}</span>`);
   if (vs.length) body += `<div class="src-h">${vs.join('')}</div>`;
-  if (c[8]) body += `<div class="diff"><span class="fl">${t('tc_better')}</span><span class="to">„${markup(c[8])}“</span></div>`;
-  const mine = d && d.d ? mineHtml('tc', d, d.d === 'edit' ? `<span class="hv">„${markup(d.final || '')}“</span>` : '') : '';
-  const acts = abtn('j', 'J', t('a_tc_ok'), 'a-j') + abtn('n', 'N', t('a_tc_no'), 'a-n') + abtn('e', 'E', t('a_tc_edit'), '');
+  if (c[8]) body += `<div class="diff"><span class="fl">${t(c[13] ? 'tc_better_in' : 'tc_better')}</span><span class="to">„${markup(c[13] && c[9] ? c[9] : c[8])}“</span></div>`;
+  const mine = d && d.d ? mineHtml('tc', d.how === 'better' ? Object.assign({}, d, { d: 'better' }) : d, d.d === 'edit' || d.how === 'better' ? `<span class="hv">„${markup(d.final || '')}“</span>` : '') : '';
+  const bt = betterOf(c, m);
+  const acts = hasBetter(c, m)
+    ? abtn('j', 'J', t('a_tc_better'), 'a-j') + abtn('k', 'K', t('a_tc_ok'), '') + (bt !== c[0] ? abtn('n', 'N', t('a_tc_no'), 'a-n') : '') + abtn('e', 'E', t('a_tc_edit'), '')
+    : abtn('j', 'J', t('a_tc_ok'), 'a-j') + abtn('n', 'N', t('a_tc_no'), 'a-n') + abtn('e', 'E', t('a_tc_edit'), '');
   return { head, body, mine, acts };
 }
 function entProposal(m) {   // entry-level findings of both checks as exportable values
@@ -335,7 +348,10 @@ function cardAct(a) {
     else if (a === 'n') { decide(it.key, nameDecision(it, it.x.kind === 'suggest' ? 'reject' : it.x.kind === 'confirmed' ? 'wrong' : 'revert'), 'revert'); moved = true; }
   } else if (it.type === 'tc') {
     const c = it.c; const base = () => ({ ref: refOf(m, { old: c[0], new: c[1] }), m: { applied: c[2], kind: c[4], rel: c[5], s: c[6], g: c[7] || ((m.rv.chk || '').includes('g') ? 'none' : ''), better: c[8] } });
-    if (a === 'j') { decide(it.key, Object.assign(base(), { d: 'accept', final: c[1] }), 'accept'); moved = true; }
+    const bt = betterOf(c, m);
+    if (a === 'j' && bt === null) openForm(it.key, 'tc');   // a better reading that cannot be placed in the text: the reviewer places it
+    else if (a === 'j' && hasBetter(c, m)) { decide(it.key, Object.assign(base(), bt === c[0] ? { d: 'reject', final: c[0] } : { d: 'edit', final: bt }, { how: 'better' }), 'better'); moved = true; }
+    else if (a === 'j' || (a === 'k' && hasBetter(c, m))) { decide(it.key, Object.assign(base(), { d: 'accept', final: c[1] }), 'accept'); moved = true; }
     else if (a === 'n') { decide(it.key, Object.assign(base(), { d: 'reject', final: c[0] }), 'reject'); moved = true; }
     else if (a === 'e') openForm(it.key, 'tc');
   } else if (it.type === 'ent') {
@@ -400,7 +416,9 @@ function formHtml(m, it) {
       <label class="wide">${t('f_text')}<textarea name="text" rows="2" spellcheck="false">${esc(r.text != null ? r.text : x.text || '')}</textarea><small>${t('hint_text')}</small></label>`;
   } else if (F.kind === 'tc') {
     const c = it.c; const d = RV.dec[it.key];
-    s = `<label class="wide">${t('f_reading')}<textarea name="final" rows="2" spellcheck="false">${esc(d && d.d === 'edit' ? d.final : c[8] || c[1])}</textarea><small>${t('hint_reading')}</small></label>`;
+    const placed = betterOf(c, m);
+    const hint = c[8] && placed === null ? t('hint_reading_place', c[2] ? c[1] : c[0]) : t('hint_reading');
+    s = `<label class="wide">${t('f_reading')}<textarea name="final" rows="2" spellcheck="false">${esc(d && d.d === 'edit' ? d.final : placed || betterOf(c, m, true) || c[8] || c[1])}</textarea><small>${esc(hint)}</small></label>`;
   } else if (F.kind === 'ent') {
     const d = RV.dec[it.key] || {}; const cur = entCur(m); const p = entProposal(m);
     const v = f => (d[f] ? d[f].v : p.vals[f] != null ? p.vals[f] : f === 'place' ? cur.place || cur.header : cur[f]);
@@ -468,7 +486,8 @@ function submitForm(f) {
   }
   if (F.kind === 'tc') {
     const c = it.c; const fin = f.elements.final.value; if (!fin.trim()) return fail('final', t('err_empty'));
-    RVU.form = null; decide(key, { d: fin === c[1] ? 'accept' : fin === c[0] ? 'reject' : 'edit', final: fin, ref: refOf(m, { old: c[0], new: c[1] }), m: { applied: c[2], kind: c[4], rel: c[5], s: c[6], g: c[7] || ((m.rv.chk || '').includes('g') ? 'none' : ''), better: c[8] } }, 'edit'); advance(); return;
+    const how = c[8] && (fin === betterOf(c, m) || fin === betterOf(c, m, true) || fin === c[8]) ? { how: 'better' } : {};
+    RVU.form = null; decide(key, Object.assign({ d: fin === c[1] ? 'accept' : fin === c[0] ? 'reject' : 'edit', final: fin, ref: refOf(m, { old: c[0], new: c[1] }), m: { applied: c[2], kind: c[4], rel: c[5], s: c[6], g: c[7] || ((m.rv.chk || '').includes('g') ? 'none' : ''), better: c[8] } }, how), 'edit'); advance(); return;
   }
   if (F.kind === 'ent') {
     const cur = entCur(m); const parts = {}; const p = entProposal(m); const d0 = Object.assign({}, RV.dec[key] || {});
@@ -494,6 +513,7 @@ function rvPanelClick(ev) {
   if (act && act.dataset.act === 'cancel') { cancelForm(); return; }
   if (act && act.dataset.act === 'txtedit') { textEditStart(); return; }
   if (act && act.dataset.act === 'txtdel') { decide(act.dataset.key, null, 'reset'); return; }
+  if (act && act.dataset.act === 'tlayer') { RVU.textLayer = act.dataset.layer === 'orig' ? 'orig' : 'final'; renderPanel(); return; }
   const tcm = ev.target.closest('[data-tc]');
   if (tcm && S.tab === 'text') { const i = +tcm.dataset.tc; const m = EM; const it = m.items.find(x => x.type === 'tc' && x.i === i); if (it) { if (it.sec === 'hint') RVU.hints = true; S.tab = 'check'; RVU.card = Math.max(0, visibleItems(m).indexOf(it)); renderPanel(); focusCard(RVU.card); } return; }
   const mk = ev.target.closest('[data-obs]');
@@ -522,7 +542,7 @@ function rvKey(ev) {
   if (S.tab !== 'check') return false;
   if (k === 'ArrowUp' || k === 'ArrowDown') { ev.preventDefault(); moveCard(k === 'ArrowUp' ? -1 : 1); return true; }
   if (EXPLORER) return false;   // no decision keys
-  if ('jnexu'.includes(k) && k.length === 1) { ev.preventDefault(); cardAct(k); return true; }
+  if ('jknexu'.includes(k) && k.length === 1) { ev.preventDefault(); cardAct(k); return true; }
   if (k === 'Enter') { const it = (RVU.items || [])[RVU.card]; if (it && it.type === 'done' && !entryDec(EM.uid).checked) { ev.preventDefault(); cardAct('done'); return true; } }
   return false;
 }

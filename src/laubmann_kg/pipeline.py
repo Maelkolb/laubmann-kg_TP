@@ -280,9 +280,30 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     # Visual reading (config ``reading``): each transcription is checked against
     # its page scans and corrected before the extraction model reads it.
     reading_cfg = config.get("reading") or {}
+    # The machine layer of the text (review.machine.text_layer: the checks' better readings and the scan
+    # agent's corrections): changes that need the model go in before the extraction (the entry is read
+    # anew), the others are patched into the extracted entry afterwards (text, passages, and the species
+    # or places they change as value corrections), so their extraction stays cached.
+    machine_text = (config.get("review") or {}).get("machine") or {}
+    machine_text = machine_text if machine_text.get("enabled", True) else {}
+    layer_decisions, layer_readings, layer_after, after_uids = {}, [], [], set()
+    if machine_text.get("text_layer") and reading_cfg.get("enabled"):
+        from laubmann_kg.extraction.reading import load_transcript_decisions
+        from laubmann_kg.review.better_readings import layer_parts, load_layer, reviewed_entries
+        from laubmann_kg.review.readings import load_readings
+        reviewed = reviewed_entries(load_transcript_decisions(reading_cfg.get("decisions")),
+                                    load_readings((config.get("review") or {}).get("text_corrections")))
+        layer_decisions, layer_readings, layer_after, after_uids = layer_parts(load_layer(machine_text["text_layer"]), reviewed)
+        logger.info("text layer: %d decisions and %d readings before the extraction, %d changes in %d entries after it",
+                    len(layer_decisions), len(layer_readings), len(layer_after), len(after_uids))
     if reading_cfg.get("enabled"):
         from laubmann_kg.extraction.reading import reading_prompt_sha, run_reading
+        if layer_decisions:   # under the reviewer's decisions
+            reading_cfg = dict(reading_cfg, machine_decisions=layer_decisions)
         logger.info("reading: %s", run_reading(built, reading_cfg, page_image_loader(reading_cfg)))
+        if layer_readings:    # the scan agent's corrections of the corrected text, after the reading
+            from laubmann_kg.review.better_readings import machine_readings
+            reading_flags = list(reading_flags) + machine_readings(built, layer_readings, reading_cfg.get("decisions"))
         provenance["reading"] = {"model": reading_cfg.get("model", "gemini-3.8-flash"),
                                  "prompt": "transcript_reading",
                                  "prompt_sha256": reading_prompt_sha(reading_cfg.get("prompt_dir")),
@@ -349,14 +370,26 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     # applied before coverage and QA so a corrected "non-bird" or place-less entry is judged anew.
     correction_flags: list = list(reading_flags)
     corr_cfg = config.get("corrections") or {}
-    from laubmann_kg.normalization.corrections import apply_corrections, apply_identity_removals, load_corrections
+    from laubmann_kg.normalization.corrections import (apply_corrections, apply_identity_removals, load_corrections,
+                                                       place_merge_aliases)
+    resolution = config.get("resolution") or {}
+    merged = place_merge_aliases((resolution.get("places") or {}).get("reviewed_csv")
+                                 or Path(resolution.get("review_dir") or "data/review") / "place_merges.csv")
+    if layer_after:
+        # the text layer's changes after the extraction: first the species and places they change (the value
+        # corrections still address the names as extracted), then the text, header and record passages
+        from laubmann_kg.review.better_readings import patch as patch_text
+        values = [c for c in load_corrections(machine_text.get("text_values")) if c.entry_uid in after_uids] \
+            if machine_text.get("text_values") else []
+        correction_flags += apply_corrections(result.entries, values, merged)[1]
+        correction_flags += patch_text(result.entries, layer_after)
     if corr_cfg.get("enabled", True) and corr_cfg.get("csv"):
-        correction_flags += apply_corrections(result.entries, load_corrections(corr_cfg["csv"]))[1]
+        correction_flags += apply_corrections(result.entries, load_corrections(corr_cfg["csv"]), merged)[1]
     if machine_cfg.get("enabled", True) and machine_cfg.get("value_corrections"):
         # scan-checked single mentions of the machine review, above the confidence threshold only
         correction_flags += apply_corrections(result.entries, load_corrections(
             machine_cfg["value_corrections"], float(machine_cfg.get("min_correction_confidence", 0.9)),
-            int(machine_cfg.get("min_agreement", 2))))[1]
+            int(machine_cfg.get("min_agreement", 2))), merged)[1]
     # name-level "not a taxon / person / place / habitat" decisions of the review
     correction_flags += apply_identity_removals(result.entries, result.identities)
     # single record fields (count, locality, date, observer, record type …) and records

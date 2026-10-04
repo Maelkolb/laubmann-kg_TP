@@ -1,0 +1,200 @@
+{"batch": 11, "entries": [
+  {"entry_id": "L21-e0108", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Some route village names uncertain (e.g. 'Weidach'); bird passages correct.",
+   "records": [
+     {"record_id": "obs_56806097fb2f", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "villages along the bike route Großhesselohe–Pullach–…–Münsing (not Kienparing specifically)"},
+      "evidence": "scan: 'In den Ortschaften an vielen Stellen Star-Schwärme und Flüge von Rauch- und Mehlschwalben'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L17-e0257", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_a8775d25ba91", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Trauerfliegenfängern im Englischen Garten mit, 19 am 28. IV.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L04-e0066", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Absence refers to song (first singing Amsel not yet heard by diarist).",
+   "records": [
+     {"record_id": "obs_c44cd683ca5f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'sang am 11. II. … die erste Amsel, ich selbst habe noch keine gehört'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L10-e0099", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header place is Pöcking, not Tutzing. Misreads: Teichrohrsänger (scan Heuschreckensänger), Wiesenpieper (Wiesenschmätzer), Knäkenten (Krickenten), Wörth (Wieling).",
+   "records": [
+     {"record_id": "obs_27e894613cb1", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Als wir um 10 30 h wieder am Damm sind, sind die Trauerseeschwalben bereits wieder abgezogen'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L04-e0185", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Header is a route 'Ebenhausen - Starnberg'; entry_place gives only the start.",
+   "records": [
+     {"record_id": "obs_b4718825f020", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "route Ebenhausen–Zell–Farchach–Kempfenhausen–Starnberg (no site given for Kohlmeise)"},
+      "evidence": "scan: '13.) Kohlmeise' with no place; entry header 'Ebenhausen - Starnberg'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L15-e0239", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Last word read as 'F.S.' is unclear on scan (looks like a sex sign); some small misreads (östlich/südlich).",
+   "records": [
+     {"record_id": "obs_7b5918ffae9c", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Abends nochmals auf der Finkler-Alm. Es zeigt sich ein Flug Kreuzschnäbel, darunter noch ein junges …'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L20-e0116", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan 'Halskogel'(?), 'Dr. Gietz … im Wimbachtal' (not 'sah ich … Hinterseetal'), 'Dr. Gerd Diesselhorst' (not 'Egert Diefenbach').",
+   "records": [
+     {"record_id": "obs_87ba1c192d6a", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "cannot_tell",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1944/1946 (one young fledged each year; nest unused 1947)", "observer": "Forstwart Gellert (relayed by E. Schuhmacher)"},
+      "evidence": "scan: '1 Horst nach Forstwart Gellert … 1944, 1945 und 1946 jeweils ein Jungvogel hochgekommen. 1947 nicht benützt'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L02-e0045", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_ea31ddc75a1f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auch Kohlmeisen, alte und junge Exemplare sind hier regelmäßig anzutreffen' (hier = Friedensdenkmal)", "confidence": 0.9}
+   ]},
+  {"entry_id": "L33-e0090", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'auf der Hochleite', transcription 'auf der Harlachinger'.",
+   "records": [
+     {"record_id": "obs_d1471c8a6709", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Hochleite (München-Harlaching)"},
+      "evidence": "scan: 'Vormittags auf der Hochleite Gartenspötter, Garten- und Mönchsgrasmücken singen verhört'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L24-e0102", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan has '+ x' where transcription has '+ ♂' (Stockenten, Schnatterenten etc.).",
+   "records": [
+     {"record_id": "obs_77453d2af281", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst"},
+      "evidence": "scan: 'Freund W. Wüst meldet vom 30. XII. aus Ismaning … 4 + x Zwergsäger, nur ♀♀'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L29-e0164", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed carbon 'Dezember-Bericht Spr. Ismaning' pasted in; author not named on crop, probably not Laubmann (typed, different abbreviations, 'mit Heinz'). Tafelberg coordinates (12.80 E) far from Ismaning.",
+   "records": [
+     {"record_id": "obs_14527c022f72", "verdict": "unclear",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "unclear", "record_type": "unclear", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Schwanzmeise: Auf dem Tafelberg unter einem Meisenschwarm 4 Ex.' in typed Dezember-Bericht", "confidence": 0.5}
+   ]},
+  {"entry_id": "L07-e0147", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header place is Pöcking; all observations at Maisinger See (in Pöcking). Misread '6.) Schwarzmilan' (scan Schwarzspecht).",
+   "records": [
+     {"record_id": "obs_4009aa2be97e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '15.) Zwergrohrdommel: 1 + 1 ♂ gesehen; mehrfach geg geg - rufend gehört'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L21-e0266", "entry_date_ok": null, "entry_place_ok": null, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Entry is a letter report ('… vom 12. IV. 49 kann ich folgende wichtigen Beobachtungen entnehmen'); start with header and writer missing. Misreads: Gebirgsstelzen (Goldregenpfeifer), Zwergschnepfe (Grünspecht), Bergfink (Bergstelze), Blaumeischen (Blaukehlchen).",
+   "records": [
+     {"record_id": "obs_dfc8d19a22f6", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "letter writer at Feldwies (name in entry start above crop)", "record_type": "third-party-report"},
+      "evidence": "scan: '… vom 12. IV. 49 kann ich folgende wichtigen Beobachtungen entnehmen … 1. IV. … 1 Hausrotschwanz'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L27-e0077", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Transcription from item ~35 on is hallucinated (items 36-64 and Hüttenbuch part wrong). Scan: 2.) Elster (no details), 56.) Lachmöwe mehrfach, 60.) Bläßhuhn.",
+   "records": [
+     {"record_id": "obs_d0504b50fc6e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '1.) Rabenkrähe, 2.) Elster, 3.) Star' (quoted passage '48.) Elster, im Wb.' not on scan)", "confidence": 0.7},
+     {"record_id": "obs_ff5c31db646e", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": ""}, "evidence": "scan: '56.) Lachmöwe, mehrfach im ganzen Gelände'", "confidence": 0.85},
+     {"record_id": "obs_55d076141a3a", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": ""}, "evidence": "scan: '60.) Bläßhuhn.' without number", "confidence": 0.85}
+   ]},
+  {"entry_id": "L20-e0062", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Misreads: Teichrohrsänger (scan Heuschreckensänger), Löffelente (scan Kolbenente).",
+   "records": [
+     {"record_id": "obs_d7c6072bc33a", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst"},
+      "evidence": "scan: 'Freund Walter Wüst … war vom 4.-7. VI. … am Speichersee … Kampfläufer: ca 30 ♀♀, … nur 1 ♂'", "confidence": 0.75},
+     {"record_id": "obs_01925192af3a", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": ""}, "evidence": "scan: 'fanden heute … in der Pupplinger Au ein drittes, ganz frisch belegtes Flußregenpfeifer-Nest' (nest, no birds counted)", "confidence": 0.55}
+   ]},
+  {"entry_id": "L05-e0030", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Campos = olive plain near Preveza; coordinates point to Campos, Mallorca.",
+   "records": [
+     {"record_id": "obs_a42c16c8df25", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Campos … folgende Arten … Kohlmeisen, in den Ölbäumen'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L07-e0008", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header 'Seefeld - München' (travel day). List misreads: 21.) Blaumeise (scan Weidenmeise), 24.) Zaunlaubsänger (scan Weidenlaubvogel).",
+   "records": [
+     {"record_id": "obs_241ba6a705de", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Bei Klais überfliegt uns ein einzelner Tannenhäher'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L11-e0191", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_5b574a28a939", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1933-07 (July 1933)"},
+      "evidence": "scan: 'während seines heurigen Aufenthaltes im Allgäu im Juli am Falkenstein bei Pfronten Felsenschwalben beobachtet'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L17-e0306", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Misreads: Wachtel (scan Kreuzschnabel), Gartengrasmücke (Gartenspötter), Rohrweihe (Rohrschwirl).",
+   "records": [
+     {"record_id": "obs_bd7f2bf0a256", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Waldohreule: eine ganze Familie Alte mit Jungen am 6. und 7. VI. am Westufer beobachtet'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L30-e0143", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Report list (W. Wüst, E. Bezzel, A. Müller, Ismaning basins) belongs to an earlier entry before 27. Oktober; transcription garbled and duplicated (Silbermöve/Meeresente for Silberreiher/Moorente).",
+   "records": [
+     {"record_id": "obs_33018501c040", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Ismaninger Teichgebiet / Speichersee (Bezzel's Ismaning report)"},
+      "evidence": "scan: 'E. Bezzel, 20. X.: Silberreiher, 1 ad bei der Halbinsel im Bb.; … Saatgans, 63 im östlichen Wb.; Bergfink.'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L33-e0359", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan 'An der Hochleite', transcription 'An der Waldseite'.",
+   "records": [
+     {"record_id": "obs_f9644f98f1c0", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags am Perlacher Forst Mönchs- und Gartengrasmücken singen verhört'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L18-e0089", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header and text say 'Ampermoos'/'Amper', transcribed 'Angermoor'/'Anger'. Misreads: Kernbeißer (Haussperling), Rotkehlchen (Kohlmeise), Nachtigall (Wacholderdrossel), 47.) Kohlmeise (Hohltaube).",
+   "records": [
+     {"record_id": "obs_3f4e90565682", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Ampermoos (Amper, Fluss-km 95-97, near Grafrath)"},
+      "evidence": "scan: '46.) Große Sumpfschnepfe: zwischen km 97-96 fliegt ein Stück von einer Sandbank in der Amper auf'", "confidence": 0.7}
+   ]}
+]}

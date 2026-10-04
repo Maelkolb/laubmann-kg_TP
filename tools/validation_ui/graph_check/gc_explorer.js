@@ -463,7 +463,11 @@ function stats() {   // [GC] counts follow the corpus filter (rvSrcOk, rvInCount
   G.stats = { kc: kcnt, pc, classCount, yE, yO, obsCount: obsNodes.length, taxa: top('taxon', ['lkg:observedTaxon']), places: top('place', PLACE_PREDS),
     persons: top('person', ['dwciri:recordedBy'].concat(mentionPreds.filter(p => p === 'lkg:mentionsPerson'))), habitats: top('habitat', ['dwciri:habitat']), geo, nPlaces: places.length };
   kcnt[KI.entry] = ents.length; kcnt[KI.obs] = obsNodes.length;
-  if (filt) { for (const k of ['taxon', 'place', 'person', 'habitat']) kcnt[KI[k]] = byKind(k).filter(n => rvUses(n) > 0).length; G.stats.nPlaces = kcnt[KI.place]; }
+  if (filt) {
+    for (const k of ['taxon', 'place', 'person', 'habitat']) kcnt[KI[k]] = byKind(k).filter(n => rvUses(n) > 0).length;
+    for (const k of OWNED) kcnt[KI[k]] = byKind(k).filter(n => rvClassOk(n, k)).length;   // [GC] parts of entries, pages, geometries, authority records
+    G.stats.nPlaces = kcnt[KI.place];
+  }
   return G.stats;
 }
 function showOverview() {
@@ -1188,13 +1192,13 @@ function runSearch(raw) {
   const q = normQuery(raw); if (!q) return null;
   const toks = q.split(/\s+/).filter(Boolean); const X = searchIndex();
   const hit = s => toks.every(tk => s.includes(tk));
-  const ents = []; for (let i = 0; i < X.ent.length && ents.length < 40; i++) if (hit(X.ent[i])) ents.push(i);
-  const byKind = {}; for (const [n, k, s] of X.nodes) if (hit(s)) { (byKind[k] = byKind[k] || []).push(n); }
+  const ents = []; for (let i = 0; i < X.ent.length && ents.length < 40; i++) if (hit(X.ent[i]) && rvSrcOk(G.ent[i].n)) ents.push(i);   // [GC] corpus filter
+  const byKind = {}; for (const [n, k, s] of X.nodes) if (hit(s) && rvClassOk(n, k)) { (byKind[k] = byKind[k] || []).push(n); }
   let text = [];
   if (q.length >= 3) {
     if (!X.text) X.text = G.ent.map(r => (pref(r.n, 'dwc:fieldNotes') || '').toLowerCase());
     const seen = new Set(ents);
-    for (let i = 0; i < X.text.length && text.length < 40; i++) if (!seen.has(i) && X.text[i].includes(q)) text.push(i);
+    for (let i = 0; i < X.text.length && text.length < 40; i++) if (!seen.has(i) && X.text[i].includes(q) && rvSrcOk(G.ent[i].n)) text.push(i);
   }
   return { ents, byKind, text, q };
 }

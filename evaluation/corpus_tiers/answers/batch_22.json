@@ -1,0 +1,203 @@
+{"batch": 22, "entries": [
+  {"entry_id": "L21-e0117", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_d5e4e9c97059", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'ruft im Hangwald beim Haus wieder kurz ein Waldkauz'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L29-e0147", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed carbon copy; belongs to the reports Werner Rathmayer sent (diary 24 XII 1955), not Laubmann's own walk.",
+   "records": [
+     {"record_id": "obs_a269633c1682", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "Werner Rathmayer | Heinz (Remold)", "record_type": "third-party-report"},
+      "evidence": "typed '6.Nov.55.Mit Heinz ... Goldammer;' follows 24 XII 55 'Werner Rathmayer schickt mir nachfolgende Berichte'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L31-e0113", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Checked passage fine; elsewhere the transcription has 'Pirol zerstört' where the scan has an underlined Wendehals 'rufend verhört'.",
+   "records": [
+     {"record_id": "obs_f108f908539c", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'In den Gärten mehrfach Gartenspötter singend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L23-e0143", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan reads 'Hr. W. Wüst' (same hand form as 'W. Wüst' in L27-e0012), not 'H. Wick'; elsewhere 'Ismaning' should be 'Freising' (Seidenschwanz report) and item 28 is 'Wildente'.",
+   "records": [
+     {"record_id": "obs_6a60a1ef2b0c", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "W. Wüst (Walter Wüst)"},
+      "evidence": "scan: 'Hr. W. Wüst berichtete über eine am 4. III. in Ismaning ausgeführte Entenzählung ... Stockenten 1154'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L28-e0146", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed section heading 'Beobachtungen in Eching.' precedes 2.II.55; part of the February report by Herr Rothmayer/Rathmayer (diary 5 III 1955).",
+   "records": [
+     {"record_id": "obs_95bb207501a6", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"locality": "Eching", "observer": "Werner Rathmayer (report author)", "record_type": "third-party-report"},
+      "evidence": "scan: 'Beobachtungen in Eching. 2.II.55. ... 620 Krick-,35 Schnatter-'; report introduced 'Bericht von Herrn Rothmayer'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L14-e0046", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_9dfb1f25a8f5", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'einmal in der Aue nördlich von dem ...kanal der Großlappener Kläranlage einen Heuschreckensänger schwirrend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L24-e0201", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_dd9de943a7f3", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'im Eichenwald an der Reinoltstraße verhöre ich mehrfach Pirole'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L02-e0194", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "'Die beiden Vögel, wohl ♂♀' are the two Wacholderdrosseln, not the crow.",
+   "records": [
+     {"record_id": "obs_9e1791d1b62a", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"count": "1", "sex": "", "identification_qualifier": ""},
+      "evidence": "scan: 'haben heute eine sehr zahme Saatkrähe wieder arg belästigt'; pair ♂♀ = the Wacholderdrosseln", "confidence": 0.85}
+   ]},
+  {"entry_id": "L14-e0060", "entry_date_ok": false, "entry_place_ok": null, "boundary_ok": false,
+   "transcription_quality": "good", "note": "2 VI 1936 is the caption of a pasted photo (Brandseeschwalben auf Mellum); the stork text continues a quotation from an entry of c. July 1936 whose start is missing.",
+   "records": [
+     {"record_id": "obs_3c80fad7572b", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1936 (breeding season 'heuer'; real entry c. July 1936, not the photo date 2 VI)"},
+      "evidence": "scan: 'Außerdem sind noch besetzte Horste in Nabburg'; '2. VI. 1936' is photo caption", "confidence": 0.8}
+   ]},
+  {"entry_id": "L09-e0078", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Header place is Pöcking (transcribed 'Tüching'); entry_place should be Pöcking, not Tutzing. Other list items misread (15 Wasserpieper, 46 Haubentaucher).",
+   "records": [
+     {"record_id": "obs_05b9f907dec5", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '27.) Misteldrossel, bei Jägerbrunn.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L17-e0095", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Final sentence reads 'Von Fischreihern konnte ich ...' (no Fischreiher in the list; Fitis is item 21 in the Auen). Item 19 reads 'auffallend zahlreich, sowohl im Englischen Garten wie auch in den Auen'; item 23 is Heuschreckensänger, not Flußuferläufer.",
+   "records": [
+     {"record_id": "obs_9b144ca75686", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Graureiher (Ardea cinerea), written 'Fischreihern'"},
+      "evidence": "scan: 'Von Fischreihern konnte ich in den Auen diesmal gar nichts bemerken'", "confidence": 0.65},
+     {"record_id": "obs_a844451d7745", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "wrong",
+      "correct": {"identification_qualifier": ""},
+      "evidence": "scan: 'Halsbandfliegenschnäpper, auffallend zahlreich, sowohl im Englischen Garten wie auch in den Auen'", "confidence": 0.75},
+     {"record_id": "obs_2de4f922380d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '21.) Fitislaubvogel, nur in den Auen.'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L27-e0012", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Duck-count passage badly transcribed: scan 'W. Wüst meldet ... von der Entenzählung aus Ismaning: 2 Graugänse, 175 Bläßgänse, 74 Saatgänse, ca 1250 Stockenten ...'.",
+   "records": [
+     {"record_id": "obs_8e15c0546772", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "1250 (ca.)", "count_qualifier": "approximate", "locality": "Ismaninger Teichgebiet (Ismaning)", "observer": "W. Wüst (Walter Wüst)"},
+      "evidence": "scan: 'W. Wüst meldet ... Entenzählung aus Ismaning ... 175 Bläßgänse, 74 Saatgänse, ca 1250 Stockenten'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L20-e0008", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Checked passage fine; elsewhere 'Gimpel' should be 'Pirol' (30. V. 2 ♂♂ Nonner Au). Georef: Karlstein here is the Bad Reichenhall district (~47.70, 12.86), not Karlstein am Main.",
+   "records": [
+     {"record_id": "obs_03c2f391ba89", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"coordinates": "47.70, 12.86 (Karlstein, Bad Reichenhall)"},
+      "evidence": "scan: 'am 21. VI. ein singendes ♂ und 2 andere Stücke am Sol-Leitungsweg zwischen der Amalien-Ruhe und Karlstein'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L22-e0058", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Saatkrähe passage reads 'zwischen Großhesselohe und Harlaching überhin' (evening ride home), not Ascholding; item 21 is Rotrückenwürger, 28 Rauchschwalbe.",
+   "records": [
+     {"record_id": "obs_88e2014e1150", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "zwischen Großhesselohe und Harlaching (München)"},
+      "evidence": "scan: 'Saatkrähe, abends 3+2 zwischen Großhesselohe und Harlaching überhin'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L19-e0089", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Site is the forest road Großhesselohe–Geiselgasteig on the southern edge of München; accepted as within the München area.",
+   "records": [
+     {"record_id": "obs_6ff3f9344438", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'im Wald an der Straße zwischen Großhesselohe und Geiselgasteig wieder Buntspechte'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L24-e0116", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_3085761e1a6f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in der Karthäuserstraße singen Kohlmeise, Kleiber, Grünfinken und Gimpel'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L14-e0007", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_ac25f219be4f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'beim Bahngeleis ein Grünspecht'", "confidence": 0.9},
+     {"record_id": "obs_f859b4bb8dc5", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'zahlreiche Buntspechte trommelten'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L12-e0104", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan 'verschiedentlich', not 'merkwürdiges'.",
+   "records": [
+     {"record_id": "obs_63a9f513a664", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Nachmittags wieder verschiedentlich Mauersegler über der Stadt beobachtet'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L20-e0277", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'Kolonie bei Beckstetten' and 'in Buchloe Störche' (stations on the Kaufbeuren–München line), not Türkenfeld/Büchlen.",
+   "records": [
+     {"record_id": "obs_45d9d48d1006", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Buchloe"},
+      "evidence": "scan: 'weder gestern noch heute ... Saatkrähen oder in Buchloe Störche beobachten können'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L20-e0210", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Record comes from the caption of a pasted photograph (photographic evidence by the photographer).",
+   "records": [
+     {"record_id": "obs_3978cad0a4ce", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan caption: 'Zwergtaucher auf dem Grund eines abgelassenen Karpfenteiches bei Kolbitz, Niederlausitz. X. 1940'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L26-e0030", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Transcription skips the 7 and 8 June 1953 entries and appends the Zimmer report from p. 34 (8 June entry). Scan: 'Zwergtaucher, 1 ♂♀ im K 2/2, 1 ♂♀ in den Winterteichen' ('sg' = ♂♀).",
+   "records": [
+     {"record_id": "obs_69a324b34396", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "2 (1 ♂♀ im K 2/2; a further ♂♀ in the Winterteichen)"},
+      "evidence": "scan: 'Am 6. VI. auf dem gleichen Weg ... Zwergtaucher, 1 ♂♀ im K 2/2, 1 ♂♀ in den Winterteichen'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L13-e0007", "entry_date_ok": false, "entry_place_ok": false, "boundary_ok": false,
+   "transcription_quality": "good", "note": "Fragment of the 10 Oct 1934 München entry: 'Aus einer Aufstellung von Präparaten ...-Pfarrkirchen entnehme ich'; '22. X. 1926 Königshofen' is a list item, not a header.",
+   "records": [
+     {"record_id": "obs_2b3ee0bcb026", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "", "record_type": "literature-record", "basis": "PreservedSpecimen"},
+      "evidence": "scan: '14.) Nachtreiher: ... 19. IX. 1931 Schwarzach bei Bogen, Ndb.' from a taxidermist's specimen list", "confidence": 0.8}
+   ]}
+]}

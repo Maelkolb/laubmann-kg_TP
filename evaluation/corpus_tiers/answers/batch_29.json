@@ -1,0 +1,197 @@
+{"batch": 29, "entries": [
+  {"entry_id": "L23-e0248", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "route words uncertain ('Bierruhepause', 'Geiselgasteiger Straße'); bird passage correct",
+   "records": [
+     {"record_id": "obs_0250c4671f37", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Forst nur noch einige Goldammern und Weidenlaubvögel singend verhört'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L24-e0099", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "checked passage correct; elsewhere '24.) Stockente, nur 1 Stück' is '24.) Fischreiher' on scan, 'Freund Stolz' = 'Freund Adolf'",
+   "records": [
+     {"record_id": "obs_4ebcf16148f4", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"coordinates": "Werkkanal at Süddamm of Ismaninger Speichersee, ca. 48.21, 11.70 (given point is near Moosburg)"},
+      "evidence": "scan: '15.) Bergstelzen, 3 Stück ebenda' after Wasserpieper 'am Werkkanal vom Süddamm aus'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L34-e0082a", "entry_date_ok": true, "entry_place_ok": null, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "pressed leaf covers header year and place; '19. Septemb' visible",
+   "records": [
+     {"record_id": "obs_212a7347c311", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "n/a", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan last line: 'Gartenbaumläufer lockend.'; place hidden under leaf", "confidence": 0.8}
+   ]},
+  {"entry_id": "L01-e0131", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_e7b31427361e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'um 1/2 5 Uhr abends circa 10 Lachmöven am Quai Isaraufwärts geflogen'", "confidence": 0.95},
+     {"record_id": "obs_7fd95a4d94ff", "verdict": "spurious",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "undated earlier occasions, not 1917-11-14"},
+      "evidence": "general remark: 'habe ich auch schon einzelne Exemplare an der Isar nächtigen sehen' (undated, not this day)", "confidence": 0.55}
+   ]},
+  {"entry_id": "L23-e0030", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'Frl. Engel' is 'Dr. Engel' on scan",
+   "records": [
+     {"record_id": "obs_6fe3cc24cdfc", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'und am Tierparkberg eine Mönchsgrasmücke'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L18-e0219", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'erbeutet und eingeborstet' reads 'erbrütet und ...gehorstet'",
+   "records": [
+     {"record_id": "obs_fa4c48f29133", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1942"}, "evidence": "scan: '1942 ein Horst an der Hochkünzelspitze bei Schröcken, wo ein Junges erbrütet'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L27-e0028", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_c8ae5ebf495e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in den Tierparkauen singt eine Heckenbraunelle'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L25-e0136", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan says 'singend Tannenmeise mehrfach verhört', transcription inverted it to 'nirgends Tannenmeise mehr. Fast verstummt'",
+   "records": [
+     {"record_id": "obs_77bea25be3d0", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "wrong", "other": "right",
+      "correct": {"status": "present"}, "evidence": "scan: 'in den Tierparkauen singend Tannenmeise mehrfach verhört'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L11-e0163", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "transcription stops at 'ent-', continuation on next page missing; 'Sonthofen' = Possenhofen, 'Entschenlohe' = Eschenlohe; header Krottenkopf",
+   "records": [
+     {"record_id": "obs_bbb948ca99f7", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Die Waldungen sind belebt von Gimpeln, Waldbaumläufern, Tannen- und Haubenmeisen'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L09-e0122", "entry_date_ok": false, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header is 27. Juni 1931 (2 written c-shaped; text refers back to 14. Juni; previous entry cites 11.VI.31; moonlit night fits 27 June)",
+   "records": [
+     {"record_id": "obs_1766842bc5c1", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1931-06-27", "coordinates": "Maisinger See ca. 47.985, 11.27 (point is Pöcking village, ~2.7 km off)"},
+      "evidence": "scan: 'Anfangs machen die Lachmöwen einen solchen Lärm' on Maisinger See boat trip; header '27. Juni 1931'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L29-e0054b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "good", "note": "typed report by an unnamed observer (met Bezzel); end of list (Buchfink, Goldammer, Rohrammer, Feldsperling on p.131) missing",
+   "records": [
+     {"record_id": "obs_f56e278faefa", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: 'Bachstelze: Hütte u.s.w. ges.'; report author not named in crops", "confidence": 0.75}
+   ]},
+  {"entry_id": "L15-e0202", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "card (Kiel 5/10.36) says 1927, Hohenschwangau, Weg von Ulrichsbrück; transcription has 1937, Hohenwestedt, Albersdorf; 'Weiter an Dr. Wüst'",
+   "records": [
+     {"record_id": "obs_c80091eb5076", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1927-06-25", "locality": "Hohenschwangau (Weg von Ulrichsbrück nach Hohenschwangau), near Füssen, Allgäu", "coordinates": "ca. 47.56, 10.73"},
+      "evidence": "card: 'daß ich 1927 in der Gegend von Hohenschwangau ... am 25. Juni den Zwergfliegenschnäpper recht zahlreich'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L32-e0475", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "'Kaulbachstraße' is 'Karolingerallee' on scan",
+   "records": [
+     {"record_id": "obs_6de6d443b9d0", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Karolingerallee (beim Haus), München"}, "evidence": "scan: 'beim Haus in der Karolingerallee wieder Distelfinken singend'", "confidence": 0.9},
+     {"record_id": "obs_a1dc0935aeb1", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in der Seyboth-Straße beim Lungensanatorium Rauchschwalben beobachtet'", "confidence": 0.95},
+     {"record_id": "obs_ca244ee93948", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Rauchschwalben beobachtet und Girlitze singend verhört'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L08-e0082", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Wildente, Knäkente (sehr viele), Krickente (ca 50), Pfeifente (10)'; transcription shuffles counts",
+   "records": [
+     {"record_id": "obs_8c36063aa82e", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "W. (Walter) Wüst"}, "evidence": "scan: 'W. Wüst war am 1. Mai wieder in Ismaning'; 'alle Schwimmenten (ausgenommen die Schnatterente)'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L12-e0212", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Dr. Wüst meldet aus Ismaning vom 13. IX.' and 'einem Fischadler', not Eistaucher",
+   "records": [
+     {"record_id": "obs_5104bbeb6f1e", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"species": "Fischadler (Pandion haliaetus)", "observer": "Dr. W. Wüst", "record_type": "third-party-report"},
+      "evidence": "scan: 'Dr. Wüst meldet aus Ismaning vom 13. IX. ... einem Fischadler und 5 Rohrweihen'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L26-e0114", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'A. Müller meldet mit Karte vom 6.X. ... gleichen Datum', '1 ♀ Kolbenente auf dem Vkl., abends ein juv. Wanderfalke'; 'Weidenlaubvogel' not Gartenlaubvogel",
+   "records": [
+     {"record_id": "obs_15f2418b30e5", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "wrong", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Wanderfalke (Falco peregrinus)", "date": "1953-10-06", "observer": "A. Müller"},
+      "evidence": "scan: 'abends ein juv. Wanderfalke'; card of 6.X., same date", "confidence": 0.75}
+   ]},
+  {"entry_id": "L31-e0382", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'bei Maria Rastm.' uncertain",
+   "records": [
+     {"record_id": "obs_fb266f2c245e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'auf dem See 4+3 +5 Wildenten'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L24-e0024", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan: 'Morgens singt beim Haus an der Karolingerstraße wieder der Hausrotschwanz', 'im Hangwald', 'Morgens beim Haus ein Flug Stare' (not 'beim Wein')",
+   "records": [
+     {"record_id": "obs_190c1e797386", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Morgens beim Haus ein Flug Stare und 3 Rauchschwalben überhin'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L11-e0146", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "'Rohrtrommel gebaut' = 'Rohrdommel gebrütet'; 'zurück nach Penzberg' = 'Possenhofen'",
+   "records": [
+     {"record_id": "obs_371d2da4698d", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: Schuttabladeplatz near Hotel Sonnenbichl, Garmisch: 'Leider war kein Rabe zu sehen'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L17-e0202", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_570a1ee20dec", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'glaubt, am 24. XII. in Oberstdorf im Allgäu einen Seidenschwanz ... erkannt zu haben'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L05-e0021", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "header 'Lioni - Oxya - Kap Skrophá' (route); 'Silberreihern'/'Seidenreiher' are 'Fischreihern'/'Fischreiher', 'rotbrüstige' is 'rotrückige Würger'",
+   "records": [
+     {"record_id": "obs_f7af27063c98", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Lioni: lagoons and dune wood near the morning camp, north of the Aspropotamos mouth (not Kap Skropha, reached only in the evening)"},
+      "evidence": "scan: morning walk from 'Zelt' in lagoons: 'nur Samtköpfchen, rotrückige Würger'; Kap Skropha reached 'gegen Abend'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L29-e0082a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "scan has 'Trauerseeschwalbe', transcription 'Trauerschwalbe'; header partly under pressed leaf",
+   "records": [
+     {"record_id": "obs_16a7128a377e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Einige Silbermöwen, ad. und juv. und wieder eine Trauerseeschwalbe'", "confidence": 0.9}
+   ]}
+]}

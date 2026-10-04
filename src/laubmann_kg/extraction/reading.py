@@ -109,16 +109,26 @@ def apply_reading(entry: DiaryEntry, raw, decisions: Optional[dict] = None) -> N
     if not isinstance(raw, dict):
         return
     entry.transcript_quality = vocab.normalize_enum(raw.get("quality"), vocab.TRANSCRIPT_QUALITY)
-    text = entry.text_clean or ""
-    original = text
+    original = entry.text_clean or ""
+    text, out = correct_text(original, raw.get("corrections") or [], decisions, entry.entry_uid)
+    entry.transcript_corrections = out
+    if text != original:
+        entry.text_transcribed = original
+        entry.text_clean = text
+
+
+def correct_text(text: str, corrections: list, decisions: Optional[dict] = None,
+                 entry_uid: str = "") -> tuple[str, list[tuple[str, str, bool]]]:
+    """The reading's corrections ``[{"old", "new"}, ...]`` applied in turn, each at the first occurrence of
+    its ``old`` in the text so far. Returns the text and ``[(old, new, applied), ...]``."""
     out: list[tuple[str, str, bool]] = []
-    for item in raw.get("corrections") or []:
+    for item in corrections:
         if not isinstance(item, dict):
             continue
         old, new = item.get("old"), item.get("new")
         if not isinstance(old, str) or not old.strip() or not isinstance(new, str) or old == new:
             continue
-        decided = (decisions or {}).get((entry.entry_uid, old, new))
+        decided = (decisions or {}).get((entry_uid, old, new))
         if decided and decided[0] == "reject":
             continue
         if decided and decided[0] == "edit":
@@ -139,10 +149,7 @@ def apply_reading(entry: DiaryEntry, raw, decisions: Optional[dict] = None) -> N
                 text = text[:start] + _TAG.sub("", new) + text[end:]
                 applied = True
         out.append((old, new, applied))
-    entry.transcript_corrections = out
-    if text != original:
-        entry.text_transcribed = original
-        entry.text_clean = text
+    return text, out
 
 
 def read_entry(entry: DiaryEntry, client, prompts, images, decisions: Optional[dict] = None) -> bool:
@@ -172,7 +179,8 @@ def run_reading(entries: list[DiaryEntry], config: dict, images) -> dict:
     """Check every entry's transcription against its scans (config ``reading``:
     provider, model, cache_dir, prompt_dir, media_resolution, concurrency,
     thinking_level, max_output_tokens, context_cache, decisions = the
-    reviewer's transcript_decisions.csv)."""
+    reviewer's transcript_decisions.csv, machine_decisions = the machine layer under them, a path or
+    a dict as load_transcript_decisions returns it)."""
     from laubmann_kg.llm.cache import LLMCache
     from laubmann_kg.llm.clients import build_client
     from laubmann_kg.llm.prompts import PromptLibrary
@@ -192,7 +200,10 @@ def run_reading(entries: list[DiaryEntry], config: dict, images) -> dict:
         "retry_backoff": config.get("retry_backoff", 2.0),
     })
     prompts = PromptLibrary(Path(config.get("prompt_dir", "prompts")))
-    decisions = load_transcript_decisions(config.get("decisions", "data/review/transcript_decisions.csv"))
+    # the machine layer of the text (the checks' better readings, before the extraction) first, a reviewer's decision wins
+    machine = config.get("machine_decisions")
+    decisions = dict(machine) if isinstance(machine, dict) else load_transcript_decisions(machine)
+    decisions.update(load_transcript_decisions(config.get("decisions", "data/review/transcript_decisions.csv")))
 
     def one(entry):
         try:

@@ -1,0 +1,221 @@
+{"batch": 21, "entries": [
+  {"entry_id": "L17-e0302", "entry_date_ok": false, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "Summary species list for Seeshaupt over visits 16.IX.1930, 19.VII-14.VIII.1937, 10.V(?).1942 (p.100-101) and 1.-17.VI.1942; list heading lies above the crop and is missing from the transcription. Other names misread: 40 is a '-sänger' (prob. Heuschreckensänger), not Karmingimpel; 42 Drosselrohrsänger, not Sumpfrohrsänger.",
+   "records": [
+     {"record_id": "obs_7ee5b528d228", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "1937-07-19/1937-08-14"},
+      "evidence": "scan: '90.) Rotschenkel: 1937;' - only the 1937 stay, not 1942", "confidence": 0.8},
+     {"record_id": "obs_3472c0ad0243", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: '35.) Rotrückenwürger: 1937; 1942;' - 1942 may also be the 10.V.1942 visit", "confidence": 0.55}
+   ]},
+  {"entry_id": "L31-e0108", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_e413ef26e4fd", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'in einem Garten an der Grünwalder Str. den ersten Spötter singend verhört'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L09-e0113", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Habicht only in a pasted newspaper clipping on bird protection.",
+   "records": [
+     {"record_id": "obs_27615863e811", "verdict": "spurious",
+      "species": "right", "count": "n/a", "date": "n/a", "locality": "n/a", "georef": "n/a",
+      "observer": "n/a", "record_type": "n/a", "status": "n/a", "other": "n/a",
+      "correct": {},
+      "evidence": "clipping: '...obwohl wir auch die Raubvögel ... den Habicht nicht' - general press text, no observation", "confidence": 0.9}
+   ]},
+  {"entry_id": "L26-e0134", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Transcription turns the scan's 'Wb.' (Westbecken) into 'Nb.' and has 'Norddamm am Nordbecken' where scan reads 'Süddamm am Westbecken'; Wasserpieper 'einiges' is 'je 1' in the scan.",
+   "records": [
+     {"record_id": "obs_7737e6936e47", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"count": "1"},
+      "evidence": "scan: 'und je 1 am Kanal beim neuen E.W. und am Goldachsee verhört und beobachtet'", "confidence": 0.7},
+     {"record_id": "obs_1c0e0df0488d", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Westbecken (beim Hollerbusch), Ismaninger Speichersee"},
+      "evidence": "scan: '30.) Saatgans, 8 im Wb. beim Hollerbusch'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L28-e0016a", "entry_date_ok": null, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "good",
+   "note": "Typed report p.25-26 only; '63 Arten' but 58 listed here, so the first page (date, author, first species) is missing. Date and observer cannot be checked in the crops.",
+   "records": [
+     {"record_id": "obs_0d7354fa3b38", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "typed: 'Kleiber: Auffahrtsallee, an 3 Stellen in der Hirschau'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L26-e0098", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Many misreadings: Isartorplatz for Max Weberplatz, Gürtdamm for Querdamm, 6 Hänfling for Haussperling, 15 Rohrschwirl for Rotrückenwürger, 28 Fitislaubs. for Fischadler, 29 Fischaadler for Fischreiher.",
+   "records": [
+     {"record_id": "obs_cf2a9c86190a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: '49.) Brachvogel, im Wb. am Querdamm verh., ... 5 am Turme'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L13-e0112", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_b4c0f5d194b4", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"count": "2"},
+      "evidence": "scan: 'kann ich dabei 2 Berglaubvögel entdecken'; the Schwirren is from the same two birds", "confidence": 0.6}
+   ]},
+  {"entry_id": "L27-e0182", "entry_date_ok": null, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "31.VIII.1954 date comes from Remold's typed Hüttenbuch sheet. The handwritten list (items 7-50, p.146-148) is Laubmann's own excursion; its header and items 1-6 (p.145) are missing, so its date is unverified. Scan has 'Ostende des Wb.', 'Querdamm' where transcription has 'Gelände', 'Giesstamm'.",
+   "records": [
+     {"record_id": "obs_cd708de70dc9", "verdict": "unclear",
+      "species": "right", "count": "right", "date": "cannot_tell", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: '10.) Blaumeise, nur einmal 1 im Ostende des Wb. verhört' - list header not in crops", "confidence": 0.5}
+   ]},
+  {"entry_id": "L08-e0051", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Item 12 is Nonnenmeise in the scan, not Blaumeise; 'Huberwirt' duplicated.",
+   "records": [
+     {"record_id": "obs_7db59e000d00", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: '17.) Großer Buntspecht, trommelnd.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L21-e0289", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Trauerfliegenschnäpper is a general statement of occurrence near Schloss Möggingen, given by others.",
+   "records": [
+     {"record_id": "obs_f16cc123cc1a", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'Als in der Umgebung vorkommend werden genannt: Heidelerche, Trauerfliegenfänger'", "confidence": 0.5},
+     {"record_id": "obs_b4cdac96ec28", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'Auf dem Weg beobachten wir ... ferner Rauchschwalben'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L19-e0224", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan: 'Perlacher Forst' (not Forstenrieder Park), 'Giesinger Waldhaus', 'Lisl und mich' (not Dirk), street 'Tegelbergstraße'.",
+   "records": [
+     {"record_id": "obs_ced0d480b2ac", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Tegelbergstraße, München"},
+      "evidence": "scan: 'In der Tegelbergstraße singt wieder ein Gartenrotschwanz'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L20-e0302", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan: 'Dr von Jordans', 'Halsbandfliegenschnäpper'.",
+   "records": [
+     {"record_id": "obs_a436c0630b8d", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"taxon": "Grauschnäpper (Muscicapa striata)"},
+      "evidence": "scan: 'Fliegenschnäpper, Halsbandfliegenschnäpper (5 besetzte Nistkästen!)' - a species beside Halsband-, not the family", "confidence": 0.6}
+   ]},
+  {"entry_id": "L19-e0044", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_a7788236bd54", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'mit Lisl an der Hochleite ... bis Geiselgasteig ... Singdrossel, Amsel'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L05-e0114", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_2c1b5cfd64fc", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'an der langen Linie. Lach- / Sturmmöven und 1 Silbermöve'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L15-e0066", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'mit Lisl' (not Dirl), 'Zwischen Aubing und Puchheim', 'Dr Ekkehart Klopsch', 'einen Flug von 6-7 Schneehühnern'.",
+   "records": [
+     {"record_id": "obs_70a2682c31bc", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Alfred Laubmann | Lisl"},
+      "evidence": "scan: 'Ich fahre mit Lisl'; 'kann ich vom Zug aus kaum noch einige Stücke beobachten'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L18-e0286", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Transcription omits Dohle, has Blaumeise for Tannenmeise and Baumfalke 1 Ex. for Turmfalke 1 ♂♀. Eisvogel only an old nest hole, no bird seen.",
+   "records": [
+     {"record_id": "obs_2721a8fa2ccb", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'Eisvogel: an der Loisach in einer Uferwand eine alte Bruthöhle'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L20-e0234", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_61fe5390ac3c", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'Lisl hört einen Grünspecht am Harlachinger Berg'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L13-e0157", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Header place is Pöcking; the excursion is to the Maisinger See (Pöcking municipality). Scan: 'Mauersegler: vereinzelt über dem See'.",
+   "records": [
+     {"record_id": "obs_2596c2b304f7", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'Mauersegler: vereinzelt über dem See.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L22-e0189", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Ampermoos', '3-4 ♂♀ Rotschenkel', '4-5 ♂♀ Kiebitze' (pairs; transcription has 'Ex').",
+   "records": [
+     {"record_id": "obs_9685be44f89c", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"count": "8", "count_range": "8-10"},
+      "evidence": "scan: 'nur 4-5 ♂♀ Kiebitze' = 4-5 pairs", "confidence": 0.6}
+   ]},
+  {"entry_id": "L26-e0118", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Several names misread on p.106: 'Wacholderdrossel ... Gollaeck' = Wasserralle rufend am Goldachsee; 'Wanderratte' = juv. Wanderfalke; 'Ringeltaube am Ausfluß in Südrichtung' = Bergstelze am Ausfluß in Neufinsing(?).",
+   "records": [
+     {"record_id": "obs_bfbe40b44d70", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"taxon": "Gebirgsstelze (Motacilla cinerea), written 'Bergstelze'", "locality": "Ausfluss in Neufinsing(?), Ismaninger Speichersee"},
+      "evidence": "scan: '1 Bergstelze am Ausfluß in Neuf...'; no Ringeltaube in the passage", "confidence": 0.7}
+   ]},
+  {"entry_id": "L03-e0328", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'Felsenschwalben' (not Felsenwalldläufer/Gebirgsstelzen), 'Feldlerchen' (not Haubenmeisen), 'Schwanzmeisen', 'Weißensee' (not Würmsee); Schwarzspecht 'hörte ich ... den Ruf'.",
+   "records": [
+     {"record_id": "obs_36162aa0e939", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {},
+      "evidence": "scan: 'Als einziger Specht hörte ich beim Abstieg einmal den Ruf dieser Art'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L11-e0130", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Header place is Pöcking (transcribed 'Fröcking', geocoded to Gröden in Brandenburg).",
+   "records": [
+     {"record_id": "obs_c307cdcf2019", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Pöcking"},
+      "evidence": "scan header: '20. Juli 1933. Pöcking.' 'Den ganzen Morgen singt heute schon der Spötter'", "confidence": 0.9}
+   ]}
+]}

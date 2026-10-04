@@ -6,6 +6,7 @@ import asyncio
 import csv
 import io
 import json
+import re
 import subprocess
 from pathlib import Path
 from playwright.async_api import async_playwright
@@ -279,29 +280,76 @@ async def main():
             await R.press("j")
             check((await R.dec(h["key"]) or {}).get("d") == "apply", "J applies a machine suggestion below the thresholds")
 
-        # ---------------------------------------------------------------- 4 reading corrections: J N E
+        # ---------------------------------------------------------------- 4 reading corrections: J N E (J = the checks' better reading where there is one), K
         h = await R.find("tc", "(rv, s) => s.lv.filter(x => x[2] === 'tc').length >= 3", "(it) => it.type === 'tc' && it.lv >= 1")
         if h:
             await goto_entry(pg, h["id"])
             keys = await pg.evaluate("[...new Set(LKGC.EM.items.filter(it => it.type === 'tc' && it.lv >= 1).map(it => it.key))].slice(0, 3)")
-            h["keys"] = keys
+            h["keys"], h["want"] = keys, {}
             for key, k in zip(keys, ["j", "n", "e"]):
+                c = await pg.evaluate(f"LKGC.EM.items.find(x => x.key === {json.dumps(key)}).c")
+                better = await pg.evaluate("c => LKGC.betterOf(c, LKGC.EM)", c)
+                use = (await pg.evaluate("c => LKGC.betterOf(c, LKGC.EM, true)", c) or c[8]) if better is None else better
+                h["want"][key] = {"j": ("accept", c[1]) if not use or use == c[1] else ("reject", c[0]) if use == c[0] else ("edit", use),
+                                  "n": ("reject", c[0]), "e": ("edit", "Testlesung der Prüferin")}[k]
                 await R.focus(key)
                 await pg.keyboard.press(k)
                 await pg.wait_for_timeout(250)
+                if k == "j" and better is None:      # a better reading the page cannot place: J opens the form with it
+                    check(await pg.evaluate("document.activeElement && document.activeElement.value") == use, "J opens the reading form with a better reading that cannot be placed, trimmed as far as it goes")
+                    await pg.keyboard.press("Enter")
+                    await pg.wait_for_timeout(250)
                 if k == "e":
                     check(await pg.evaluate("document.activeElement && document.activeElement.name") == "final", "E opens the reading field with focus")
-                    pre = await pg.evaluate(f"(it => it.c[8] || it.c[1])(LKGC.EM.items.find(x => x.key === {json.dumps(key)}))")
-                    check(await pg.evaluate("document.activeElement.value") == pre, "the key E is not typed into the reading")
+                    check(await pg.evaluate("document.activeElement.value") == (better or use or c[1]), "the key E is not typed into the reading; the field starts with the better reading")
                     await pg.screenshot(path=str(SHOTS / "i_tc_cards.png"))
                     await pg.fill(".rform textarea[name=final]", "Testlesung der Prüferin")
                     await pg.keyboard.press("Enter")
                     await pg.wait_for_timeout(250)
-            got = [((await R.dec(k)) or {}).get("d") for k in keys]
-            check(got == ["accept", "reject", "edit"], f"reading corrections J N E stored {got}")
+            got = {k: (((await R.dec(k)) or {}).get("d"), ((await R.dec(k)) or {}).get("final")) for k in keys}
+            check(all(got[k] == tuple(h["want"][k]) for k in keys), f"reading corrections J N E stored {got}")
             await pg.click('#ptabs [data-tab="text"]')
             await pg.wait_for_timeout(200)
-            check(await pg.locator("#fnotes .tci.v-acc, #fnotes .tci.v-rej, #fnotes .tci.v-edt").count() >= 1, "the text shows the reviewer's verdicts on the corrections")
+            mine = await pg.evaluate("[...document.querySelectorAll('#fnotes .tci.k-mine')].map(e => e.textContent)")
+            check("Testlesung der Prüferin" in mine, f"the text shows the readings the reviewer decided, the own reading among them {mine}")
+            await pg.click('#ptabs [data-tab="check"]')
+            await pg.wait_for_timeout(150)
+        hb = await R.find("tcb", "(rv, s) => (rv.tc || []).some(c => c[2] && c[3] >= 0 && c[5] && c[8] && c[8] !== c[1] && c[8] !== c[0] && !/^[a-z_]+: /.test(c[0]))",
+                          "(it) => it.type === 'tc' && it.c[2] && it.c[3] >= 0 && it.c[8] && it.c[8] !== it.c[1] && it.c[8] !== it.c[0] && !/^[a-z_]+: /.test(it.c[0])")
+        if hb:
+            await R.open(hb)
+            c = await pg.evaluate(f"LKGC.EM.items.find(x => x.key === {json.dumps(hb['key'])}).c")
+            labels = await pg.eval_on_selector_all("#pbody .rcard.focus .abtn", "els => els.map(e => e.textContent.trim())")
+            check(labels[:2] == ["J bessere Lesung übernehmen", "K Korrektur richtig"], f"a reading card with a better reading offers it first (J), the machine's correction second (K) {labels}")
+            await pg.keyboard.press("j")
+            await pg.wait_for_timeout(250)
+            d = await R.dec(hb["key"]) or {}
+            bt = await pg.evaluate("c => LKGC.betterOf(c, LKGC.EM)", c)
+            check(bt and d.get("how") == "better" and d.get("final") == bt and d.get("d") == ("reject" if bt == c[0] else "edit"), f"J takes the better reading „{bt}“, not the machine's „{c[1]}“ {d.get('d')} {d.get('final')}")
+            await pg.click('#ptabs [data-tab="text"]')
+            await pg.wait_for_timeout(200)
+            tx = await pg.evaluate("[...document.querySelectorAll('#fnotes .tci.k-mine')].map(e => e.textContent)")
+            plain = lambda x: re.sub(r"</?u>", "", x)
+            check(plain(bt) in tx and await pg.locator("#fnotes del").count() == 0, f"the text shows the better reading where the machine's text stood, nothing struck {tx[:3]}")
+            await pg.click('#ptabs [data-tab="check"]')
+            await pg.wait_for_timeout(150)
+            await pg.keyboard.press("z")
+            await pg.wait_for_timeout(200)
+            await R.focus(hb["key"])
+            await pg.keyboard.press("k")
+            await pg.wait_for_timeout(250)
+            check(((await R.dec(hb["key"])) or {}).get("d") == "accept", "K keeps the machine's correction")
+            await pg.keyboard.press("z")
+            await pg.wait_for_timeout(200)
+            await R.focus(hb["key"])
+            await pg.keyboard.press("j")
+            await pg.wait_for_timeout(250)
+            hb["final"], hb["d"] = bt, "reject" if bt == c[0] else "edit"
+        # the checks quote a better reading with words around it; only the span of the correction is replaced
+        known = await pg.evaluate("""(() => { const out = {}; for (const [id, old] of [['L01-e0032', '1. Juni 1917. Rabenkrähen.'], ['L04-e0125', 'denselben'], ['L31-e0380', 'Unter anderem beobachtet: Wiesenpieper']]) {
+            const c = ((LKGC.R.entries[id] || {}).tc || []).find(x => x[0].startsWith(old)); if (!c) continue; out[id] = LKGC.betterOf(c, LKGC.entryModel(LKGC.G.entById.get(id))); } return out; })()""")
+        check(known == {"L01-e0032": "1. Juni 1917. Kaufbeuren.", "L04-e0125": "den Feldern", "L31-e0380": "Unter anderem beobachtet 1 Wespenbussard, Zaunkönige, 1 Feldlerche, die erste hier,"},
+              f"better readings are cut to the span of the correction (context that repeats the text around it is dropped) {known}")
 
         # ---------------------------------------------------------------- text: own correction of a passage
         h = await R.find("txt", "(rv, s, r) => r.nobs > 0 && (rv.tc || []).filter(c => c[2]).length <= 2", "(it, m) => it.type === 'ent'")
@@ -321,6 +369,8 @@ async def main():
                 await pg.wait_for_timeout(250)
                 key = f"txt:{h['uid']}|{sel}"
                 check((await R.dec(key) or {}).get("new") == sel + "X", "the own text correction is stored")
+                mine = await pg.evaluate("[...document.querySelectorAll('#fnotes .tci.k-mine')].map(e => e.textContent)")
+                check(sel + "X" in mine, f"the own text correction stands in the text at once {mine}")
                 h["old"], h["new"] = sel, sel + "X"
                 await pg.screenshot(path=str(SHOTS / "i_text_tab.png"))
 
@@ -537,12 +587,14 @@ async def main():
         check(head == TD_HEAD, "transcript_decisions.csv has the contract columns")
         td = {(r["entry_uid"], r["old_text"], r["new_text"]): r for r in L["transcript_decisions"]}
         if "tc" in M:
-            want = dict(zip(M["tc"]["keys"], ["accept", "reject", "edit"]))
-            for key, dec in want.items():
+            for key, (dec, fin) in M["tc"]["want"].items():
                 uid, old, new = key[3:].split("|", 2)
                 got = td.get((uid, old, new))
-                fin = {"accept": new, "reject": old, "edit": "Testlesung der Prüferin"}[dec]
                 check(got is not None and got["decision"] == dec and got["final_text"] == fin, f"reading decision {dec} arrives keyed by (entry_uid, old_text, new_text) with final_text")
+        if "tcb" in M and "final" in M["tcb"]:
+            uid, old, new = M["tcb"]["key"][3:].split("|", 2)
+            got = td.get((uid, old, new))
+            check(got is not None and got["decision"] == M["tcb"]["d"] and got["final_text"] == M["tcb"]["final"], "the better reading arrives with the better reading as final_text")
         # --- text_corrections.csv
         tc_rows, head = rows(files, "review/text_corrections.csv")
         check(head == L["contract"]["text_corrections"], "text_corrections.csv has exactly the contract columns (READING_FIELDS)")
@@ -615,7 +667,6 @@ async def main():
         check(prog.get("app") == "laubmann-graphpruefung" and len(prog["state"]["dec"]) == await pg.evaluate("Object.keys(LKGC.RV.dec).length"), "graph_progress.json holds every decision")
         check("review/identities.csv" in dict(files)["LIESMICH.txt"] and "Pipeline" in dict(files)["LIESMICH.txt"], "LIESMICH.txt explains the files")
         keys = await pg.evaluate("Object.keys(LKGC.RV.dec)")
-        import re
         pat = re.compile(r"^(rec:e_[0-9a-f]+\|[^|]*\|\d+|tc:e_[0-9a-f]+\|.*|qa:e_[0-9a-f]+\|[a-z_]+\|.*|miss:e_[0-9a-f]+\|.*|entry:e_[0-9a-f]+|name:(taxa|places|persons|habitats)\|.+|txt:e_[0-9a-f]+\|.+)$", re.S)
         check(all(pat.match(k) for k in keys) and all(k == k.lower() or not k.startswith(("rec:", "name:")) for k in keys), f"state keys follow the stable scheme ({len(keys)} keys)")
         print("decisions made:", sorted(M))

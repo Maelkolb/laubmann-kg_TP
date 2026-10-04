@@ -1,0 +1,185 @@
+{"batch": 25, "entries": [
+  {"entry_id": "L26-e0153", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'Adolf Müller'. In the Sb. passage the scan has Gänsesäger/Zwergsäger where the transcription has Zaunkönige/Baumpieper. The Saatgans count may read 150 rather than 100.",
+   "records": [
+     {"record_id": "obs_865f7e4f12a5", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Ismaninger Speichersee (mittleres Sb.), route Neufinsing - Föhringer Kanal"},
+      "evidence": "A. Müller 3.I.54, Weg Neufinsing bis Föhringer Kanal: 'im mittleren Sb. ca 1?0 Saatgänse'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L19-e0218", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_3368c4a73ce8", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "An Arten beobachtet: ... Grünfink; Gimpel; Buchfink; Haussperling", "confidence": 0.95}
+   ]},
+  {"entry_id": "L27-e0179", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Header '(105)' numbers Laubmann's own Ismaning visit on 7 Sept. The pasted typed sheet for 28 Aug is another observer's report, in the same format as Remold's reports. Its signature is not in the crop. The rest of the handwritten text and the typed 29 Aug part are not transcribed.",
+   "records": [
+     {"record_id": "obs_51bedc91de05", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"observer": "author of the pasted typed Ismaning report (probably H. Remold), not Laubmann", "record_type": "third-party-report"},
+      "evidence": "pasted typed sheet 'Ismaning, 28. August 1954 ... Alpenstrandläufer, 3, am Abend ca.10 im Wb.'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L32-e0519", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "In the morning list the scan has 'Kohlmeisen, Kleiber', not 'Blaumeisen'. The evening walk went towards Traubing, not Herrsching.",
+   "records": [
+     {"record_id": "obs_85e09cc41fb1", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Morgens machten sich beim Haus wieder Elstern, Eichelhäher, Stare, Haussperlinge, Kohlmeisen, Kleiber ... bemerkbar", "confidence": 0.95}
+   ]},
+  {"entry_id": "L23-e0181", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "In the species list the scan has 'Gimpel; Feldlerche;' and 'Weidenlaubvogel; Fitis;', where the transcription has 'Gimpel, lockende' and 'häufig'. 'Fliegenschnäpper' alone probably means Grauschnäpper, but linking it to the family is acceptable.",
+   "records": [
+     {"record_id": "obs_0efe2c18d838", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "'... Hohltaube; Ringeltaube; Fliegenschnäpper.' (O.G.-Führung Förster Haubner, with Lil)", "confidence": 0.7}
+   ]},
+  {"entry_id": "L21-e0072", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "The scan names the companion 'Lil', not 'Lotte', and the observer title 'Apotheker' is invented. The scan has 'Girlitz' where the transcription has 'Zeisig' (another line).",
+   "records": [
+     {"record_id": "obs_fb74be5cc2ca", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Star: auf den Feldern und an den Hängen bei Garmisch-Grainau; auf der Neuner-Alm.", "confidence": 0.85}
+   ]},
+  {"entry_id": "L15-e0144", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The transcription has 'ddor' where the scan reads 'Mayr'. 'Fr. Hellmich' is 'Dr. Hellmich'.",
+   "records": [
+     {"record_id": "obs_c6db05752f8f", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Mayr"},
+      "evidence": "'ca 2 Dutzend Kiebitze (Mayr)' - only the swans/buzzard credited to Adolf Müller", "confidence": 0.85}
+   ]},
+  {"entry_id": "L13-e0054", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Item 3 in the scan is 'Flußrohrsänger', not 'Flußuferläufer'.",
+   "records": [
+     {"record_id": "obs_a8ca3d3689b3", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "1932"},
+      "evidence": "7.) Seidenschwanz: 1932 bei Passau 2 Stück", "confidence": 0.9}
+   ]},
+  {"entry_id": "L01-e0074", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "The transcription stops mid-sentence ('Beobachtung vom'). The scan continues '6. April 1908. Ich selbst habe diese Art noch nicht beobachten können.' 'Pitingen' should be 'Bitingen/Bidingen'. The Rosenstar event is undated, so the entry date is acceptable.",
+   "records": [
+     {"record_id": "obs_fbb794106c70", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "Einmal wurden zwei Exemplare im Schloßgarten von Markt Oberdorf erlegt ... in der dortigen Schulsammlung", "confidence": 0.8}
+   ]},
+  {"entry_id": "L29-e0110a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "This is a typed first-person report ('569. Speichersee-Begehung'), not Laubmann's. Its author is not named in any crop, so 'Einhard Bezzel' cannot be checked. All other fields are right.",
+   "records": [
+     {"record_id": "obs_2efaf9921b86", "verdict": "unclear",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "cannot_tell", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Dunkler Wasserläufer: 4 im K3/4 g.g. (typed report 24.X.1955, author unnamed in crops)", "confidence": 0.5}
+   ]},
+  {"entry_id": "L23-e0006", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_0672151a1bde", "verdict": "spurious",
+      "species": "n/a", "count": "n/a", "date": "n/a", "locality": "n/a", "georef": "n/a",
+      "observer": "n/a", "record_type": "n/a", "status": "wrong", "other": "n/a",
+      "correct": {}, "evidence": "'um 4 h singt nicht ein Vogel' - silence at dawn, no bird taxon recorded absent", "confidence": 0.75}
+   ]},
+  {"entry_id": "L33-e0159", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The scan has '4 Höckerschwäne', not 'Flußseeschwalben'. In the afternoon list it has 'Kohlmeise, ?drossel' where the transcription has 'Rotkehlchen, Heckenbraunelle'. The footnote is not in the crop.",
+   "records": [
+     {"record_id": "obs_ccd96baf3928", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "An Arten beobachtet: Rabenkrähe, Eichelhäher, Star, Buchfinken, Distelfinken, Haussperling", "confidence": 0.9}
+   ]},
+  {"entry_id": "L30-e0184", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The scan reads 'Vkl.' where the transcription has 'Iskl.', 'Föhringer Kanal' for 'Ismaninger Kanal', and 'Obersee' for 'Übersee'. 'Mäusebussard 3' is transcribed as 'Mauerläufer 3', and 'Fasan, 1 im Obersee' is lost.",
+   "records": [
+     {"record_id": "obs_64a65fe162f2", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Vkl. (Vorklärbecken), Ismaninger Teichgebiet"},
+      "evidence": "'Schnatterente, 1 ♂ im Vkl. Krickente, 7-8 ♂♂, 1 ♀ ebenda, balzend'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L07-e0092", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "The source is 'Münchner Neuesten [Nachrichten]', not 'Studentin'. The handwritten note concerns the 'Zeisige', not 'Käuzchen'.",
+   "records": [
+     {"record_id": "obs_7069724d2c53", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "clipping by Nebesky: 'Auch Kohlmeise, Kleiber, Amsel und Singdrossel ... Futter aus der Hand nehmen'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L34-e0089", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The scan has '100 + 2 juv Höckerschwäne, einige Wildenten', not 'Stockenten ... Kolbenenten'. The Zilpzalp passage reads 'von Lil(?) vom Zimmer aus beobachtet', which the transcription leaves out. Lil may be a co-observer.",
+   "records": [
+     {"record_id": "obs_d7977eb1dd8a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Mittags singt beim Haus ein Zilpzalp, von Lil(?) vom Zimmer aus beobachtet.", "confidence": 0.6}
+   ]},
+  {"entry_id": "L33-e0243", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_bea8e91e069b", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Kernbeißer, Gimpel, Grünfinken ... Auch im Hainbuchen-Wäldchen am Bunkerweg die gleichen ersten 3 Arten", "confidence": 0.95}
+   ]},
+  {"entry_id": "L22-e0084", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_a13cc00bbf2d", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Morgens beim Haus wieder singend Weidenlaubvogel und Hausrotschwanz.", "confidence": 0.95}
+   ]},
+  {"entry_id": "L11-e0013", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "The scan reads 'Föhringer Kanal', not 'Ismaninger Kanal', and 'Dr. W. Wüst', not 'Fr.'. The Dohle line reads 'einige/einzeln in dem Saatkrähen-Flug'.",
+   "records": [
+     {"record_id": "obs_5a2aee78f750", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"observer": "Alfred Laubmann | Dr. W. (Walter) Wüst"},
+      "evidence": "'wo ich mit Dr. W. Wüst zusammentreffe' ... '4.) Dohle: ein[ige] in dem Saatkrähen-Flug'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L28-e0054a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Ob. = Ostbecken of the Ismaninger Speichersee, not 'Oberbecken'. The coordinates (50.04, 9.58) are in the Spessart.",
+   "records": [
+     {"record_id": "obs_804dfea27da2", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"locality": "Ostbecken (Ob.), Ismaninger Speichersee"},
+      "evidence": "Wiesenpieper,ca.20 bei der Kiesinsel,10 im Ob.; gez. H. Remold gemeinsam mit Rathmayer", "confidence": 0.9}
+   ]},
+  {"entry_id": "L05-e0082", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Errors elsewhere: 'Fohlen' should be 'Dohlen', and 'Fitislaubs., überhandnehmend' should be 'Wildenten, überhin streichend'. The locality_as_written 'an der Halde' is not in the text.",
+   "records": [
+     {"record_id": "obs_9f1e222e7680", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Auf den Feldern von Hirschzell Feldlerchen u. Goldammern.", "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0376", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "A pasted postcard hides most of the page before 'Ammerle'. The text repeats a midday bath and afternoon walk, and the bus trip day (11.26 h bus to Mondsee) cannot be Sunday 13 IX, so 14 IX text is included without a visible header. The scan reads 'beim Haus', not 'beim Flachs'.",
+   "records": [
+     {"record_id": "obs_f6ac6ae06b2f", "verdict": "unclear",
+      "species": "right", "count": "n/a", "date": "cannot_tell", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "'sonst noch die gewohnten Arten; Ammerle locken beim Haus.' (below pasted postcard; day uncertain, 13 or 14 IX)", "confidence": 0.4}
+   ]},
+  {"entry_id": "L32-e0266", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The scan reads 'Morgens 4h ruft ein Waldkauz beim Haus' (the Waldkauz is missing from the transcription) and 'Um 6h höre ich einen Grünspecht ebenda'. 'Stare und Zilpzalpe' is transcribed as 'Fitislaube'.",
+   "records": [
+     {"record_id": "obs_6d79cc6d3524", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "Um 6h höre ich einen Grünspecht ebenda (beim Haus).", "confidence": 0.9}
+   ]}
+]}

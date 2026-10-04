@@ -1,0 +1,194 @@
+{"batch": 15, "entries": [
+  {"entry_id": "L07-e0123", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Header place Pöcking, observations at Maisinger See. Sex symbols in items 7, 8 and 15 are ♀ on the scan, transcribed as σ.",
+   "records": [
+     {"record_id": "obs_7640d965f185", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '10.) Teichhuhn: beim Schirm kurz rufen gehört, aber nicht gesehen.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L09-e0064", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Record passage correct. Item 29 is 'Haubentaucher, ein Stück ... rufend beim Schirm', transcribed as 'Knäkenteerpel'.",
+   "records": [
+     {"record_id": "obs_d2aefdb8c5ed", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Rohrweihe, nicht ganz sichere Beobachtung! Am Ostufer des Sees ... 2 Vögel beobachtet'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L07-e0079", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'Moos bei Jettenhausen' on the scan looks more like 'Moos bei Feldmoching' (not in a checked record).",
+   "records": [
+     {"record_id": "obs_4fd1e756bd99", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Kugl (reporter; bird caught by an unnamed Munich bird fancier)"}, "evidence": "scan: 'Kugl glaubt ... Eine andere sei von einem Münchener Vogelliebhaber ... heuer gefangen worden.'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L32-e0163", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_e20239ff0655", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auch ein Kernbeißer läßt sich wieder sehen.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L03-e0410", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The walk-site word ('Halden') is hard to read and may be 'Halbinsel'. The list has errors: 29 is Buntspecht (not Bergfink), 31 Wildente (not Krickente), Steinschmätzer 'am Auwäldchen am Wertachufer'. Coordinates point to Pfronten-Halden, not Kaufbeuren.",
+   "records": [
+     {"record_id": "obs_9a8a2820bbd7", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"coordinates": "Kaufbeuren ca. 47.88, 10.62"}, "evidence": "scan: '23.) Misteldrossel' in list of walk at Kaufbeuren", "confidence": 0.6}
+   ]},
+  {"entry_id": "L25-e0102", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed Ismaning list of 14.12.52 by E. Bezzel pasted into the entry.",
+   "records": [
+     {"record_id": "obs_33508845114b", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed sheet 'Ismaning, den 14.12.52' item '46) Lachmöve'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L20-e0284", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "In the bike-route list the scan has Gimpel (not Grünspecht), Haussperling (not Hänfling), Gartenspötter at Magnusstraße (not Gartengrasmücke) and Dorngrasmücke (not Klappergrasmücke). These readings give the stated total of 39 species. The route runs through the Perlacher/Grünwalder Forst, outside central Munich.",
+   "records": [
+     {"record_id": "obs_c7faf4dbc870", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Wintergoldhähnchen' in list of bike trip through Perlacher and Grünwalder Forst", "confidence": 0.85},
+     {"record_id": "obs_6d3d59fa1925", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Saatkrähe, in der Kolonie; Eichelhäher; Star;'", "confidence": 0.85},
+     {"record_id": "obs_d999e7aca808", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"species": "Gartenspötter (Hippolais icterina)"}, "evidence": "scan: 'Waldlaubvogel. Gartenspötter, in einem Garten an der Magnusstraße; Mönchsgrasmücke'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L04-e0241", "entry_date_ok": false, "entry_place_ok": false, "boundary_ok": false,
+   "transcription_quality": "minor", "note": "The fragment starts in the middle of a numbered species list. '19. VII. 1917' belongs to item 33 (Heckenbraunelle) and is not an entry header, and 1925 is not on the scan. Places (Spielmannsau, Traufbachtal, Oybach) are in the Oberstdorf area.",
+   "records": [
+     {"record_id": "obs_1c521dcf262d", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1917-08-02", "locality": "Oberstdorf (Allgäu) area"}, "evidence": "scan: 'Zaunkönig: ... Noch fleißig singend am 2. VIII. 1917.'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L08-e0125", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Item 3 on the scan is 'Kreuzschnabel, gar nicht selten!' (transcribed as Steinrötel).",
+   "records": [
+     {"record_id": "obs_4ffabe1605f9", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "", "locality": "Nebelhorn bei Oberstdorf (way to Prinz-Luitpold-Haus)"}, "evidence": "scan: 'Weidenmeise, zweimal gehört in den Grünerlen und Latschenbeständen' (A. Müller, Nebelhorn)", "confidence": 0.85}
+   ]},
+  {"entry_id": "L30-e0128", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "The afternoon walk went via Tschöran to St. Urban, near Bodensdorf.",
+   "records": [
+     {"record_id": "obs_8b584a59fe10", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Sonst noch Bachstelzen und Distelfinken in Mengen.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L29-e0217", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Arnold's list: the transcription writes 'Hb.' where the scan has 'Wb.' and drops digits. The Reiherente numbers on the scan read about '19 ♂ Wb., 9 ... Ob.' (the first figure may be 1 or 19).",
+   "records": [
+     {"record_id": "obs_545035f6af80", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '11.) Löffelente, ♂♀ W.E.'", "confidence": 0.9},
+     {"record_id": "obs_5f845d673873", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "28 (19 Wb. + 9 Ob.; first figure possibly 1, i.e. 10)"}, "evidence": "scan: '12.) Reiherente, 19 ♂ Wb., 9 .. Ob.' — numbers given, record has none", "confidence": 0.65}
+   ]},
+  {"entry_id": "L15-e0059", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_71d7456d5d8e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Von den hier am 23. VII. beobachteten Heidelerchen kann ich heute nichts mehr entdecken.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L02-e0040", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_89ad644241ee", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'nur ein einziges Mal ganz kurz einen Weidenlaubvogel singen'", "confidence": 0.9},
+     {"record_id": "obs_cd4563774756", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Ich höre außer einigen Meisen nur ...'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L18-e0070", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_6d506bf7ad68", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '35.) Rotkehlchen' in list of Englischer Garten / Isarauen trip", "confidence": 0.9}
+   ]},
+  {"entry_id": "L23-e0110", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The scan has 'Wasser-amsel' split across two lines, transcribed as 'ganz amsel'. The word before it is unclear. Coordinates are near Ismaning, but the Isar weirs (Überfälle) are in Munich.",
+   "records": [
+     {"record_id": "obs_1af4d6fe7d0e", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"coordinates": "Isar weirs in München, ca. 48.11, 11.56"}, "evidence": "scan: 'an der Isar an den Überfällen mehrfach eine ... Wasseramsel verhört'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L01-e0201", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_320d25cf5f9c", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'vormittags sehr viel Fitislaubvogel-Gesang'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L16-e0149", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Crop 0 is the same page upside down. Most of the transcription is the previous entry's text (Kappel, Schlacken-Sattel) on page 85, first garbled, then repeated correctly. The real 29 June text is barely covered.",
+   "records": [
+     {"record_id": "obs_29ecbb8b5668", "verdict": "spurious",
+      "species": "n/a", "count": "n/a", "date": "n/a", "locality": "n/a", "georef": "n/a",
+      "observer": "n/a", "record_type": "n/a", "status": "n/a", "other": "n/a",
+      "correct": {}, "evidence": "scan has 'Berglaubvogel, 1 singendes ♂ am Schlacken-Sattel'; no 'Bachstelzen, 2 singende am Bahndamm'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L29-e0158", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report by Adolf Müller, Ismaning 12.I.1956.",
+   "records": [
+     {"record_id": "obs_c053c432709a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "typed: 'Fischreiher,22 auf Eis im westl.Wb.;'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0087", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_6beccd3d6954", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'wenig Rauch- und Mehlschwalben' (morning, balcony Villa Elsa)", "confidence": 0.9}
+   ]},
+  {"entry_id": "L31-e0289", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The scan has Nonnenmeise (transcribed as Weidenmeise) and 'im Hangwald an der Hochleite' (transcribed as 'Klangwald an der Floßlände'). The bike route runs south of Munich, so the Bachstelze's position along it is unknown.",
+   "records": [
+     {"record_id": "obs_79071eb9e6ef", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan p.114: 'Bachstelze; Gartenbaumläufer; Kleiber' in 'von Haus zu Haus' list", "confidence": 0.85}
+   ]},
+  {"entry_id": "L32-e0263", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The scan has 'ein Zilpzalp ebenso' (not Türkentaube), '2 Höckerschwäne' (not 2 Haubentaucher), 'über die Felder und durch den Wald', and no Erlenzeisig.",
+   "records": [
+     {"record_id": "obs_b4c57ee33df7", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Wald noch Misteldrosseln warnend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L22-e0123", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "",
+   "records": [
+     {"record_id": "obs_2ef3be851f0f", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'einige Bachstelzen und 2+2 Bergstelzen'", "confidence": 0.9}
+   ]}
+]}

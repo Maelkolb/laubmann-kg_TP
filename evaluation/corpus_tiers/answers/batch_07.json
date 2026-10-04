@@ -1,0 +1,190 @@
+{"batch": 7, "entries": [
+  {"entry_id": "L25-e0001a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report 'Ismaning, den 12./13.VII'; year not visible on crop. No signature on crop; format identical to E. Bezzel's signed reports. locality_as_written 'südlich der Fischteiche' is taken from item 40 (Turmfalk), but locality value is right.",
+   "records": [
+     {"record_id": "obs_c50a87732b28", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '51)Tafelente:256/38 in den Ft + insgesamt 83 pull von 12 Weibchen'", "confidence": 0.75},
+     {"record_id": "obs_393d6a957158", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '44)Stockente:nur ca 1oo im Wb + ca 1oo+6 pull in den Ft'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L19-e0199", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_2b63143efa6b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'unterm 23. II. bei St. Zeno ... am Abend des gleichen Tages ... eines Waldkauzes'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L14-e0064", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Record passage correct. Elsewhere: item 21 is 'Mäusebussard' not 'Mauerläufer'; item 12 'diese Art hörte Adolf Müller bisher erst einmal' not 'hörte ich doch heute wieder'.",
+   "records": [
+     {"record_id": "obs_6d7ff7a615a4", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '26.) Wasserralle: vom Schirm aus mehrfach gehört.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L01-e0166", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Excerpt of Büchner's report on Kaufbeuren / Reg.-Bez. Schwaben und Neuburg in the 10. Jahresbericht (1885). Record passages correct, but many names misread elsewhere: 16 Wiesenweihe (not Zwergeule), 22 Nachtschwalbe (not Wachtelkönig), 84 Wildente (not Krickente), 99 Großer Säger, 109-113 ...seeschwalbe (not ...meve), 67 'bei Kaufbeuren'.",
+   "records": [
+     {"record_id": "obs_bac13b8686e6", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1885", "locality": "Kaufbeuren und Umgebung (Reg.-Bez. Schwaben und Neuburg)"}, "evidence": "scan: '101.) Zwergsäger. - Erscheint jeden Winter in Paaren.' (Büchner, Jahresbericht 1885, Kaufbeuren)", "confidence": 0.85},
+     {"record_id": "obs_86836d2fce44", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "wrong", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "1885", "locality": "Kaufbeuren und Umgebung (Reg.-Bez. Schwaben und Neuburg)"}, "evidence": "scan: '37.) Rotkopfwürger. - Ziemlich seltener Brutvogel.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L02-e0032", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan has 'treiben ♂♀ des Bläßhuhnes' (transcription duplicated '3 ♀'); scan reads 'braunkehligen Wiesenschmätzer', not 'Wiesenknätzer'. Walk was to Kemnat (part of Kaufbeuren).",
+   "records": [
+     {"record_id": "obs_bd5ea35411e8", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Aus den Wiesen längs der Straße hört man den braunkehligen Wiesenschmätzer'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L26-e0017a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Typed report signed 'E. Bezzel'.",
+   "records": [
+     {"record_id": "obs_d93758f01c09", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '25)Gartengrasmücke,je 1 im Pappelhain,an den Winterteichen und am Tfb singend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L24-e0026", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan reads 'Märzisriet' (Märzisried near Oberbeuren, Kaufbeuren), not 'Märzenriet'. Last sentence on scan is probably 'Hausrotschwänze ... noch singend', not 'Starenvölker abends noch nirgend'.",
+   "records": [
+     {"record_id": "obs_69e4a36052ba", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Märzisried (and Oberbeuren), Kaufbeuren"}, "evidence": "scan: 'In Oberbeuren u. Märzisriet wieder Rauch- und Mehlschwalben.'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L05-e0003", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "'Hafen' = harbour of Brindisi.",
+   "records": [
+     {"record_id": "obs_50440bfc5919", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'eine einzelne Sturmmöve (Larus c. canus L.)'", "confidence": 0.85},
+     {"record_id": "obs_9b8bbd714738", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Hafen fliegen einige vereinzelte Weißbärtige Seeschwalben (Hydrochelidon l. leucopareia)'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L29-e0026b", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "minor", "note": "Typed report pasted into the diary (author not named on crop; 'zusammen mit E. Winkler und H. Altner'; format like Bezzel's reports), not Laubmann's own excursion. Transcription also contains Laubmann's handwritten note on 19.VI and the intro to Walter's 25./26.VI report; the typed list is cut off at item 29 (fold).",
+   "records": [
+     {"record_id": "obs_adfee90826c5", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "author of the pasted typed report (not Laubmann; unnamed on crop)", "record_type": "third-party-report"}, "evidence": "typed sheet: 'Ismaning, den 17.6.55 Nachmittags zusammen mit E.WINKLER und H.ALTNER ...'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L13-e0114", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Scan: 'berichtet aus Maising' (not Maining); 'Es war ein Triel gewesen???'; 11.) is 'Rohrdommel' not 'Rohrammer'; 5.) 'Nachtigallschwirl'. Transcription stops mid-sentence at page end ('Anfliegen ein-'), continuation missing.",
+   "records": [
+     {"record_id": "obs_5a435b48e4ca", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Maising (Maisinger See)"}, "evidence": "scan: 'Adolf Müller berichtet aus Maising ... die beiden ♂♂ vom 21. V. sind anscheinend fortgezogen'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L27-e0060", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan 'Waldlaubvögel' (transcription 'Waldlaubsänger').",
+   "records": [
+     {"record_id": "obs_b6782524a2d0", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'In den Auen bei den Überfällen ruft ein Wendehals.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L21-e0137", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Site is the fields near Nymphenburg / Kapuzinerhölzl; München centroid ~7 km away but within city extent.",
+   "records": [
+     {"record_id": "obs_0a97250683f5", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Feldlerchen, über den Feldern noch vereinzelt singend'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L24-e0039", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan 'An den Überfällen etliche Bergstelzen' (transcription 'Bachstelzen'); 'Weidenlaubvögel' (transcription 'Weidenlaubsänger').",
+   "records": [
+     {"record_id": "obs_e4546fd72b2c", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'in den Tierparkauen Stare und vereinzelte Weidenlaubvögel noch singend'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L08-e0071", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Scan 'doch in geringer Anzahl' (transcription 'stets').",
+   "records": [
+     {"record_id": "obs_51853b8a9402", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '7.) Bläßhuhn: beim Schirm, vom Damm aus, doch in geringer Anzahl.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L33-e0334", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Small wording errors (e.g. 'Auf dem See beim Haus'); names right.",
+   "records": [
+     {"record_id": "obs_505ec309c28e", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Sonst noch Rauch- und Mehlschwalben und Segler über dem See.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L02-e0074", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_5e49e5b8ebea", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'An der Isar erscheint heute morgen 6 30 die erste Lachmöve, ein einzelnes Exemplar.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0214", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Pasted newspaper clipping is part of the entry; no bird records in it.",
+   "records": [
+     {"record_id": "obs_15ef67799384", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags 2 Stare beim Haus überhinfliegend.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L31-e0307", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "good", "note": "Entry text on the first crop ends at the page bottom with 'Gabriel Maxstraße'; p.123 starts mid-list ('Sommergoldhähnchen ... Zusammen 39 Arten'). The first ~17 species and any heading are on a page not shown, so date/place of the list cannot be confirmed.",
+   "records": [
+     {"record_id": "obs_5a7fbedcc484", "verdict": "unclear",
+      "species": "right", "count": "n/a", "date": "cannot_tell", "locality": "cannot_tell", "georef": "cannot_tell",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan p.123: '... Gartengrasmücke. Mönch. Dorngrasmücke ... Zusammen 39 Arten.' (list start missing)", "confidence": 0.5}
+   ]},
+  {"entry_id": "L31-e0185", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Star passage correct; preceding sentence partly misread ('Gehsteig'?).",
+   "records": [
+     {"record_id": "obs_0721abe60dc9", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Stare in größeren und kleineren Flügen in den Gärten an der Söllstraße.'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L19-e0395", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Bergfinken 'zur Zeit' (no own day); entry date acceptable, 10.I (Entfellner's visit) would also fit.",
+   "records": [
+     {"record_id": "obs_144217b16d0b", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Auch Bergfinken seien dort zur Zeit sehr zahlreich vertreten.'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L16-e0080", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "Words after 'Nach Mitteilung von' are hard to read; compatible with 'heute früh 2 h', no clearly legible informant name.",
+   "records": [
+     {"record_id": "obs_7e4e446dcfb5", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'befindet sich auf dem Egglburger See bei Ebersberg (München-Ost) eine Lachmöwen-Kolonie'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L23-e0195", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Record passage correct. Elsewhere: 'Heller Wasserläufer' (not Dunkler), 'Gartenspötter, sehr zahlreich' (not Gartengrasmücke), 'Haussperling' (not Kaisersperling), 'von Wüst am 14. V.' (not Kist), Gänsesäger '2 ♀♀'.",
+   "records": [
+     {"record_id": "obs_0bc08e1f5712", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Weißbartseeschwalbe, 1 Stück im Westbecken sehr schön beobachtet'", "confidence": 0.9}
+   ]}
+]}

@@ -133,8 +133,42 @@ def _taxon_matches(taxon: Taxon, verbatim: Optional[str], old: str) -> bool:
     return _same(taxon.vernacular_de, old) or _same(verbatim, old)
 
 
-def _place_matches(place: Optional[Place], old: str) -> bool:
-    return place is not None and (_same(place.verbatim, old) or _same(place.canonical, old) or _same(place.name, old))
+def _place_matches(place: Optional[Place], old: str, aliases: Iterable[str] = ()) -> bool:
+    return place is not None and any(_same(n, a) for a in (old, *aliases) for n in (place.verbatim, place.canonical, place.name))
+
+
+def place_merge_aliases(path) -> dict[str, set[str]]:
+    """The names the entity resolution merges into one place (review/place_merges.csv: automatic merges not
+    rejected, candidates accepted): folded name -> the other names of its node. A correction addressed to
+    the node's name in the graph finds the place under the name the extraction gave it."""
+    from laubmann_kg.resolution.common import ACCEPT, REJECT
+    path = Path(path) if path else None
+    if path is None or not path.exists():
+        return {}
+    parent: dict[str, str] = {}
+
+    def root(x: str) -> str:
+        while parent.setdefault(x, x) != x:
+            x = parent[x]
+        return x
+
+    names: dict[str, str] = {}
+    with path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            dec = (row.get("decision") or "").strip().lower()
+            if not (dec in ACCEPT or (row.get("status") == "auto" and dec not in REJECT)):
+                continue
+            a, b = (row.get("variant") or "").strip(), (row.get("canonical") or "").strip()
+            if a and b:
+                names.setdefault(a.casefold(), a)
+                names.setdefault(b.casefold(), b)
+                ra, rb = root(a.casefold()), root(b.casefold())
+                if ra != rb:
+                    parent[ra] = rb
+    cluster: dict[str, set[str]] = {}
+    for k in names:
+        cluster.setdefault(root(k), set()).add(names[k])
+    return {k: cluster[root(k)] - {names[k]} for k in names}
 
 
 def _known_taxa(entries: Iterable[DiaryEntry]) -> dict[str, Taxon]:
@@ -183,17 +217,17 @@ def _remark(obs, text: str) -> None:
     obs.occurrence_remarks = f"{obs.occurrence_remarks}; {text}" if obs.occurrence_remarks else text
 
 
-def _fix_legs(entry: DiaryEntry, old: str, new: Place) -> int:
+def _fix_legs(entry: DiaryEntry, old: str, new: Place, aliases: Iterable[str] = ()) -> int:
     n = 0
     for ev in entry.travel_events:
         legs = []
         for leg in ev.legs:
             changes = {}
-            if _place_matches(leg.departure_place, old):
+            if _place_matches(leg.departure_place, old, aliases):
                 changes["departure_place"] = new
-            if _place_matches(leg.arrival_place, old):
+            if _place_matches(leg.arrival_place, old, aliases):
                 changes["arrival_place"] = new
-            via = tuple(new if _place_matches(p, old) else p for p in leg.via_places)
+            via = tuple(new if _place_matches(p, old, aliases) else p for p in leg.via_places)
             if via != leg.via_places:
                 changes["via_places"] = via
             n += bool(changes)
@@ -221,44 +255,44 @@ def _apply_taxon(e: DiaryEntry, c: Correction, known_taxa) -> int:
     return len(hits)
 
 
-def _drop_place(e: DiaryEntry, old: str) -> int:
+def _drop_place(e: DiaryEntry, old: str, aliases: Iterable[str] = ()) -> int:
     """The name is no place: remove it as entry place and as record locality;
     the records' effective place falls back to their locality or the entry place."""
     n = 0
     old_entry = e.place
-    if _place_matches(e.place, old):
+    if _place_matches(e.place, old, aliases):
         e.place = None
         n += 1
     for o in e.observations:
-        if _place_matches(o.locality, old):
+        if _place_matches(o.locality, old, aliases):
             o.locality = None
             n += 1
-        if _place_matches(o.place, old) or (old_entry is not e.place and o.place is old_entry):
+        if _place_matches(o.place, old, aliases) or (old_entry is not e.place and o.place is old_entry):
             o.place = o.locality if o.locality is not None else e.place
             n += 1
     return n
 
 
-def _apply_place(e: DiaryEntry, c: Correction, known_places) -> int:
+def _apply_place(e: DiaryEntry, c: Correction, known_places, aliases: Iterable[str] = ()) -> int:
     if c.action == "drop":
-        return _drop_place(e, c.old)
+        return _drop_place(e, c.old, aliases)
     n = 0
     new = _new_place(c, known_places)
     # the entry place, or a heading the model could not use as a place (QA "nonplace")
     old_entry_place = e.place
-    header_only = e.place is None and _same(e.location_raw, c.old)
-    if _place_matches(e.place, c.old) or header_only:
+    header_only = e.place is None and any(_same(e.location_raw, a) for a in (c.old, *aliases))
+    if _place_matches(e.place, c.old, aliases) or header_only:
         e.place = new
         n += 1
     entry_changed = e.place is not old_entry_place
     for o in e.observations:
-        if _place_matches(o.locality, c.old):
+        if _place_matches(o.locality, c.old, aliases):
             o.locality = new
             n += 1
         # effective place: the record's own locality, else the entry place
         if o.locality is not None:
             target = o.locality
-        elif _place_matches(o.place, c.old):
+        elif _place_matches(o.place, c.old, aliases):
             target = new
         elif (o.place is None and header_only) or (entry_changed and o.place is old_entry_place):
             target = e.place
@@ -267,7 +301,7 @@ def _apply_place(e: DiaryEntry, c: Correction, known_places) -> int:
         if o.place is not target:
             o.place = target
             n += 1
-    return n + _fix_legs(e, c.old, new)
+    return n + _fix_legs(e, c.old, new, aliases)
 
 
 def _apply_person(e: DiaryEntry, c: Correction) -> int:
@@ -314,8 +348,11 @@ def _drop_habitat(e: DiaryEntry, old: str) -> int:
     return n
 
 
-def apply_corrections(entries: list[DiaryEntry], corrections: list[Correction]) -> tuple[int, list[QAFlag]]:
-    """Apply ``corrections`` in place. Returns (number of changed values, flags)."""
+def apply_corrections(entries: list[DiaryEntry], corrections: list[Correction],
+                      place_aliases: Optional[dict[str, set[str]]] = None) -> tuple[int, list[QAFlag]]:
+    """Apply ``corrections`` in place. Returns (number of changed values, flags). ``place_aliases``
+    (``place_merge_aliases``): a place correction that finds no place of its name in an entry takes the
+    names merged with it."""
     if not corrections:
         return 0, []
     known_taxa, known_places = _known_taxa(entries), _known_places(entries)
@@ -330,6 +367,8 @@ def apply_corrections(entries: list[DiaryEntry], corrections: list[Correction]) 
                 n = _apply_taxon(e, c, known_taxa)
             elif c.kind == "place":
                 n = _apply_place(e, c, known_places)
+                if not n and place_aliases and c.old.strip().casefold() in place_aliases:
+                    n = _apply_place(e, c, known_places, place_aliases[c.old.strip().casefold()])
             elif c.kind == "person":
                 n = _apply_person(e, c)
             else:

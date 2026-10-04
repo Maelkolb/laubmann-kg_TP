@@ -94,7 +94,7 @@ JS_LEVEL_SORTED = """(l => l.every((r, i) => { if (!i) return true; const a = LK
   return a[3] > b[3] || (a[3] === b[3] && (a[2] > b[2] || (a[2] === b[2] && a[1] >= b[1]))); }))(LKGC.RVU.list.slice(0, 600))"""
 JS_CORPUS_COUNT = """(c) => { let n = 0, e = 0; for (const r of LKGC.G.ent) { const rv = LKGC.R.entries[r.id] || {}; const flat = LKGC.R.obs[r.id] || []; let k = 0;
   for (let i = 0; i < flat.length; i += 3) { const rec = (rv.rec || {})[flat[i + 1]]; if (((rec && rec.t) || 0) >= c) k++; } n += k; if (k) e++; } return [n, e]; }"""
-FINAL_COUNTS = [85631, 74909, 69150, 44372]      # the final build (9,901 entries): full, core, strict core, strict core with coordinates
+FINAL_COUNTS = [85896, 60793, 27464, 16834]      # the final build (9,901 entries): full, core, strict core, strict core with coordinates (corpus_tiers.py)
 
 
 async def show_hints(pg):
@@ -409,6 +409,56 @@ async def corpus_checks(pg, queues=QUEUES, tag="review"):
     await pg.click('#corpbar [data-act="corpus-off"]')
     await pg.wait_for_timeout(500)
     check(await pg.evaluate("LKGC.RVU.corpus") == 0 and await pg.evaluate("LKGC.RVU.counts.all.n") == full["all"]["n"] and await pg.evaluate("LKGC.stats().kc[2]") == n[0], "'Filter aufheben' restores the full corpus")
+
+
+async def text_layer_checks(pg, tag):
+    """The Text tab shows the corrected text: the checks' better reading stands where the reading stage's text stood
+    (review: marked as improved by a check; explorer: without marks); the review build switches to the original transcription."""
+    pred = "(rv, s) => (rv.tc || []).some(c => c[2] && c[3] >= 0 && c[13] && c[9] && c[9] !== c[1] && c[9] !== c[0] && c[11] !== 'scan' && !/[<>]/.test(c[9] + c[0]))"
+    eid = await find_entry(pg, pred)
+    if not check(eid is not None, f"[{tag}] an entry with a better reading the checks place on its correction"):
+        return
+    await goto_entry(pg, eid)
+    c = await pg.evaluate(f"(LKGC.R.entries[{eid!r}].tc || []).find(c => c[2] && c[3] >= 0 && c[13] && c[9] && c[9] !== c[1] && c[9] !== c[0] && c[11] !== 'scan' && !/[<>]/.test(c[9] + c[0]))")
+    await pg.click('#ptabs [data-tab="text"]')
+    await pg.wait_for_timeout(250)
+    text = await pg.inner_text("#fnotes")
+    if tag == "explorer":
+        check(c[9] in text and await pg.locator("#fnotes .tci").count() == 0, f"[explorer] the corrected text, the checks' reading „{c[9]}“ in it, no marks ({eid})")
+    else:
+        improved = await pg.evaluate("[...document.querySelectorAll('#fnotes .tci.k-check')].map(e => e.textContent)")
+        check(c[9] in improved, f"[review] the checks' better reading „{c[9]}“ stands in the text, marked as improved by a check ({eid})")
+        await pg.click('#pbody [data-act="tlayer"][data-layer="orig"]')
+        await pg.wait_for_timeout(200)
+        orig = await pg.inner_text("#fnotes")
+        check(c[0] in orig and await pg.locator("#fnotes .tci, #pbody .tlegend").count() == 0, f"[review] 'Original' shows the transcription before the reading („{c[0]}“), without marks")
+        await pg.click('#pbody [data-act="tlayer"][data-layer="final"]')
+        await pg.wait_for_timeout(200)
+    await pg.click('#ptabs [data-tab="check"]')
+    await pg.wait_for_timeout(150)
+
+
+async def corpus_parts_checks(pg, tag):
+    """Under a filter, what belongs to an entry follows the entry; geometries and authority records follow their places, taxa and persons."""
+    out = await pg.evaluate("(() => { const r = LKGC.G.ent.find(r => r.nobs > 0 && LKGC.RVS.get(r.n).nc[1] === 0); return r ? r.id : ''; })()")
+    counts, found = [], []
+    for c in (0, 1):
+        await pg.evaluate(f"LKGC.setCorpus({c})")
+        await pg.evaluate("LKGC.go('/c/weather')")
+        await pg.wait_for_timeout(800)
+        labels = await pg.eval_on_selector_all("#v-class .btnrow .btn", "els => els.map(e => e.textContent.trim())")
+        counts.append({m.group(1): int(m.group(2).replace(".", "")) for m in (re.match(r"(.+) \(([\d.]+)\)$", x) for x in labels) if m})
+        await pg.fill("#q", out)
+        await pg.wait_for_timeout(500)
+        found.append(out in (await pg.inner_text("#qres") if await pg.locator("#qres").is_visible() else ""))
+        await pg.fill("#q", "")
+    parts = ["Wetterbericht", "Reiseereignis", "Reiseabschnitt", "Tagebuchseite", "Quellregion", "multimodale Region", "Geometrie", "Normdatensatz"]
+    check(all(0 < counts[1].get(k, 0) < counts[0].get(k, 0) for k in parts),
+          f"[{tag}] under the core filter weather reports, travel, pages, regions, geometries and authority records follow their entries {[(k, counts[0].get(k), counts[1].get(k)) for k in parts]}")
+    check(bool(out) and found == [True, False], f"[{tag}] an entry without a record in the core ({out}) is found without a filter, not under the core filter {found}")
+    await pg.evaluate("LKGC.setCorpus(0)")
+    await pg.evaluate("LKGC.go('/')")
+    await pg.wait_for_timeout(400)
 
 
 
@@ -815,7 +865,7 @@ async def explorer_checks(p, ref):
     await pg.keyboard.press("g")
     await pg.click('#ptabs [data-tab="text"]')
     await pg.wait_for_timeout(200)
-    check(await pg.locator("#fnotes .tci, #fnotes del").count() == 0 and len(await pg.locator("#fnotes").inner_text()) > 20, "[explorer] ... the entry text without reading-correction marks")
+    check(await pg.locator("#fnotes .tci, #fnotes del, #fnotes .m, #pbody .tlegend").count() == 0 and len(await pg.locator("#fnotes").inner_text()) > 20, "[explorer] ... the entry text without any marks")
     await pg.click('#ptabs [data-tab="check"]')
     await pg.screenshot(path=str(SHOTS / "smoke_explorer_notes_off.png"))
     await reload(pg)
@@ -836,6 +886,8 @@ async def explorer_checks(p, ref):
     # corpus bar: present, four counts, filters the views
     await corpus_bar_checks(pg, "explorer")
     await corpus_checks(pg, [q for q in QUEUES if q != "done"], "explorer")
+    await corpus_parts_checks(pg, "explorer")
+    await text_layer_checks(pg, "explorer")
     await archive_checks(pg, "explorer")
     # both languages without untranslated keys, the help without decisions
     for lang in ("de", "en"):
@@ -958,7 +1010,7 @@ async def main():
                 if kind == "tc":
                     await pg.click('#ptabs [data-tab="text"]')
                     await pg.wait_for_timeout(200)
-                    check(await pg.locator("#fnotes .tci").count() > 0 and await pg.locator("#fnotes del").count() > 0, f"[{lang}] reading corrections stand inline in the text")
+                    check(await pg.locator("#fnotes .tci").count() > 0 and await pg.locator("#fnotes del").count() == 0, f"[{lang}] the text is the final text; machine corrections are marked in it, nothing struck")
                     await pg.click("#fnotes .tci >> nth=0")
                     await pg.wait_for_timeout(200)
                     check(await pg.evaluate("LKGC.S.tab") == "check" and await pg.locator("#pbody .rcard.t-tc.focus").count() == 1, f"[{lang}] clicking a correction in the text opens its card")
@@ -993,6 +1045,8 @@ async def main():
         await severity_checks(pg)
         await corpus_bar_checks(pg, "review")
         await corpus_checks(pg)
+        await corpus_parts_checks(pg, "review")
+        await text_layer_checks(pg, "review")
         await archive_checks(pg, "review")
         source_path = await pg.evaluate("LKGC.G.meta.sourcePath")
         ref = await review_reference(pg)      # what the explorer build must show identically

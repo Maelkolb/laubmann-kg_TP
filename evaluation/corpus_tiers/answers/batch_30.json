@@ -1,0 +1,130 @@
+{"batch": 30, "entries": [
+  {"entry_id": "L06-e0150", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Checked passage fine; elsewhere 'Nachtigallrohrsänger' is 'Nachtigallschwirl' on the scan.",
+   "records": [
+     {"record_id": "obs_48ef828d3d7b", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Bilder vom Schilfrohrsänger' / 'Schilfrohrsänger beim Schirm, Maisinger See. A. Müller phot.'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L23-e0058", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "'Bericht von F. Schüz' added later in black ink; read as a separate note, not as attribution of the observations.",
+   "records": [
+     {"record_id": "obs_712ccb256439", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'An den Überfällen wieder 2 Wasseramseln.'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L05-e0022", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Pelican passage fine; elsewhere 'Seidenreiher' is 'Fischreiher', 'Karstebene' is 'Wanderdüne', header 'Oxia' is 'Ovria'. Count 6 = flying group; 3 swimming + 1 sitting are a separate group.",
+   "records": [
+     {"record_id": "obs_f280bc5d20c6", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Zunächst erheben sich bei unserem Näherkommen 2 + 4 Exemplare'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L33-e0152", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan: 'An Vögeln nur Stare, Rauch- und Mehlschwalben und eine Bachstelze beobachtet; Kohlmeisen und Kleiber verhört' (transcription has 'unsere', 'Goldammer').",
+   "records": [
+     {"record_id": "obs_8a288826482c", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Bummel auf die Johanneshöhe ... Rauch- und Mehlschwalben ... beobachtet'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L34-e0183", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_5909c6a25434", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Gegen Abend singt beim Haus ein Weidenlaubvogel, der erste für heuer.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L05-e0154", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_0705ca4fce0a", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'auf dem Weiher 4 Krickenten (2 ♀♀ ad und 2 juv.)'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L32-e0259", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Only a duplicated 'An An' elsewhere.",
+   "records": [
+     {"record_id": "obs_0b09c0196d56", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Bummel durch den Ort ... Rauch- und Mehlschwalben beobachtet.'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L23-e0080", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor", "note": "'notiert' is 'verhört' on the scan.",
+   "records": [
+     {"record_id": "obs_d0eefbcc64f3", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Morgens an der Isar bei den Überfällen eine Wasseramsel beobachtet'", "confidence": 0.95}
+   ]},
+  {"entry_id": "L02-e0053", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Header place is 'Kaufbeuren', not Kaiserturm. Elsewhere 'Baumpieper' (Littenwand) is 'Sumpfmeisen'. Georef points to the village Wertach (Oberallgäu), but the text means the river Wertach at Kaufbeuren.",
+   "records": [
+     {"record_id": "obs_857b48e81abe", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: 'Auf den Kiesbänken am Fluß trieben sich Gebirgsbachstelzen und Weiße Bachstelzen in vielen Exemplaren herum.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L32-e0439", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Checked passage fine; middle of the entry is hidden under a pasted clipping, so the transcription of those parts is unreliable.",
+   "records": [
+     {"record_id": "obs_9fd474b074ee", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: '(23. VI.!) Seit einigen Tagen erscheint ... am Küchenfenster ein ♀ Hausrotschwanz.'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L06-e0097", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Checked list items fine; elsewhere 'bartige Seeschwalbe' is 'Weißbärtige Seeschwalbe'.",
+   "records": [
+     {"record_id": "obs_be6248d9456f", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '25.) Sommergoldhähnchen'", "confidence": 0.9},
+     {"record_id": "obs_296359800516", "verdict": "ok",
+      "species": "right", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {}, "evidence": "scan: '3.) Eichelhäher'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L29-e0122a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Pasted typed carbon copy of a numbered Speichersee-Begehung by another observer ('ich' cycles home with Bezzel), not Laubmann's own visit; continuation page only visible as mirror show-through.",
+   "records": [
+     {"record_id": "obs_ae1557dfd18f", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "author of the typed report (not Laubmann; probably W. Wüst)", "record_type": "third-party-report"},
+      "evidence": "typed: '571.Speichersee-Begehung ... radelte ich mit BEZZEL'; 'Löffelente: Mind. 4 ♂♂ und 4 ♀♀ im Ob.'", "confidence": 0.7}
+   ]},
+  {"entry_id": "L30-e0250", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "The word read as 'Flussseeschwalbe' ends in '-schwirl' on the scan (Flußschwirl, possibly Feldschwirl).",
+   "records": [
+     {"record_id": "obs_273a7c7d0554", "verdict": "wrong",
+      "species": "wrong", "count": "n/a", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"species": "Flußschwirl (Locustella fluviatilis)"},
+      "evidence": "scan: 'Zwergmöve, Wald..., Flußschwirl, Drosselrohrsänger, Teichrohrsänger'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L34-e0194", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Dohle passage fine; elsewhere 'Girlitz' is 'Fitis' on the scan. The Buchloe clipping is dated 'Samstag/Sonntag, 10./11. April 1965'.",
+   "records": [
+     {"record_id": "obs_f5bbb1ec9153", "verdict": "wrong",
+      "species": "right", "count": "n/a", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "n/a",
+      "correct": {"date": "1965-04-10"},
+      "evidence": "clipping 'Samstag/Sonntag, 10./11. April 1965 ... BUCHLOE ... anfliegenden Dohlen'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L01-e0075", "entry_date_ok": null, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor", "note": "Header not in crops; transcription starts mid item 10 ('...vom 6. April 1908') and stops at 65 although the list continues (crop 9: item 77). Many name errors (e.g. 26 Misteldrossel, 27 Weindrossel, 54 Wespenbussard).",
+   "records": [
+     {"record_id": "obs_7129feda9fca", "verdict": "wrong",
+      "species": "wrong", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "n/a",
+      "correct": {"species": "Wespenbussard (Pernis apivorus)", "observer": "Präparator Erdt (specimen delivered to him)", "record_type": "third-party-report"},
+      "evidence": "scan: '54.) Wespenbussard. Brutvogel, doch nicht so häufig als der Mäusebussard ... Am 31. V. 13 von Biessenhofen'", "confidence": 0.85}
+   ]}
+]}

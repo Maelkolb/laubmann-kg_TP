@@ -1,5 +1,44 @@
 # Human validation of the final graph and the Darwin Core Archive
 
+## 0. Where things stand (5 October 2026), start here
+
+**Graph:** `kg_exports_2026-10-04_text`, 9,901 entries, 85,896 records. It carries the machine layer of the
+text: where the scan check of round 4 gave a better reading of a reading correction, and for the scan agent's
+corrections of round 3, that reading is in the text (4,310 changes in 3,076 entries). 830 better readings were
+left to the reviewer (not placeable on their correction, a doubt, a word they would double). The Gemini record
+check ran again for the 1,563 entries whose records changed. No human decision has been made yet.
+
+**Pages** (Drive `HistOrniGraph_Final_Graph_NoVal`, open from disk in Edge or Chrome):
+
+| page | for | build |
+|---|---|---|
+| `validation/Laubmann_Verknuepfungen.html` | authority links and merges, one entity at a time | `tools/validation_ui/link_check/` |
+| `validation/Laubmann_Graphpruefung.html` | entry by entry against the scan: findings, missing records, automatic changes, reading corrections, entry head, the Text tab | `tools/validation_ui/graph_check/` |
+| `explorer/Laubmann_Graph_Explorer.html` | the same page read-only | `build_graph_check.py --mode explorer` |
+
+Keys and export files: `validation/LIESMICH.txt`. Numbers and limits: `Documentation.md` one level up.
+
+**Order of work**
+
+1. Link page, species first: 613 entities; the 359 the machine changed or confirmed cover 70,498 of 85,989
+   mentions, so a few hundred decisions settle most of the graph. Then places with many mentions.
+2. Graph page, queue *Stichprobe* (299 entries, fixed random sample): measures how often each check and each
+   class of automatic change is right (section 1: release a class when the Wilson lower bound is ≥ 90 %,
+   otherwise review it item by item or revert it). The text layer is one more class: in the Text tab its
+   readings are orange; on a reading-correction card `J` takes the check's better reading, `K` keeps the
+   machine's correction, `N` the old text, `E` an own reading.
+3. The remaining findings, gravest first. Open in the full graph: 1,831 schwer, 9,372 mittel, 5,142 leicht; in
+   the core 22, 3,209 and 3,252. The corpus bar (full, core, strict core, strict core with coordinates:
+   85,896, 60,793, 27,464, 16,834 records) narrows every list and count; `docs/corpus_tiers.md` says what each
+   tier excludes and how many errors it is estimated to hold (35.3, 27.5, 9.2, 6.9 %).
+4. Queue *Lesung an Art/Zahl/Ort* for the reading corrections that touch a record, including the better
+   readings the layer left open.
+
+Export ("Sichern & Export") after every session; the re-run is section 6.
+
+The sections below are the plan of 1 October. Its principles (section 1), the decision files (section 3) and
+the acceptance criteria (section 4) still hold; the single page it names was replaced by the two pages above.
+
 > **Update 2026-10-01 (round 4).** Every record has since been checked against
 > the scan by Gemini, corrections of single record fields have a pipeline
 > consumer (`review/observation_corrections.csv`), and the work is split over
@@ -57,9 +96,10 @@ cost, only entries whose text changed are re-extracted).
 | `identities.csv` | linking, resolution | name → taxon/person/place/habitat, authority links (GBIF, Wikidata, GND, GeoNames, OSM, EUNIS), merges |
 | `value_corrections.csv` | after extraction | one mention: other species, not a bird, drop |
 | `text_corrections.csv` | before extraction | the reviewer's own reading of a passage (entry re-extracted) |
-| `transcript_decisions.csv` | visual reading | accept / reject / edit a machine reading correction (entry re-extracted when the text changes) |
+| `transcript_decisions.csv` | visual reading | accept / reject / edit a machine reading correction (`J`, `K`, `N`, `E`); the entry is read and extracted anew |
 | `qa_decisions.csv` | QA | false alarm: the flag and its exclusion are dropped |
-| `observation_corrections.csv` | — (measured only) | count, locality, date, observer of single records: evaluation, no consumer yet |
+| `observation_corrections.csv` | after the value corrections | single record fields (count, locality, date, observer, record type, status …) and records added by hand |
+| `machine/text_layer_machine.csv`, `machine/value_corrections_text_machine.csv` | visual reading and right after extraction | the machine layer of the text; a reviewer's decision on a correction wins, and an entry with any reviewer decision on its text is read anew with the layer's other changes |
 
 ## 4. Acceptance criteria for the release (v1.0, GBIF/Zenodo)
 
@@ -97,3 +137,47 @@ is a suggestion in the page. Known weak spots for the assistant: georeferences
 of namesakes (the most frequent error), counts given as ranges, record type of
 third-party lists, persons written as initial + surname (no candidates found),
 habitat verdicts given with default confidence.
+
+## 6. Re-run after a review session
+
+The ZIP's `review/*.csv` go to `data/review/`. The page inputs that cannot be rebuilt from an export
+(`pages_geometry.json`, `drive_regions.json`, `drive_pages.json`, `vernaculars.json`, `second_reading.json`,
+`third_reading.json`, `person_matches.json`, `payload_pipeline.b64`) are on Drive in
+`HistOrniGraph_output/graph_check_inputs/` and belong in `data/cache/graph_check/in/`; the model caches are in
+`HistOrniGraph_output/llm_cache_v4`, `reading_cache_v1`, `linking_cache`, `record_check_cache_v1`.
+
+```powershell
+$X = "data/exports/<new export>"; $I = "data/cache/graph_check/in"
+$M = "G:/My Drive/Laubmann_KG_Maschinenpruefung_2026-10-01/machine_review"
+$R = "G:/My Drive/HistOrniGraph_Final_Graph_NoVal/machine_review"
+laubmann-kg export-all --config configs/full_llm.yaml --input-dir data/corpus_patched --output-dir $X
+python tools/validation_ui/load.py $X/rdf/laubmann_sample.ttl $I/triples_checked.pkl
+python tools/validate_export.py $X --triples $I/triples_checked.pkl
+python tools/validation_ui/build_payload.py $X/review --triples $I/triples_checked.pkl --corpus data/corpus_patched `
+    --geometry $I/pages_geometry.json --vernaculars $I/vernaculars.json --built <date> --export-name <new export> `
+    --second-reading $I/second_reading.json --third-reading $I/third_reading.json --person-matches $I/person_matches.json `
+    --machine-review $M/machine_review.json --machine-readings $M/readings_machine.json --out $I/payload_checked.b64
+# record check only for entries whose records changed (file of entry ids); answers of the others stay
+python tools/validation_ui/machine_review/record_check.py $I/payload_checked.b64 $I/triples_checked.pkl `
+    --out data/cache/machine_review_r5 --review $X/review --dwca $X/dwca --only changed_ids.txt --budget 10
+python tools/validation_ui/machine_review/record_check.py $I/payload_checked.b64 $I/triples_checked.pkl `
+    --out data/cache/machine_review_r5 --review $X/review --dwca $X/dwca --merge-only
+python tools/validation_ui/graph_check/build_review.py --payload $I/payload_checked.b64 `
+    --payload-before $I/payload_pipeline.b64 --triples $I/triples_checked.pkl --corpus data/corpus_patched `
+    --geometry $I/pages_geometry.json --review $X/review --machine data/review/machine `
+    --record-check data/cache/machine_review_r5/record_check `
+    --transcript-checks $R/transcript_checks_gemini.csv --sonnet-check $M `
+    --sonnet-stale data/review/machine/sonnet_checks_stale.txt --drive-regions $I/drive_regions.json --dwca $X/dwca `
+    --text-layer data/review/machine/text_layer_machine.csv --reading-base data/review/machine/reading_corrections_base.csv `
+    --tiers-csv data/cache/graph_check/record_tiers.csv --out data/cache/graph_check/review.json
+python tools/validation_ui/graph_check/build_graph_check.py $X/rdf/laubmann_sample.ttl data/cache/graph_check/review.json data/exports/graph_check/Laubmann_Graphpruefung.html
+python tools/validation_ui/graph_check/build_graph_check.py $X/rdf/laubmann_sample.ttl data/cache/graph_check/review.json data/exports/graph_check/Laubmann_Graph_Explorer.html --mode explorer
+python tools/validation_ui/link_check/build_data.py --export-review $X/review
+python tools/validation_ui/link_check/assemble.py
+```
+
+Without a local `data/cache/machine_review_r5`, `--record-check $R` reads the merged checks on Drive.
+`changed_ids.txt` and `sonnet_checks_stale.txt` list the entries whose records (occurrence id, species, count,
+locality, observer, date) differ from the export they were checked on. The text layer itself is fixed against
+`kg_exports_2026-10-01_checked`: `build_review.py --machine-text-layer` is not run again (it refuses an export
+that already contains the layer).

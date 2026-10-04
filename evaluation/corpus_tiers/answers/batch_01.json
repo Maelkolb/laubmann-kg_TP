@@ -1,0 +1,210 @@
+{"batch": 1, "entries": [
+  {"entry_id": "L29-e0166d", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Typed pasted report '576. Speichersee-Begehung', author not named in crop (probably W. Rathmayer, cf. Egerer in L29-e0159); report continues on next sheet. Vkl coords lie near the Isar/Großlappen, not the Teichgebiet.",
+   "records": [
+     {"record_id": "obs_5f7468f0f0a0", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Haubentaucher: 1 im westlichen Wb., mind. 8 Ex. im übrigen Wb.'", "confidence": 0.85},
+     {"record_id": "obs_d1e04027f6df", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Stockente: Tausende im Wb., im Vkl. nur 1 ♂♀'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L29-e0204", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "Header '3. März 1956. München' (rain, Weststurm). Species list on pp.148-149 starts mid-sentence and says 'Wieder ein herrlich schöner Tag': another day's excursion, its start (and author) not in crops. 'j 2'/'i 50'/'i 00' = 12/150/100.",
+   "records": [
+     {"record_id": "obs_064579b3f8df", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "unclear", "record_type": "unclear", "status": "right", "other": "right",
+      "correct": {"count": "337 (5+12+150+70+100±x)", "date": "not 1956-03-03; day of the excursion not visible in crops (fine weather vs. storm on 3 March)"},
+      "evidence": "scan: '22.) Gänsesäger, 5+12+150 im ..., 70 am Gür. ..., weitere 100±x im ...'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L26-e0074", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan reads 'auf dem Weg nach Thalkirchen', not Feldkirchen. Rest of transcription has many errors (Kolbenente omitted, Zwergtaucher, brütende Wacholderdrossel).",
+   "records": [
+     {"record_id": "obs_5697e2068385", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "1"}, "evidence": "scan: 'in den Isaranlagen kurz eine Garten- und Mönchsgrasmücke singend gehört'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L22-e0151", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_47533cbffe3b", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'singen im Zoo und am Harlachinger Berg zahlreiche Gartenbaumläufer'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L28-e0086", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Typed sheet pasted in, running log of several dates ('Zusammen mit Heinz'), not Laubmann's handwritten diary; author not named in crop, so most likely a third-party report.",
+   "records": [
+     {"record_id": "obs_41d1bd391daa", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "author of the typed Ismaning report (not named in crop; with Heinz), not Laubmann", "record_type": "third-party-report"},
+      "evidence": "typed sheet: '12.Dez.54.Zusammen mit Heinz ... Wintergoldhähnchen am GS gehört'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L03-e0124", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Cumulative list of all species ever seen in the garden, not observations of 4 June. Elsewhere: 18.) probably Nonnenmeise, not Haubenmeise; 'sicher als Brutvögel'.",
+   "records": [
+     {"record_id": "obs_780ee08fad9d", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "undated: cumulative garden species list compiled on 1920-06-04"},
+      "evidence": "scan: 'Zusammenstellung aller im Garten beobachteten Vogelarten ... 22.) Weidenlaubvogel'", "confidence": 0.55}
+   ]},
+  {"entry_id": "L23-e0132", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor", "note": "Scan has '25±x Stück', transcription '25-3x'.",
+   "records": [
+     {"record_id": "obs_ba54563b35a2", "verdict": "wrong",
+      "species": "right", "count": "wrong", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"count": "25 approximate ('25±x'), no range 25-30"},
+      "evidence": "scan: 'Auf den Bäumen am Hohen Weg konnte ich 25±x Stück beisammen zählen'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L29-e0026a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Typed report signed 'Bezzel' (Einhard Bezzel), with H. Altner and Hantge. 'Keilb.' = Keilberg (cf. 'zwischen Keilberg und 2. Insel').",
+   "records": [
+     {"record_id": "obs_6bfde8821b8b", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Einhard Bezzel"}, "evidence": "scan: '23)Kampfläufer,4 MM im mittl.Wb im Schilf'; report signed 'Bezzel'", "confidence": 0.85},
+     {"record_id": "obs_377cd03a4c15", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "n/a",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Keilberg (Ismaninger Teichgebiet)", "observer": "Einhard Bezzel"},
+      "evidence": "scan: '39)Wacholderdrossel, 2 am Vkl+ 1 auf der 1.Insel + geh. am Keilb.'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L28-e0180c", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": false,
+   "transcription_quality": "poor",
+   "note": "Crops show mirrored show-through and overlapping typed sheets ('Kar-Fr. 8.IV.1955, 6.45 - 18.15 Uhr'); transcription is largely garbled and mixes several pages/reports. No Kolbenente line legible.",
+   "records": [
+     {"record_id": "obs_e73b001a36ec", "verdict": "unclear",
+      "species": "unclear", "count": "unclear", "date": "right", "locality": "unclear", "georef": "n/a",
+      "observer": "unclear", "record_type": "unclear", "status": "unclear", "other": "unclear",
+      "correct": {}, "evidence": "transcription 'Kolbenente : 1 m. Rep. Wimpfenv.' not found in illegible overlapping crops", "confidence": 0.6}
+   ]},
+  {"entry_id": "L25-e0056", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_6f09c80e7cbf", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'an den Überfällen ... 1 Eisvogel und zahlreiche Lachmöven'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L34-e0036", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan 'Aus W. Wüst's Ismaning-Berichten' (not K. Wüst); 'Waldlaubvogel und einen Zwergspecht' misread.",
+   "records": [
+     {"record_id": "obs_9c99a4896105", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "W. Wüst (Walter Wüst)"}, "evidence": "scan: 'Aus W. Wüst's Ismaning-Berichten: ... 29. VI.: ... Trauerseeschwalbe'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L26-e0022a", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "minor",
+   "note": "Typed report signed 'E. Bezzel'; transcription ends with wrong 'A.Laubm.'. Brachvogel linked to genus Numenius: acceptable.",
+   "records": [
+     {"record_id": "obs_4c4df0e1f23b", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "Einhard Bezzel", "record_type": "third-party-report"},
+      "evidence": "scan: '71)Brachvogel,auch in der Nacht rufend und balzend'; signed 'E.Bezzel'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L22-e0236", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Pressed fern covers part of the Stockholm park line. Elsewhere 'Fasan ♂' misread as 'Elster ♂'.",
+   "records": [
+     {"record_id": "obs_a8496000a794", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Im Park ... in Stockholm beobachtete ich neben Dohlen auch zahlreiche Trauerfliegenschnäpper'", "confidence": 0.85}
+   ]},
+  {"entry_id": "L31-e0346", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "",
+   "records": [
+     {"record_id": "obs_53ef70e23c02", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "W. Wüst (Walter Wüst)"}, "evidence": "scan: 'Aus W. Wüst's Ismaning-Bericht vom 29. VII.: ... Tüpfelsumpfhuhn'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L30-e0060", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Sender reads 'Walter Wüst' (st written like rt), not 'Walter Hirt'; 'Teillberg' = Keilberg, 'Türmel' = Kiesinsel.",
+   "records": [
+     {"record_id": "obs_c8b4add8c675", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"observer": "Walter Wüst"}, "evidence": "scan: 'Walter Wüst schickt mir ... 4.VI.: ... Weißbartseeschwalbe, 3 im K 3/4'", "confidence": 0.65}
+   ]},
+  {"entry_id": "L02-e0162", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Elsewhere 'Wacholderdrosseln' misread as 'Nachtigallen'.",
+   "records": [
+     {"record_id": "obs_654e8f98bb44", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'In den Büschen gleich bei der Wertachbrücke singt heute der erste Gartenspötter'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L16-e0084", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Pellet find (indirect evidence; basis PreservedSpecimen questionable). Elsewhere 'Weidenlaubvogel, Fitislaubvogel häufig' misread.",
+   "records": [
+     {"record_id": "obs_ed41aa014dcd", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Vormittags im Englischen Garten ... Gewölle vom Waldkauz'", "confidence": 0.8}
+   ]},
+  {"entry_id": "L28-e0087", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Same pasted typed log as L28-e0086 ('Mit Heinz ...'), author not named in crop; most likely a third-party report, not Laubmann's own.",
+   "records": [
+     {"record_id": "obs_f1e2a79edcdf", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "wrong", "record_type": "wrong", "status": "right", "other": "right",
+      "correct": {"observer": "author of the typed Ismaning report (not named in crop) and Heinz", "record_type": "third-party-report"},
+      "evidence": "typed sheet: '26.Dez.54.Mit Heinz ... 1 ad.Silbermöve und 3 ad.3 juv. Sturmmöven im WB'", "confidence": 0.6}
+   ]},
+  {"entry_id": "L20-e0028", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Elsewhere 'Schwanzmeisen; Sommergoldhähnchen, in der Söllstraße' misread.",
+   "records": [
+     {"record_id": "obs_5e72a5b57bd6", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "n/a",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Wendehals, in der Söllstraße'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L12-e0071", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "good", "note": "Elsewhere 'Kolkraben' misread as 'Waldrappe', 'Deutschen Jäger-Zeitung'.",
+   "records": [
+     {"record_id": "obs_1bd2bdcfe785", "verdict": "ok",
+      "species": "right", "count": "right", "date": "right", "locality": "right", "georef": "right",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {}, "evidence": "scan: 'Morgens an der Salvatorkirche 2 Dohlen beobachtet'", "confidence": 0.9}
+   ]},
+  {"entry_id": "L27-e0097", "entry_date_ok": true, "entry_place_ok": true, "boundary_ok": true,
+   "transcription_quality": "poor",
+   "note": "Scan 'Adolf Müller', not Alois; 'Lachmöwen' not 'Laubmeisen'. Berglaubvogel line belongs to the 22.V. walk through the Schlucht near Starnberg (lake with Schwarzhalstaucher), not München.",
+   "records": [
+     {"record_id": "obs_eee64e9acc98", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "right", "locality": "wrong", "georef": "wrong",
+      "observer": "wrong", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"locality": "Starnberg area (22.V. walk through the Schlucht to the lake, prob. Maisinger Schlucht/See)", "observer": "Adolf Müller"},
+      "evidence": "scan: 'Am 22.V. Wanderung ... durch die Schlucht: ... in Starnberg ... Berglaubvogel, fehlt offenbar'", "confidence": 0.75}
+   ]},
+  {"entry_id": "L29-e0159", "entry_date_ok": true, "entry_place_ok": false, "boundary_ok": true,
+   "transcription_quality": "good",
+   "note": "Header '18. Januar 1956. München. Regen ohne Unterlaß! Bericht von Werner Rathmayer'; only report pp.5-6 transcribed (pp.1-4 with report date not in crops). Report weather (sunny, Föhn, Alpensicht) shows an earlier excursion day. Tafelberg coords ~80 km east.",
+   "records": [
+     {"record_id": "obs_9f42803b35be", "verdict": "wrong",
+      "species": "right", "count": "right", "date": "wrong", "locality": "right", "georef": "wrong",
+      "observer": "right", "record_type": "right", "status": "right", "other": "right",
+      "correct": {"date": "date of Rathmayer's excursion (on report p.1, not in crops), before 1956-01-18"},
+      "evidence": "scan: 'Schwanzmeise: Auf dem Tafelberg geh.'; diary 18.I.: 'Regen ohne Unterlaß!' vs report 'prachtvolle Alpensicht'", "confidence": 0.6}
+   ]}
+]}
