@@ -50,60 +50,80 @@ wenige Entscheidungen zu häufigen Namen decken den größten Teil des Graphen.
    (gestrichelter Kasten und „ungefähre Zeile“, wenn die Lage geschätzt ist).
 7. Personen: **Nennungen nach Jahr** mit den Lebensdaten des Normdatensatzes.
 
-## Korpusfilter
+## Beleg der Verknüpfung
 
-Derselbe Filter wie auf der Graph-Prüfseite (`graph_check/`, dort Abschnitt „Korpusfilter“). `build_review.py`
-gibt jedem Datensatz eine Stufe `t` und die Gründe `tw`, warum er nicht in der nächsten Stufe ist; diese Seite
-rechnet sie nicht neu, sondern liest sie aus `data/cache/graph_check/review.json`:
+Jeder Eintrag trägt eine Klasse, die sagt, wodurch seine Verknüpfung gestützt ist (`lb` in `build_data.py`,
+aus „gesetzt von“ abgeleitet):
 
-| Stufe | Korpus | heißt |
-|---|---|---|
-| K0 | außerhalb des Kerns | der Nachweis selbst (Art, Anzahl, Datum, Status) ist zweifelhaft |
-| K1 | Kern | der Nachweis ist unstrittig, ein anderes Feld (Beobachter, Ort, Bestimmung, Lesung) nicht |
-| K2 | strenger Kern | kein Feld ist zweifelhaft, die Koordinaten fehlen oder sind nicht verlässlich |
-| K3 | strenger Kern mit Koordinaten | dazu verlässliche Koordinaten |
+| Klasse | heißt |
+|---|---|
+| zwei Quellen | eine übernommene Maschinenzeile: mindestens zwei unabhängige Quellen einig (Claude-Textagent, Scan-Agent, Gemini, Opus, Ortsverzeichnis), Konfidenz ≥ 0,9 |
+| eine Quelle | nur von der Pipeline verknüpft: Arten exakter GBIF-Namenstreffer, Personen exaktes Wikidata-Label, Lebensräume eine Gemini-Antwort je Bezeichnung |
+| nur Namensabgleich | Orte: Koordinaten nur aus einem Namenstreffer in OpenStreetMap/Nominatim oder GeoNames, von der Ortsprüfung nicht bestätigt |
+| Maschine: keine Verknüpfung | die Maschine hält die Verknüpfung für falsch oder den Namen für keinen Eintrag (auch entfernte Namen) |
+| nicht verknüpft | keine Verknüpfung, keine übernommene Maschinenentscheidung |
 
-Die Gründe (`tw`) und ihr Wortlaut kommen aus `graph_check/corpus_tiers.py` (`RULES`), die Eichung an einer
-blinden Scanprüfung steht in `docs/corpus_tiers.md`.
+Bei Arten hat jeder geschriebene Name seine eigene Klasse (Status `reviewed` = zwei Quellen, sonst der eigene
+GBIF-Treffer); der Eintrag trägt die Klasse der meisten Nennungen, abweichende Namen zeigen ihre Klasse in
+„Geschriebene Namen“. Eine übernommene Zeile ohne Wirkung im Graph zählt nicht als zwei Quellen.
 
-Direkt unter der Kopfzeile steht in jeder Ansicht (Übersicht und alle vier Typen) die Leiste **Korpus** mit vier
-Knöpfen und der Zahl ihrer Datensätze – **Vollständig · Kern · Strenger Kern · Strenger Kern mit Koordinaten** –,
-der gewählte ist gefüllt, die Wahl wird im Browser gemerkt. Sie wählt die niedrigste Stufe, die zählt. **ⓘ** erklärt
-die vier Korpora in Worten. Ist ein Filter aktiv, färbt sich die Leiste, nennt Korpus und Zahlen und bietet
-„Filter aufheben“.
+- Karte: die Klasse als Plakette neben der Warteschlange; der Tooltip nennt, was die Verknüpfung stützt, die
+  Blindprüfung vom 3.10. (734 Datensätze gegen den Scan) und – wo die Maschine mit ≥ 2 Quellen einig war, aber
+  unter der Konfidenzschwelle blieb – dieses Urteil.
+- Liste: Chips unter den Warteschlangen filtern nach Klasse (nochmals klicken hebt den Filter auf); nur eine
+  Ansicht wie die Unterfilter.
+- Übersicht: je Typ Einträge, Nennungen und Anteil je Klasse (Arten: Nennungen je geschriebenem Namen), eine Zeile
+  der Blindprüfung je Klasse (Orte mit geprüfter Verknüpfung: Koordinaten in etwa 12 % falsch, n = 394; nur
+  Namensabgleich: etwa 75 %, n = 61; Arten: 5,6 % gegen 3,0 % Artfehler, sie kommen aus verlesenen Namen und
+  falscher Zuordnung, nicht aus der Verknüpfung; Personen und Lebensräume nicht gemessen) und die Zahl der
+  Maschinenzeilen mit ≥ 2 übereinstimmenden Quellen unter der Konfidenzschwelle (Lebensräume 1.447, meist
+  Konfidenz 0,7). Eine Zeile anklicken öffnet den Typ mit diesem Filter.
+- `link_audit.csv` hat die Spalte `link_basis` (Präzision je Klasse).
 
-**Was ein Korpus für einen Eintrag (Art, Person, Ort, Lebensraum) heißt:** seine Nennungen, die zu Datensätzen
-des Korpus gehören.
+Stand `kg_exports_2026-10-05_attribution` (Einträge / Nennungen): Arten zwei Quellen 295 / 64.323 (74,8 %),
+eine Quelle 245 / 21.402 (24,9 %); Personen zwei Quellen 95 / 639, eine Quelle 84 / 490, nicht verknüpft
+3.532 / 8.128; Orte zwei Quellen 1.419 / 20.101, nur Namensabgleich 993 / 3.567, nicht verknüpft 6.196 / 13.683;
+Lebensräume eine Quelle 1.785 / 14.125 (97,4 %).
 
-- Eine Nennung, die an einem Datensatz hängt, zählt, wenn dieser Datensatz im Korpus liegt: die Art eines
+## Verlässlichkeitsfilter
+
+Derselbe Filter wie auf der Graph-Prüfseite, mit denselben Schwellen. `build_review.py --quality` gibt jedem
+Datensatz `q.p`, die geschätzte Wahrscheinlichkeit, dass mindestens eines seiner Felder falsch ist
+(`record_quality.py`, geeicht an der blinden Scanprüfung), dazu `po` (Vorkommen, Art, Anzahl, Datum) und `pc`
+(Koordinaten). Diese Seite liest sie aus `data/cache/graph_check/review_quality.json`.
+
+Direkt unter der Kopfzeile steht in jeder Ansicht die Leiste **Verlässlichkeit** mit vier Knöpfen und der Zahl
+ihrer Datensätze: **Alle**, **< 50 %**, **< 25 %**, **< 10 %**. Der gewählte ist gefüllt, die Wahl wird im Browser gemerkt;
+**ⓘ** erklärt die Schätzung. Ist ein Filter aktiv, färbt sich die Leiste und bietet „Filter aufheben“.
+
+**Was eine Schwelle für einen Eintrag heißt:** seine Nennungen, deren Datensatz darunter liegt.
+
+- Eine Nennung, die an einem Datensatz hängt, zählt, wenn dieser Datensatz unter der Schwelle liegt: die Art eines
   Datensatzes, ein Ort als Fundort (`hasLocality` / `observedAt`), eine Person als Beobachter (`recordedBy`),
   der Lebensraum eines Datensatzes.
 - Eine Nennung, die am Tagebucheintrag hängt (Kopfzeilen-Ort, im Eintrag genannte Personen, Orte der Reiseetappen),
-  zählt, wenn der Tagebucheintrag mindestens einen Datensatz im Korpus hat.
+  zählt, wenn der beste Datensatz des Tagebucheintrags unter der Schwelle liegt.
 
-`build_data.py` schreibt dazu je Eintrag und je geschriebenem Namen die Nennungen der vier Korpora (`nc`) und je
-gezeigtem Beleg seine Stufe (`k`), die Gründe (`kw`) und ob er am Tagebucheintrag hängt (`ke`). Die Arten-Nennungen
-folgen dem Datensatz über Tagebucheintrag + geschriebenen Namen + Vorkommen (wie `rec.w` / `rec.occ` der
-Prüfschicht); Personen, Orte und Lebensräume über den Graph (`--triples`). Im Endstand: 85.896, 60.793, 27.464 und
-16.834 Datensätze = Arten-Nennungen; Einträge mit Nennungen im Korpus: Arten 613, 456, 322, 300; Personen
-3.728, 2.627, 1.443, 1.242; Orte 8.623, 6.462, 3.931, 1.458; Lebensräume 1.878, 1.455, 822, 557.
+`build_data.py` schreibt je Eintrag und je geschriebenem Namen die Nennungen unter den vier Schwellen (`nc`) und je
+gezeigtem Beleg die Stufe (`k`, 0–3), die geschätzten Fehler in Prozent (`kp`, `ko`, `kc`, abgerundet) und ob er am
+Tagebucheintrag hängt (`ke`). Die Arten-Nennungen folgen dem Datensatz über Tagebucheintrag + geschriebenen Namen +
+Vorkommen (wie `rec.w` / `rec.occ` der Prüfschicht); Personen, Orte und Lebensräume über den Graph (`--triples`).
 
 Der Filter ist **nur eine Ansicht**:
 
-- Die Listen führen nur Einträge mit mindestens einer Nennung im Korpus, sortiert nach ihren Nennungen **im
-  Korpus**, mit „n im Korpus / n gesamt“. Warteschlangen-Zahlen, der Fortschritt je Typ („x % der Nennungen
-  entschieden“) und die Tabellen der Übersicht zählen nur Nennungen des Korpus.
-- Die Karte zeigt beide Zahlen (Kopf, „Geschriebene Namen“). „Belege“ stellt die Stellen des Korpus voran; jede
-  Stelle trägt ihre Stufe (`K0`–`K3`; bei Stellen, die am Tagebucheintrag hängen: die höchste Stufe seiner
-  Datensätze), Stellen außerhalb sind abgeblendet und nennen den Grund in Worten. Unter den bis zu sechs Belegen
-  ist immer einer der höchsten Stufe, die der Eintrag erreicht.
-- Einträge ohne Nennung im Korpus sind ausgeblendet, behalten aber ihre Entscheidungen. Namen, die die Maschine
-  entfernt hat, stehen in keinem Datensatz mehr und erscheinen nur unter „vollständig“.
+- Die Listen führen nur Einträge mit mindestens einer Nennung unter der Schwelle, sortiert nach diesen Nennungen,
+  mit „n im Filter / n gesamt“. Warteschlangen-Zahlen, der Fortschritt je Typ und die Tabellen der Übersicht zählen
+  nur diese Nennungen.
+- Die Karte zeigt beide Zahlen. „Belege“ stellt die Stellen unter der Schwelle voran; jede Stelle trägt den
+  geschätzten Fehler ihres Datensatzes (bei Stellen am Tagebucheintrag: seines besten Datensatzes), Stellen
+  darüber sind abgeblendet und nennen Wert und Schwelle.
+- Einträge ohne Nennung unter der Schwelle sind ausgeblendet, behalten aber ihre Entscheidungen. Namen, die die
+  Maschine entfernt hat, stehen in keinem Datensatz mehr und erscheinen nur unter „Alle“.
 - **Entscheidungen und Export betreffen immer alle Einträge** – `identities.csv`, `link_audit.csv` und der
   Fortschritt sind unter jedem Filter dieselben (Test).
-- Übersicht: Tabelle der vier Korpora je Typ (Einträge, Nennungen); eine Zeile anklicken wählt den Filter.
+- Übersicht: Tabelle der vier Schwellen je Typ (Einträge, Nennungen); eine Zeile anklicken wählt den Filter.
 
-Fehlt `review.json`, wird die Seite ohne Filter gebaut; fehlt nur `--triples`, zählen Personen, Orte und
+Fehlt die Prüfschicht, wird die Seite ohne Filter gebaut; fehlt nur `--triples`, zählen Personen, Orte und
 Lebensräume nach der Regel für den Tagebucheintrag.
 
 ## Tasten
@@ -126,7 +146,7 @@ Browser (localStorage); **Sichern & Export** fragt einmal nach dem Prüfernamen 
 | Datei | Inhalt |
 |---|---|
 | `review/identities.csv` | genau der Vertrag von `laubmann_kg.review.identities` → nach `data/review/identities.csv` |
-| `link_audit.csv` | eine Zeile je Entscheidung: Warteschlange, Maschinenurteil (übernommen, Konfidenz, Quellen, Runde), Pipeline-/Graph-/Maschinen-Verknüpfung, Entscheidung, `agrees_with_graph`, `agrees_with_machine` – für Präzisionsstatistik |
+| `link_audit.csv` | eine Zeile je Entscheidung: Warteschlange, Maschinenurteil (übernommen, Konfidenz, Quellen, Runde), Pipeline-/Graph-/Maschinen-Verknüpfung, Beleg der Verknüpfung (`link_basis`), Entscheidung, `agrees_with_graph`, `agrees_with_machine` – für Präzisionsstatistik |
 | `link_progress.json` | Sicherung, über **Fortschritt laden** wieder einlesbar |
 | `LIESMICH.txt` | Stand und Erklärung |
 
@@ -164,7 +184,7 @@ Eintragsentscheidungen sind in der Karte als „bitte kurz prüfen“ markiert; 
 #    = mit allen Vorgaben; nach einem neuen Export:
 .venv/Scripts/python.exe tools/validation_ui/link_check/build_data.py \
     --payload <payload des neuen Graphen>.b64 --payload-pipeline <payload des Pipeline-Graphen>.b64 \
-    --export-review data/exports/<export>/review --identities data/review/machine/identities_machine.csv
+    --export-review data/exports/<export>/review --identities data/review/machine/identities_machine.csv \n    --review-layer data/cache/graph_check/review_quality.json --triples <Tripel des neuen Graphen>.pkl
 # 2. Seite
 .venv/Scripts/python.exe tools/validation_ui/link_check/assemble.py     # -> data/exports/link_check/Laubmann_Verknuepfungen.html
 ```
@@ -174,16 +194,16 @@ Warteschlange sowie Auffälligkeiten. Eingaben (alle mit Vorgabe, `--help`):
 
 | Schalter | Vorgabe | wozu |
 |---|---|---|
-| `--payload` | `data/cache/graph_check/in/payload_checked.b64` | Graph unter Prüfung (`build_payload.py`) |
+| `--payload` | `data/cache/graph_check/in/payload_final.b64` | Graph unter Prüfung (`build_payload.py`) |
 | `--payload-pipeline` | `data/cache/graph_check/in/payload_pipeline.b64` | derselbe Lauf vor den Maschinenentscheidungen der letzten Runden → „vorher“ |
 | `--payload-r1` | Drive `Laubmann_KG_Maschinenpruefung_2026-09-30/Laubmann_Abgleich.html` | Graph, den die **erste** Runde beurteilt hat; „vorher“ für Namen, bei denen schon der Pipeline-Graph eine Maschinenzeile trägt |
 | `--identities` | `data/review/machine/identities_machine.csv` | die Zeilen, die die Pipeline liest; übernommen = Konfidenz ≥ `--min-confidence` und Quellen ≥ `--min-agreement` |
 | `--rounds`, `--round-labels` | die vier `machine_review*`-Ordner in der Reihenfolge von `combine_rounds.py` | Urteile (`machine_review.json`); Spalte `round` = Position |
 | `--arbeit` | die Arbeitsordner dazu (`-` = keiner) | Stimmen (answers / answers_gemini), Kandidaten und Wikidata-/GND-Details aus den Paketen |
-| `--export-review` | `data/exports/kg_exports_2026-10-04_text/review` | `*_merges.csv` (Regeln, offene Kandidaten), `*_link_review.csv` |
+| `--export-review` | `data/exports/kg_exports_2026-10-05_attribution/review` | `*_merges.csv` (Regeln, offene Kandidaten), `*_link_review.csv` |
 | `--reviewed-merges` | `data/review` | frühere Entscheidungen zu Merge-Kandidaten (y/n) |
-| `--review-layer` | `data/cache/graph_check/review.json` | Prüfschicht der Graph-Prüfseite: Korpusstufe `t` und Gründe `tw` je Datensatz → Korpusfilter |
-| `--triples` | `data/cache/graph_check/in/triples_checked.pkl` | Tripel des Graphen unter Prüfung (`load.py`): an welchem Datensatz eine Personen-, Orts-, Lebensraum-Nennung hängt |
+| `--review-layer` | `data/cache/graph_check/review_quality.json` | Prüfschicht der Graph-Prüfseite (`build_review.py --quality`): geschätzter Fehler `q.p` je Datensatz → Verlässlichkeitsfilter |
+| `--triples` | `data/cache/graph_check/in/triples_final.pkl` | Tripel des Graphen unter Prüfung (`load.py`): an welchem Datensatz eine Personen-, Orts-, Lebensraum-Nennung hängt |
 | `--drive` | `tools/validation_ui/drive_pages.json`, `configs/drive_scan_files.json` | Drive-Kennungen der Seitenscans |
 
 Fehlt ein Drive-Ordner, wird er übersprungen (dann fehlen Stimmen bzw. das „vorher“ der ersten Runde).
@@ -211,8 +231,8 @@ Drive werden durch ein leeres Bild ersetzt), Scans kommen aus `data/pages_jpg`.
 
 ```bash
 cd tools/validation_ui/link_check
-python tests/smoke.py            [Seite] [shots]   # alle Typen und Warteschlangen, Karten durchblättern, Scan-Zeile, DE/EN, hell/dunkel, Korpusfilter (Zahlen gegen review.json), keine Konsolenfehler; Screenshots 1440×900
-python tests/export_roundtrip.py [Seite]           # 23 Arten von Entscheidungen, ZIP, Identities.load() + apply_mappings der Pipeline, Export unter jedem Korpusfilter identisch, Undo, Rundreisen, Import aus Laubmann_Validierung
+python tests/smoke.py            [Seite] [shots]   # alle Typen und Warteschlangen, Karten durchblättern, Scan-Zeile, DE/EN, hell/dunkel, Verlässlichkeitsfilter (Zahlen gegen review_quality.json), Beleg der Verknüpfung (Klassen, Filter, Übersicht), keine Konsolenfehler; Screenshots 1440×900 (Beleg: `shots_quality/`)
+python tests/export_roundtrip.py [Seite]           # 23 Arten von Entscheidungen, ZIP, Identities.load() + apply_mappings der Pipeline, Export unter jedem Verlässlichkeitsfilter identisch, Undo, Rundreisen, Import aus Laubmann_Validierung
 ```
 
 `export_roundtrip.py` ruft `tests/loaders_check.py` mit dem Python des Repos (`.venv`, oder `LC_REPO_PYTHON`);

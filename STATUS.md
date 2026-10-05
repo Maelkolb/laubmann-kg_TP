@@ -10,6 +10,15 @@
 | `kg_exports_2026-10-04_text` (+ machine text layer) | 9,901 | 85,896 | 1,987,196 | 0 violations, 461 warnings | 0 errors |
 | `kg_exports_2026-10-05_attribution` (+ attribution of pasted reports, person label fix, current) | 9,901 | 85,894 | 1,989,896 | 0 violations, 461 warnings | 0 errors |
 
+**Quality of every record** (2026-10-06, `docs/record_quality.md`, CHANGELOG): the four corpus tiers are replaced
+by an estimated error per record and field. A blind second check (`machine_review/blind_check.py`, Gemini 3.7
+Flash, $50.52) read all 9,145 entries with records again without the graph's values; `blind_compare.py` compares
+field by field; `graph_check/record_quality.py` turns the two checks' verdicts into probabilities calibrated on the
+audit of 3 October (cross-validated 28.2 % estimated vs 29.1 % found records with an error; AUC 0.72). Levels
+under 10 / 10–25 / 25–50 / over 50 %: 24,283 / 35,550 / 8,922 / 17,139 records; expected 26,230 records (30.5 %)
+with a wrong field. Pages: reliability filter with a live estimate instead of the corpus bar, field badges, queue
+"nach Fehlerrisiko", link class on the link page. The graph is unchanged (`kg_exports_2026-10-05_attribution`).
+
 **Attribution** (2026-10-05, `tools/validation_ui/machine_review/attribution_check.py`, CHANGELOG): pasted reports
 and letters of Walter Wüst, Werner Rathmayer, Einhard Bezzel and others that the extraction credited to Laubmann
 are re-attributed where Gemini and Claude agree: 4,259 records in 135 entries (1,658 with the author unknown),

@@ -64,17 +64,13 @@ function propLines(v, props, expand) {
   }
   return lines;
 }
-function tierRow(v) {   // not a statement of the graph: the corpus tier of the record, in words
-  if (v.kind !== 'obs' || !EM) return null; const o = EM.byNode.get(v.n); const tr = tierOf(v.n); if (!o || tr < 0) return null;
-  const why = tierWhy(o); const key = t('tier_k'); return { k: key, kx: measure(key) + 5, v: fitText(tierName(tr) + (why && tr < 3 ? ' — ' + why : ''), v.w - 16 - measure(key) - 5, PFONT), cls: ' ptier tr' + tr };
-}
 function rvPropsLayout(sub, all) {   // called by layoutSub after the header heights are set
   // v.hh = header height; page and region nodes carry a thumbnail in a fixed box below it (v.th); the rows start at v.ry
   for (const v of all) { v.hh = v.h; v.rows = null; v.th = thumbBox(v); v.ry = v.hh + (v.th ? v.th.h + 6 : 0); v.h = v.ry; }
   if (!S.layers.props) return;
   const mode = propMode(sub); sub.propMode = mode; const drawn = S.layers.links ? new Set(sub.E.map(ed => ed.a.key + '|' + ed.b.key + '|' + ed.p)) : null;
   for (const v of all) {
-    const props = nodeProps(v, drawn); const tr = tierRow(v); if (!props.length && !tr) continue;
+    const props = nodeProps(v, drawn); const tr = qualRow(v); if (!props.length && !tr) continue;
     const open = mode === 'all' || S.sel === v.key;
     if (open) v.rows = (tr ? [tr] : []).concat(propLines(v, props, S.propOpen.has(v.key)));
     else v.rows = [{ k: '', kx: 0, v: fitText(props.filter(r => !r.link && r.v.length < 60).map(r => r.v).join(' · ') || '…', v.w - 16, PFONT), cls: ' psum' }];
@@ -95,10 +91,6 @@ function rvPropsSvg(v) {
     if (r.more) s += `<rect class="pmore" x="4" y="${y - PROW + 2}" width="${v.w - 8}" height="${PROW}"><title>${esc(t('prop_more'))}</title></rect>`;
   });
   return s;
-}
-function rvTierSvg(v) {   // tier of a record as a small pill in its header
-  if (v.kind !== 'obs') return ''; const tr = tierOf(v.n); if (tr < 0) return '';
-  return `<g class="tpill tr${tr}" transform="translate(${v.w - 22},${Math.min(13, (v.hh || v.h) / 2)})"><rect x="-8" y="-6.5" width="17" height="13" rx="6.5"/><text y="3.3" text-anchor="middle">K${tr}</text></g>`;
 }
 function propsTip(v) {   // all rows of a node for the tooltip (compact mode, truncated values)
   if (!S.layers.props || !v.props || !v.props.length) return '';
@@ -124,7 +116,7 @@ function panTo(dir) {   // one canvas width to the right / left, not beyond the 
   if (!SUB) return; const W = $('#gcanvas').clientWidth; const min = Math.min(8, W - SUB.width * Z.k - 8);
   Z.x = clamp(Z.x - dir * W * 0.7, min, 8); applyZ();
 }
-function rvGraphTools() {   // presets, mode of the properties layer, records outside the corpus
+function rvGraphTools() {   // presets, mode of the properties layer, records the filter hides
   const out = EM ? outCount(EM) : 0;
   return `<span class="seg" title="${t('preset_t')}"><button data-act="preset-std" class="${isPreset(false) ? 'on' : ''}">${t('preset_std')}</button><button data-act="preset-all" class="${isPreset(true) ? 'on' : ''}">${t('preset_all')}</button></span>` +
     (S.layers.props ? `<select id="propsel" title="${t('props_t')}">${['auto', 'compact', 'all'].map(k => `<option value="${k}"${k === S.props ? ' selected' : ''}>${t('props_short')}: ${t('pm_' + k)}</option>`).join('')}</select>` : '') +

@@ -13,7 +13,7 @@ let R = { meta: {}, pages: [], entries: {}, names: {}, obs: {}, sample: [], grap
 const RV = { v: 1, who: '', dec: {}, log: [] };
 // explorer build: the list starts with all entries in diary order; `notes` = the switch "Prüfhinweise zeigen" (always on in the review build)
 const RVU = { queue: store('queue') || (EXPLORER ? 'all' : 'finding'), sort: store('qsort') || (EXPLORER ? 'diary' : 'score'), notes: !EXPLORER || store('notes') !== '0', vol: 'all', mid: store('mid') === 'table' ? 'table' : 'graph',
-  scan: store('scan') !== '0', media: store('media') !== '0', hints: false, corpus: clamp(+store('corpus') || 0, 0, 3), showOut: false,
+  scan: store('scan') !== '0', media: store('media') !== '0', hints: false, qm: ['p', 'po', 'pl', 'ob', 'pc'].includes(store('qm')) ? store('qm') : 'p', qt: clamp(+store('qt') || 0, 0, 3), showOut: false, tsort: 0,
   lvf: new Set((store('lvf') || '').split(',').filter(Boolean).map(Number)), card: 0, form: null, list: [], counts: {}, lsFail: false, armed: false };
 const LS_STATE = 'laubmann-graphpruefung';
 const HIST = [];
@@ -128,21 +128,23 @@ function forEachName(e, obsNodes, fn) {   // fn(section, key, form, node) for ev
 
 // ------------------------------------------------------------------ summaries of all entries (queues, list badges)
 const RVS = new Map();   // entry node -> summary
-const QUEUES = ['finding', 'auto', 'tc', 'ins', 'img', 'qa', 'sample', 'all', 'done'].filter(q => !(EXPLORER && q === 'done'));   // no "Geprüft" without decisions
+const QUEUES = ['finding', 'risk', 'auto', 'tc', 'ins', 'img', 'qa', 'sample', 'all', 'done'].filter(q => !(EXPLORER && (q === 'done' || q === 'risk')));   // no "Geprüft" and no work order without decisions
 const NOTE_QUEUES = new Set(['finding', 'auto', 'tc', 'qa']);   // queues that are review notes: gone with "Prüfhinweise zeigen" off
 const queueList = () => (RVU.notes ? QUEUES : QUEUES.filter(q => !NOTE_QUEUES.has(q)));
 function buildSummaries() {
-  /* per entry: the keys of its decidable items per queue, and `lv` = [key, level, kind, tier] of every item
-     of level >= 1 (gc_severity.js) — the same rules as the cards of the entry (buildItems) */
+  /* per entry: the keys of its decidable items per queue, and `lv` = [key, level, kind, record] of every item
+     of level >= 1 (gc_severity.js) — the same rules as the cards of the entry (buildItems); record = the node of
+     a record-level item (-2: a record the graph does not have), -1 for every other item */
   const sample = new Set(R.sample || []);
   for (const r of G.ent) {
     const rv = R.entries[r.id] || {}; const uid = rv.uid || uidOfNode(r.n);
     const s = { e: r.n, id: r.id, uid, find: [], miss: [], auto: [], tc: [], qa: [], lv: [], ins: (rv.ins || []).length, unread: 0, img: (rv.media || []).filter(x => IMG_KINDS.has(x[1])).length, sample: sample.has(r.id), chk: rv.chk || '' };
-    const lv = (key, level, kind, tier) => { if (level >= 1 && !s.lv.some(x => x[0] === key)) s.lv.push([key, level, kind, tier == null ? -1 : tier]); };
+    const lv = (key, level, kind, node) => { if (level >= 1 && !s.lv.some(x => x[0] === key)) s.lv.push([key, level, kind, node == null ? -1 : node]); };
+    const flat = R.obs[r.id] || []; const obs = []; const nodeOf = {}; for (let i = 0; i < flat.length; i += 3) { obs.push(flat[i]); nodeOf[flat[i + 1]] = flat[i]; }
     let hasAuto = false;
     for (const idx in rv.rec || {}) {
       const rec = rv.rec[idx]; const key = 'rec:' + uid + '|' + cf(rec.w) + '|' + idx; if (flagged(rec)) s.find.push(key); if (rec.auto) { s.auto.push(key); hasAuto = true; }
-      lv(key, recLevel(rec), recFindingLevel(rec) ? 'rec' : 'auto', rec.t == null ? 0 : rec.t);
+      lv(key, recLevel(rec), recFindingLevel(rec) ? 'rec' : 'auto', idx in nodeOf ? nodeOf[idx] : -2);
     }
     for (const m of rv.miss || []) { const k = 'miss:' + uid + '|' + (m.text || ''); if (m.kind === 'observation' && !s.miss.includes(k)) s.miss.push(k); lv(k, missLevel(m), 'miss'); }
     lv('entry:' + uid, entLevel(rv.ent), 'ent');
@@ -155,7 +157,6 @@ function buildSummaries() {
     }
     for (const c of rv.tc || []) { const key = 'tc:' + uid + '|' + c[0] + '|' + c[1]; if ((c[2] || c[11] === 'scan') && c[5]) s.tc.push(key); lv(key, tcLevel(c), 'tc'); }
     for (const i of rv.ins || []) { if (i[3] === 'unread' || i[3] === 'partly') s.unread++; lv('media:' + uid + '|' + i[0], insLevel(i[3].startsWith('read-in') ? 'read' : i[3]), 'ins'); }
-    const flat = R.obs[r.id] || []; const obs = []; for (let i = 0; i < flat.length; i += 3) obs.push(flat[i]);
     forEachName(r.n, obs, (section, key) => { const k = nameKind(key, R.names[key]); if ((k === 'changed' || k === 'removed') && !s.auto.includes('name:' + key)) s.auto.push('name:' + key); lv('name:' + key, nameLevel(key, R.names[key]), 'name'); });
     RVS.set(r.n, s);
   }
@@ -168,7 +169,7 @@ function keyDecided(k) {   // as itemDecided, by key
   if (k.startsWith('media:')) return false;
   return isDecided(k);
 }
-const keyInCorpus = x => !(x[3] >= 0 && corpusOn() && x[3] < RVU.corpus);   // record-level items of records outside the corpus do not count
+const keyInCorpus = x => x[3] === -1 || !corpusOn() || (x[3] >= 0 && inCorpus(x[3]));   // record-level items of records the filter hides do not count
 const LVC = new Map();   // entry node -> open items per level [0, leicht, mittel, schwer]; cleared on every decision
 function openLevels(s) {
   let c = LVC.get(s.e); if (c) return c; c = [0, 0, 0, 0];
@@ -177,12 +178,12 @@ function openLevels(s) {
 }
 function inQueue(s, q) {
   if (!entryInCorpus(s)) return false;
-  if (q === 'all') return true; if (q === 'done') return isChecked(s.uid); if (q === 'sample') return s.sample;
+  if (q === 'all') return true; if (q === 'done') return isChecked(s.uid); if (q === 'sample') return s.sample; if (q === 'risk') return s.qe > 0;
   if (q === 'finding') return s.miss.length > 0 || (corpusOn() ? queueKeys(s, q).length > 0 : s.find.length > 0); if (q === 'auto') return s.auto.length > 0;
   if (q === 'tc') return s.tc.length > 0; if (q === 'ins') return s.ins > 0; if (q === 'img') return s.img > 0; return s.qa.length > 0;
 }
 function queueKeys(s, q) {
-  if (q === 'finding') { const t_ = corpusOn() ? new Map(s.lv.map(x => [x[0], x[3]])) : null; return (t_ ? s.find.filter(k => (t_.get(k) || 0) >= RVU.corpus) : s.find).concat(s.miss); }
+  if (q === 'finding') { const nd = corpusOn() ? new Map(s.lv.map(x => [x[0], x[3]])) : null; return (nd ? s.find.filter(k => keyInCorpus([k, 0, '', nd.has(k) ? nd.get(k) : -2])) : s.find).concat(s.miss); }
   return q === 'auto' ? s.auto : q === 'tc' ? s.tc : q === 'qa' ? s.qa : [];
 }
 function isOpen(s, q) {   // still something to decide for this queue

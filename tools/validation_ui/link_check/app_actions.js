@@ -216,6 +216,11 @@ function setQueue(ty, q, sub) {
   openEntity(ty, first ? first.k : null);
   const ql = $('#qlist'); if (ql && !first) ql.scrollTop = 0;
 }
+function setBasis(ty, b, pickQueue) {     // list filter by how the link is backed; from the overview: the first queue that has such entries
+  S.ui.lb[ty] = b || '';
+  if (pickQueue && b) { const q = STATUS_Q.find(q => corpusItems(ty).some(e => e.q === q && e.lb === b)); if (q) { S.ui.q[ty] = q; S.ui.sub[ty] = ''; } }
+  setQueue(ty, curQ(ty), S.ui.sub[ty]);
+}
 function setCorpus(c) {          // a view: the lists, counts and passages follow; decisions and the export do not
   S.ui.corpus = Math.max(0, Math.min(3, +c || 0));
   for (const ty of TYPES) SHOW[ty] = LIST_STEP;
@@ -265,6 +270,8 @@ document.addEventListener('click', ev => {
   const hq = x.closest('[data-home]'); if (hq) return setQueue(hq.dataset.home, hq.dataset.hq);
   const qc = x.closest('.chip[data-q]'); if (qc) return setQueue(ty, qc.dataset.q);
   const sc = x.closest('.chip[data-sub]'); if (sc) return setQueue(ty, 'suggest', S.ui.sub[ty] === sc.dataset.sub ? '' : sc.dataset.sub);
+  const lc = x.closest('.chip[data-lb]'); if (lc) return setBasis(ty, S.ui.lb[ty] === lc.dataset.lb ? '' : lc.dataset.lb);
+  const hl = x.closest('[data-hlb]'); if (hl) return setBasis(hl.dataset.hlb, hl.dataset.lbv, true);
   const qi = x.closest('.qi'); if (qi) return openEntity(ty, qi.dataset.key, false);
   if (x.closest('[data-more]')) { SHOW[ty] = (SHOW[ty] || LIST_STEP) + LIST_STEP; return renderList(); }
   const op = x.closest('[data-open]'); if (op) { ev.preventDefault(); const e2 = BYK[ty].get(op.dataset.open); if (e2) { S.ui.q[ty] = e2.mg && curQ(ty) === 'merge' ? 'merge' : e2.q; S.ui.sub[ty] = ''; S.ui.find[ty] = ''; openEntity(ty, e2.k); } return; }
@@ -353,8 +360,8 @@ normalizeState();
 LANG = S.ui.lang === 'en' ? 'en' : 'de';
 let theme0 = 'light'; try { theme0 = localStorage.getItem(LS + '-theme') || 'light'; } catch (e) { /* private mode */ }
 document.documentElement.dataset.theme = theme0 === 'dark' ? 'dark' : 'light';
-window.__lc = { D, ENTS, BYK, FORMK, cur, STR, MISSING, HIST, view, scan, get S() { return S; }, get LANG() { return LANG; }, openEntity, openType, setQueue, setLang, setTheme, setCorpus, corpus, corpusItems, listItems, queueCounts, typeProgress, entDone, mergeDone,
-  idRows, auditRows, exportFiles, exportIdentities, progressJSON, importAny, act, cf, refresh };
+window.__lc = { D, ENTS, BYK, FORMK, cur, STR, MISSING, HIST, view, scan, get S() { return S; }, get LANG() { return LANG; }, openEntity, openType, setQueue, setLang, setTheme, setCorpus, setBasis, corpus, corpusItems, listItems, queueCounts, typeProgress, entDone, mergeDone,
+  idRows, auditRows, exportFiles, exportIdentities, progressJSON, importAny, act, cf, refresh, curEnt };
 cur.type = TYPES.includes(S.ui.type) ? S.ui.type : 'home';
 $('#loading').remove();
 if (cur.type === 'home') refresh(); else openType(cur.type);

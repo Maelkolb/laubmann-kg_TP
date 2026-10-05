@@ -442,7 +442,7 @@ function makeMap(el, pts, opts = {}) { // pts [{la, lo, r, label, go}]
 }
 
 // ------------------------------------------------------------------ overview
-function stats() {   // [GC] counts follow the corpus filter (rvSrcOk, rvInCount)
+function stats() {   // [GC] counts follow the reliability filter (rvSrcOk, rvInCount)
   if (G.stats) return G.stats;
   const filt = corpusOn();
   const nN = G.nodes.length; const kcnt = new Uint32Array(KIND_LIST.length); for (let n = 0; n < nN; n++) kcnt[G.kind[n]]++;
@@ -474,8 +474,8 @@ function showOverview() {
   setView('overview');
   rvRenderOverview();   // [GC] the review overview stands above the explorer's
   const v = $('#x-ov');
-  if (v.dataset.lang === LANG && v.dataset.theme === document.documentElement.dataset.theme && v.dataset.corpus === String(RVU.corpus)) { const m = $('#ov-map'); if (m && m._map) setTimeout(() => m._map.invalidateSize(), 30); return; }
-  v.dataset.lang = LANG; v.dataset.theme = document.documentElement.dataset.theme; v.dataset.corpus = String(RVU.corpus);
+  if (v.dataset.lang === LANG && v.dataset.theme === document.documentElement.dataset.theme && v.dataset.qf === qfKey()) { const m = $('#ov-map'); if (m && m._map) setTimeout(() => m._map.invalidateSize(), 30); return; }
+  v.dataset.lang = LANG; v.dataset.theme = document.documentElement.dataset.theme; v.dataset.qf = qfKey();
   const st = stats();
   const tile = (val, lab, h) => `<div class="tile"${h ? ` data-go="${h}"` : ' style="cursor:default"'}><div class="v num">${fmt(val)}</div><div class="l">${esc(lab)}</div></div>`;
   const built = (G.meta.built || '').slice(0, 16).replace('T', ' ');
@@ -827,7 +827,7 @@ function renderGraph(keepView) {
     const rx = v.kind === 'taxon' || v.kind === 'place' || v.kind === 'person' || v.kind === 'habitat' ? 13 : 6;
     inner += `<rect class="b" width="${v.w}" height="${v.h}" rx="${Math.min(rx, hh / 2)}"${v.kind === 'entry' || v.kind === 'miss' || v.kind === 'gone' ? '' : ` style="stroke:var(--c-${kc(v.kind)})"`}/>`;
     const sub_ = nodeSub(v); const main = nodeText(v);
-    const tx = v.kind === 'entry' ? 12 : 20; const tw = v.w - tx - 8 - (v.kind === 'obs' ? 24 : 0);   // room for the tier pill of a record
+    const tx = v.kind === 'entry' ? 12 : 20; const tw = v.w - tx - 8 - (v.kind === 'obs' ? 24 : 0);   // room for the error-risk pill of a record
     if (v.kind !== 'entry') inner += `<circle class="dot" cx="10" cy="${sub_ ? 12 : hh / 2}" r="3.6" fill="var(--c-${kc(v.kind)})"/>`;
     if (v.kind === 'entry') {
       const r = entryRec(v.n);
@@ -835,7 +835,7 @@ function renderGraph(keepView) {
     } else if (sub_ && hh >= 30) {
       inner += `<text x="${tx}" y="15">${esc(fitText(main, tw))}</text><text class="s" x="${tx}" y="${hh - 7}">${esc(fitText(sub_, tw, '9.5px "Segoe UI", sans-serif'))}</text>`;
     } else inner += `<text x="${tx}" y="${hh / 2 + 4}">${esc(fitText(main, tw))}</text>`;
-    inner += rvThumbSvg(v) + rvPropsSvg(v) + rvTierSvg(v);
+    inner += rvThumbSvg(v) + rvPropsSvg(v) + rvQualSvg(v);
     s += `<g class="${cls}" data-key="${esc(v.key)}" transform="translate(${v.x},${v.y})">${inner}${an ? rvBadgeSvg(v, an) : ''}</g>`;
   }
   s += '</g></g>';
@@ -1036,7 +1036,7 @@ function nodeDetails(n, opts = {}) {
 // ------------------------------------------------------------------ node view
 const NV = { n: -1, page: 0, sort: ['date', 1], pred: '', q: '' };
 function usageRows(n) {
-  if (NV.rows && NV.rowsFor === n + LANG + RVU.corpus) return NV.rows;
+  if (NV.rows && NV.rowsFor === n + LANG + qfKey()) return NV.rows;
   const rows = [];
   for (let i = G.inOff[n], end = G.inOff[n + 1]; i < end; i++) {
     const s = G.inS[i], p = G.preds[G.inP[i]]; const k = kindOf(s);
@@ -1047,7 +1047,7 @@ function usageRows(n) {
     else if (er) { date = er.date; place = entryPlaceLabel(er); }
     rows.push({ s, p, k, e, id: er ? er.id : '', date, place, count, lab: label(s) });
   }
-  NV.rows = rows; NV.rowsFor = n + LANG + RVU.corpus; return rows;
+  NV.rows = rows; NV.rowsFor = n + LANG + qfKey(); return rows;
 }
 function showNode(n) {
   setView('node');
@@ -1138,7 +1138,7 @@ function showClass(k) {
   if (CV.k !== k) { CV.k = k; CV.page = 0; CV.q = ''; CV.sort = classMode(k) === 'img' ? ['ord', 1] : ['uses', -1]; CV.rows = null; }   // [GC] images in the order of the archive
   const st = stats();
   const kinds = KIND_LIST.map((x, i) => ({ x, c: st.kc[i] })).filter(r => r.c);
-  if (!CV.rows || CV.rowsFor !== k + LANG + RVU.corpus) {
+  if (!CV.rows || CV.rowsFor !== k + LANG + qfKey()) {
     const rows = []; const ki = KI[k];
     for (let n = 0; n < G.nodes.length; n++) if (G.kind[n] === ki && rvClassOk(n, k)) {   // [GC] corpus filter
       let sub = '';
@@ -1147,7 +1147,7 @@ function showClass(k) {
       else if (k === 'volume') sub = pref(n, 'dcterms:temporal') || '';
       rows.push({ n, lab: label(n), sub, uses: rvUses(n), iri: G.nodes[n], ord: rvClassOrd(n, k) });
     }
-    CV.rows = rows; CV.rowsFor = k + LANG + RVU.corpus;
+    CV.rows = rows; CV.rowsFor = k + LANG + qfKey();
   }
   renderClassTable(kinds);
 }

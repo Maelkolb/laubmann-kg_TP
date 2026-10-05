@@ -26,7 +26,7 @@ habitat concept) with
 --arbeit             agent work folders, parallel to --rounds ("-" = none): batches, answers, answers_gemini
 --export-review      <export>/review: *_merges.csv (rule-based merges and open candidates), *_link_review.csv
 --reviewed-merges    folder with the earlier reviewed *_merges.csv (decision y/n)
---review-layer       review.json of the graph validation page (corpus tier of every record) -> corpus filter
+--review-layer       review layer of the graph validation page (estimated error probability of every record) -> reliability filter
 --triples            pickled triples of the graph under review: ties person / place / habitat mentions to records
 
 Every record is keyed by the casefolded entity label; nothing the page stores refers to an index.
@@ -55,7 +55,7 @@ D1 = Path(r"G:\My Drive\Laubmann_KG_Maschinenpruefung_2026-09-30")
 D3 = Path(r"G:\My Drive\Laubmann_KG_Maschinenpruefung_2026-10-01")
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-ap.add_argument("--payload", default=str(IN / "payload_checked.b64"))
+ap.add_argument("--payload", default=str(IN / "payload_final.b64"))
 ap.add_argument("--payload-pipeline", default=str(IN / "payload_pipeline.b64"))
 ap.add_argument("--payload-r1", default=str(D1 / "Laubmann_Abgleich.html"))
 ap.add_argument("--identities", default=str(REPO / "data" / "review" / "machine" / "identities_machine.csv"))
@@ -69,9 +69,9 @@ ap.add_argument("--reviewed-merges", default=str(REPO / "data" / "review"))
 ap.add_argument("--drive", nargs="*", default=[str(HERE.parent / "drive_pages.json"), str(REPO / "configs" / "drive_scan_files.json")])
 ap.add_argument("--out", default=str(REPO / "data" / "exports" / "link_check" / "data"))
 ap.add_argument("--built", default=None)
-ap.add_argument("--review-layer", default=str(REPO / "data" / "cache" / "graph_check" / "review.json"),
-                help="review.json of graph_check/build_review.py: corpus tier t and reasons tw of every record")
-ap.add_argument("--triples", default=str(IN / "triples_checked.pkl"), help="pickled triples of the graph under review (load.py): which record a person, place or habitat mention belongs to")
+ap.add_argument("--review-layer", default=str(REPO / "data" / "cache" / "graph_check" / "review_quality.json"),
+                help="review layer of graph_check/build_review.py --quality: q.p (estimated probability that a field is wrong) of every record")
+ap.add_argument("--triples", default=str(IN / "triples_final.pkl"), help="pickled triples of the graph under review (load.py): which record a person, place or habitat mention belongs to")
 ap.add_argument("--max-ev", type=int, default=6, help="diary passages per entity")
 ap.add_argument("--min-confidence", type=float, default=0.9)
 ap.add_argument("--min-agreement", type=int, default=2)
@@ -644,7 +644,7 @@ def pick_mentions(G, t, fis, limit):
         best, bi = None, -1
         for i, (mi, fi, rank, q, y, tr) in enumerate(cand):
             ei = s["men"][mi][1]
-            if ei in used_e or (not out and tr < top):      # the first passage is one of the highest corpus tier
+            if ei in used_e or (not out and tr < top):      # the first passage is one of the most reliable level
                 continue
             spread = min((abs(y - y0) for y0 in years), default=20) if y else 0
             sc = q * 3 + min(spread, 20) * 0.5 - forms_seen[fi] * 4 - (rank * 0.2 if forms_seen[fi] else 0) + (6 if not forms_seen[fi] and rank < limit else 0) + tr * 4
@@ -679,11 +679,14 @@ def mention_rec(G, t, mi):
         p = pages[0]
     rec = {"d": e[2] or "", "vd": e[3] or "", "id": e[0], "vol": e[5], "tx": snip, "hs": hs, "he": he, "p": p, "b": bx, "pp": pages, "f": name, "ro": m[5] if len(m) > 5 else "",
            "hp": e[6] or ""}
-    if G is M and CORPUS:                       # corpus tier of the passage, why it is not in the next tier, 1 = tied to the entry
+    if G is M and CORPUS:                       # level index of the passage's record, its error estimates in %, 1/2 = tied to the entry
         rec["k"] = MT[t][mi]
-        rec["kw"] = list(MW[t][mi][0])
-        if MW[t][mi][1]:
-            rec["ke"] = 1
+        p, po, pc, tie = MW[t][mi]
+        for key_, v in (("kp", p), ("ko", po), ("kc", pc)):
+            if v is not None:
+                rec[key_] = int(v * 100)            # floor: the shown percentage agrees with the thresholds
+        if tie:
+            rec["ke"] = tie
     return rec
 
 
@@ -753,6 +756,37 @@ def who_of(t, G, ei, cur, rows):
     if cur:
         return {"by": "pipeline", "rule": "llm", "status": st, "conf": lr[1] if len(lr) > 1 else "", "note": lr[2] if len(lr) > 2 else ""}
     return {"by": "none", "status": st, "note": lr[2] if len(lr) > 2 else ""}
+
+
+# ---------------------------------------------------------------- how a link is backed
+# two   applied machine review row: >= 2 independent sources agreed and confidence >= the threshold
+# one   linked by the pipeline alone (GBIF exact name, Wikidata exact label, one Gemini answer per habitat label)
+# name  places: coordinates from a gazetteer name match only (OpenStreetMap/Nominatim or GeoNames), not confirmed by the place review
+# mno   the machine review holds the link wrong or the name for no entity: no link in the graph
+# none  no link and no applied machine decision
+BASIS = ("two", "one", "name", "mno", "none")
+
+
+def link_basis(t, e, cur, who, m, gone):
+    if gone:
+        return "mno"
+    by = who.get("by")
+    if by == "machine" and cur is not None and (m or {}).get("ineff"):
+        by = "pipeline"                           # the applied row has no effect: the link in the graph is the pipeline's
+    if cur is None:
+        return "mno" if by == "machine" else "none"
+    if by == "machine":
+        return "two"
+    if t == "place" and "name match" in str(e[7] if len(e) > 7 else ""):
+        return "name"
+    return "one"
+
+
+def form_basis(fr, ent_basis):
+    """Species: a written name is machine-verified (status reviewed) or linked by its own GBIF exact match."""
+    if ent_basis in ("mno", "none"):
+        return ent_basis
+    return "two" if fr.get("st") == "reviewed" else "one"
 
 
 # ---------------------------------------------------------------- candidates
@@ -893,40 +927,58 @@ ENTS = {t: [] for t in TYPES}
 KEYS = {t: set() for t in TYPES}
 USED_ROWS = set()
 
-# ---------------------------------------------------------------- corpus tiers (the filter of the graph validation page)
-# graph_check/build_review.py gives every record a tier t (0 outside the core, 1 core, 2 strict core, 3 strict core
-# with coordinates) and the reasons tw. A corpus c holds the records with t >= c. A mention of an entity belongs to a
-# corpus when the record it is tied to does (the taxon of a record, a place as its locality / observedAt, a person as
-# its recordedBy, a habitat of a record); a mention tied to the entry (header place, persons mentioned in the entry,
-# places of travel legs) when the entry has at least one record in the corpus.
-MT, MW = {}, {}                 # type -> [tier per mention of the graph under review], [(reason codes, entry-tied)]
+# ---------------------------------------------------------------- reliability (the filter of the graph validation page)
+# graph_check/build_review.py --quality gives every record q.p, the estimated probability that at least one of its
+# fields is wrong (record_quality.py), and po / pc for the occurrence and the coordinates. The filter keeps the records
+# below a threshold: all | < 50 % | < 25 % | < 10 %, index c = 0-3; a record passes c when its level index k >= c.
+# A mention of an entity passes when the record it is tied to does (the taxon of a record, a place as its locality /
+# observedAt, a person as its recordedBy, a habitat of a record); a mention tied to the entry (header place, persons
+# mentioned in the entry, places of travel legs) when the best record of the entry does.
+THRESH = (None, 0.50, 0.25, 0.10)
+MT, MW = {}, {}                 # type -> [level index per mention], [(p, po, pc, tie)]; tie 0 record, 1 entry, 2 entry without records
 CORPUS = None
+UNKNOWN = (0, None, None, None)
+
+
+def level_of(p):
+    return 3 if p < THRESH[3] else 2 if p < THRESH[2] else 1 if p < THRESH[1] else 0
+
+
+def rank(x):
+    return (x[0], -(x[1] if x[1] is not None else 9))
 
 
 def build_corpus():
     rl = Path(args.review_layer)
     if not rl.exists():
-        log("no review layer at", rl, "- the page is built without the corpus filter")
+        log("no review layer at", rl, "- the page is built without the reliability filter")
         return None
     RV = json.loads(rl.read_text(encoding="utf-8")).get("entries", {})
     by_name, by_idx, best = {}, {}, {}
-    totals, why = [0, 0, 0, 0], collections.Counter()
+    totals, levels = [0, 0, 0, 0], collections.Counter()
     for eid, e in RV.items():
         a, b = {}, {}
         for k, r in (e.get("rec") or {}).items():
-            x = (max(0, min(3, int(r.get("t") or 0))), tuple(r.get("tw") or ()))
+            q = r.get("q") or {}
+            if q.get("p") is None:
+                anom("reliability: record without an error estimate in the review layer", f"{eid} {k}")
+                x = UNKNOWN
+            else:
+                p = num(q["p"])
+                x = (level_of(p), p, num(q["po"]) if q.get("po") is not None else None, num(q["pc"]) if q.get("pc") is not None else None)
+                if q.get("lv") is not None and int(q["lv"]) != 4 - x[0]:
+                    anom("reliability: level of the review layer differs from its p", f"{eid} {k} p={p} lv={q['lv']}")
             a[(lc(r.get("w") or ""), int(r.get("occ") or 0))] = x      # occ counts the casefolded name (build_review.py)
             b[int(k)] = x
             for c in range(x[0] + 1):
                 totals[c] += 1
-            for w in x[1]:
-                why[w] += 1
+            levels[x[0]] += 1
         by_name[eid], by_idx[eid] = a, b
-        best[eid] = max(b.values(), key=lambda x: x[0]) if b else None
+        best[eid] = max(b.values(), key=rank) if b else None
 
     def entry_tier(eid):
         x = best.get(eid)
-        return (x[0], x[1], 1) if x else (0, ("no-records",), 1)
+        return (x[0], x[1], x[2], x[3], 1) if x else (0, None, None, None, 2)
 
     # taxa: one mention per record, the k-th mention of a written name in an entry = its k-th record of that name
     s = M.sec["taxon"]
@@ -936,14 +988,14 @@ def build_corpus():
         r = by_name.get(eid, {}).get((name, occ[(eid, name)]))
         occ[(eid, name)] += 1
         if r is None:
-            anom("corpus: taxon mention without a record in the review layer", f"{eid} {name}")
-            r = (0, ("unchecked",))
+            anom("reliability: taxon mention without a record in the review layer", f"{eid} {name}")
+            r = UNKNOWN
         mt.append(r[0])
-        mw.append((r[1], 0))
+        mw.append((r[1], r[2], r[3], 0))
     MT["taxon"], MW["taxon"] = mt, mw
     got = [sum(1 for x in mt if x >= c) for c in range(4)]
     if got != totals:
-        anom("corpus: taxon mentions per corpus differ from the records of the review layer", f"{got} vs {totals}")
+        anom("reliability: taxon mentions per threshold differ from the records of the review layer", f"{got} vs {totals}")
 
     # persons, places, habitats: the graph says which record a mention belongs to
     rec_person, rec_place, rec_hab, ent_person = {}, {}, collections.defaultdict(list), set()
@@ -973,7 +1025,7 @@ def build_corpus():
             return next((str(d[k][0]) for k in keys if d.get(k)), "")
 
         def better(table, key, r):
-            if key not in table or r[0] > table[key][0]:
+            if key not in table or rank(r) > rank(table[key]):
                 table[key] = r
 
         lost = 0
@@ -993,7 +1045,7 @@ def build_corpus():
                 r = idx.get(i_)
                 if r is None:
                     lost += 1
-                    r = (0, ("unchecked",))
+                    r = UNKNOWN
                 for p in od.get("recordedBy", []):
                     better(rec_person, (eid, lc(lab(p, ("label", "name")))), r)
                 for p in set(od.get("hasLocality", []) + od.get("observedAt", [])):
@@ -1002,12 +1054,12 @@ def build_corpus():
                     if str(hb).startswith("http"):
                         rec_hab[(eid, lc(lab(hb, ("prefLabel", "label"))))].append(r)
         if lost:
-            anom("corpus: records of the graph without a tier in the review layer", lost)
+            anom("reliability: records of the graph without an estimate in the review layer", lost)
         for v in rec_hab.values():
-            v.sort(key=lambda r: -r[0])
+            v.sort(key=rank, reverse=True)
     else:
         log("no triples at", tp, "- person / place / habitat mentions follow their entry (at least one record in the corpus)")
-        anom("corpus: triples missing, person / place / habitat mentions counted by their entry")
+        anom("reliability: triples missing, person / place / habitat mentions counted by their entry")
     for t in ("person", "place", "habitat"):
         s = M.sec[t]
         mt, mw, used = [], [], collections.Counter()
@@ -1019,33 +1071,33 @@ def build_corpus():
                 if t == "person":
                     r = rec_person.get((eid, label))
                     if r is not None and (eid, label) not in ent_person:     # observer of single records only
-                        x = (r[0], r[1], 0)
+                        x = r + (0,)
                 elif t == "place" and role == "Beobachtung":
                     r = rec_place.get((eid, label))
                     if r is None:
-                        anom("corpus: locality mention without a record in the graph (counted by its entry)", f"{eid} {label}")
+                        anom("reliability: locality mention without a record in the graph (counted by its entry)", f"{eid} {label}")
                     else:
-                        x = (r[0], r[1], 0)
+                        x = r + (0,)
                 elif t == "habitat":
                     lst = rec_hab.get((eid, label))
                     if not lst:
-                        anom("corpus: habitat mention without a record in the graph (counted by its entry)", f"{eid} {label}")
+                        anom("reliability: habitat mention without a record in the graph (counted by its entry)", f"{eid} {label}")
                     else:
                         r = lst[min(used[(eid, label)], len(lst) - 1)]
                         used[(eid, label)] += 1
-                        x = (r[0], r[1], 0)
+                        x = r + (0,)
             mt.append(x[0])
-            mw.append((x[1], x[2]))
+            mw.append(x[1:])
         MT[t], MW[t] = mt, mw
-    log("corpus: records per corpus", totals, "| mentions per corpus", {t: [sum(1 for x in MT[t] if x >= c) for c in range(4)] for t in TYPES})
-    return {"rec": totals, "why": dict(why)}
+    log("reliability: records per threshold", totals, "| mentions per threshold", {t: [sum(1 for x in MT[t] if x >= c) for c in range(4)] for t in TYPES})
+    return {"rec": totals, "thr": [round(x * 100) if x else 0 for x in THRESH], "levels": [levels[k] for k in range(4)]}
 
 
 CORPUS = build_corpus()
 
 
 def nc_of(t, mis):
-    """Mentions per corpus [all, core, strict core, strict core with coordinates]."""
+    """Mentions per threshold [all, < 50 %, < 25 %, < 10 %]."""
     c = [0, 0, 0, 0]
     for mi in mis:
         for k in range(MT[t][mi] + 1):
@@ -1236,7 +1288,15 @@ def build_entity(t, G, ei, gone=False):
                 cur.update(name=x["name"], feature=cur.get("feature") or x.get("feature") or "", osm=cur.get("osm") or x.get("osm") or "", country=cur.get("country") or x.get("country") or "")
                 break
     who = who_of(t, G, ei, cur, rows) if not gone else {"by": "machine", "status": "removed"}
-    rec = {"k": key, "l": label, "n": n, "q": cat, "cur": cur, "who": who, "forms": forms}
+    lb = link_basis(t, e, cur, who, m, gone)
+    if t == "taxon":
+        w = collections.Counter()
+        for fr in forms:
+            fr["lb"] = form_basis(fr, lb)
+            w[fr["lb"]] += fr["n"]
+        if sum(w.values()):                       # the class that covers most of the species' mentions
+            lb = max(BASIS, key=lambda b: (w[b], -BASIS.index(b)))
+    rec = {"k": key, "l": label, "n": n, "q": cat, "cur": cur, "who": who, "lb": lb, "forms": forms}
     if CORPUS:
         nc_by = {s["forms"][fi][0]: nc_of(t, G.men_of_form[t].get(fi, [])) for fi in fis} if G is M and not gone else {}
         for fr in forms:
@@ -1337,8 +1397,8 @@ for r in ROWS:
         fa = FANS.get(lc(name), {})
         m["votes"] = [{"s": "gemtext" if s_ == "gemini" else s_, "v": x.get("decision") or "", "c": round(num(x.get("confidence")), 2), "why": (x.get("reason") or "")[:300],
                        "x": x.get("sci") or x.get("species_de") or ""} for s_, x in fa.items()] or m["votes"]
-    rec = {"k": key, "l": name, "n": f[1], "q": "changed", "ck": "none", "gone": 1, "cur": None, "who": {"by": "machine", "status": "removed"},
-           "before": bl, "bsrc": src.tag, "forms": [{"f": name, "n": f[1], "how": {"k": "label"}}], "m": m,
+    rec = {"k": key, "l": name, "n": f[1], "q": "changed", "ck": "none", "gone": 1, "cur": None, "who": {"by": "machine", "status": "removed"}, "lb": "mno",
+           "before": bl, "bsrc": src.tag, "forms": [{"f": name, "n": f[1], "how": {"k": "label"}} | ({"lb": "mno"} if t == "taxon" else {})], "m": m,
            "ev": [mention_rec(src, t, mi) for mi in pick_mentions(src, t, [fi], args.max_ev)]}
     if CORPUS:                                  # not in the graph any more: no record of any corpus
         rec["nc"] = [f[1], 0, 0, 0]
@@ -1423,6 +1483,22 @@ for t in TYPES:
         STATS[t]["all"] += 1
         STATS[t]["n:all"] += e["n"]
 stats = {t: dict(sorted(c.items())) for t, c in STATS.items()}
+# link basis per type: entities by their class, mentions by class (species: per written name)
+LB = {}
+for t in TYPES:
+    ent_c, men_c = collections.Counter(), collections.Counter()
+    for e in ENTS[t]:
+        ent_c[e["lb"]] += 1
+        for f in e["forms"]:
+            men_c[f.get("lb", e["lb"])] += f["n"]
+    LB[t] = {"ent": {b: ent_c[b] for b in BASIS}, "men": {b: men_c[b] for b in BASIS}}
+# machine rows on which >= 2 sources agreed but the confidence stayed below the threshold (not applied)
+BELOW = {}
+for t in TYPES:
+    rs = [r for r in ROWS if r["section"] == SECTION[t] and int(num(r.get("agreement"), 0)) >= args.min_agreement and num(r.get("confidence")) < args.min_confidence]
+    conf = collections.Counter(round(num(r.get("confidence")), 2) for r in rs)
+    top = conf.most_common(1)[0] if conf else (None, 0)
+    BELOW[t] = {"rows": len(rs), "conf": top[0], "nconf": top[1]}       # the most frequent confidence among them
 if CORPUS:
     CORPUS["ent"] = {t: [sum(1 for e in ENTS[t] if e["nc"][c] > 0) for c in range(4)] for t in TYPES}
     CORPUS["men"] = {t: [sum(e["nc"][c] for e in ENTS[t]) for c in range(4)] for t in TYPES}
@@ -1431,7 +1507,8 @@ payload = {"app": "laubmann-link-check", "v": 1, "built": args.built or date.tod
            "r1_export": A.export if A else "", "thresholds": {"conf": args.min_confidence, "agree": args.min_agreement},
            "rounds": [{"n": R["n"], "label": R["label"], "model": R["model"], "built": R["built"], "dir": Path(R["dir"]).name} for R in ROUNDS],
            "PAGES": PAGES, "EUNIS": M.P.get("eunis", []), "TAXA": TAXA, "ents": ENTS, "stats": stats,
-           "anomalies": dict(ANOM), "anomaly_examples": dict(ANOM_EX), "unused_rows": {"|".join(k): v for k, v in sorted(UNUSED_BY.items())}}
+           "anomalies": dict(ANOM), "anomaly_examples": dict(ANOM_EX), "unused_rows": {"|".join(k): v for k, v in sorted(UNUSED_BY.items())},
+           "basis": LB, "below": BELOW}
 if CORPUS:
     payload["corpus"] = CORPUS
 raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
@@ -1440,5 +1517,5 @@ out.parent.mkdir(parents=True, exist_ok=True)
 Path(str(out) + ".json").write_bytes(raw)
 gz = gzip.compress(raw, 9, mtime=0)
 Path(str(out) + ".b64").write_text(base64.b64encode(gz).decode("ascii"), encoding="ascii")
-print(json.dumps({"stats": stats, "corpus": CORPUS, "anomalies": dict(ANOM), "anomaly_examples": dict(ANOM_EX), "unused_rows": payload["unused_rows"], "pages": len(PAGES)}, ensure_ascii=False, indent=1))
+print(json.dumps({"stats": stats, "basis": LB, "below": BELOW, "corpus": CORPUS, "anomalies": dict(ANOM), "anomaly_examples": dict(ANOM_EX), "unused_rows": payload["unused_rows"], "pages": len(PAGES)}, ensure_ascii=False, indent=1))
 print(f"raw {len(raw) / 1e6:.1f} MB, gz+b64 {len(gz) * 4 / 3 / 1e6:.1f} MB -> {out}.json / .b64")

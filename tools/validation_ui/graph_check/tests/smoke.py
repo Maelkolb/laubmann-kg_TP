@@ -1,22 +1,26 @@
 """Smoke test: the page loads fast, every queue lists entries, an entry with findings renders its cards,
 annotated graph, records table, scan overlay and all tabs; DE/EN without untranslated keys; the properties
-layer and its presets, the table's columns, the gravity levels (pills, order, filter, rules) and the corpus
-filter (counts, work list, entry, node view, overview) with its always visible bar; the explorer's other
+layer and its presets, the table's columns, the gravity levels (pills, order, filter, rules) and the reliability
+filter (counts per measure and threshold, live estimate, work list, entry, record quality line, node view, overview,
+work queue by error risk) with its always visible bar; the explorer's other
 views still work; no page errors. Works without any scan image. Then the EXPLORER BUILD of the same app
 (--mode explorer): the same entry shows the same nodes, property rows, annotations, cards, table columns
-and scan overlays as the review build, the corpus bar filters the views, and no decision control exists."""
+and scan overlays as the review build, the reliability bar filters the views, and no decision control exists."""
 import asyncio
+import math
 import os
 import re
 import time
+from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 from playwright.async_api import async_playwright
 from common import EXPLORER_PAGE, PAGE, REPO, REPO_PY, SHOTS, check, done, find_entry, goto_entry, open_page, reload
 
 # raw i18n keys that would show up if a string were missing
 KEYPAT = re.compile(r"\b(?:q|qt|g|a|d|c|f|tip|lg|ov|ex|im|tck|tcv|nk|ak|as|src|hint|mk|bt|tl|txt|row|link|prec|ins|scan|sort|chk|agree|name|names|finish|err|crop|media|mkind|ar"
-                    r"|lv|lvf|lvk|lvt|sd|corp|tier|tw|cols|col|props|prop|pm|preset|out|pan|sec|hints|open|head|help|grp|filter|sev)_[a-z][a-z_-]*\b")
-QUEUES = ["finding", "auto", "tc", "ins", "img", "qa", "sample", "all", "done"]
+                    r"|lv|lvf|lvk|lvt|sd|corp|tier|tw|qf|ql|qs|qn|ovq|cols|col|props|prop|pm|preset|out|pan|sec|hints|open|head|help|grp|filter|sev)_[a-z][a-z_-]*\b")
+QUEUES = ["finding", "risk", "auto", "tc", "ins", "img", "qa", "sample", "all", "done"]
+X_QUEUES = [q for q in QUEUES if q not in ("done", "risk")]     # the explorer build: filters, no 'Geprüft', no work order
 CASES = {   # card type -> predicate on (review entry, summary)
     "rec": "(rv, s) => s.find.length > 0 && Object.keys(rv.rec || {}).length < 25",
     "rec-both": "(rv) => Object.values(rv.rec || {}).some(r => r.g && r.s && r.g.v !== 'ok' && r.s.v !== 'ok')",
@@ -79,7 +83,7 @@ async def img_checks(pg, lang):
     check(await pg.locator("#v-node .nodecrop").count() == 1, f"[{lang}] the node view of a multimodal region shows its crop")
 
 # ---------------------------------------------------------------------------------------------------------------
-# final pass: properties layer and presets, table columns, gravity levels, corpus filter
+# final pass: properties layer and presets, table columns, gravity levels, reliability filter
 
 # every outgoing triple of every drawn node is a row of its box or (node-valued, with `links`) an edge / "→" row
 JS_COVER = """(links) => { const S = LKGC.SUB, G = LKGC.G; const E = new Set(); for (const ed of S.E) { E.add(ed.a.key + '|' + ed.b.key); E.add(ed.b.key + '|' + ed.a.key); }
@@ -92,11 +96,6 @@ JS_COVER = """(links) => { const S = LKGC.SUB, G = LKGC.G; const E = new Set(); 
   return { n, nodes, miss: miss.length, first: miss.slice(0, 6) }; }"""
 JS_LEVEL_SORTED = """(l => l.every((r, i) => { if (!i) return true; const a = LKGC.openLevels(LKGC.RVS.get(l[i - 1].n)), b = LKGC.openLevels(LKGC.RVS.get(r.n));
   return a[3] > b[3] || (a[3] === b[3] && (a[2] > b[2] || (a[2] === b[2] && a[1] >= b[1]))); }))(LKGC.RVU.list.slice(0, 600))"""
-JS_CORPUS_COUNT = """(c) => { let n = 0, e = 0; for (const r of LKGC.G.ent) { const rv = LKGC.R.entries[r.id] || {}; const flat = LKGC.R.obs[r.id] || []; let k = 0;
-  for (let i = 0; i < flat.length; i += 3) { const rec = (rv.rec || {})[flat[i + 1]]; if (((rec && rec.t) || 0) >= c) k++; } n += k; if (k) e++; } return [n, e]; }"""
-FINAL_COUNTS = [85894, 61304, 29066, 17585]      # the final build (9,901 entries): full, core, strict core, strict core with coordinates (corpus_tiers.py)
-
-
 async def show_hints(pg):
     """Expand the collapsed level-0 cards of the check tab."""
     await pg.evaluate("(() => { if (!LKGC.RVU.hints) { const a = document.querySelector('#pbody [data-act=hints]'); if (a) a.click(); } })()")
@@ -112,7 +111,7 @@ async def props_checks(pg):
     check(cov["miss"] == 0 and cov["n"] > 50, f"every literal statement of every drawn node is a row ({cov['n']} triples of {cov['nodes']} nodes; missing {cov['first']})")
     rows = await pg.evaluate("(() => { const v = [...LKGC.SUB.V.values()].find(v => v.kind === 'obs'); return v.props.map(r => [r.p, r.k]); })()")
     check(any(p == "lkg:verbatimNotes" for p, _ in rows) and all(k and k != p for p, k in rows), f"the rows carry the ontology labels ({len(rows)} rows of a record)")
-    check(await pg.locator("#gsvg .nd.k-obs .tpill").count() == await pg.locator("#gsvg .nd.k-obs").count(), "every record node shows its corpus tier (K0–K3)")
+    check(await pg.locator("#gsvg .nd.k-obs .qpill").count() == await pg.locator("#gsvg .nd.k-obs").count(), "every record node shows its error risk")
     # compact: one line per node, all rows on the selected node, all rows in the tooltip
     await pg.select_option("#propsel", "compact")
     await pg.wait_for_timeout(250)
@@ -169,7 +168,21 @@ async def table_checks(pg, eid):
     check(all(("p:" + p) in ids or p in covered for p in preds), f"every predicate of the entry's records has a column ({len(preds)} predicates)")
     check(await pg.evaluate("(td => getComputedStyle(td).position === 'sticky')(document.querySelector('#rtable td.c-species'))"), "the first column is sticky")
     check(await pg.evaluate("(b => b.scrollWidth > b.clientWidth + 100)(document.querySelector('#rtable'))"), "the table scrolls horizontally")
-    check(await pg.locator("#rtable td.c-tier .trc").count() == await pg.locator("#rtable tr[data-o]").count(), "every row shows the corpus tier of its record")
+    check(await pg.locator("#rtable td.c-risk .qlv").count() == await pg.locator("#rtable tr[data-o]").count(), "every row shows the error risk of its record")
+    ths_all = await pg.evaluate("[...document.querySelectorAll('#rtable th[data-col]')].map(th => th.dataset.col)")
+    check(ths_all[:2] == ["species", "risk"], f"the column 'Fehlerrisiko' stands next to the species {ths_all[:3]}")
+    natural = await pg.evaluate("[...document.querySelectorAll('#rtable tr[data-o]')].map(tr => +tr.dataset.o)")
+    risk = "[...document.querySelectorAll('#rtable tr[data-o]')].map(tr => LKGC.qOf(+tr.dataset.o).p)"
+    await pg.click('#rtable th[data-col="risk"]')
+    await pg.wait_for_timeout(200)
+    down = await pg.evaluate(risk)
+    await pg.click('#rtable th[data-col="risk"]')
+    await pg.wait_for_timeout(200)
+    up = await pg.evaluate(risk)
+    await pg.click('#rtable th[data-col="risk"]')
+    await pg.wait_for_timeout(200)
+    check(down == sorted(down, reverse=True) and up == sorted(up) and len(down) == len(natural) and await pg.evaluate("[...document.querySelectorAll('#rtable tr[data-o]')].map(tr => +tr.dataset.o)") == natural,
+          f"the column 'Fehlerrisiko' sorts: highest first, lowest first, as extracted ({[round(x, 2) for x in down[:4]]} …)")
     chips = await pg.evaluate("[...document.querySelectorAll('#rtable .pchip[data-acc]')].map(c => [c.dataset.acc.split('|')[0], c.closest('td').dataset.f])")
     check(len(chips) > 0 and all(f == td or (f == 'georef' and td == 'locality') or (f == 'drop' and td == 'species') for f, td in chips), f"finding chips stay in the cell of their field ({len(chips)})")
     # column chooser
@@ -284,131 +297,273 @@ async def severity_checks(pg):
     check(await pg.locator("#help table.sevt tr").count() >= 30, "help: the same table")
     await pg.click("#help h2")
 
-JS_BAR = """[...document.querySelectorAll('#corpbar .cseg .cb')].map(b => ({ c: +b.dataset.corpus, name: b.querySelector('.cbn').textContent, n: b.querySelector('.cbc').textContent, on: b.classList.contains('on'),
+JS_BAR = """[...document.querySelectorAll('#qbar .qseg .qb')].map(b => ({ k: +b.dataset.qt, name: b.querySelector('.qbn').textContent, n: b.querySelector('.qbc').textContent, on: b.classList.contains('on'),
   pressed: b.getAttribute('aria-pressed'), bg: getComputedStyle(b).backgroundColor, tip: b.title, vis: b.getBoundingClientRect().width > 20 }))"""
-BAR_NAMES = ["Vollständig", "Kern", "Strenger Kern", "Strenger Kern mit Koordinaten"]
+BAR_NAMES = ["alle", "< 50 %", "< 25 %", "< 10 %"]
+MEASURES = ["p", "po", "pl", "ob", "pc"]
+# brute force over the review layer: records that pass measure m below threshold k, entries with such a record, sum of the measure
+JS_Q_COUNT = """(a) => { const [m, k] = a; const B = [Infinity, 0.5, 0.25, 0.10]; let n = 0, e = 0, sum = 0, has = 0;
+  for (const r of LKGC.G.ent) { const rv = LKGC.R.entries[r.id] || {}; const flat = LKGC.R.obs[r.id] || []; let c = 0;
+    for (let i = 0; i < flat.length; i += 3) { const rec = (rv.rec || {})[flat[i + 1]]; const q = rec && rec.q;
+      const v = !q ? null : m === 'p' ? q.p : m === 'po' ? q.po : m === 'pc' ? q.pc : m === 'pl' ? (q.pf || [])[4] : (q.pf || [])[5];
+      if (k && !(q && (m === 'p' ? q.lv <= 4 - k : v != null && v < B[k]))) continue;
+      c++; if (v != null) { sum += v; has++; } }
+    n += c; if (c) e++; }
+  return { n, e, sum, has }; }"""
+# the level of every shown record and the expected wrong records per level (overview)
+JS_Q_LEVELS = """() => { const n = [0, 0, 0, 0, 0], e = [0, 0, 0, 0, 0]; for (const x of LKGC.QF.nodes) { if (!LKGC.inCorpus(x)) continue; const q = LKGC.qOf(x); if (!q) continue; n[q.lv]++; e[q.lv] += q.p; } return { n, e }; }"""
 
 
 def de(n):
     return f"{n:,}".replace(",", ".")
 
 
-async def corpus_bar_checks(pg, tag):
-    """The corpus filter is an always visible segmented control directly under the header, in every view."""
-    n = await pg.evaluate("LKGC.CORP.n")
+def js_round(x):
+    """Math.round"""
+    return math.floor(x + 0.5)
+
+
+def de_pct(x, d=1):
+    """the page's percentage: (100 * x).toFixed(d), German decimal comma"""
+    return str(Decimal(100 * x).quantize(Decimal(1).scaleb(-d), rounding=ROUND_HALF_UP)).replace(".", ",") + " %"
+
+
+async def qbar_checks(pg, tag):
+    """The reliability filter is an always visible bar directly under the header, in every view: measure, four thresholds, live estimate."""
+    cnt = await pg.evaluate("LKGC.QF.cnt")
     btns = await pg.evaluate(JS_BAR)
-    check(len(btns) == 4 and [b["name"] for b in btns] == BAR_NAMES and [b["n"] for b in btns] == [de(x) for x in n] and all(b["vis"] for b in btns),
-          f"[{tag}] the corpus bar has four labelled buttons with their record counts {[b['name'] + ' ' + b['n'] for b in btns]}")
-    check((await pg.locator("#corpbar .cbl").inner_text()).strip().lower() == "korpus", f"[{tag}] ... with the leading label 'Korpus'")
+    check(len(btns) == 4 and [b["name"] for b in btns] == BAR_NAMES and [b["n"] for b in btns] == [de(x) for x in cnt["p"]] and all(b["vis"] for b in btns),
+          f"[{tag}] the reliability bar has four threshold buttons with their record counts {[b['name'] + ' ' + b['n'] for b in btns]}")
+    check((await pg.locator("#qbar .qbl").inner_text()).strip() == "Verlässlichkeit", f"[{tag}] ... with the leading label 'Verlässlichkeit'")
+    opts = await pg.evaluate("[...document.querySelectorAll('#qmsel option')].map(o => o.value)")
+    check(opts == MEASURES and await pg.evaluate("document.querySelector('#qmsel').value") == "p", f"[{tag}] the measure selector offers record, occurrence, place, observer, coordinates {opts}")
     on = [b for b in btns if b["on"]]
-    check(len(on) == 1 and on[0]["c"] == 0 and on[0]["pressed"] == "true" and all(b["bg"] != on[0]["bg"] for b in btns if not b["on"]), f"[{tag}] the active corpus is clearly filled ({on[0]['bg'] if on else '-'})")
-    geo = await pg.evaluate("(() => { const h = document.querySelector('header#top').getBoundingClientRect(), b = document.querySelector('#corpbar').getBoundingClientRect(); return [Math.round(b.top - h.bottom), Math.round(b.height), Math.round(b.width), innerWidth]; })()")
+    check(len(on) == 1 and on[0]["k"] == 0 and on[0]["pressed"] == "true" and all(b["bg"] != on[0]["bg"] for b in btns if not b["on"]), f"[{tag}] the active threshold is clearly filled ({on[0]['bg'] if on else '-'})")
+    geo = await pg.evaluate("(() => { const h = document.querySelector('header#top').getBoundingClientRect(), b = document.querySelector('#qbar').getBoundingClientRect(); return [Math.round(b.top - h.bottom), Math.round(b.height), Math.round(b.width), innerWidth]; })()")
     check(abs(geo[0]) <= 1 and 24 <= geo[1] <= 60 and geo[2] == geo[3], f"[{tag}] the bar is a row of its own directly under the header ({geo})")
+    est = (await pg.locator("#qbar .qest").inner_text()).strip()
+    check(est.startswith(f"{de(cnt['p'][0])} von {de(cnt['p'][0])} Datensätzen") and "davon etwa" in est and "%" in est, f"[{tag}] the live line: {est!r}")
     first = await pg.evaluate("LKGC.G.ent[0].id")
     tx = await pg.evaluate("LKGC.G.nodes[LKGC.stats().taxa[0].n]")
     for name, h in (("overview", "/"), ("entry", "/e/" + first), ("classes", "/c/taxon"), ("node view", "/n/" + tx)):
         await pg.evaluate(f"LKGC.go({h!r})")
         await pg.wait_for_timeout(350)
-        ok = await pg.evaluate("(() => { const b = document.querySelector('#corpbar'); const r = b.getBoundingClientRect(); return r.height > 20 && r.top >= 0 && document.querySelectorAll('#corpbar .cb').length === 4 && document.elementFromPoint(r.left + 120, r.top + r.height / 2).closest('#corpbar') === b; })()")
-        check(ok, f"[{tag}] the corpus bar is present in the {name}")
+        ok = await pg.evaluate("(() => { const b = document.querySelector('#qbar'); const r = b.getBoundingClientRect(); return r.height > 20 && r.top >= 0 && document.querySelectorAll('#qbar .qb').length === 4 && document.elementFromPoint(r.left + 40, r.top + r.height / 2).closest('#qbar') === b; })()")
+        check(ok, f"[{tag}] the reliability bar is present in the {name}")
     await pg.keyboard.press("/")
     await pg.keyboard.type("Kaufbeuren")
     await pg.wait_for_timeout(450)
-    check(await pg.locator("#qres .r").count() > 0 and await pg.locator("#corpbar .cb").first.is_visible(), f"[{tag}] ... and while searching")
+    check(await pg.locator("#qres .r").count() > 0 and await pg.locator("#qbar .qb").first.is_visible(), f"[{tag}] ... and while searching")
     await pg.keyboard.press("Escape")
     await pg.evaluate("document.querySelector('#q').value = ''; document.querySelector('#q').blur()")
-    # the definitions of the four corpora, in words
-    check(all(len(b["tip"]) > 20 for b in btns), f"[{tag}] every button explains its corpus (title)")
-    await pg.click('#corpbar [data-act="corpus-info"]')
-    await pg.wait_for_timeout(200)
-    check(await pg.locator("#corpinfo").is_visible() and await pg.locator("#corpinfo dd").count() == 4 and len(await pg.locator("#corpinfo").inner_text()) > 300, f"[{tag}] ⓘ opens the definitions of the four corpora in words")
-    await pg.keyboard.press("Escape")
-    await pg.wait_for_timeout(150)
-    check(await pg.locator("#corpinfo").count() == 0, f"[{tag}] ... Esc closes them")
-    # choosing a corpus: filled button, explanation and "Filter aufheben" in the bar
-    await pg.click('#corpbar [data-corpus="2"]')
+    check(all(len(b["tip"]) > 10 for b in btns) and len(await pg.locator("#qbar .qbl").get_attribute("title")) > 40, f"[{tag}] every button and the label explain themselves (title)")
+    # choosing a threshold, then a measure
+    await pg.click('#qbar [data-qt="2"]')
     await pg.wait_for_timeout(500)
     btns = await pg.evaluate(JS_BAR)
-    note = await pg.locator("#corpbar .cnote").inner_text()
-    check(await pg.evaluate("LKGC.RVU.corpus") == 2 and [b["c"] for b in btns if b["on"]] == [2] and await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"), f"[{tag}] a click on 'Strenger Kern' sets the filter and fills that button")
-    check(de(n[2]) in note and de(n[0]) in note and await pg.locator('#corpbar [data-act="corpus-off"]').is_visible(), f"[{tag}] the bar explains the active filter and offers 'Filter aufheben' ({note[:70]}…)")
-    await pg.click('#corpbar [data-act="corpus-off"]')
+    est = await pg.locator("#qbar .qest").inner_text()
+    check(await pg.evaluate("LKGC.RVU.qt") == 2 and [b["k"] for b in btns if b["on"]] == [2] and await pg.evaluate("document.querySelector('#qbar').classList.contains('active')"), f"[{tag}] a click on '< 25 %' sets the filter and fills that button")
+    check(est.startswith(f"{de(cnt['p'][2])} von {de(cnt['p'][0])} Datensätzen"), f"[{tag}] the line counts the records shown ({est})")
+    await pg.select_option("#qmsel", "pl")
+    await pg.wait_for_timeout(500)
+    btns = await pg.evaluate(JS_BAR)
+    est = await pg.locator("#qbar .qest").inner_text()
+    check(await pg.evaluate("LKGC.RVU.qm") == "pl" and [b["n"] for b in btns] == [de(x) for x in cnt["pl"]] and "falschem Ort" in est, f"[{tag}] measure 'Ort': the buttons count by the place's risk, the line speaks of the place ({est})")
+    await pg.select_option("#qmsel", "p")
+    await pg.click('#qbar [data-qt="0"]')
     await pg.wait_for_timeout(400)
-    check(await pg.evaluate("LKGC.RVU.corpus") == 0 and await pg.locator('#corpbar [data-act="corpus-off"]').count() == 0 and not await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"), f"[{tag}] 'Filter aufheben' returns to the full corpus")
+    check(await pg.evaluate("LKGC.RVU.qt") == 0 and not await pg.evaluate("document.querySelector('#qbar').classList.contains('active')"), f"[{tag}] 'alle' clears the filter")
 
 
-async def corpus_checks(pg, queues=QUEUES, tag="review"):
-    opts = [b["name"] + " " + b["n"] for b in await pg.evaluate(JS_BAR)]
-    n = await pg.evaluate("LKGC.CORP.n")
-    brute = [await pg.evaluate(JS_CORPUS_COUNT, c) for c in range(4)]
-    check(len(opts) == 4 and all(f"{n[c]:,}".replace(",", ".") in opts[c] for c in range(4)), f"[{tag}] the corpus bar carries the record counts {opts}")
-    check(n == [b[0] for b in brute], f"corpus sizes: full {n[0]}, core {n[1]}, strict core {n[2]}, strict core with coordinates {n[3]}")
-    if await pg.evaluate("LKGC.G.ent.length") == 9901:
-        check(n == FINAL_COUNTS, f"... the numbers of the final build {FINAL_COUNTS}")
-    tiers = await pg.evaluate("(() => { const c = [0, 0, 0, 0]; for (const r of LKGC.G.ent) { const flat = LKGC.R.obs[r.id] || []; for (let i = 0; i < flat.length; i += 3) c[LKGC.tierOf(flat[i])]++; } return c; })()")
-    print("records per tier 0..3:", tiers, "· entries per corpus:", await pg.evaluate("LKGC.CORP.ent"), "· taxa per corpus:", await pg.evaluate("LKGC.CORP.taxa"))
+async def q_checks(pg, queues=QUEUES, tag="review"):
+    """Counts per measure and threshold against the review layer, the live estimate, queues, work list, statistics,
+    one entry under the filter, the quality line of a record, node and class view, overview, remembered choice."""
+    cnt = await pg.evaluate("LKGC.QF.cnt")
+    brute = {m: [await pg.evaluate(JS_Q_COUNT, [m, k]) for k in range(4)] for m in MEASURES}
+    check(all(cnt[m][k] == brute[m][k]["n"] for m in MEASURES for k in range(4)), f"[{tag}] records per measure and threshold match the review layer {cnt}")
+    check(all(cnt[m][0] == cnt["p"][0] and cnt[m][1] >= cnt[m][2] >= cnt[m][3] for m in MEASURES), f"[{tag}] 'alle' shows every record, the thresholds are nested")
+    check(cnt["pc"][1] <= brute["pc"][0]["has"], f"[{tag}] measure 'Koordinaten': records without coordinates pass only 'alle' ({cnt['pc'][1]} of {brute['pc'][0]['has']} with coordinates)")
     full = await pg.evaluate("LKGC.RVU.counts")
-    check(await pg.locator("#corpbar").is_visible() and not await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"), f"[{tag}] no filter: the bar is there, not marked active")
-    for c in (1, 2, 3):
-        await pg.click(f'#corpbar [data-corpus="{c}"]')
-        await pg.wait_for_timeout(500)
-        cnt = await pg.evaluate("LKGC.RVU.counts")
-        check(await pg.locator("#corpbar").is_visible() and f"{n[c]:,}".replace(",", ".") in await pg.locator("#corpbar").inner_text() and await pg.evaluate("document.querySelector('#corpbar').classList.contains('active')"),
-              f"[{tag}] corpus {c}: the bar says that a filter is active")
-        check(cnt["all"]["n"] == brute[c][1] and all(cnt[q]["n"] <= full[q]["n"] for q in queues), f"corpus {c}: queue counts follow the filter (all: {cnt['all']['n']} entries)")
-        await pg.evaluate("LKGC.setQueue('all', false)")
-        await pg.wait_for_timeout(200)
-        check(await pg.evaluate(f"LKGC.RVU.list.length === {brute[c][1]} && LKGC.RVU.list.every(r => LKGC.RVS.get(r.n).nc[{c}] > 0)"), f"corpus {c}: the work list holds only entries with a record in the corpus")
-        st = await pg.evaluate("(s => [s.kc[2], s.kc[1], s.kc[6], s.obsCount])(LKGC.stats())")
-        check(st[0] == n[c] and st[3] == n[c] and st[1] == brute[c][1] and st[2] == await pg.evaluate(f"LKGC.CORP.taxa[{c}]"), f"corpus {c}: the graph statistics count {st[0]} records, {st[1]} entries, {st[2]} taxa")
-    # one entry under "strenger Kern": graph, table, cards, switch "n außerhalb zeigen"
-    await pg.click('#corpbar [data-corpus="2"]')
+    for m, k in (("p", 0), ("p", 1), ("p", 2), ("p", 3), ("po", 2), ("pl", 2), ("ob", 1), ("pc", 1), ("pc", 0)):
+        await pg.evaluate(f"LKGC.setQFilter({m!r}, {k})")
+        await pg.wait_for_timeout(300)
+        b = brute[m][k]
+        qf = await pg.evaluate("({ shown: LKGC.QF.shown, est: LKGC.QF.est, has: LKGC.QF.has, line: document.querySelector('#qbar .qest').textContent, counts: LKGC.RVU.counts })")
+        line = qf["line"]
+        check(qf["shown"] == b["n"] and abs(qf["est"] - b["sum"]) < 1e-6 and de(js_round(b["sum"])) in line and de_pct(b["sum"] / b["has"]) in line and line.startswith(f"{de(b['n'])} von {de(cnt['p'][0])}"),
+              f"[{tag}] {m} {BAR_NAMES[k]}: the live estimate is the sum of the probabilities ({line})")
+        if k:
+            check(qf["counts"]["all"]["n"] == b["e"] and all(qf["counts"][q]["n"] <= full[q]["n"] for q in queues), f"[{tag}] {m} {BAR_NAMES[k]}: queue counts follow the filter (all: {qf['counts']['all']['n']} entries)")
+        if (m, k) in (("p", 1), ("p", 3), ("pl", 2)):
+            await pg.evaluate("LKGC.setQueue('all', false)")
+            await pg.wait_for_timeout(200)
+            check(await pg.evaluate(f"LKGC.RVU.list.length === {b['e']} && LKGC.RVU.list.every(r => LKGC.RVS.get(r.n).qn > 0)"), f"[{tag}] {m} {BAR_NAMES[k]}: the work list holds only entries with a record shown")
+            st = await pg.evaluate("(s => [s.kc[2], s.kc[1], s.obsCount])(LKGC.stats())")
+            check(st[0] == b["n"] and st[2] == b["n"] and st[1] == b["e"], f"[{tag}] {m} {BAR_NAMES[k]}: the graph statistics count {st[0]} records, {st[1]} entries")
+    if tag == "review":
+        await risk_queue_checks(pg)
+    # one entry under "< 25 %": graph, table, cards, switch "n außerhalb zeigen"
+    await pg.evaluate("LKGC.setQFilter('p', 2)")
     await pg.wait_for_timeout(400)
-    check(await pg.locator("#elist-pad .erow .n b").count() > 0, "list rows say 'n im Korpus / n gesamt'")
-    eid = await find_entry(pg, "(rv, s, r) => s.nc && s.nc[2] >= 2 && r.nobs - s.nc[2] >= 2 && r.nobs <= 12 && Object.values(rv.rec || {}).some(x => x.t < 2 && (x.g || {}).v === 'wrong')")
+    check(await pg.locator("#elist-pad .erow .n b").count() > 0, f"[{tag}] list rows say 'n shown / n in all'")
+    eid = await find_entry(pg, "(rv, s, r) => s.qn >= 2 && r.nobs - s.qn >= 2 && r.nobs <= 12 && Object.values(rv.rec || {}).some(x => x.q && x.q.lv > 2 && (x.g || {}).v === 'wrong')")
     await goto_entry(pg, eid, 500)
-    inn, tot = await pg.evaluate("[LKGC.RVS.get(LKGC.S.e).nc[2], LKGC.EM.obs.length]")
-    check(await pg.locator("#gsvg .nd.k-obs").count() == inn, f"the subgraph shows the {inn} of {tot} records of the corpus ({eid})")
-    check(str(inn) in await pg.locator("#ehead .hcorp").inner_text() and str(tot) in await pg.evaluate("document.querySelector('#gsvg .nd.k-entry text.s').textContent"), "the head and the entry node say 'n von m'")
-    check(await pg.locator("#pbody .corpnote").count() == 1 and await pg.evaluate("LKGC.visibleItems(LKGC.EM).every(it => it.type !== 'rec' || LKGC.inCorpus(it.o.n))"), "cards of records outside the corpus are hidden, with a note")
-    await pg.screenshot(path=str(SHOTS / "smoke_corpus_entry.png"))
+    inn, tot = await pg.evaluate("[LKGC.RVS.get(LKGC.S.e).qn, LKGC.EM.obs.length]")
+    check(await pg.locator("#gsvg .nd.k-obs").count() == inn, f"[{tag}] the subgraph shows the {inn} of {tot} records the filter shows ({eid})")
+    check(str(inn) in await pg.locator("#ehead .hcorp").inner_text() and str(tot) in await pg.evaluate("document.querySelector('#gsvg .nd.k-entry text.s').textContent"), f"[{tag}] the head and the entry node say 'n von m'")
+    check(await pg.locator("#pbody .qfnote").count() == 1 and await pg.evaluate("LKGC.visibleItems(LKGC.EM).every(it => it.type !== 'rec' || LKGC.inCorpus(it.o.n))"), f"[{tag}] cards of records the filter hides are hidden, with a note")
+    check(await pg.locator("#gsvg .nd.k-obs .qpill").count() == inn and await pg.evaluate("[...document.querySelectorAll('#gsvg .nd.k-obs')].every(g => { const q = LKGC.qOf(+g.dataset.key.slice(1)); return g.querySelector('.qpill text').textContent === Math.round(100 * q.p) + '%' && g.querySelector('.qpill').classList.contains('ql' + q.lv); })"),
+          f"[{tag}] every record node carries its error risk as a pill, coloured by level")
+    await pg.screenshot(path=str(SHOTS / "smoke_quality_entry.png"))
     await pg.click('#gtools [data-act="showout"]')
     await pg.wait_for_timeout(350)
-    check(await pg.locator("#gsvg .nd.k-obs").count() == tot and await pg.locator("#gsvg .nd.k-obs.out").count() == tot - inn, f"'{tot - inn} außerhalb zeigen' brings the others back, dimmed")
-    why = await pg.evaluate("(() => { const it = LKGC.visibleItems(LKGC.EM).find(it => it.type === 'rec' && !LKGC.inCorpus(it.o.n)); LKGC.focusCard(LKGC.visibleItems(LKGC.EM).indexOf(it)); return document.querySelector('#pbody .rcard.focus .trline').innerText; })()")
-    check(len(why) > 25 and await pg.locator("#pbody .rcard.out").count() >= 1, f"... their card says the tier and the reason in words ({why.strip()[:90]!r})")
+    check(await pg.locator("#gsvg .nd.k-obs").count() == tot and await pg.locator("#gsvg .nd.k-obs.out").count() == tot - inn, f"[{tag}] '{tot - inn} außerhalb zeigen' brings the others back, dimmed")
+    line = await pg.evaluate("(() => { const it = LKGC.visibleItems(LKGC.EM).find(it => it.type === 'rec' && !LKGC.inCorpus(it.o.n)); LKGC.focusCard(LKGC.visibleItems(LKGC.EM).indexOf(it)); const q = LKGC.qOf(it.o.n); const l = document.querySelector('#pbody .rcard.focus .qline'); return { txt: l ? l.innerText : '', lv: q.lv, chip: l ? l.querySelector('.qlv').className : '' }; })()")
+    check(await pg.locator("#pbody .rcard.out").count() >= 1 and f"ql{line['lv']}" in line["chip"] and "Fehlerrisiko" in line["txt"], f"[{tag}] ... their card shows the quality line ({line['txt'][:90]!r})")
     await pg.keyboard.press("g")
     await pg.wait_for_timeout(300)
-    check(await pg.locator("#rtable tr[data-o]").count() == tot and await pg.locator("#rtable tr.out").count() == tot - inn and await pg.locator("#rtable tr.out td.c-tier .trwhy").count() == tot - inn, "the table marks the rows outside the corpus with the reason")
+    check(await pg.locator("#rtable tr[data-o]").count() == tot and await pg.locator("#rtable tr.out").count() == tot - inn and await pg.locator("#rtable td.c-risk .qlv").count() == tot, f"[{tag}] the table marks the rows the filter hides, every row with its error risk")
     await pg.click('#gtools [data-act="showout"]')
     await pg.wait_for_timeout(300)
-    check(await pg.locator("#rtable tr[data-o]").count() == inn, "... and hides them again")
+    check(await pg.locator("#rtable tr[data-o]").count() == inn, f"[{tag}] ... and hides them again")
     await pg.keyboard.press("g")
+    await record_line_checks(pg, tag)
     # node view, class view, overview under the filter
+    await pg.evaluate("LKGC.setQFilter('p', 2)")
     tx = await pg.evaluate("(() => { const G = LKGC.G; const t = LKGC.stats().taxa[3]; let all = 0, inn = 0; for (let i = G.inOff[t.n]; i < G.inOff[t.n + 1]; i++) if (G.kind[G.inS[i]] === 2) { all++; if (LKGC.inCorpus(G.inS[i])) inn++; } return { iri: G.nodes[t.n], n: t.n, v: t.v, all, inn }; })()")
     await pg.evaluate(f"LKGC.go('/n/' + {tx['iri']!r})")
     await pg.wait_for_timeout(700)
     rows = await pg.evaluate(f"LKGC.usageRows({tx['n']}).length")
-    check(rows == tx["inn"] == tx["v"] and tx["inn"] < tx["all"], f"node view of a taxon counts only the records of the corpus ({tx['inn']} of {tx['all']})")
-    check(f"{tx['inn']:,}".replace(",", ".") in await pg.locator("#nv-usage h3").inner_text() and await pg.locator("#v-node .corpnote").count() == 1, "... its usage table says so, with the filter note")
-    ysum = await pg.evaluate("[...document.querySelectorAll('#v-node .cols')].length")
-    check(ysum >= 1, "... per-year / per-month charts are drawn from the same rows")
-    await pg.screenshot(path=str(SHOTS / "smoke_corpus_node.png"))
+    check(rows == tx["inn"] == tx["v"] and tx["inn"] < tx["all"], f"[{tag}] node view of a taxon counts only the records the filter shows ({tx['inn']} of {tx['all']})")
+    check(de(tx["inn"]) in await pg.locator("#nv-usage h3").inner_text() and await pg.locator("#v-node .qfnote").count() == 1, f"[{tag}] ... its usage table says so, with the filter note")
+    check(await pg.locator("#v-node .cols").count() >= 1, f"[{tag}] ... per-year / per-month charts are drawn from the same rows")
+    await pg.screenshot(path=str(SHOTS / "smoke_quality_node.png"))
     await pg.evaluate("LKGC.go('/c/taxon')")
     await pg.wait_for_timeout(400)
-    check(f"{await pg.evaluate('LKGC.CORP.taxa[2]'):,}".replace(",", ".") in await pg.locator("#v-class").inner_text() and await pg.locator("#v-class .corptag").count() == 1, "class view lists only the taxa of the corpus")
+    ntaxa = await pg.evaluate("LKGC.stats().kc[6]")
+    check(de(ntaxa) in await pg.locator("#v-class").inner_text() and await pg.locator("#v-class .qftag").count() == 1 and ntaxa < await pg.evaluate("LKGC.G.nodes.filter((x, n) => LKGC.G.kind[n] === 6).length"), f"[{tag}] class view lists only the taxa of the records shown ({ntaxa})")
     await pg.evaluate("LKGC.go('/')")
     await pg.wait_for_timeout(600)
-    check(await pg.locator("#rv-ov table.covt tr[data-corpus]").count() == 4 and await pg.locator("#rv-ov tr[data-corpus].on").get_attribute("data-corpus") == "2", "overview: table of the four corpora, the chosen one marked")
-    reasons = await pg.evaluate("LKGC.CORP.why")
-    check(len(reasons) >= 8 and await pg.locator("#rv-ov table.covt").nth(2).locator("tr").count() == len(reasons) + 1, f"overview: distribution of the reasons {reasons}")
-    check(f"{n[2]:,}".replace(",", ".") in await pg.locator("#x-ov .tiles").inner_text(), "overview: the explorer's tiles count the corpus")
+    await overview_quality_checks(pg, tag)
+    shown = await pg.evaluate("LKGC.QF.shown")
+    check(de(shown) in await pg.locator("#x-ov .tiles").inner_text(), f"[{tag}] overview: the explorer's tiles count the records shown")
     # remembered; a view only
+    await pg.select_option("#qmsel", "po")
+    await pg.wait_for_timeout(400)
     await reload(pg)
-    check(await pg.evaluate("LKGC.RVU.corpus") == 2 and await pg.locator("#corpbar").is_visible(), "the chosen corpus is remembered")
-    await pg.click('#corpbar [data-act="corpus-off"]')
+    check(await pg.evaluate("[LKGC.RVU.qm, LKGC.RVU.qt]") == ["po", 2] and await pg.evaluate("document.querySelector('#qmsel').value") == "po" and await pg.locator("#qbar .qb.on").get_attribute("data-qt") == "2", f"[{tag}] measure and threshold are remembered")
+    await pg.click('#qbar [data-qt="0"]')
+    await pg.select_option("#qmsel", "p")
     await pg.wait_for_timeout(500)
-    check(await pg.evaluate("LKGC.RVU.corpus") == 0 and await pg.evaluate("LKGC.RVU.counts.all.n") == full["all"]["n"] and await pg.evaluate("LKGC.stats().kc[2]") == n[0], "'Filter aufheben' restores the full corpus")
+    check(await pg.evaluate("LKGC.RVU.qt") == 0 and await pg.evaluate("LKGC.RVU.counts.all.n") == full["all"]["n"] and await pg.evaluate("LKGC.stats().kc[2]") == cnt["p"][0], f"[{tag}] 'alle' restores every record")
+
+
+async def record_line_checks(pg, tag):
+    """The quality line of a record: level chip, error risk, one badge per field coloured by the checks' verdict, tooltips with the blind check's reading."""
+    eid = await find_entry(pg, "(rv, s, r) => r.nobs <= 15 && Object.values(rv.rec || {}).some(x => x.q && x.q.x && Object.keys(x.q.x).some(k => k !== 'ex') && (x.g || x.s))")
+    if not check(eid is not None, f"[{tag}] an entry with a record the blind check reads differently"):
+        return
+    await pg.evaluate("LKGC.setQFilter('p', 0)")
+    await goto_entry(pg, eid, 600)
+    res = await pg.evaluate("""(() => { const m = LKGC.EM; const o = m.obs.find(o => { const q = LKGC.qOf(o.n); return q && q.x && Object.keys(q.x).some(k => k !== 'ex'); }); const q = LKGC.qOf(o.n);
+      const items = LKGC.visibleItems(m); let i = items.findIndex(it => it.type === 'rec' && it.o.n === o.n);
+      return { n: o.n, q, i }; })()""")
+    q = res["q"]
+    if res["i"] is None or res["i"] < 0:   # no card for this record: the node view shows the same line
+        await pg.evaluate(f"LKGC.go('/n/' + LKGC.G.nodes[{res['n']}])")
+        await pg.wait_for_timeout(600)
+        sel = "#v-node .qline"
+    else:
+        await pg.evaluate(f"LKGC.focusCard({res['i']})")
+        await pg.wait_for_timeout(250)
+        sel = "#pbody .rcard.focus .qline"
+    line = await pg.evaluate(f"(l => l && {{ chip: l.querySelector('.qlv').className, txt: l.innerText, badges: [...l.querySelectorAll('.qbg')].map(b => [b.dataset.f, b.className.split(' ').find(c => c.startsWith('q-')), b.title]) }})(document.querySelector({sel!r}))")
+    if not check(line is not None, f"[{tag}] the record shows a quality line ({eid})"):
+        return
+    fields = ["exists", "species", "count", "date", "place", "observer", "record_type"]
+    cls = {"ok": "q-ok", "one": "q-one", "c1": "q-warn", "c2": "q-warn", "both": "q-bad", "na": "q-na"}
+    want = [(f, cls[q["s"][i]]) for i, f in enumerate(fields) if not (f == "exists" and q["s"][0] == "ok")]
+    cs = q["s"][7]
+    want.append(("coords", "q-ok" if cs == "rev" else "q-bad" if cs == "gaz-c1" else "q-na" if cs == "none" else "q-warn"))
+    check([(b[0], b[1]) for b in line["badges"]] == want, f"[{tag}] seven field badges (and 'Existenz' when not ok) coloured by status {[(b[0], b[1]) for b in line['badges']]}")
+    check(f"ql{q['lv']}" in line["chip"] and de_pct(q["p"], 0) in line["txt"].replace(" ", " ") and "Fehlerrisiko" in line["txt"], f"[{tag}] level chip and '≈ x % Fehlerrisiko' ({line['txt'][:60]!r})")
+    xk = {"sp": "species", "n": "count", "d": "date", "pl": "place", "ob": "observer", "ty": "record_type"}
+    k = next(k for k in q["x"] if k != "ex")
+    tip = next(b[2] for b in line["badges"] if b[0] == xk[k])
+    check(f"Zweitprüfung liest: {q['x'][k]}" in tip and "Fehlerrisiko des Felds" in tip, f"[{tag}] the badge's tooltip: status, the field's probability and the blind check's reading ({tip!r})")
+    await pg.evaluate(f"LKGC.go('/e/' + {eid!r})")
+    await pg.wait_for_timeout(500)
+    await pg.dispatch_event(f'#gsvg .nd[data-key="n{res["n"]}"] rect.b', "mouseover")   # the node may lie under the graph toolbar
+    await pg.wait_for_timeout(200)
+    check(await pg.locator("#gtip .qline .qbg").count() == len(want), f"[{tag}] the node's tooltip carries the same quality line")
+    await pg.evaluate(f"LKGC.go('/n/' + LKGC.G.nodes[{res['n']}])")
+    await pg.wait_for_timeout(500)
+    check(await pg.locator("#v-node .qline .qbg").count() == len(want), f"[{tag}] the node view of the record shows it too")
+    await pg.screenshot(path=str(SHOTS / "smoke_quality_record.png"))
+
+
+async def overview_quality_checks(pg, tag):
+    meta = await pg.evaluate("LKGC.R.meta.quality")
+    lv = await pg.evaluate(JS_Q_LEVELS)
+    rows = await pg.evaluate("[...document.querySelectorAll('#rv-ov .qcard table.qlt tr')].map(tr => [...tr.cells].map(c => c.innerText.trim()))")
+    check(len(rows) == 6 and all(rows[i][1] == de(lv["n"][i]) and rows[i][3].startswith(de(js_round(lv["e"][i]))) for i in (1, 2, 3, 4)),
+          f"[{tag}] overview: records and expected wrong per level ({[r[1] for r in rows[1:]]})")
+    check(rows[5][1] == de(await pg.evaluate("LKGC.QF.shown")), f"[{tag}] ... the sum is the number of records shown")
+    tabs = await pg.evaluate("[...document.querySelectorAll('#rv-ov .qcard table.qst')].map(t => [...t.rows].map(tr => [...tr.cells].map(c => c.innerText.trim())))")
+    check(len(tabs) == 3 and len(tabs[0]) == 8 and len(tabs[1]) == 8 and len(tabs[2]) == 3, f"[{tag}] overview: status per field, audited error per status, coordinates")
+    aud = meta["audited error % per status"]
+    order = ["ok", "one", "c1", "c2", "both", "na"]
+    exp = [[("–" if s not in aud[f] else de_pct(aud[f][s]["error %"] / 100, 1 if aud[f][s]["error %"] < 10 else 0)) for s in order] for f in ["exists", "species", "count", "date", "place", "observer", "record_type"]]
+    check([r[1:] for r in tabs[1][1:]] == exp, f"[{tag}] ... the audited error per status is meta.quality's")
+    how = await pg.locator("#rv-ov .qcard .qhow").inner_text()
+    check(de(meta["audit records used"]) in how and len(how) < 400, f"[{tag}] ... one short sentence on how the estimate is made ({how[:80]}…)")
+
+
+async def risk_queue_checks(pg):
+    """Review build: the work queue 'nach Fehlerrisiko' orders the entries by the expected number of wrong records."""
+    await pg.evaluate("LKGC.setQFilter('p', 0)")
+    await pg.evaluate("LKGC.setQueue('risk', false)")
+    await pg.wait_for_timeout(300)
+    res = await pg.evaluate("""(() => { const l = LKGC.RVU.list; const qe = r => LKGC.RVS.get(r.n).qe;
+      const sum = r => { const rv = LKGC.R.entries[r.id] || {}; const f = LKGC.R.obs[r.id] || []; let s = 0; for (let i = 0; i < f.length; i += 3) { const x = (rv.rec || {})[f[i + 1]]; if (x && x.q) s += x.q.p; } return s; };
+      return { n: l.length, all: LKGC.G.ent.filter(r => r.nobs > 0).length, sorted: l.every((r, i) => !i || qe(l[i - 1]) >= qe(r)), sums: l.slice(0, 40).every(r => Math.abs(qe(r) - sum(r)) < 1e-9), top: l.slice(0, 3).map(r => [r.id, qe(r)]) }; })()""")
+    check(res["n"] == res["all"] and res["sorted"] and res["sums"], f"[review] queue 'nach Fehlerrisiko': every entry with records, highest expected number of wrong records first {res['top']}")
+    check(await pg.locator("#elist-pad .erow .b-risk").count() > 0, "[review] ... each row shows the expected number of wrong records")
+    await pg.evaluate("LKGC.setQFilter('pl', 2)")
+    await pg.wait_for_timeout(300)
+    check(await pg.evaluate("(l => l.length > 0 && l.every((r, i) => !i || LKGC.RVS.get(l[i - 1].n).qe >= LKGC.RVS.get(r.n).qe) && l.every(r => LKGC.RVS.get(r.n).qn > 0))(LKGC.RVU.list)"), "[review] ... under a filter: the expected wrong records among those shown")
+    await pg.evaluate("LKGC.setQFilter('p', 0)")
+    await pg.evaluate("LKGC.setQueue('finding', true)")
+    await pg.wait_for_timeout(400)
+    await pg.select_option("#qsort", "risk")
+    await pg.wait_for_timeout(250)
+    check(await pg.evaluate("(l => l.every((r, i) => !i || LKGC.RVS.get(l[i - 1].n).qe >= LKGC.RVS.get(r.n).qe))(LKGC.RVU.list)"), "[review] the sort 'Fehlerrisiko zuerst' works in any queue")
+    await pg.select_option("#qsort", "score")
+    await pg.wait_for_timeout(200)
+
+
+async def qf_parts_checks(pg, tag):
+    """Under a filter, what belongs to an entry follows the entry; geometries and authority records follow their places, taxa and persons."""
+    await pg.evaluate("LKGC.setQFilter('p', 2)")
+    out = await pg.evaluate("(() => { const r = LKGC.G.ent.find(r => r.nobs > 0 && LKGC.RVS.get(r.n).qn === 0); return r ? r.id : ''; })()")
+    counts, found = [], []
+    for k in (0, 2):
+        await pg.evaluate(f"LKGC.setQFilter('p', {k})")
+        await pg.evaluate("LKGC.go('/c/weather')")
+        await pg.wait_for_timeout(800)
+        labels = await pg.eval_on_selector_all("#v-class .btnrow .btn", "els => els.map(e => e.textContent.trim())")
+        counts.append({m.group(1): int(m.group(2).replace(".", "")) for m in (re.match(r"(.+) \(([\d.]+)\)$", x) for x in labels) if m})
+        await pg.fill("#q", out)
+        await pg.wait_for_timeout(500)
+        found.append(out in (await pg.inner_text("#qres") if await pg.locator("#qres").is_visible() else ""))
+        await pg.fill("#q", "")
+    parts = ["Wetterbericht", "Reiseereignis", "Reiseabschnitt", "Tagebuchseite", "Quellregion", "multimodale Region", "Geometrie", "Normdatensatz"]
+    check(all(0 < counts[1].get(k, 0) < counts[0].get(k, 0) for k in parts),
+          f"[{tag}] under '< 25 %' weather reports, travel, pages, regions, geometries and authority records follow their entries {[(k, counts[0].get(k), counts[1].get(k)) for k in parts]}")
+    check(bool(out) and found == [True, False], f"[{tag}] an entry without a record under 25 % ({out}) is found without a filter, not under the filter {found}")
+    await pg.evaluate("LKGC.setQFilter('p', 0)")
+    await pg.evaluate("LKGC.go('/')")
+    await pg.wait_for_timeout(400)
 
 
 async def text_layer_checks(pg, tag):
@@ -436,29 +591,6 @@ async def text_layer_checks(pg, tag):
         await pg.wait_for_timeout(200)
     await pg.click('#ptabs [data-tab="check"]')
     await pg.wait_for_timeout(150)
-
-
-async def corpus_parts_checks(pg, tag):
-    """Under a filter, what belongs to an entry follows the entry; geometries and authority records follow their places, taxa and persons."""
-    out = await pg.evaluate("(() => { const r = LKGC.G.ent.find(r => r.nobs > 0 && LKGC.RVS.get(r.n).nc[1] === 0); return r ? r.id : ''; })()")
-    counts, found = [], []
-    for c in (0, 1):
-        await pg.evaluate(f"LKGC.setCorpus({c})")
-        await pg.evaluate("LKGC.go('/c/weather')")
-        await pg.wait_for_timeout(800)
-        labels = await pg.eval_on_selector_all("#v-class .btnrow .btn", "els => els.map(e => e.textContent.trim())")
-        counts.append({m.group(1): int(m.group(2).replace(".", "")) for m in (re.match(r"(.+) \(([\d.]+)\)$", x) for x in labels) if m})
-        await pg.fill("#q", out)
-        await pg.wait_for_timeout(500)
-        found.append(out in (await pg.inner_text("#qres") if await pg.locator("#qres").is_visible() else ""))
-        await pg.fill("#q", "")
-    parts = ["Wetterbericht", "Reiseereignis", "Reiseabschnitt", "Tagebuchseite", "Quellregion", "multimodale Region", "Geometrie", "Normdatensatz"]
-    check(all(0 < counts[1].get(k, 0) < counts[0].get(k, 0) for k in parts),
-          f"[{tag}] under the core filter weather reports, travel, pages, regions, geometries and authority records follow their entries {[(k, counts[0].get(k), counts[1].get(k)) for k in parts]}")
-    check(bool(out) and found == [True, False], f"[{tag}] an entry without a record in the core ({out}) is found without a filter, not under the core filter {found}")
-    await pg.evaluate("LKGC.setCorpus(0)")
-    await pg.evaluate("LKGC.go('/')")
-    await pg.wait_for_timeout(400)
 
 
 
@@ -708,8 +840,8 @@ JS_FACTS = """() => { const S = LKGC.SUB; const nodes = [...S.V.values()].map(v 
   return { nodes, edges, ov, rings, cards, rows: document.querySelectorAll('#gsvg text.pr').length, layers: JSON.stringify(LKGC.S.layers), crops: document.querySelectorAll('#pbody .rcard.t-media .mthumb').length }; }"""
 JS_TABLE = """() => ({ cols: [...document.querySelectorAll('#rtable th[data-col]')].map(th => th.dataset.col + '=' + th.textContent),
   cells: [...document.querySelectorAll('#rtable tbody tr')].map(tr => [...tr.querySelectorAll('td:not(.racts)')].map(td => td.innerText.replace(/\\s+/g, ' ').trim()).join(' | ')) })"""
-JS_NUMBERS = """() => ({ corp: document.querySelector('#rv-ov tr[data-corpus]').closest('table').innerText, why: [...document.querySelectorAll('#rv-ov table.covt')][2].innerText,
-  tiles: document.querySelector('#x-ov .tiles').innerText, lv: [...document.querySelectorAll('#rv-ov table.lvt td.num')].map(td => td.textContent).join(','), stats: [...LKGC.stats().kc].join(','), n: LKGC.CORP.n, ent: LKGC.CORP.ent, taxa: LKGC.CORP.taxa })"""
+JS_NUMBERS = """() => ({ q: document.querySelector('#rv-ov .qcard').innerText, bar: [...document.querySelectorAll('#qbar .qb')].map(b => b.innerText).join('|') + '|' + document.querySelector('#qbar .qest').textContent,
+  tiles: document.querySelector('#x-ov .tiles').innerText, lv: [...document.querySelectorAll('#rv-ov table.lvt td.num')].map(td => td.textContent).join(','), stats: [...LKGC.stats().kc].join(','), n: LKGC.QF.cnt, ent: LKGC.QF.ents_on })"""
 # every control that decides something; none of them may exist in the explorer build
 DECIDE = ("#who, #btn-save, #btn-load, #fileImport, #rvprog, #savedlbl, .abtn, .rc-acts, .rform, .mine, [data-act=addrec], [data-act=txtedit], [data-act=txtdel], [data-act=reset], "
           "[data-ra], .racts, th.c-acts, [data-acc], .qchip[data-q=done], .qtile[data-queue=done], .rcard.t-done, .rcard.done, .nd.an-dec, .b-ok, #modal [data-m]")
@@ -775,9 +907,9 @@ async def explorer_checks(p, ref):
     check(meta["title"] == "Laubmann-KG · Graph-Explorer" == meta["h1"], f"[explorer] title {meta['title']!r}")
     await no_decision_controls(pg, "overview")
     check(await pg.locator("#rv-ov .qtile").count() == 8 and await pg.locator("#rv-ov table.prec").count() == 0, "[explorer] overview: eight filter tiles, no 'Geprüft', no precision of decisions")
-    # the same numbers for the graph and the corpora
+    # the same numbers for the graph and the reliability
     num = await pg.evaluate(JS_NUMBERS)
-    for k, what in (("n", "records per corpus"), ("ent", "entries per corpus"), ("taxa", "taxa per corpus"), ("corp", "table of the corpora"), ("why", "reasons"), ("tiles", "tiles of the graph"), ("stats", "node counts per kind"), ("lv", "notes per level and kind")):
+    for k, what in (("n", "records per measure and threshold"), ("ent", "entries with records"), ("q", "reliability table"), ("bar", "reliability bar and estimate"), ("tiles", "tiles of the graph"), ("stats", "node counts per kind"), ("lv", "notes per level and kind")):
         check(num[k] == ref["numbers"][k], f"[explorer] overview: same {what} as the review build")
     # the list: all entries in diary order by default, the queues as filters
     await pg.evaluate("LKGC.go('/e/' + LKGC.G.ent[0].id)")
@@ -785,7 +917,7 @@ async def explorer_checks(p, ref):
     check(await pg.evaluate("LKGC.RVU.queue === 'all' && LKGC.RVU.sort === 'diary' && LKGC.RVU.list.length === LKGC.G.ent.length"), "[explorer] the list holds all entries by default")
     check(await pg.evaluate("(l => l.every((r, i) => !i || LKGC.G.entPos.get(l[i - 1].n) < LKGC.G.entPos.get(r.n)))(LKGC.RVU.list)"), "[explorer] ... volume by volume in diary order")
     chips = await pg.evaluate("[...document.querySelectorAll('#qchips .qchip')].map(c => c.dataset.q)")
-    check(chips == [q for q in QUEUES if q != "done"] and await pg.locator("#qchips .qt").count() == 0, f"[explorer] the queues remain as filters, without 'Geprüft' and without 'offen' {chips}")
+    check(chips == X_QUEUES and await pg.locator("#qchips .qt").count() == 0, f"[explorer] the queues remain as filters, without 'Geprüft', 'nach Fehlerrisiko' and 'offen' {chips}")
     await pg.click('#qchips [data-q="img"]')
     await pg.wait_for_timeout(300)
     check(await pg.evaluate("LKGC.RVU.list.length > 0 && LKGC.RVU.list.every(r => LKGC.RVS.get(r.n).img > 0)"), "[explorer] a queue filters the list")
@@ -851,14 +983,14 @@ async def explorer_checks(p, ref):
     await no_decision_controls(pg, "entry with images")
     # switch "Prüfhinweise zeigen"
     await goto_entry(pg, SAME_ENTRY, 600)
-    sw = pg.locator("#corpbar #notesw")
+    sw = pg.locator("#qbar #notesw")
     check(await sw.count() == 1 and await sw.is_checked() and await pg.locator("#gsvg .nd.an").count() > 0, "[explorer] 'Prüfhinweise zeigen' is on by default")
     n_obs = await pg.locator("#gsvg .nd.k-obs").count()
     await sw.uncheck()
     await pg.wait_for_timeout(500)
-    off = await pg.evaluate("({ an: document.querySelectorAll('#gsvg .nd.an, #gsvg .ring, #gsvg .abadge').length, ghosts: document.querySelectorAll('#gsvg .nd.k-miss, #gsvg .nd.k-gone').length, cards: document.querySelectorAll('#pbody .rcard:not(.t-media)').length, pills: document.querySelectorAll('#elist-pad .lvp, #lvchips .lvchip, #ehead .hstate').length, chips: [...document.querySelectorAll('#qchips .qchip')].map(c => c.dataset.q), obs: document.querySelectorAll('#gsvg .nd.k-obs').length, rows: document.querySelectorAll('#gsvg text.pr').length, tier: document.querySelectorAll('#gsvg .tpill').length })")
+    off = await pg.evaluate("({ an: document.querySelectorAll('#gsvg .nd.an, #gsvg .ring, #gsvg .abadge').length, ghosts: document.querySelectorAll('#gsvg .nd.k-miss, #gsvg .nd.k-gone').length, cards: document.querySelectorAll('#pbody .rcard:not(.t-media)').length, pills: document.querySelectorAll('#elist-pad .lvp, #lvchips .lvchip, #ehead .hstate').length, chips: [...document.querySelectorAll('#qchips .qchip')].map(c => c.dataset.q), obs: document.querySelectorAll('#gsvg .nd.k-obs').length, rows: document.querySelectorAll('#gsvg text.pr').length, tier: document.querySelectorAll('#gsvg .qpill').length })")
     check(off["an"] == 0 and off["ghosts"] == 0 and off["cards"] == 0 and off["pills"] == 0, f"[explorer] switched off: no rings, markers, ghost nodes, note cards or level pills {off}")
-    check(off["obs"] == n_obs and off["rows"] == f["rows"] and off["tier"] == n_obs and off["chips"] == ["ins", "img", "sample", "all"], "[explorer] ... the graph itself (records, property rows, corpus tiers) stays; the note queues are gone")
+    check(off["obs"] == n_obs and off["rows"] == f["rows"] and off["tier"] == n_obs and off["chips"] == ["ins", "img", "sample", "all"], "[explorer] ... the graph itself (records, property rows, error risks) stays; the note queues are gone")
     await pg.keyboard.press("g")
     await pg.wait_for_timeout(300)
     check(await pg.locator("#rtable .pchip, #rtable .tbadge, #rtable tr.ghost").count() == 0 and await pg.locator("#rtable tr[data-o]").count() == n_obs, "[explorer] ... the table without chips and markers")
@@ -870,7 +1002,7 @@ async def explorer_checks(p, ref):
     await pg.screenshot(path=str(SHOTS / "smoke_explorer_notes_off.png"))
     await reload(pg)
     check(await pg.evaluate("LKGC.RVU.notes") is False, "[explorer] the switch is remembered")
-    await pg.locator("#corpbar #notesw").check()
+    await pg.locator("#qbar #notesw").check()
     await pg.wait_for_timeout(500)
     await goto_entry(pg, SAME_ENTRY, 600)
     check(await pg.locator("#gsvg .nd.an").count() == len(r["rings"]) and await pg.locator("#qchips .qchip").count() == 8, "[explorer] switched on again: the notes are back")
@@ -883,10 +1015,10 @@ async def explorer_checks(p, ref):
     await pg.wait_for_timeout(400)
     check(await pg.evaluate("document.querySelectorAll('#v-class table.t tr').length + '|' + document.querySelector('#v-class table.t').innerText.slice(0, 400)") == ref["klass"], "[explorer] the same class view")
     await no_decision_controls(pg, "class view")
-    # corpus bar: present, four counts, filters the views
-    await corpus_bar_checks(pg, "explorer")
-    await corpus_checks(pg, [q for q in QUEUES if q != "done"], "explorer")
-    await corpus_parts_checks(pg, "explorer")
+    # reliability bar: present, counts, live estimate, filters the views
+    await qbar_checks(pg, "explorer")
+    await q_checks(pg, X_QUEUES, "explorer")
+    await qf_parts_checks(pg, "explorer")
     await text_layer_checks(pg, "explorer")
     await archive_checks(pg, "explorer")
     # both languages without untranslated keys, the help without decisions
@@ -929,7 +1061,7 @@ async def main():
         check(not de_only and not en_only, f"DE and EN have the same keys {de_only[:5]} {en_only[:5]}")
 
         # overview
-        check(await pg.locator("#rv-ov .qtile").count() == 9, "overview shows the nine queue tiles")
+        check(await pg.locator("#rv-ov .qtile").count() == 10, "overview shows the ten queue tiles")
         check(await pg.locator("#rv-ov table.covt tr").count() >= 8, "overview shows coverage and progress")
         check(await pg.locator("#x-ov .tile").count() >= 8, "the explorer's overview is still there")
         counts = await pg.evaluate("LKGC.RVU.counts")
@@ -945,7 +1077,7 @@ async def main():
                 check(n > 0, f"queue {q} is not empty")
                 check(await pg.locator("#elist-pad .erow").count() > 0, f"queue {q}: rows are drawn")
                 check(await pg.evaluate("LKGC.S.view") == "entry" and await pg.locator("#pbody .rcard").count() > 0, f"queue {q}: its first entry opens with cards")
-        check(await pg.locator("#qchips .qchip").count() == 9, "nine queue chips (with 'Bilder')")
+        check(await pg.locator("#qchips .qchip").count() == 10, "ten queue chips (with 'Bilder' and 'nach Fehlerrisiko')")
         check(await pg.evaluate("LKGC.RVU.counts.img.n === [...LKGC.RVS.values()].filter(s => s.img > 0).length && LKGC.RVU.counts.img.n > 0"), "queue 'Bilder' = entries with a drawing, map, photograph, print or object")
         await pg.evaluate("LKGC.setQueue('finding', true)")
         await pg.select_option("#qsort", "diary")
@@ -1039,13 +1171,13 @@ async def main():
         await pg.click("#btn-lang")
         await pg.wait_for_timeout(200)
 
-        # final pass: properties, table columns, gravity, corpus filter
+        # final pass: properties, table columns, gravity, reliability filter
         eid_p = await props_checks(pg)
         await table_checks(pg, eid_p)
         await severity_checks(pg)
-        await corpus_bar_checks(pg, "review")
-        await corpus_checks(pg)
-        await corpus_parts_checks(pg, "review")
+        await qbar_checks(pg, "review")
+        await q_checks(pg)
+        await qf_parts_checks(pg, "review")
         await text_layer_checks(pg, "review")
         await archive_checks(pg, "review")
         source_path = await pg.evaluate("LKGC.G.meta.sourcePath")

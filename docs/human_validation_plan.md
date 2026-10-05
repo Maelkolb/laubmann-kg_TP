@@ -183,8 +183,17 @@ python tools/validation_ui/graph_check/build_graph_check.py $X/rdf/laubmann_samp
 python tools/validation_ui/graph_check/build_graph_check.py $X/rdf/laubmann_sample.ttl data/cache/graph_check/review.json data/exports/graph_check/Laubmann_Graph_Explorer.html --mode explorer
 python tools/validation_ui/link_check/build_data.py --export-review $X/review
 python tools/validation_ui/link_check/assemble.py
-# estimated error share of the corpora; attributions the new export changed are judged against the audit's reading
-python evaluation/corpus_tiers/evaluate_tiers.py data/cache/graph_check/record_tiers.csv --dwca $X/dwca --before-dwca data/exports/kg_exports_2026-10-04_text/dwca
+# blind second check of the entries whose records changed (first delete their answers/<entry_id>.json; the others stay), then the estimated
+# quality of every record (record_quality.py; the record tiers above are its risk groups) and the review layer with it
+python tools/validation_ui/machine_review/blind_check.py $I/payload_checked.b64 $I/triples_checked.pkl --out data/cache/blind_check_r1 `
+    --dwca $X/dwca --only changed_ids.txt --budget 10
+python tools/validation_ui/machine_review/blind_compare.py $I/triples_checked.pkl --work data/cache/blind_check_r1/blind_check --dwca $X/dwca
+python tools/validation_ui/graph_check/record_quality.py --dwca $X/dwca --blind data/cache/blind_check_r1/blind_check/blind_checks.csv `
+    --record-check data/cache/machine_review_r5/record_check/record_checks.csv --tiers data/cache/graph_check/record_tiers.csv `
+    --audited-dwca data/exports/kg_exports_2026-10-01_checked/dwca --before-dwca data/exports/kg_exports_2026-10-04_text/dwca `
+    --out data/cache/graph_check/quality
+# build_review.py again as above, with --quality data/cache/graph_check/quality (the pages read rec.q; t / tw are left out),
+# then build_graph_check.py (both modes) and link_check/build_data.py + assemble.py on that review.json
 ```
 
 Without a local `data/cache/machine_review_r5`, `--record-check $R` reads the merged checks on Drive.

@@ -1,5 +1,5 @@
 /* Graph-Prüfung — records table (middle, toggled with G).
-   Columns: the ten editable fields of the corrections contract, the corpus tier, and ONE COLUMN PER
+   Columns: the ten editable fields of the corrections contract, the error risk (sortable), and ONE COLUMN PER
    PREDICATE that any record of the entry carries (literal or node-valued; nothing is hard-coded — the
    list comes from the outgoing triples of the records). Default: every column with a value (or a
    proposal chip) in this entry; the column chooser shows/hides columns, the choice is remembered. */
@@ -27,7 +27,7 @@ function flagChips(o) {   // {column id: [chip html]} for flagged fields without
 }
 function tableCols(m, rows) {   // every column the entry could show: [{id, f | p, link, label, n}]
   const cols = T_FIELDS.map(f => ({ id: f, f, label: fieldLabel(f), n: 0 })); const by = new Map(cols.map(c => [c.id, c]));
-  const tier = { id: 'tier', label: t('col_tier'), n: m.obs.length, title: t('tier_t') }; cols.push(tier);
+  cols.splice(1, 0, { id: 'risk', label: t('col_risk'), n: m.obs.length, title: t('col_risk_t') });   // next to the species, always in view
   const pc = new Map();
   for (const o of m.obs) {
     const seen = new Set();
@@ -77,17 +77,18 @@ function rvRenderTable() {
   if (!on || !EM) { closeColChooser(); return; }
   const m = EM; const keep = box.dataset.e === String(m.e) ? [box.scrollTop, box.scrollLeft] : [0, 0];
   let rows = m.obs; if (corpusOn() && !RVU.showOut) rows = rows.filter(o => inCorpus(o.n));
+  if (RVU.tsort) { const p = o => { const q = qOf(o.n); return q ? q.p : -1; }; rows = rows.slice().sort((a, b) => RVU.tsort * (p(b) - p(a))); }   // 1 highest risk first, -1 lowest first
   if (RVU.tflag && RVU.notes) rows = rows.filter(o => (m.itemByObs.get(o.n) || {}).lv >= 1 || RV.dec[o.key]);
   const acts = !EXPLORER;   // the explorer build has no action column and no editable cell
   const selN = S.sel && S.sel[0] === 'n' ? +S.sel.slice(1) : -1;
   const all = tableCols(m, rows); TCOLS.cols = all; const cols = all.filter(c => c.on);
-  let s = `<table class="t rt"><thead><tr><th class="c-nr">#</th><th class="c-bd"></th>${cols.map(c => `<th class="${c.f ? 'c-' + c.f : c.id === 'tier' ? 'c-tier' : 'c-p'}" data-col="${esc(c.id)}" title="${esc(c.title || c.label)}">${esc(c.label)}</th>`).join('')}${acts ? '<th class="c-acts"></th>' : ''}</tr></thead><tbody>`;
+  let s = `<table class="t rt"><thead><tr><th class="c-nr">#</th><th class="c-bd"></th>${cols.map(c => `<th class="${c.f ? 'c-' + c.f : c.id === 'risk' ? 'c-risk sortable' + (RVU.tsort ? ' sorted' : '') : 'c-p'}" data-col="${esc(c.id)}" title="${esc(c.title || c.label)}">${esc(c.label)}${c.id === 'risk' ? `<span class="sarr">${RVU.tsort > 0 ? '▼' : RVU.tsort < 0 ? '▲' : '↕'}</span>` : ''}</th>`).join('')}${acts ? '<th class="c-acts"></th>' : ''}</tr></thead><tbody>`;
   rows.forEach(o => {
     const d = RV.dec[o.key]; const cur = recVals(o.n); const ps = (d && d.d) || !RVU.notes ? [] : ['g', 's'].map(c => proposal(o, c)).filter(Boolean); const an = RVU.notes ? recAnn(m, o) : null; const fc = flagChips(o); const out = corpusOn() && !inCorpus(o.n);
     s += `<tr data-o="${o.n}" class="${o.n === selN ? 'on ' : ''}${an ? 'an-' + an.cls : ''}${d && d.d === 'x' ? ' dropped' : ''}${out ? ' out' : ''}"><td class="num muted c-nr">${o.idx < 1e6 ? o.idx + 1 : '?'}</td><td class="c-bd">${annBadge(an)}</td>`;
     for (const c of cols) {
       if (c.f) { const [v, chips] = tdCell(o, c.f, cur, d, ps); s += `<td data-f="${c.f}"${c.f === 'species' ? ' class="c-species"' : ''}>${v}${chips}${(fc[c.id] || []).join('')}</td>`; }
-      else if (c.id === 'tier') { const why = tierWhy(o); s += `<td class="c-tier">${tierChip(o)}${why && tierOf(o.n) < 3 ? `<span class="trwhy" title="${esc(why)}">${esc(why)}</span>` : ''}</td>`; }
+      else if (c.id === 'risk') s += `<td class="c-risk">${qualCell(o.n)}</td>`;
       else { const v = predCell(o, c); s += `<td class="c-p${c.link ? ' lk' : ''}"${v.length > 34 ? ` title="${esc(v)}"` : ''}><span class="pv">${esc(v)}</span>${(fc['p:' + c.p] || []).join('')}</td>`; }
     }
     s += (acts ? `<td class="racts"><button class="mini" data-ra="ok" title="${t('a_rec_ok')}">✓</button><button class="mini" data-ra="edit" title="${t('a_edit')}">✎</button><button class="mini" data-ra="drop" title="${t('a_drop')}">✕</button></td>` : '') + '</tr>';
@@ -96,12 +97,12 @@ function rvRenderTable() {
     const d = RV.dec[it.key]; const r = d && d.rec; const x = it.x; const an = rvAnn({ kind: 'miss', item: it.key });
     const val = { species: esc(r ? r.species_de : x.de || '?') + ` <span class="muted">${t('ghost_missing')}</span>`, count: esc(r ? r.count : x.count || ''), locality: esc(r ? r.locality : x.loc || ''), date: esc(r ? r.date : x.date || ''), observer: esc(r ? r.observer : x.obs || ''), record_type: esc(r && r.record_type ? showVal('record_type', r.record_type) : '') };
     s += `<tr class="ghost${d && d.d === 'add' ? ' an-dec' : d && d.d === 'no' ? ' dropped' : ''}" data-item="${esc(it.key)}"><td class="c-nr"></td><td class="c-bd">${annBadge(an)}</td>` +
-      cols.map(c => `<td${c.id === 'species' ? ' class="c-species"' : ''}>${c.f ? val[c.f] || '' : c.id === 'tier' && x.src !== 'h' ? `<span class="muted">${esc(srcName(x.src))}</span>` : ''}</td>`).join('') +
+      cols.map(c => `<td${c.id === 'species' ? ' class="c-species"' : ''}>${c.f ? val[c.f] || '' : c.id === 'risk' && x.src !== 'h' ? `<span class="muted">${esc(srcName(x.src))}</span>` : ''}</td>`).join('') +
       (acts ? `<td class="racts"><button class="mini" data-ra="add" title="${t('a_add')}">+</button></td>` : '') + '</tr>';
   }
   const hidden = all.filter(c => !c.on).length; const outN = outCount(m);
   box.innerHTML = s + `</tbody></table>${rows.length ? '' : `<p class="muted" style="padding:12px">${t(RVU.tflag ? 't_none_flagged' : 'no_records')}</p>`}` +
-    `<p class="muted tfoot">${esc(t('t_cols_foot', fmt(cols.length), fmt(all.length)))}${hidden ? ' · ' + esc(t('t_cols_hidden', fmt(hidden))) : ''}${outN && !RVU.showOut ? ' · ' + esc(t('out_cards', fmt(outN), corpusName(RVU.corpus))) : ''}</p>`;
+    `<p class="muted tfoot">${esc(t('t_cols_foot', fmt(cols.length), fmt(all.length)))}${hidden ? ' · ' + esc(t('t_cols_hidden', fmt(hidden))) : ''}${outN && !RVU.showOut ? ' · ' + esc(t('out_cards', fmt(outN), qfName())) : ''}</p>`;
   box.dataset.e = String(m.e); box.scrollTop = keep[0]; box.scrollLeft = keep[1];
   if (TCOLS.open) drawColChooser();
 }
@@ -109,7 +110,7 @@ function rvRenderTable() {
 function drawColChooser() {
   const pop = $('#colpop'); if (!pop || !TCOLS.cols) return;
   const row = c => `<label class="${c.def ? '' : 'nodef'}" title="${esc(c.title || c.label)}"><input type="checkbox" data-col="${esc(c.id)}"${c.on ? ' checked' : ''}${c.id === 'species' ? ' disabled' : ''}>${esc(c.label)}<span class="num muted">${c.id.startsWith('p:') || c.f ? fmt(c.n) : ''}</span></label>`;
-  const a = TCOLS.cols.filter(c => c.f || c.id === 'tier'), b = TCOLS.cols.filter(c => !(c.f || c.id === 'tier'));
+  const a = TCOLS.cols.filter(c => c.f || c.id === 'risk'), b = TCOLS.cols.filter(c => !(c.f || c.id === 'risk'));
   pop.innerHTML = `<div class="cph"><b>${t('cols_title')}</b><span class="sp"></span><button class="mini" data-cp="all">${t('cols_all')}</button><button class="mini" data-cp="def" title="${t('cols_def_t')}">${t('cols_def')}</button><button class="mini" data-cp="close">×</button></div>
     <div class="cpg"><div class="cps">${t('cols_fields')}</div>${a.map(row).join('')}</div><div class="cpg"><div class="cps">${t('cols_preds')}</div>${b.map(row).join('')}</div><div class="cpn muted">${t('cols_note')}</div>`;
 }
@@ -151,7 +152,9 @@ function editCell(td, o, f) {
   el.addEventListener('blur', () => { if (!done && el.value !== (f === 'observer' ? [v('observer'), v('co_observers')].filter(Boolean).join('; ') : v(f))) commit(); else if (!done) rvRenderTable(); });
 }
 function tableClick(ev) {
-  const m = EM; if (!m) return; const tr = ev.target.closest('tr[data-o], tr[data-item]'); if (!tr) return;
+  const m = EM; if (!m) return;
+  if (ev.target.closest('th[data-col="risk"]')) { RVU.tsort = RVU.tsort === 1 ? -1 : RVU.tsort === -1 ? 0 : 1; rvRenderTable(); return; }   // highest first, lowest first, as extracted
+  const tr = ev.target.closest('tr[data-o], tr[data-item]'); if (!tr) return;
   if (tr.dataset.item) { const it0 = m.items.find(it => it.key === tr.dataset.item); if (it0 && it0.sec === 'hint') RVU.hints = true; const i = visibleItems(m).findIndex(it => it.key === tr.dataset.item); if (i >= 0) { S.tab = 'check'; RVU.card = i; if (ev.target.closest('[data-ra="add"]') && !EXPLORER) openForm(tr.dataset.item, 'add'); else { renderPanel(); focusCard(i); } } return; }
   const o = m.byNode.get(+tr.dataset.o); if (!o) return;
   if (EXPLORER) { selectKey('n' + o.n, { center: true }); return; }   // a click selects the record; nothing is edited

@@ -48,6 +48,12 @@ Output (JSON; coordinates are fractions of the page width/height, 0-1):
                                       attribution | identification | count | absence | reading | entry | entry-place
                  2 strict core        no-coords | georef-unconfirmed | place-doubt
                  3 strict core with coordinates
+               q = estimated quality (with --quality; then t and tw are left out), record_quality.py:
+                 p estimated probability that a field is wrong, po the same for the occurrence (exists, species, count,
+                 date), pc for the coordinates (absent without coordinates), lv level 1 (< 10 %) 2 (< 25 %) 3 (< 50 %) 4,
+                 s status per field in the order exists, species, count, date, place, observer, record type (ok | one |
+                 c1 | c2 | both | na), then coordinates (rev | gaz | rev-c1 | gaz-c1 | none); pf probability per field in the
+                 same order (without coordinates); x {ex|sp|n|d|pl|ob|ty: the blind check's reading where it differs}
         gone   [[reason, value, detail], ...]            what QA or a review decision removed from the entry (QA flags
                                                          with action excluded: non_bird, review_not_taxon, value_dropped …)
         miss   [{src g|s, kind, text, de, sci, count, loc, date, obs, c, note, in_text}, ...]   what the text states and the
@@ -162,6 +168,8 @@ def main() -> None:
     ap.add_argument("--drive-regions", default=None, help="drive_ids.py --regions: crop path -> Drive file id")
     ap.add_argument("--dwca", default=None, help="the export's dwca/ (occurrence.txt, event.txt): needed for the corpus tiers")
     ap.add_argument("--tiers-csv", default=None, help="also write the corpus tier of every occurrence (record_tiers.csv)")
+    ap.add_argument("--quality", default=None, help="record_quality.py output folder (record_quality.csv, quality_summary.json): "
+                                                     "every record gets its estimated quality q, the corpus tiers t / tw are left out")
     ap.add_argument("--text-layer", default=None,
                     help="the machine layer of the text this export applied (data/review/machine/text_layer_machine.csv): the "
                          "reading corrections are then taken from --reading-base under their original keys, each with what the graph "
@@ -755,6 +763,28 @@ def main() -> None:
             corpus_tiers.write_csv(args.tiers_csv, corpus_tiers.tier_rows(entries, tier_ids))
             print(f"{args.tiers_csv}: {len(tier_ids)} records")
 
+    # ------------------------------------------------------------ estimated quality per record (replaces the corpus tiers)
+    quality_summary = None
+    if args.quality:
+        qdir = Path(args.quality)
+        short = {"exists": "ex", "species": "sp", "count": "n", "date": "d", "place": "pl", "observer": "ob", "record_type": "ty"}
+        for r in csv.DictReader(open(qdir / "record_quality.csv", encoding="utf-8", newline="")):
+            item = entries.get(r["entry_id"], {}).get("rec", {}).get(r["obs_index"])
+            if item is None:
+                counts["quality rows without a record"] += 1
+                continue
+            q = {"p": round(float(r["p_any"]), 3), "po": round(float(r["p_occurrence"]), 3),
+                 "pc": round(float(r["p_coords"]), 3) if r["p_coords"] else None, "lv": int(r["level"]),
+                 "s": [r[f"s_{f}"] for f in short] + [r["s_coords"]],
+                 "pf": [round(float(r[f"p_{f}"]), 3) for f in short],
+                 "x": {k: r[f"check_{f}"] for f, k in short.items() if r.get(f"check_{f}")}}
+            item["q"] = {k: v for k, v in q.items() if v not in (None, {})}
+            counts["records with a quality estimate"] += 1
+        for item in (rv for e in entries.values() for rv in e.get("rec", {}).values()):
+            item.pop("t", None)
+            item.pop("tw", None)
+        quality_summary = json.loads((qdir / "quality_summary.json").read_text(encoding="utf-8"))
+
     # ------------------------------------------------------------ names: machine rows, link before / now
     names: dict = {}
 
@@ -807,6 +837,8 @@ def main() -> None:
     out = {"meta": {"export": P.get("export"), "built": datetime.date.today().isoformat(),
                     "thresholds": {"confidence": args.min_confidence, "agreement": args.min_agreement}, "counts": dict(counts)},
            "pages": pages, "entries": entries, "names": names, "crops": crops, "regions": regions}
+    if quality_summary:
+        out["meta"]["quality"] = quality_summary
     out["meta"]["counts"]["regions with a crop"] = sum(len(v) for v in media.values())
     out["meta"]["counts"]["crops with a Drive id"] = len(crops)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)

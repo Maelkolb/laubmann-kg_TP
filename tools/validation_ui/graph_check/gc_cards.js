@@ -66,7 +66,7 @@ function recCard(m, it) {
   for (const p of ps) body += srcBlock(p, cur);
   for (const a of auto) body += `<div class="src src-m"><div class="src-h"><span class="who">${t('src_auto')}</span><span class="vd vd-auto">${t('auto_applied')}</span></div><div class="diff"><span class="fl">${esc(fieldLabel(a[0] === 'value' ? 'species' : a[0]))}</span><span class="is">${esc(a[1] || '—')}</span><span class="arr">→</span><span class="to">${esc(a[2])}</span></div>${a[3] ? `<div class="why">${esc(a[3])}</div>` : ''}</div>`;
   if (ps.some(p => p.georef) && !EXPLORER) body += `<div class="geonote">${t('geo_note')}</div>`;
-  body += tierLine(o);
+  body += qualLine(o.n);
   let jLab = t('a_apply'), jDis = false;
   if (!d && !EXPLORER) {   // what J would do: only where something can be decided
     if (mp && mp.drop) body += `<div class="preview">${t('j_drop')}</div>`;
@@ -231,7 +231,7 @@ function rvRenderCheck(body) {
     if (o) { const it = { type: 'rec', group: 'rec', key: o.key, o, lv: 0, mk: '' }; s += `<div class="rcard t-rec focus"><div class="rc-head">${recCard(m, it).head}</div>${formHtml(m, it)}</div>`; }
   }
   const hiddenOut = outCount(m);
-  if (hiddenOut) s += `<p class="gnote corpnote">${esc(t(RVU.showOut ? 'out_cards_shown' : 'out_cards', fmt(hiddenOut), corpusName(RVU.corpus)))} <span class="link" data-act="showout">${t(RVU.showOut ? 'out_hide_s' : 'out_show_s')}</span></p>`;
+  if (hiddenOut) s += `<p class="gnote qfnote">${esc(t(RVU.showOut ? 'out_cards_shown' : 'out_cards', fmt(hiddenOut), qfName()))} <span class="link" data-act="showout">${t(RVU.showOut ? 'out_hide_s' : 'out_show_s')}</span></p>`;
   if (RVU.notes && !m.items.some(it => it.lv >= 1)) s += `<p class="muted gnote">${t('no_flags')}</p>`;
   if (!RVU.notes && !items.length) s += `<p class="muted gnote">${t('no_media')}</p>`;
   for (const sec of SEC_ORDER) {   // schwer, mittel, leicht first; hints collapsed; then own changes, entry header, images, finish

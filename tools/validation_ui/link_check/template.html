@@ -47,7 +47,7 @@ header{grid-row:1;display:flex;align-items:center;gap:6px;padding:0 12px;backgro
 .saved{font-size:12px;opacity:.85;white-space:nowrap;flex:none}
 .saved.warn{color:#ffd28a;opacity:1}
 .main{grid-row:3;display:grid;grid-template-columns:296px minmax(0,1fr) var(--scanw);min-height:0}
-/* corpus filter: selector, banner, tier chips (colours and names as on the graph validation page) */
+/* reliability filter: selector, banner, error chips of the passages (thresholds as on the graph validation page) */
 #corpbar{grid-row:2;display:flex;align-items:center;gap:9px;padding:6px 12px;font-size:12.5px;background:var(--panel);border-bottom:1px solid var(--line2);color:var(--ink);min-width:0}
 #corpbar.active{background:color-mix(in srgb,var(--tr2) 15%,var(--panel));border-bottom-color:var(--tr2)}
 #corpbar[hidden]{display:none}
@@ -64,7 +64,7 @@ header{grid-row:1;display:flex;align-items:center;gap:6px;padding:0 12px;backgro
 #corpbar .cinfo{flex:none;border:1px solid var(--line2);background:var(--panel);border-radius:50%;width:24px;height:24px;padding:0;font-size:14px;line-height:1;color:var(--acc2)}
 #corpbar .cinfo:hover{background:var(--acc-soft)}
 #corpbar .cbt{flex:1;min-width:0;overflow:hidden;font-size:12px;line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
-.cdef{border-collapse:collapse;width:100%} .cdef td{padding:7px 10px 7px 0;vertical-align:top;border-top:1px solid var(--line);color:var(--ink2)} .cdef td:nth-child(2){white-space:nowrap;color:var(--ink)}
+.cdef{border-collapse:collapse;width:100%} .cdef td{padding:7px 10px 7px 0;vertical-align:top;border-top:1px solid var(--line);color:var(--ink2)} .cdef td:first-child{white-space:nowrap;color:var(--ink)}
 @media (max-width:1100px){#corpbar{flex-wrap:wrap}#corpbar .cseg{flex-wrap:wrap}}
 .trc{display:inline-block;padding:0 6px;height:16px;line-height:16px;border-radius:4px;font-size:10.5px;font-weight:700;white-space:nowrap;color:#fff;vertical-align:1px;flex:none}
 .trc.tr0{background:var(--tr0)} .trc.tr1{background:var(--tr1)} .trc.tr2{background:var(--tr2)} .trc.tr3{background:var(--tr3)}
@@ -72,6 +72,15 @@ header{grid-row:1;display:flex;align-items:center;gap:6px;padding:0 12px;backgro
 .men.out{opacity:.66} .men.out:hover,.men.out.on{opacity:1}
 .men .trw{padding:0 10px 7px;font-size:12px;color:var(--ink2)}
 .qi .num b{font-weight:650;color:var(--ink)}
+/* how a link is backed: badge on the card and the names, list filter, overview */
+.lb-two{--lbc:var(--ok)} .lb-one{--lbc:var(--acc2)} .lb-name{--lbc:var(--unk)} .lb-mno{--lbc:var(--no)} .lb-none{--lbc:var(--ink3)}
+.bd.lb{background:var(--panel);color:var(--ink2);border-color:var(--line2)}
+.bd.lb::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lbc);margin-right:5px;vertical-align:0}
+.chip.lbc{font-size:11.5px;padding:1px 8px} .chip.lbc i,.lbdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lbc);flex:none}
+.chip.lbc.on{background:color-mix(in srgb,var(--lbc) 16%,var(--panel));color:var(--ink);border-color:var(--lbc);font-weight:600}
+.lbchips{margin-top:5px} .lbdot{margin-right:6px;vertical-align:0}
+.hc table.lbt{margin-top:12px} .lbn{font-size:11.5px;color:var(--ink3);margin:1px 0 1px 13px;line-height:1.35}
+.lbnotes{font-size:11.5px;color:var(--ink3);margin-top:6px;line-height:1.4}
 .covt td.th{font-weight:650;color:var(--ink);border-left:1px solid var(--line)}
 .covt tr.ql.on td{font-weight:650;background:color-mix(in srgb,var(--tr2) 13%,var(--panel))}
 .covt td.n{padding-left:10px}

@@ -8,7 +8,7 @@ async function rvBoot() {
   loadState();
   mediaIndex();
   buildSummaries();
-  corpusIndex();
+  qfIndex();
   countQueues();
   if (!queueList().includes(RVU.queue) || !(RVU.counts[RVU.queue] || {}).n) RVU.queue = EXPLORER ? 'all' : QUEUES.find(q => RVU.counts[q].n) || 'all';
   renderVolSelect(); renderChips();
@@ -30,7 +30,7 @@ function rvWire() {
   window.LKGC = window.LKGX;
   Object.assign(window.LKGC, { R, RV, RVU, RVS, SC, QUEUES, entryModel, buildModel, visibleItems, entCur, entProposal, makeZip, exportFiles, auditRows, importState, setQueue, decide, undo, cardAct, focusCard, countQueues, progressJSON,
     go, entryHash, proposal, mergedProposal, recVals, listRows, t, UI, MEDIA, cropErr, cutErr, cropSources, openCrop, closeCrop, selectMedia, scanMediaAt,
-    SEV, CORP, LEVELS, openLevels, openByLevel, levelTotals, setCorpus, setLevelFilter, setPreset, sevDoc, tableCols, nodeProps, stats, itemLevel, tierOf, inCorpus, openFindings, itemDecided, usageRows, propMode, entryInCorpus, setNotes, queueList, META: GC_META, EXPLORER,
+    SEV, QF, Q_MEASURES, LEVELS, openLevels, openByLevel, levelTotals, setQFilter, qfApply, qfName, qOf, qPass, setLevelFilter, setPreset, sevDoc, tableCols, nodeProps, stats, itemLevel, inCorpus, openFindings, itemDecided, usageRows, propMode, entryInCorpus, setNotes, queueList, META: GC_META, EXPLORER,
     pageErr, pageLoaded, openPage, pageRegions, pageIndex, regionBox, scanSources, pageEntries, regionEntries, thumbsSync, ARCH, pageNode, regionNode, pageTitle, kindOf, betterOf });
   Object.defineProperty(window.LKGC, 'SUB', { get: () => SUB });
   Object.defineProperty(window.LKGC, 'EM', { get: () => EM });

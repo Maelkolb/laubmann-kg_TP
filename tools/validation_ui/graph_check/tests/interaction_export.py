@@ -450,13 +450,13 @@ async def main():
         files = await pg.evaluate("LKGC.exportFiles()")
         names = [f[0] for f in files]
         check(names == ZIP_FILES, f"the ZIP holds the ten files {names}")
-        # the corpus filter is a view: the export is the same under the strictest corpus
-        await pg.evaluate("LKGC.setCorpus(3)")
+        # the reliability filter is a view: the export is the same under the strictest threshold
+        await pg.evaluate("LKGC.setQFilter('p', 3)")
         await pg.wait_for_timeout(400)
         csv3 = {n: text for n, text in await pg.evaluate("LKGC.exportFiles()") if n.endswith(".csv")}
-        check(csv3 == {n: text for n, text in files if n.endswith(".csv")} and len(csv3) >= 8, "the corpus filter does not change the export (same CSV files under 'strenger Kern mit Koordinaten')")
+        check(csv3 == {n: text for n, text in files if n.endswith(".csv")} and len(csv3) >= 8, "the reliability filter does not change the export (same CSV files under 'Datensatz < 10 %')")
         check(await pg.evaluate("Object.keys(LKGC.RV.dec).length") > 20, "... nor the decisions")
-        await pg.evaluate("LKGC.setCorpus(0)")
+        await pg.evaluate("LKGC.setQFilter('p', 0)")
         await pg.wait_for_timeout(400)
         out = SHOTS / "export"
         (out / "review").mkdir(parents=True, exist_ok=True)

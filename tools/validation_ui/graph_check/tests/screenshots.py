@@ -86,7 +86,7 @@ async def archive_shots(pg, tag):
 
 
 async def explorer_shots(p):
-    """The explorer build of the same app: overview, the same entry as the review build, corpus bar, notes off."""
+    """The explorer build of the same app: overview, the same entry as the review build, reliability bar, notes off."""
     if not check(EXPLORER_PAGE.exists(), f"the explorer build exists ({EXPLORER_PAGE.name})"):
         return []
     b, pg, errs = await open_page(p, viewport=(1440, 900), url=EXPLORER_PAGE.as_uri())
@@ -97,19 +97,19 @@ async def explorer_shots(p):
     await pg.wait_for_timeout(400)
     await pg.screenshot(path=str(SHOTS / "19d_explorer_tabelle.png"))
     await pg.keyboard.press("g")
-    await pg.click('#corpbar [data-corpus="2"]')
+    await pg.click('#qbar [data-qt="2"]')
     await pg.wait_for_timeout(700)
-    await pg.screenshot(path=str(SHOTS / "19b_explorer_eintrag_strenger_kern.png"))
+    await pg.screenshot(path=str(SHOTS / "19b_explorer_eintrag_unter_25.png"))
     await pg.evaluate("LKGC.go('/')")
     await pg.wait_for_timeout(700)
-    await pg.screenshot(path=str(SHOTS / "19e_explorer_uebersicht_strenger_kern.png"))
-    await pg.click('#corpbar [data-act="corpus-off"]')
+    await pg.screenshot(path=str(SHOTS / "19e_explorer_uebersicht_unter_25.png"))
+    await pg.click('#qbar [data-qt="0"]')
     await pg.wait_for_timeout(500)
     await entry_shot(pg, "19f_explorer_eintrag_vor_schalter.png")
-    await pg.locator("#corpbar #notesw").uncheck()
+    await pg.locator("#qbar #notesw").uncheck()
     await pg.wait_for_timeout(700)
     await pg.screenshot(path=str(SHOTS / "19c_explorer_ohne_pruefhinweise.png"))
-    await pg.locator("#corpbar #notesw").check()
+    await pg.locator("#qbar #notesw").check()
     (SHOTS / "19f_explorer_eintrag_vor_schalter.png").unlink(missing_ok=True)
     await archive_shots(pg, "explorer")
     # 18c: both builds side by side for the same entry
@@ -133,7 +133,8 @@ async def main():
         await pg.keyboard.press("Escape")
 
         # 1 work list + graph with annotations; 4 scan with region and line; 2 table with chips
-        eid = await find_entry(pg, f"(rv, s) => s.find.length >= 2 && s.miss.length >= 1 && s.auto.some(k => k.startsWith('name:')) && (rv.gone || []).length && {SMALL} && Object.values(rv.rec).some(r => r.loc && r.g && r.g.v === 'wrong' && r.g.fix && (r.g.fix.count || r.g.fix.locality))")
+        eid = await find_entry(pg, f"(rv, s) => s.find.length >= 2 && s.miss.length >= 1 && s.auto.some(k => k.startsWith('name:')) && (rv.gone || []).length && {SMALL} && Object.values(rv.rec).some(r => r.loc && r.g && r.g.v === 'wrong' && r.g.fix && (r.g.fix.count || r.g.fix.locality))") \
+            or await find_entry(pg, f"(rv, s) => s.find.length >= 1 && s.miss.length >= 1 && {SMALL} && Object.values(rv.rec).some(r => r.loc && r.g && r.g.v === 'wrong' && r.g.fix && (r.g.fix.count || r.g.fix.locality))")
         await goto_entry(pg, eid, 900)
         await focus_item(pg, "it => it.type === 'rec' && it.o.rec.loc && it.o.rec.g && it.o.rec.g.v === 'wrong'")
         await pg.wait_for_timeout(500)
@@ -172,7 +173,7 @@ async def main():
         await pg.keyboard.press("Escape")
         print("shots 07, 08", eid)
 
-        # ---- final pass: properties, table columns, gravity levels, corpus filter
+        # ---- final pass: properties, table columns, gravity levels, reliability filter
         # 09 an entry with "Alles zeigen": default zoom (legible, pan hint), and the whole graph with the work list hidden
         eid = await find_entry(pg, "(rv, s, r) => r.nobs >= 3 && r.nobs <= 5 && s.find.length >= 1 && (rv.media || []).length >= 1 && (rv.reg || []).length >= 1 && s.auto.some(k => k.startsWith('name:'))") \
             or await find_entry(pg, "(rv, s, r) => r.nobs >= 3 && r.nobs <= 5 && s.find.length >= 1 && (rv.reg || []).length >= 1")
@@ -236,46 +237,49 @@ async def main():
         await pg.keyboard.press("s")
         await pg.evaluate("LKGC.setQueue('finding', false)")
         print("shots 11, 12", eid)
-        # 13 "strenger Kern" active: an entry (hidden records, then shown dimmed), 14 a taxon node view, 15 the overview
-        await pg.click('#corpbar [data-corpus="2"]')
+        # 13 "Datensatz < 25 %" active: an entry (hidden records, then shown dimmed), 14 a taxon node view, 15 the overview
+        await pg.click('#qbar [data-qt="2"]')
         await pg.wait_for_timeout(600)
-        eid = await find_entry(pg, "(rv, s, r) => s.nc && s.nc[2] >= 3 && r.nobs - s.nc[2] >= 2 && r.nobs <= 9 && Object.values(rv.rec || {}).some(x => x.t === 0 && (x.g || {}).v === 'wrong') && Object.values(rv.rec || {}).some(x => x.t === 1)")
+        eid = await find_entry(pg, "(rv, s, r) => s.qn >= 3 && r.nobs - s.qn >= 2 && r.nobs <= 9 && Object.values(rv.rec || {}).some(x => x.q && x.q.lv > 2 && (x.g || {}).v === 'wrong')")
         await goto_entry(pg, eid, 700)
-        await pg.screenshot(path=str(SHOTS / "13a_strenger_kern_eintrag.png"))
+        await pg.screenshot(path=str(SHOTS / "13a_unter_25_eintrag.png"))
         await pg.click('#gtools [data-act="showout"]')
         await pg.wait_for_timeout(500)
-        await pg.screenshot(path=str(SHOTS / "13b_strenger_kern_ausserhalb_gezeigt.png"))
+        await pg.screenshot(path=str(SHOTS / "13b_unter_25_ausserhalb_gezeigt.png"))
         await pg.keyboard.press("g")
         await pg.wait_for_timeout(300)
-        await pg.screenshot(path=str(SHOTS / "13c_strenger_kern_tabelle.png"))
+        await pg.screenshot(path=str(SHOTS / "13c_unter_25_tabelle.png"))
         await pg.keyboard.press("g")
         tx = await pg.evaluate("LKGC.G.nodes[LKGC.stats().taxa[4].n]")
         await pg.evaluate(f"LKGC.go('/n/' + {tx!r})")
         await pg.wait_for_timeout(900)
-        await pg.screenshot(path=str(SHOTS / "14_strenger_kern_taxon.png"))
+        await pg.screenshot(path=str(SHOTS / "14_unter_25_taxon.png"))
         await pg.evaluate("LKGC.go('/c/taxon')")
         await pg.wait_for_timeout(500)
-        await pg.screenshot(path=str(SHOTS / "14b_strenger_kern_klasse_taxa.png"))
+        await pg.screenshot(path=str(SHOTS / "14b_unter_25_klasse_taxa.png"))
         await pg.evaluate("LKGC.go('/')")
         await pg.wait_for_timeout(800)
-        await pg.screenshot(path=str(SHOTS / "15a_uebersicht_strenger_kern.png"))
-        await pg.evaluate("LKGC.setCorpus(0)")
+        await pg.screenshot(path=str(SHOTS / "15a_uebersicht_unter_25.png"))
+        await pg.evaluate("LKGC.setQFilter('p', 0)")
         await pg.wait_for_timeout(600)
         print("shots 13, 14, 15a", eid)
 
-        # ---- 17 the corpus bar (always under the header) in the review build; 18a the entry both builds are compared on
+        # ---- 17 the reliability bar (always under the header) in the review build; 18a the entry both builds are compared on
         await pg.evaluate("LKGC.go('/')")
         await pg.wait_for_timeout(700)
-        await pg.screenshot(path=str(SHOTS / "17a_korpusleiste_pruefung_uebersicht.png"))
-        await pg.click('#corpbar [data-act="corpus-info"]')
-        await pg.wait_for_timeout(250)
-        await pg.screenshot(path=str(SHOTS / "17c_korpusleiste_info.png"))
-        await pg.keyboard.press("Escape")
-        await entry_shot(pg, "18a_pruefung_eintrag_L17-e0132.png")
-        await pg.click('#corpbar [data-corpus="2"]')
+        await pg.screenshot(path=str(SHOTS / "17a_verlaesslichkeit_pruefung_uebersicht.png"))
+        await pg.select_option("#qmsel", "pl")
+        await pg.click('#qbar [data-qt="2"]')
         await pg.wait_for_timeout(700)
-        await pg.screenshot(path=str(SHOTS / "17b_korpusleiste_pruefung_eintrag_strenger_kern.png"))
-        await pg.click('#corpbar [data-act="corpus-off"]')
+        await pg.screenshot(path=str(SHOTS / "17c_verlaesslichkeit_ort_unter_25.png"))
+        await pg.select_option("#qmsel", "p")
+        await pg.click('#qbar [data-qt="0"]')
+        await pg.wait_for_timeout(500)
+        await entry_shot(pg, "18a_pruefung_eintrag_L17-e0132.png")
+        await pg.click('#qbar [data-qt="2"]')
+        await pg.wait_for_timeout(700)
+        await pg.screenshot(path=str(SHOTS / "17b_verlaesslichkeit_pruefung_eintrag_unter_25.png"))
+        await pg.click('#qbar [data-qt="0"]')
         await pg.wait_for_timeout(500)
         print("shots 17, 18a")
         await archive_shots(pg, "pruefung")

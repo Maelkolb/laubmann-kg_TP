@@ -16,7 +16,7 @@ contracts (see README.md).
 
 One app, two builds. ``--mode review`` (default) is the Graph-Prüfung: everything is displayed AND can
 be decided and exported. ``--mode explorer`` is the Graph-Explorer: the same code, data and display
-(subgraph with property rows, table, scan pane, crops, corpus filter, node / class / search views,
+(subgraph with property rows, table, scan pane, crops, reliability filter, node / class / search views,
 overview numbers), nothing that decides (no decision buttons, keys or forms, no reviewer name, no
 export, no stored decisions); findings and automatic changes are read-only annotations behind the
 switch "Prüfhinweise zeigen". The mode is written into the embedded meta (``<script id="gc-meta">``,
@@ -59,7 +59,7 @@ sys.dont_write_bytecode = True     # the import must not leave a __pycache__ in 
 import build_graph_explorer as X  # noqa: E402  (packing, ontology labels, blob layout)
 
 # page sources, concatenated in this order into one script (one shared function scope)
-JS_FILES = ["gc_explorer.js", "gc_i18n.js", "gc_state.js", "gc_severity.js", "gc_corpus.js", "gc_props.js", "gc_scan.js", "gc_media.js", "gc_archive.js", "gc_cards.js", "gc_views.js", "gc_table.js", "gc_export.js",
+JS_FILES = ["gc_explorer.js", "gc_i18n.js", "gc_state.js", "gc_severity.js", "gc_quality.js", "gc_props.js", "gc_scan.js", "gc_media.js", "gc_archive.js", "gc_cards.js", "gc_views.js", "gc_table.js", "gc_export.js",
             "gc_boot.js"]
 CSS_FILES = ["gc_explorer.css", "gc_review.css", "gc_levels.css"]
 TEMPLATE = "graph_check_template.html"

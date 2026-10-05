@@ -44,7 +44,7 @@ function normalizeState() {
   S.ent = S.ent || {}; S.form = S.form || {}; S.ui = S.ui || {};
   for (const t of TYPES) { S.ent[t] = S.ent[t] || {}; S.form[t] = S.form[t] || {}; }
   const u = S.ui; u.q = u.q || {}; u.sel = u.sel || {}; u.sub = u.sub || {}; u.find = u.find || {}; u.type = u.type || 'home'; if (u.scan == null) u.scan = true;
-  u.corpus = Math.max(0, Math.min(3, u.corpus | 0));
+  u.corpus = Math.max(0, Math.min(3, u.corpus | 0)); u.lb = u.lb || {};
 }
 const stamp = o => Object.assign({}, o, { by: S.who || '', t: new Date().toISOString() });
 let saveT = null;
@@ -69,13 +69,13 @@ function undo() {
   refresh(true);
 }
 
-// ---------------------------------------------------------------- corpus filter (a view only: decisions and export never depend on it)
-// S.ui.corpus = lowest record tier that counts: 0 vollständig, 1 Kern, 2 strenger Kern, 3 strenger Kern mit Koordinaten.
-// e.nc / f.nc = mentions of an entry / a written name in the records of the four corpora (build_data.py).
+// ---------------------------------------------------------------- reliability filter (a view only: decisions and export never depend on it)
+// S.ui.corpus = threshold on the estimated error probability of the records: 0 all, 1 < 50 %, 2 < 25 %, 3 < 10 %.
+// e.nc / f.nc = mentions of an entry / a written name whose record passes each threshold; m.k = level index of a passage (build_data.py).
 const corpus = () => (D && D.corpus ? (S.ui.corpus | 0) : 0);
 const cn = e => { const c = corpus(); return c === 0 ? e.n : (e.nc ? e.nc[c] : 0); };
 const fcn = f => { const c = corpus(); return c === 0 ? f.n : (f.nc ? f.nc[c] : 0); };
-const menIn = m => (m.k != null && m.k >= corpus() ? 1 : 0);          // is a passage in the chosen corpus
+const menIn = m => (m.k != null && m.k >= corpus() ? 1 : 0);          // does a passage pass the chosen threshold
 const CENTS = {};
 function corpusItems(ty) {     // the entries with at least one mention in the corpus, most mentions in the corpus first
   const c = corpus(); if (c === 0) return ENTS[ty];
@@ -227,7 +227,7 @@ const toCSV = (head, rows) => [head.join(',')].concat(rows.map(r => head.map(h =
 const exportIdentities = () => toCSV(ID_HEAD, idRows());
 
 // ---------------------------------------------------------------- export: link_audit.csv (one row per decision, for precision statistics)
-const AUDIT_HEAD = ['section', 'kind', 'name', 'entity', 'mentions', 'queue', 'change_kind', 'machine_applied', 'machine_verdict', 'machine_confidence', 'machine_agreement', 'machine_sources', 'machine_round',
+const AUDIT_HEAD = ['section', 'kind', 'name', 'entity', 'mentions', 'queue', 'link_basis', 'change_kind', 'machine_applied', 'machine_verdict', 'machine_confidence', 'machine_agreement', 'machine_sources', 'machine_round',
   'pipeline_link', 'graph_link', 'machine_link', 'human_decision', 'human_link', 'human_grade', 'via', 'agrees_with_graph', 'agrees_with_machine', 'note', 'reviewed_by', 'reviewed_at'];
 function auditRows() {
   const rows = [];
@@ -236,7 +236,7 @@ function auditRows() {
       const e = BYK[ty].get(k); const m = e && e.m;
       const graphState = !e ? undefined : e.gone ? { none: 1 } : e.cur || { nolink: 1 };
       const pipe = !e ? '' : e.q === 'changed' ? (e.bsrc ? linkText(ty, e.before) || 'nolink' : 'unknown') : e.drift ? linkText(ty, e.drift.link) : (e.gone ? '' : linkText(ty, e.cur) || 'nolink');
-      rows.push({ section: SECTION[ty], kind: 'entity', name: d.label, entity: d.label, mentions: e ? e.n : '', queue: e ? e.q : 'not in this graph', change_kind: e && e.ck || '',
+      rows.push({ section: SECTION[ty], kind: 'entity', name: d.label, entity: d.label, mentions: e ? e.n : '', queue: e ? e.q : 'not in this graph', link_basis: e ? e.lb || '' : '', change_kind: e && e.ck || '',
         machine_applied: m ? (m.ap && !m.ineff ? 'y' : 'n') : '', machine_verdict: m ? m.word : '', machine_confidence: m && m.c != null ? m.c : '', machine_agreement: m && m.a != null ? m.a : '',
         machine_sources: m ? (m.s || []).join('+') : '', machine_round: m && m.r ? ((D.rounds.find(r => r.n === m.r) || {}).label || m.r) : '',
         pipeline_link: pipe, graph_link: graphState ? linkText(ty, graphState) : '', machine_link: m ? linkText(ty, machineState(ty, e)) : '',
@@ -248,7 +248,7 @@ function auditRows() {
       const mlink = fm ? (fm.none ? 'none' : fm.nolink ? 'nolink' : fm.key ? linkText('taxon', { key: fm.key, sci: fm.sci }) : '') : '';
       const hlink = f.d === 'same' ? [f.to, f.toLink && f.toLink.key ? 'gbif:' + f.toLink.key : ''].filter(Boolean).join(' ') : '';
       const inGraph = e ? (cf(e.l) === cf(f.to || '') && (ty !== 'taxon' || !f.toLink || String(f.toLink.key) === String((e.cur || {}).key || '')) ? 'same' : 'other') : '';
-      rows.push({ section: SECTION[ty], kind: f.via === 'merge' ? 'merge' : 'name', name: f.name, entity: f.ent || (e ? e.l : ''), mentions: fr ? fr.n : '', queue: e ? e.q : 'not in this graph', change_kind: fr && fr.was ? fr.was.ck : '',
+      rows.push({ section: SECTION[ty], kind: f.via === 'merge' ? 'merge' : 'name', name: f.name, entity: f.ent || (e ? e.l : ''), mentions: fr ? fr.n : '', queue: e ? e.q : 'not in this graph', link_basis: fr ? fr.lb || e.lb || '' : '', change_kind: fr && fr.was ? fr.was.ck : '',
         machine_applied: fm ? (fm.ap ? 'y' : 'n') : '', machine_verdict: fm ? fm.d : '', machine_confidence: fm ? fm.c : '', machine_agreement: fm ? fm.a : '', machine_sources: fm ? (fm.s || []).join('+') : '',
         machine_round: fm && fm.r ? ((D.rounds.find(r => r.n === fm.r) || {}).label || fm.r) : '', pipeline_link: fr && fr.was ? (fr.was.key ? 'gbif:' + fr.was.key : 'nolink') : '',
         graph_link: e ? [e.l, linkAuth(ty, e.cur)].filter(Boolean).join(' ') : '', machine_link: mlink, human_decision: f.d, human_link: hlink, human_grade: '', via: f.via || '',

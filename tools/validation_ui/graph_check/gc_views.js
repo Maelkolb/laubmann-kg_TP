@@ -3,7 +3,7 @@
 
 // ------------------------------------------------------------------ work list
 const ROW_H = 44;
-function queueScore(s, q) { return q === 'finding' ? s.find.length + s.miss.length : q === 'auto' ? s.auto.length : q === 'tc' ? s.tc.length : q === 'qa' ? s.qa.length : q === 'ins' ? s.unread * 1000 + s.ins : q === 'img' ? s.img : 0; }
+function queueScore(s, q) { return q === 'risk' ? s.qe : q === 'finding' ? s.find.length + s.miss.length : q === 'auto' ? s.auto.length : q === 'tc' ? s.tc.length : q === 'qa' ? s.qa.length : q === 'ins' ? s.unread * 1000 + s.ins : q === 'img' ? s.img : 0; }
 function listRows() {   // entries of the queue and the corpus, filtered by level, volume and text, sorted
   const q = RVU.queue, vol = RVU.vol; const f = $('#efilter').value.trim().toLowerCase(); const out = [];
   for (const r of G.ent) {
@@ -12,7 +12,9 @@ function listRows() {   // entries of the queue and the corpus, filtered by leve
     out.push(r);
   }
   // gravity first: most open schwer, then mittel, then leicht; Array.sort is stable, equal entries keep the diary order
-  if (RVU.sort === 'score') out.sort((a, b) => { const sa = RVS.get(a.n), sb = RVS.get(b.n); const x = openLevels(sa), y = openLevels(sb); return (y[3] - x[3]) || (y[2] - x[2]) || (y[1] - x[1]) || (queueScore(sb, q) - queueScore(sa, q)); });
+  // error risk first (the queue "nach Fehlerrisiko" always): the expected number of wrong records among those shown
+  if (q === 'risk' || RVU.sort === 'risk') out.sort((a, b) => RVS.get(b.n).qe - RVS.get(a.n).qe);
+  else if (RVU.sort === 'score') out.sort((a, b) => { const sa = RVS.get(a.n), sb = RVS.get(b.n); const x = openLevels(sa), y = openLevels(sb); return (y[3] - x[3]) || (y[2] - x[2]) || (y[1] - x[1]) || (queueScore(sb, q) - queueScore(sa, q)); });
   else if (q === 'ins') out.sort((a, b) => (RVS.get(b.n).unread > 0) - (RVS.get(a.n).unread > 0));
   return out;
 }
@@ -31,7 +33,7 @@ function renderLvChips() {   // level filter, combinable with the queue: entries
 }
 function listFoot() {
   const c = RVU.counts[RVU.queue] || { n: 0, open: 0 };
-  $('#elist-foot').textContent = (EXPLORER ? t('list_foot_x', fmt((RVU.list || []).length)) : t('list_foot', fmt((RVU.list || []).length), RVU.queue === 'done' ? fmt(c.n) : fmt(c.open))) + (corpusOn() ? ' · ' + corpusName(RVU.corpus) : '');
+  $('#elist-foot').textContent = (EXPLORER ? t('list_foot_x', fmt((RVU.list || []).length)) : t('list_foot', fmt((RVU.list || []).length), RVU.queue === 'done' ? fmt(c.n) : fmt(c.open))) + (corpusOn() ? ', ' + qfName() : '');
 }
 function rvRenderList(keep) {
   const body = $('#elist-body'); body.dataset.lang = LANG;
@@ -47,9 +49,11 @@ function listRowHtml(r, i) {
   if (s.ins) b += `<span class="bdg b-ins${s.unread ? '' : ' off'}" title="${esc(t('bt_ins', fmt(s.ins), fmt(s.unread)))}">¶</span>`;
   if (s.img) b += `<span class="bdg b-img" title="${esc(t('bt_img', fmt(s.img)))}">▣</span>`;
   if (chk) b += `<span class="bdg b-ok" title="${t('checked')}">✓</span>`;
-  const n = corpusOn() && s.nc ? `<span class="n" title="${esc(t('l_records_corp', fmt(s.nc[RVU.corpus]), fmt(r.nobs), corpusName(RVU.corpus)))}"><b>${fmt(s.nc[RVU.corpus])}</b> / ${fmt(r.nobs)}</span>` : `<span class="n" title="${t('l_records')}">${r.nobs ? fmt(r.nobs) : ''}</span>`;
+  if ((RVU.queue === 'risk' || RVU.sort === 'risk') && s.qe > 0) b += `<span class="bdg b-risk" title="${esc(t('l_risk_t'))}">≈ ${esc(fmtRisk(s.qe))}</span>`;
+  const n = corpusOn() ? `<span class="n" title="${esc(t('l_records_corp', fmt(s.qn), fmt(r.nobs), qfName()))}"><b>${fmt(s.qn)}</b> / ${fmt(r.nobs)}</span>` : `<span class="n" title="${t('l_records')}">${r.nobs ? fmt(r.nobs) : ''}</span>`;
   return `<div class="erow${r.n === S.e ? ' on' : ''}${chk ? ' chk' : ''}" data-e="${r.n}" style="top:${i * ROW_H}px"><span class="d">${esc(r.date || pref(r.n, 'dwc:verbatimEventDate') || r.id)}</span>${n}<span class="p">${esc(entryPlaceLabel(r))} <span class="muted mono">${esc(r.id)}</span></span><span class="b">${b}</span></div>`;
 }
+const fmtRisk = x => (x >= 10 ? fmt(Math.round(x)) : x.toFixed(1).replace('.', LANG === 'de' ? ',' : '.'));
 function drawList() {
   const body = $('#elist-body'); const n = RVU.list.length; const top = body.scrollTop, h = body.clientHeight || 600;
   const a = Math.max(0, Math.floor(top / ROW_H) - 8), b = Math.min(n, Math.ceil((top + h) / ROW_H) + 8); let s = '';
@@ -65,7 +69,7 @@ function renderVolSelect() {
   const sel_ = $('#volsel');
   sel_.innerHTML = `<option value="all">${t('vol_all')}</option>` + G.vols.concat(G.entByVol.has(-1) ? [-1] : []).map(v => `<option value="${v}">${esc(volLabel(v).replace(/^Laubmann\s*·\s*/, ''))} · ${esc(pref(v, 'dcterms:temporal') || '')}</option>`).join('');
   sel_.value = RVU.vol;
-  $('#qsort').innerHTML = ['score', 'diary'].map(k => `<option value="${k}"${k === RVU.sort ? ' selected' : ''}>${t('sort_' + k)}</option>`).join('');
+  $('#qsort').innerHTML = (EXPLORER ? ['score', 'diary'] : ['score', 'risk', 'diary']).map(k => `<option value="${k}"${k === RVU.sort ? ' selected' : ''}>${t('sort_' + k)}</option>`).join('');
   $('#qsort').title = t('sort_t');
 }
 function stepEntry(d) {
@@ -91,7 +95,7 @@ function rvWireList() {
   $('#efilter').addEventListener('input', debounce(() => { rvRenderList(); if (S.view === 'entry') renderEntryHead(); }, 140));
   $('#elist-body').addEventListener('scroll', () => { if (!drawList.raf) drawList.raf = requestAnimationFrame(() => { drawList.raf = 0; drawList(); }); });
   $('#elist-body').addEventListener('click', ev => { const r = ev.target.closest('.erow'); if (r) go(entryHash(+r.dataset.e)); });
-  corpusBarWire();
+  qBarWire();
   $('#gmore').addEventListener('click', () => panTo(1)); $('#gless').addEventListener('click', () => panTo(-1));
 }
 
@@ -110,7 +114,7 @@ function rvHeadHtml(e, pos) {
     : n ? `<span class="hstate open" title="${esc(t('open_t'))}"><span class="hl">${t('open_lbl')}</span>${LEVELS.filter(lv => c[lv]).map(lv => lvPill(lv, fmt(c[lv]) + ' ' + lvName(lv), t('bt_lv', fmt(c[lv]), lvName(lv)))).join('')}${hints}</span>`
       : `<span class="hstate">${t('no_open')}${hints}</span>`;
   const out = outCount(m);
-  const corp = corpusOn() ? `<span class="hcorp" title="${esc(t('head_corp_t'))}">${esc(t('head_corp', corpusName(RVU.corpus), fmt(m.obs.length - out), fmt(m.obs.length)))}</span>` : '';
+  const corp = corpusOn() ? `<span class="hcorp" title="${esc(t('head_corp_t'))}">${esc(t('head_corp', qfName(), fmt(m.obs.length - out), fmt(m.obs.length)))}</span>` : '';
   return `<span class="seg" title="${t('mid_t')}"><button data-act="mid-graph" class="${RVU.mid === 'graph' ? 'on' : ''}">${t('mid_graph')}</button><button data-act="mid-table" class="${RVU.mid === 'table' ? 'on' : ''}">${t('mid_table')}</button></span>
     <button class="btn${RVU.scan ? ' on' : ''}" data-act="scan" title="${t('scan_toggle_t')}">${t('scan_btn')}</button>
     <button class="btn" data-copy="${esc(iriOf(e))}" title="${esc(iriOf(e))}">IRI</button>
@@ -140,14 +144,14 @@ function rvToolsHtml() {
   $('#legend').innerHTML = rvLegendHtml();
   return true;
 }
-function rvLegendHtml() {   // colour = level, marker = kind; K0–K3 = corpus tier of a record
-  return (RVU.notes ? markLegendHtml() : '') + `<span class="li" title="${esc(t('lg_tier_t'))}">${[0, 1, 2, 3].map(tr => `<span class="trc tr${tr}">K${tr}</span>`).join('')}${t('lg_tier_s')}</span>` +
+function rvLegendHtml() {   // colour = level, marker = kind; the pill of a record = its estimated error risk
+  return (RVU.notes ? markLegendHtml() : '') + `<span class="li" title="${esc(t('lg_q_t'))}">${[1, 2, 3, 4].map(lv => `<span class="qlv ql${lv}">${esc(t('ql_r_' + lv))}</span>`).join('')}${t('lg_q')}</span>` +
     `<span class="li muted" title="${esc(t('lg_click') + ' · ' + t('zoom_hint'))}">ⓘ</span>`;
 }
-function rvHelpHtml() { return t('help') + `<p>${t('ar_help')}</p><h3>${t('help_corp')}</h3><dl class="corpdl">${[0, 1, 2, 3].map(k => `<dt>${esc(t('corp_b_' + k))}</dt><dd>${esc(t('corp_def_' + k))}</dd>`).join('')}</dl>` + (RVU.notes ? `<h3>${t('help_sev')}</h3>` + sevTableHtml() + `<p class="muted" style="font-size:.8rem">${t('sev_note')}</p>` : ''); }
-function rvFilterNote(block) {   // node view, class view: the counts follow the corpus filter
-  if (!corpusOn()) return ''; const s = esc(t('filter_note', corpusName(RVU.corpus), fmt(CORP.n[RVU.corpus]), fmt(CORP.n[0])));
-  return block ? `<div class="note corpnote">${s}</div>` : ` <span class="corptag">${s}</span>`;
+function rvHelpHtml() { return t('help') + `<p>${t('ar_help')}</p><h3>${t('help_q')}</h3><p>${t('help_q_body')}</p>` + (RVU.notes ? `<h3>${t('help_sev')}</h3>` + sevTableHtml() + `<p class="muted" style="font-size:.8rem">${t('sev_note')}</p>` : ''); }
+function rvFilterNote(block) {   // node view, class view: the counts follow the reliability filter
+  if (!corpusOn()) return ''; const s = esc(t('filter_note', qfName(), fmt(QF.shown), fmt(QF.total)));
+  return block ? `<div class="note qfnote">${s}</div>` : ` <span class="qftag">${s}</span>`;
 }
 
 // ------------------------------------------------------------------ annotation layer of the subgraph
@@ -199,7 +203,7 @@ function rvBadgeSvg(v, an) { const w = an.mk.length > 1 ? 11 : 8; return `<g cla
 function rvTipHtml(v) {
   const an = rvAnn(v); let s = archiveTip(v);
   if (an) s += `<div class="antip ${an.cls}">${an.lv != null ? lvDot(an.lv) + esc(lvName(an.lv)) + ' · ' : ''}${esc(t(an.tip))}</div>`;
-  if (v.kind === 'obs' && EM) { const o = EM.byNode.get(v.n); if (o) s += tierLine(o); }
+  if (v.kind === 'obs') s += qualLine(v.n);
   if (SUB && SUB.propMode === 'compact' && S.sel !== v.key) s += propsTip(v);
   return s;
 }
@@ -386,7 +390,7 @@ function precisionTable() {
       return `<tr><td>${esc(t('as_' + x.source))}</td><td>${esc(t('ak_' + x.kind))}</td><td class="num r">${fmt(x.yes)}</td><td class="num r">${fmt(x.partly)}</td><td class="num r">${fmt(x.no)}</td><td class="num r">${(100 * sh).toFixed(0)} %</td><td><div class="meter" title="${fmt(x.yes)} / ${fmt(n)}"><i style="width:${(100 * x.yes / n).toFixed(1)}%" class="mt-yes"></i><i style="width:${(100 * x.partly / n).toFixed(1)}%" class="mt-partly"></i><i style="width:${(100 * x.no / n).toFixed(1)}%" class="mt-no"></i></div></td></tr>`; }).join('') + '</table>';
 }
 const LV_KINDS = ['rec', 'auto', 'miss', 'ent', 'name', 'tc', 'qa', 'ins'];
-function levelTableHtml() {   // open items per level and per kind (entries of the chosen corpus, decided items no longer count)
+function levelTableHtml() {   // open items per level and per kind (entries the filter shows, decided items no longer count)
   const tot = levelTotals(); const sum = [0, 0, 0, 0];
   const row = (lab, c, cls) => `<tr${cls ? ` class="${cls}"` : ''}><td>${lab}</td>${LEVELS.map(lv => `<td class="num r">${c[lv] ? fmt(c[lv]) : '<span class="muted">–</span>'}</td>`).join('')}<td class="num r">${fmt(c[1] + c[2] + c[3])}</td></tr>`;
   let s = `<table class="t covt lvt"><tr><th>${t('lvt_kind')}</th>${LEVELS.map(lv => `<th class="r">${lvDot(lv)}${lvName(lv)}</th>`).join('')}<th class="r">${t('lvt_sum')}</th></tr>`;
@@ -405,7 +409,7 @@ function rvRenderOverview() {
   const meter = (a, b, cls) => `<div class="meter"><i style="width:${b ? (100 * a / b).toFixed(1) : 0}%" class="${cls}"></i></div>`;
   const cov = (lab, a, b) => `<tr><td>${esc(lab)}</td><td class="num r">${fmt(a)}</td><td class="num r muted">/ ${fmt(b)}</td><td class="num r">${pct(a, b)}</td><td style="width:34%">${meter(a, b, 'mt-cov')}</td></tr>`;
   const cardLv = `<div class="card"><h3>${t('ov_lv')}</h3><p class="muted cardlead">${t('ov_lv_lead')}</p>${RVU.notes ? levelTableHtml() : ''}</div>`;
-  const cardCorp = `<div class="card"><h3>${t('ov_corp')}</h3><p class="muted cardlead">${t('ov_corp_lead')}</p>${corpusTableHtml()}</div>`;
+  const cardCorp = `<div class="card qcard"><h3>${t('ov_q')}</h3>${qualityCardHtml()}</div>`;
   const cardCov = `<div class="card"><h3>${t('ov_cov')}</h3><table class="t covt">
         ${cov(t('ov_cov_entG'), st.entG, st.ent)}${cov(t('ov_cov_entS'), st.entS, st.ent)}${cov(t('ov_cov_recG'), st.recG, st.rec)}${cov(t('ov_cov_recS'), st.recS, st.rec)}
         ${cov(t('ov_cov_flagG'), st.flagG, st.recG)}${cov(t('ov_cov_flagS'), st.flagS, st.recS)}</table>
@@ -430,7 +434,6 @@ function rvRenderOverview() {
     <h2 style="margin-top:26px">${t('ov_graph')}${rvFilterNote()}</h2></div>`;
   box.onclick = ev => {
     const q = ev.target.closest('[data-queue]'); if (q) { setQueue(q.dataset.queue, true); return; }
-    const cr = ev.target.closest('[data-corpus]'); if (cr) setCorpus(cr.dataset.corpus);
   };
   const det = $('.sevcard', box); if (det) det.addEventListener('toggle', () => store('sevopen', det.open ? '1' : '0'));
 }
@@ -440,6 +443,6 @@ function rvRefresh() {   // after every decision
   rvProgress(); countsSoon();
   if (S.view === 'overview') rvRenderOverview();
 }
-function rvApplyStatic() { if ($('#who')) $('#who').value = RV.who || ''; rvProgress(); rvSavedLabel(); renderCorpusBar(); }
-function rvLangChanged() { $('#elist-body').dataset.lang = ''; PCACHE.clear(); renderCorpusBar(); if (S.view === 'entry' && EM) scanBar(); if (RVU.listPos) { renderVolSelect(); renderChips(); rvRenderList(true); } }
+function rvApplyStatic() { if ($('#who')) $('#who').value = RV.who || ''; rvProgress(); rvSavedLabel(); renderQBar(); }
+function rvLangChanged() { $('#elist-body').dataset.lang = ''; PCACHE.clear(); renderQBar(); if (S.view === 'entry' && EM) scanBar(); if (RVU.listPos) { renderVolSelect(); renderChips(); rvRenderList(true); } }
 function rvResize() { drawList(); if (RVU.scan) scanFit(SC.mode); }

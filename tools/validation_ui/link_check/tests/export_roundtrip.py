@@ -294,8 +294,9 @@ async def main():
         audit = list(csv.DictReader(io.StringIO(files["link_audit.csv"])))
         check(len(audit) == n_before, f"link_audit.csv: one row per decision ({len(audit)} / {n_before})")
         check(all(a["human_decision"] for a in audit) and any(a["machine_applied"] == "y" for a in audit) and any(a["pipeline_link"] for a in audit), "audit rows carry the human decision and the machine / pipeline state")
+        check(all(a["link_basis"] in ("two", "one", "name", "mno", "none") for a in audit if a["queue"] != "not in this graph"), "audit rows carry the link class (for precision per class)")
 
-        # the corpus filter is a view: the export is the same under every filter, hidden entries keep their decisions
+        # the reliability filter is a view: the export is the same under every threshold, hidden entries keep their decisions
         hidden = await pg.evaluate("(() => { const out = []; for (const t of ['taxon','person','place','habitat']) for (const k of Object.keys(__lc.S.ent[t])) { const e = __lc.BYK[t].get(k);"
                                    " if (e && e.nc && e.nc[3] === 0) out.push(t + ':' + k); } return out; })()")
         same = []
@@ -303,15 +304,15 @@ async def main():
             await pg.click(f'#corpbar .cbtn[data-corpus="{c}"]')
             await pg.wait_for_timeout(200)
             same.append(await pg.evaluate("__lc.exportIdentities()") == text and await pg.evaluate("__lc.exportFiles().find(f => f[0] === 'link_audit.csv')[1]") == files["link_audit.csv"])
-        check(all(same), f"identities.csv and link_audit.csv are identical under every corpus filter {same}")
+        check(all(same), f"identities.csv and link_audit.csv are identical under every reliability threshold {same}")
         _, files3, _ = await export_zip(pg)
         st0, st3 = json.loads(files["link_progress.json"])["state"], json.loads(files3["link_progress.json"])["state"]
-        check(files3["review/identities.csv"] == text and files3["link_audit.csv"] == files["link_audit.csv"] and st0 == st3, "the ZIP exported under 'strenger Kern mit Koordinaten' equals the unfiltered one")
+        check(files3["review/identities.csv"] == text and files3["link_audit.csv"] == files["link_audit.csv"] and st0 == st3, "the ZIP exported under '< 10 %' equals the unfiltered one")
         gone_ = [h for h in hidden if not await pg.evaluate(f"__lc.corpusItems({json.dumps(h.split(':', 1)[0])}).some(e => e.k === {json.dumps(h.split(':', 1)[1])})")]
-        check(hidden and gone_ == hidden and await n_decisions(pg) == n_before, f"{len(hidden)} decided entries without a mention in the corpus are hidden but keep their decisions")
+        check(hidden and gone_ == hidden and await n_decisions(pg) == n_before, f"{len(hidden)} decided entries without a mention under the threshold are hidden but keep their decisions")
         await pg.click('#corpbar [data-act="corpus-off"]')
         await pg.wait_for_timeout(200)
-        check(await pg.evaluate("__lc.S.ui.corpus") == 0, "'Filter aufheben' in the corpus bar clears the filter")
+        check(await pg.evaluate("__lc.S.ui.corpus") == 0, "'Filter aufheben' in the reliability bar clears the filter")
 
         L = run_loader(text)
         if not check(L is not None, "the pipeline's Identities.load() reads the exported file"):

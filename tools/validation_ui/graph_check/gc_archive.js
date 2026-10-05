@@ -79,7 +79,7 @@ function openPage(pid, on) {   // large view of a page scan with its outlines (z
 // ------------------------------------------------------------------ node view / node tab
 function rvNodeExtra(n) {   // what the node view and the node tab show above the statements
   const k = kindOf(n);
-  if (k === 'obs') { const rec = recOfNode(n); return rec ? tierLine({ n, rec }) : ''; }
+  if (k === 'obs') return qualLine(n);
   if (k === 'page') {
     const pid = pageIdOf(n); const pi = pageIndex(pid); const regs = pi >= 0 ? pageRegions(pi) : []; const ents = pageEntries(n).filter(rvSrcOk);
     return `<div class="pagefig">${pageFigHtml(pid)}</div><div class="muted arhint"><span class="link" data-page-open="${esc(pid)}">⤢ ${t('ar_open_page')}</span> · ${esc(t('ar_regions', fmt(regs.filter(r => !r.media).length), fmt(regs.filter(r => r.media).length)))} · ${t('ar_hint')}</div>` +

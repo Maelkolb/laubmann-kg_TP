@@ -25,36 +25,50 @@ function renderHeader() {
   renderCorpusSel();
   savedLabel();
 }
-// corpus bar under the header, in every view: label, four buttons with their record counts, ⓘ, and - under a filter - what it does and "Filter aufheben"
+// reliability bar under the header, in every view: label, four thresholds with their record counts, ⓘ, and - under a filter - what it does and "Filter aufheben"
+const thr = k => (D.corpus.thr || [0, 50, 25, 10])[k];
+const corpDef = k => (k ? t('corp.def', thr(k)) : t('corp.def.0'));
 function renderCorpusSel() {
   const bar = $('#corpbar'); if (!bar) return;
   if (!D.corpus) { bar.hidden = true; return; }
   const c = corpus(); bar.hidden = false; bar.classList.toggle('active', c > 0);
   const note = c === 0 ? t('corp.hint') : t('corp.active', t('corp.' + c), fmt(D.corpus.rec[c]), fmt(D.corpus.rec[0]));
   bar.innerHTML = '<span class="cbl" title="' + esc(t('corp.tip')) + '">' + esc(t('corp.label')) + '</span><div class="cseg" role="group" aria-label="' + esc(t('corp.label')) + '">'
-    + [0, 1, 2, 3].map(k => '<button class="cbtn' + (k === c ? ' on' : '') + '" data-corpus="' + k + '" aria-pressed="' + (k === c) + '" title="' + esc(t('corp.def.' + k)) + '">' + esc(t('corp.b.' + k)) + ' <small>' + fmt(D.corpus.rec[k]) + '</small></button>').join('')
+    + [0, 1, 2, 3].map(k => '<button class="cbtn' + (k === c ? ' on' : '') + '" data-corpus="' + k + '" aria-pressed="' + (k === c) + '" title="' + esc(corpDef(k)) + '">' + esc(t('corp.b.' + k)) + ' <small>' + fmt(D.corpus.rec[k]) + '</small></button>').join('')
     + '</div><button class="cinfo" data-act="corpus-info" title="' + esc(t('corp.info.t')) + '" aria-label="' + esc(t('corp.info.t')) + '">ⓘ</button><span class="cbt' + (c ? '' : ' muted') + '" title="' + esc(note) + '">' + esc(note) + '</span>'
     + (c ? '<button class="nbtn" data-act="corpus-off">' + esc(t('corp.off')) + '</button>' : '');
 }
 function showCorpusInfo() {
   $('#modal').innerHTML = '<button class="nbtn x" data-close="1">' + esc(t('btn.close')) + '</button><h2>' + esc(t('corp.info.h')) + '</h2><p>' + esc(t('corp.info.lead')) + '</p><table class="cdef">'
-    + [0, 1, 2, 3].map(k => '<tr><td>' + (k ? '<span class="trc tr' + k + '">K' + k + '</span>' : '') + '</td><td><b>' + esc(t('corp.b.' + k)) + '</b><br><span class="muted">' + fmt(D.corpus.rec[k]) + ' ' + esc(t('home.corp.rec')) + '</span></td><td>' + esc(t('corp.def.' + k)) + '</td></tr>').join('')
+    + [0, 1, 2, 3].map(k => '<tr><td><b>' + esc(t('corp.b.' + k)) + '</b><br><span class="muted">' + fmt(D.corpus.rec[k]) + ' ' + esc(t('home.corp.rec')) + '</span></td><td>' + esc(corpDef(k)) + '</td></tr>').join('')
     + '</table><h3>' + esc(t('corp.info.h2')) + '</h3><p>' + esc(t('corp.info.rule')) + '</p><p>' + esc(t('corp.info.view')) + '</p>';
   $('#ovModal').classList.add('show');
 }
-const tierName = k => t('tier.' + k);
-const whyText = code => (has('tw.' + code) ? t('tw.' + code) : code);
-function tierWhy(m) {          // why a passage's record is not in the next tier, in words
-  if (m.k == null || m.k >= 3) return '';
-  const codes = (m.kw || []).map(whyText).join('; ');
-  if ((m.kw || []).includes('no-records')) return codes;
-  return (m.ke ? t('tier.entry') + ' ' : '') + (m.k === 0 ? t('tier.out_why') : t('tier.next_why', tierName(m.k + 1))) + ' ' + codes;
+const pct = v => (v == null ? '' : v < 1 ? '< 1 %' : v + ' %');
+function tierWhy(m) {          // why a passage's record is not under the chosen threshold, in words
+  const c = corpus(); if (m.k == null || m.k >= c) return '';
+  if (m.ke === 2) return t('tier.norec');
+  if (m.kp == null) return t('tier.noest');
+  return t(m.ke ? 'tier.out.entry' : 'tier.out', pct(m.kp), thr(c));
 }
-function tierChip(m) {
+function tierChip(m) {          // the record's estimated error probability; colour by its level
   if (m.k == null || !D.corpus) return '';
-  const why = tierWhy(m);
-  return '<span class="trc tr' + m.k + '" title="' + esc(t(m.ke ? 'tier.t.entry' : 'tier.t') + ': ' + tierName(m.k) + (why ? ' — ' + why : '')) + '">K' + m.k + '</span>';
+  const tip = m.ke === 2 ? t('tier.norec') : [t(m.ke ? 'tier.t.entry' : 'tier.t') + ': ' + (m.kp == null ? t('tier.noest') : pct(m.kp)), m.ko != null ? t('tier.occ', pct(m.ko)) : '', m.kc != null ? t('tier.coords', pct(m.kc)) : ''].filter(Boolean).join('; ');
+  return '<span class="trc tr' + m.k + '" title="' + esc(tip) + '">' + esc(m.kp == null ? '–' : pct(m.kp)) + '</span>';
 }
+// ---------------------------------------------------------------- how a link is backed
+const LB = ['two', 'one', 'name', 'mno', 'none'];
+function lbTip(ty, b, e) {
+  const tip = b === 'two' ? t('lb.two.tip', dec2(D.thresholds.conf), D.thresholds.agree) : b === 'one' ? t('lb.one.tip.' + ty) : t('lb.' + b + '.tip');
+  const below = e && e.m && !e.m.ap && e.m.a >= D.thresholds.agree ? t('lb.below', e.m.a, dec2(e.m.c || 0), dec2(D.thresholds.conf)) : '';
+  return [tip, lbAudit(ty, b), below].filter(Boolean).join(' ');
+}
+function lbAudit(ty, b) {
+  if (ty === 'place' && (b === 'two' || b === 'name')) return t('lb.audit.place.' + b);
+  if (ty === 'taxon' && (b === 'two' || b === 'one')) return t('lb.audit.taxon.' + b) + ' ' + t('lb.audit.taxon.why');
+  return '';
+}
+const lbBadge = (ty, b, e, big, pre) => (b ? '<span class="bd lb lb-' + b + (big ? ' big' : '') + '" title="' + esc((pre ? pre + ' ' : '') + lbTip(ty, b, e)) + '">' + esc(t('lb.' + b)) + '</span>' : '');
 const countText = e => (corpus() ? t('card.mentions.c', fmt(cn(e)), fmt(e.n)) : e.n === 1 ? t('card.mention1') : t('card.mentions', fmt(e.n)));
 
 // ---------------------------------------------------------------- list
@@ -68,6 +82,7 @@ function listItems(ty) {
   const q = curQ(ty); const sub = q === 'suggest' ? (S.ui.sub[ty] || '') : ''; const find = fold(S.ui.find[ty] || '');
   let items = corpusItems(ty).filter(e => inQueue(ty, e, q));
   if (sub) items = items.filter(e => e.sq === sub);
+  const lb = S.ui.lb[ty] || ''; if (lb) items = items.filter(e => e.lb === lb);
   if (find) items = items.filter(e => searchText(e).includes(find));
   return items;
 }
@@ -103,11 +118,13 @@ function renderList(scroll) {
   const p = typeProgress(ty); const [c, sub] = queueCounts(ty); const q = curQ(ty);
   const chip = k => '<button class="chip' + (q === k ? ' on' : '') + '" data-q="' + k + '" title="' + esc(t('q.' + k + '.tip')) + '">' + esc(t('q.' + k)) + ' <small>' + (k === 'done' ? fmt(c[k].n) : fmt(c[k].open) + '/' + fmt(c[k].n)) + '</small></button>';
   const subs = q === 'suggest' ? '<div class="chips subchips">' + ['change', 'stale', 'agree', 'unsure'].filter(k => sub[k] || k !== 'stale').map(k => '<button class="chip sub' + ((S.ui.sub[ty] || '') === k ? ' on' : '') + '" data-sub="' + k + '">' + esc(t('sq.' + k)) + ' <small>' + fmt(sub[k]) + '</small></button>').join('') + '</div>' : '';
+  const lbOn = S.ui.lb[ty] || ''; const lbN = {}; for (const e of corpusItems(ty)) if (inQueue(ty, e, q) && (!S.ui.sub[ty] || q !== 'suggest' || e.sq === S.ui.sub[ty])) lbN[e.lb] = (lbN[e.lb] || 0) + 1;
+  const lbs = '<div class="chips lbchips">' + LB.filter(b => lbN[b] || b === lbOn).map(b => '<button class="chip lbc lb-' + b + (b === lbOn ? ' on' : '') + '" data-lb="' + b + '" title="' + esc(lbTip(ty, b)) + '"><i></i>' + esc(t('lb.' + b)) + ' <small>' + fmt(lbN[b] || 0) + '</small></button>').join('') + '</div>';
   const items = listItems(ty); const show = SHOW[ty] || LIST_STEP;
   const keep = $('#qsearch') && document.activeElement === $('#qsearch');
   const top = $('#qlist') ? $('#qlist').scrollTop : 0;
   el.innerHTML = '<div class="qhead"><div class="pbar"><i style="width:' + p.pct + '%"></i></div><div class="pnote"><span><b>' + esc(t('list.progress', p.pct.toLocaleString(loc()))) + '</b></span><span>' + esc(t('list.entities', fmt(p.dn), fmt(p.ents))) + '</span></div>'
-    + '<div class="chips" id="qchips">' + QUEUES.filter(k => c[k].n || k === 'done' || k === q).map(chip).join('') + '</div>' + subs
+    + '<div class="chips" id="qchips">' + QUEUES.filter(k => c[k].n || k === 'done' || k === q).map(chip).join('') + '</div>' + subs + lbs
     + '<input class="qsearch" id="qsearch" type="search" placeholder="' + esc(t('list.search')) + '" value="' + esc(S.ui.find[ty] || '') + '" autocomplete="off"></div>'
     + '<div class="qlist" id="qlist">' + (items.length ? items.slice(0, show).map(e => rowHtml(ty, e)).join('') + (items.length > show ? '<div class="qmore" data-more="1">' + esc(t('list.more', fmt(Math.min(LIST_STEP, items.length - show)))) + '</div>' : '') : '<div class="qempty">' + esc(t('list.empty')) + '</div>') + '</div>';
   const ql = $('#qlist'); ql.scrollTop = top;
@@ -288,6 +305,7 @@ function secNames(ty, e) {
       + (m.why ? ' <span class="muted">— ' + esc(m.why) + '</span>' : '') + (!m.ap && m.diff ? ' <button class="tb" data-formacc="' + esc(f.f) + '">' + esc(t('btn.acceptform')) + '</button>' : ''));
     const fv = (m && m.votes ? m.votes : []).concat(f.rd || []);
     if (fv.length) why.push('<details class="fv"' + (f.was ? ' open' : '') + '><summary>' + esc(t('m.votes')) + ' (' + fv.length + ')</summary>' + votesHtml(fv) + '</details>');
+    if (f.lb && f.lb !== e.lb && f.n) why.push(lbBadge(ty, f.lb, null, false, t('lb.form', t('lb.' + f.lb)) + '.'));
     if (!f.n) why.push(esc(t('names.zero')));
     if (covered && !covered.has(cf(f.f)) && !fd) why.push('<span class="bd unk">' + esc(t(m && !m.ap && m.diff ? 'names.open' : 'names.new')) + '</span>');
     if (fd) why.push('<span class="bd alt">' + esc(t('dec.you')) + ': ' + esc(formDecText(ty, e, fd)) + '</span>');
@@ -372,7 +390,7 @@ function renderCard() {
   const yrs = e.yrs && e.yrs.length ? ' · ' + t('card.years', e.yrs[0][0], e.yrs[e.yrs.length - 1][0]) : '';
   const qb = '<span class="bd ' + ({ changed: 'mach', confirmed: 'ok', suggest: 'unk', pipeline: 'pipe', unlinked: '' })[e.q] + ' big">' + esc(t('q.' + e.q)) + '</span>';
   const mergeFirst = curQ(ty) === 'merge' && e.mg;
-  wrap.innerHTML = '<div class="wrap"><div class="crumb"><span>' + esc(t('one.' + ty)) + '</span>' + qb + (pos >= 0 ? '<span>' + fmt(pos + 1) + ' / ' + fmt(items.length) + '</span>' : '')
+  wrap.innerHTML = '<div class="wrap"><div class="crumb"><span>' + esc(t('one.' + ty)) + '</span>' + qb + lbBadge(ty, e.lb, e, true) + (pos >= 0 ? '<span>' + fmt(pos + 1) + ' / ' + fmt(items.length) + '</span>' : '')
     + '<span class="nav"><button class="nbtn" data-nav="prev" title="' + esc(t('card.prev')) + '">↑</button><button class="nbtn" data-nav="next" title="' + esc(t('card.next')) + '">↓</button><button class="nbtn primary" data-nav="open">' + esc(t('card.nextopen')) + '</button></span></div>'
     + '<h1 class="t">' + esc(e.l) + (e.gone ? ' <span class="bd no big">' + esc(t('gone.badge')) + '</span>' : '') + '</h1><p class="sub">' + esc(countText(e) + ' · ' + t('card.names', fmt(e.forms.length)) + yrs
     + (ty === 'place' && e.kind ? ' · ' + (has('place.kind.' + e.kind) ? t('place.kind.' + e.kind) : e.kind) : '')) + '</p>'
@@ -408,10 +426,27 @@ function corpusTableHtml() {   // the four corpora per type: entries with a ment
   const c0 = corpus(); const pc = (a, b) => (b ? (100 * a / b).toLocaleString(loc(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' %' : '–');
   const rows = [0, 1, 2, 3].map(c => {
     const cells = TYPES.map(ty => { let en = 0, mn = 0; for (const e of ENTS[ty]) { const v = c === 0 ? e.n : (e.nc ? e.nc[c] : 0); if (v > 0) { en++; mn += v; } } return '<td class="n" data-cc="' + ty + '-e">' + fmt(en) + '</td><td class="n" data-cc="' + ty + '-m">' + fmt(mn) + '</td>'; }).join('');
-    return '<tr class="ql' + (c === c0 ? ' on' : '') + '" data-corpus="' + c + '"><td class="q">' + (c ? '<span class="trc tr' + c + '">K' + c + '</span> ' : '') + esc(t('corp.' + c)) + '</td><td class="n">' + fmt(D.corpus.rec[c]) + '</td><td class="n muted">' + pc(D.corpus.rec[c], D.corpus.rec[0]) + '</td>' + cells + '</tr>';
+    return '<tr class="ql' + (c === c0 ? ' on' : '') + '" data-corpus="' + c + '" title="' + esc(corpDef(c)) + '"><td class="q">' + esc(t('corp.' + c)) + '</td><td class="n">' + fmt(D.corpus.rec[c]) + '</td><td class="n muted">' + pc(D.corpus.rec[c], D.corpus.rec[0]) + '</td>' + cells + '</tr>';
   }).join('');
   return '<h2>' + esc(t('home.corp.h')) + '</h2><p>' + t('home.corp.lead') + '</p><div class="hc"><table class="covt"><tr><td class="muted" rowspan="2">' + esc(t('home.corp.c')) + '</td><td class="n muted" rowspan="2" colspan="2">' + esc(t('home.corp.rec')) + '</td>'
     + TYPES.map(ty => '<td class="n th" colspan="2">' + esc(t('type.' + ty)) + '</td>').join('') + '</tr><tr>' + TYPES.map(() => '<td class="n muted">' + esc(t('home.corp.ent')) + '</td><td class="n muted">' + esc(t('home.corp.men')) + '</td>').join('') + '</tr>' + rows + '</table></div>';
+}
+function basisTableHtml(ty) {   // how the links of a type are backed: entries by their class, mentions by class (species: per written name), of the chosen filter
+  const en = {}, mn = {}; let all = 0;
+  for (const e of corpusItems(ty)) {
+    en[e.lb] = (en[e.lb] || 0) + 1;
+    for (const f of e.forms) { const w = fcn(f); mn[f.lb || e.lb] = (mn[f.lb || e.lb] || 0) + w; all += w; }
+  }
+  const share = v => (all ? (100 * v / all).toLocaleString(loc(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' %' : '–');
+  const rows = LB.filter(b => en[b] || mn[b]).map(b => {
+    const note = ty === 'taxon' ? (b === 'two' || b === 'one' ? t('lb.audit.taxon.' + b) : '') : lbAudit(ty, b);
+    return '<tr class="ql" data-hlb="' + ty + '" data-lbv="' + b + '" title="' + esc(lbTip(ty, b)) + '"><td class="q"><span class="lbdot lb-' + b + '"></span>' + esc(t('lb.' + b)) + (note ? '<div class="lbn">' + esc(note) + '</div>' : '') + '</td><td class="n">' + fmt(en[b] || 0) + '</td><td class="n">' + fmt(mn[b] || 0) + '</td><td class="n">' + share(mn[b] || 0) + '</td></tr>';
+  }).join('');
+  const bl = (D.below || {})[ty];
+  const notes = [ty === 'taxon' ? t('lb.audit.taxon.why') + ' ' + t('home.lb.formnote') : '', ty === 'person' || ty === 'habitat' ? t('lb.audit.na') : '',
+    bl && bl.rows ? t('home.lb.below', fmt(bl.rows), D.thresholds.agree, dec2(D.thresholds.conf), dec2(bl.conf || 0), fmt(bl.nconf || 0)) : ''].filter(Boolean);
+  return '<table class="lbt"><tr><td class="muted">' + esc(t('home.lb.h')) + '</td><td class="n muted">' + esc(t('home.col.n')) + '</td><td class="n muted">' + esc(t('home.col.m')) + '</td><td class="n muted">' + esc(t('home.lb.share')) + '</td></tr>' + rows + '</table>'
+    + (notes.length ? '<div class="lbnotes">' + notes.map(x => '<div>' + esc(x) + '</div>').join('') + '</div>' : '');
 }
 function renderHome() {
   const cards = TYPES.map(ty => {
@@ -421,7 +456,7 @@ function renderHome() {
     const rows = QUEUES.map(q => '<tr class="ql" data-home="' + ty + '" data-hq="' + q + '" title="' + esc(t('q.' + q + '.tip')) + '"><td class="q">' + esc(t('q.' + q)) + '</td><td class="n">' + fmt(c[q].n) + '</td><td class="n">' + fmt(mentions[q]) + '</td><td class="n">'
       + (q === 'done' ? '' : fmt(c[q].n - c[q].open)) + '</td></tr>').join('');
     return '<div class="hc"><h3>' + esc(t('type.' + ty)) + ' <small>' + esc(t('auth.' + ty)) + '</small></h3><div class="cov">' + esc(t('home.entities', fmt(p.ents), fmt(p.n))) + '</div><div class="pbar"><i style="width:' + p.pct + '%"></i></div><div class="cov"><b>' + esc(t('home.cover', p.pct.toLocaleString(loc())))
-      + '</b>' + (p.unsure ? ' · ' + esc(t('home.unsure', fmt(p.unsure))) : '') + '</div><table><tr><td class="muted">' + esc(t('home.col.q')) + '</td><td class="n muted">' + esc(t('home.col.n')) + '</td><td class="n muted">' + esc(t('home.col.m')) + '</td><td class="n muted">' + esc(t('home.col.d')) + '</td></tr>' + rows + '</table></div>';
+      + '</b>' + (p.unsure ? ' · ' + esc(t('home.unsure', fmt(p.unsure))) : '') + '</div><table><tr><td class="muted">' + esc(t('home.col.q')) + '</td><td class="n muted">' + esc(t('home.col.n')) + '</td><td class="n muted">' + esc(t('home.col.m')) + '</td><td class="n muted">' + esc(t('home.col.d')) + '</td></tr>' + rows + '</table>' + basisTableHtml(ty) + '</div>';
   }).join('');
   let orphan = 0; for (const ty of TYPES) for (const k of Object.keys(S.ent[ty])) if (!BYK[ty].has(k)) orphan++;
   const rounds = (D.rounds || []).map(r => '<span class="bd">' + esc(r.label) + '</span> ' + esc([r.model, (r.built || '').slice(0, 10), r.dir].filter(Boolean).join(' · '))).join(' &nbsp; ');
