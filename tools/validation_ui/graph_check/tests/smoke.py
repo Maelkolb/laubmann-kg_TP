@@ -94,7 +94,7 @@ JS_LEVEL_SORTED = """(l => l.every((r, i) => { if (!i) return true; const a = LK
   return a[3] > b[3] || (a[3] === b[3] && (a[2] > b[2] || (a[2] === b[2] && a[1] >= b[1]))); }))(LKGC.RVU.list.slice(0, 600))"""
 JS_CORPUS_COUNT = """(c) => { let n = 0, e = 0; for (const r of LKGC.G.ent) { const rv = LKGC.R.entries[r.id] || {}; const flat = LKGC.R.obs[r.id] || []; let k = 0;
   for (let i = 0; i < flat.length; i += 3) { const rec = (rv.rec || {})[flat[i + 1]]; if (((rec && rec.t) || 0) >= c) k++; } n += k; if (k) e++; } return [n, e]; }"""
-FINAL_COUNTS = [85896, 60793, 27464, 16834]      # the final build (9,901 entries): full, core, strict core, strict core with coordinates (corpus_tiers.py)
+FINAL_COUNTS = [85894, 61304, 29066, 17585]      # the final build (9,901 entries): full, core, strict core, strict core with coordinates (corpus_tiers.py)
 
 
 async def show_hints(pg):
@@ -698,7 +698,7 @@ async def base_url_checks(p, source_path):
 # ---------------------------------------------------------------------------------------------------------------
 # one app, two builds: the explorer build shows the same data and decides nothing
 
-SAME_ENTRY = "L17-e0132"
+SAME_ENTRY = "L17-e0141"     # a record card with a line on the scan (L17-e0132 lost its after the record check of 2026-10-05)
 JS_FACTS = """() => { const S = LKGC.SUB; const nodes = [...S.V.values()].map(v => [v.key, v.kind, (v.rows || []).map(r => (r.k || '') + '|' + r.v).join(' § ')]).sort((a, b) => (a[0] < b[0] ? -1 : 1));
   const edges = S.E.map(e => e.a.key + '>' + e.b.key + '|' + e.p).sort();
   const box = r => ['x', 'y', 'width', 'height'].map(a => Math.round(+r.getAttribute(a))).join(',');

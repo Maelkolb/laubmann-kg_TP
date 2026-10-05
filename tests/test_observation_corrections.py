@@ -151,3 +151,19 @@ def test_load_validates_rows_and_filters_confidence(tmp_path: Path) -> None:
     assert loaded[0].obs_index == 3 and dict(loaded[1].add) == {"species_de": "Star", "count": "3", "text": "3 Stare"}
     assert len(load_observation_corrections(path)) == 4
     assert load_observation_corrections(tmp_path / "absent.csv") == []
+
+
+def test_attribution_rows_move_a_record_from_the_diarist_to_the_report_author() -> None:
+    # review.machine.attribution (attribution_check.py): a pasted report's record credited to Laubmann
+    own = _obs(KIEBITZ, 0, co_observers=[Person("Walter Wüst", role="companion"), Person("Heinz Remold", role="companion")])
+    unknown = _obs(STAR, 1)
+    e = _entry(observations=[own, unknown])
+    assert [p.name for p in own.recorders] == ["Alfred Laubmann", "Walter Wüst", "Heinz Remold"]
+    n, _ = apply_observation_corrections([e], [
+        _fix("record_type", "third-party-report", obs_index=0), _fix("observer", "Walter Wüst", obs_index=0),
+        _fix("co_observers", "Heinz Remold", obs_index=0),
+        _fix("record_type", "third-party-report", written="Star", obs_index=1)])     # author unknown: no observer row
+    assert n == 4
+    assert own.record_type == "third-party-report" and [p.name for p in own.recorders] == ["Walter Wüst", "Heinz Remold"]
+    assert unknown.record_type == "third-party-report" and unknown.recorders == []   # no recordedBy, not the diarist
+    assert "Walter Wüst" in {p.name for p in e.persons}

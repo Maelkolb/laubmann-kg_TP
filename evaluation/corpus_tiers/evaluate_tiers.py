@@ -14,17 +14,88 @@ script prints the weighted share of audited records with an error:
     georef     coordinates wrong, among records whose coordinates the auditor could judge
 
 and a 90 % bootstrap interval of `any` (resampling within strata). Records judged `unclear` are left out.
+
+The verdicts are those of the audited export. With ``--dwca <export>/dwca --before-dwca <audited export>/dwca`` an
+audited record whose observer or record type the evaluated export changed is judged again against what the auditor
+gave as right (``correct`` of audit.csv; where the auditor accepted the attribution, the audited export's values):
+a corrected attribution then counts as right, a new wrong one as an error. Nothing else is re-judged.
 """
 from __future__ import annotations
 
 import argparse
 import collections
 import csv
+import json
 import random
+import re
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 NAMES = ["full", "core", "strict core", "strict core with coordinates"]
+ATTR_FIELDS = {"observer", "record_type"}
+TITLES = {"dr", "herr", "hr", "frau", "frl", "prof", "freund", "praeparator", "oberlehrer", "probably", "vermutlich", "wohl", "not", "nicht"}
+UNNAMED = re.compile(r"author|unnamed|not named|unknown|unbekannt|verfasser", re.I)
+DIARIST = "laubmann"
+
+
+def fold(s: str) -> str:
+    s = (s or "").casefold()
+    for a, b in (("ä", "ae"), ("ö", "oe"), ("ü", "ue"), ("ß", "ss")):
+        s = s.replace(a, b)
+    return s
+
+
+def people(value: str) -> list[tuple[str, str]]:
+    """(first name, surname) of the persons in a recordedBy value or an auditor's observer text."""
+    out = []
+    value = re.sub(r"\([^)]*\)|\[[^]]*\]", " ", value or "")      # the auditor's remarks in brackets
+    for part in re.split(r"\s*[|;,]\s*|\s+(?:and|und|with|mit)\s+", value):
+        if not part.strip() or UNNAMED.search(part):
+            continue
+        toks = [t for t in re.findall(r"[A-Za-zÄÖÜäöüß]+", part) if fold(t) not in TITLES]
+        if toks:
+            out.append((fold(toks[0]) if len(toks) > 1 and len(toks[0]) > 2 else "", fold(toks[-1])))
+    return out
+
+
+def same_people(a: list, b: list) -> bool:
+    """Same surnames, and no conflicting written-out first names ("Heinrich Wüst" is not "Walter Wüst")."""
+    if {s for _, s in a} != {s for _, s in b}:
+        return False
+    firsts = {s: f for f, s in a if f}
+    return all(not f or not firsts.get(s) or firsts[s].startswith(f) or f.startswith(firsts[s]) for f, s in b)
+
+
+def attribution(dwca: str) -> dict:
+    """occurrenceID -> (recordedBy, recordType) of an export."""
+    rt = {}
+    with open(Path(dwca) / "measurementorfact.txt", encoding="utf-8") as h:
+        for r in csv.DictReader(h, delimiter="\t"):
+            if r["measurementType"] == "recordType":
+                rt[r["occurrenceID"]] = r["measurementValue"]
+    with open(Path(dwca) / "occurrence.txt", encoding="utf-8") as h:
+        return {r["occurrenceID"]: (r["recordedBy"] or "", rt.get(r["occurrenceID"], "field-observation"))
+                for r in csv.DictReader(h, delimiter="\t")}
+
+
+def rejudge(a: dict, before: tuple, after: tuple) -> int:
+    """1 when the evaluated export's attribution (recordedBy, recordType) is wrong by the audit, else 0."""
+    corr = json.loads(a["correct"] or "{}")
+    if a["err_attr"] in ("1.0", "1"):
+        want_type = str(corr.get("record_type") or "").split(" ")[0]
+        want_obs = corr.get("observer")
+    else:
+        want_type, want_obs = before[1], before[0]
+    got_by, got_type = after
+    if want_type and not got_type.startswith(want_type[:10]):
+        return 1
+    if want_obs is None:
+        return 0 if (want_type or a["err_attr"] not in ("1.0", "1")) else 1
+    if UNNAMED.search(want_obs):
+        # "author of the typed report (not named; probably W. Wüst), not Laubmann": the auditor only says who it is not
+        return 0 if DIARIST not in fold(got_by) else 1
+    want, got = people(want_obs), people(got_by)
+    return 0 if same_people(want, got) else 1
 
 
 def weighted(rows, key, cond=None):
@@ -38,7 +109,12 @@ def main() -> None:
     ap.add_argument("tiers", help="record_tiers.csv (build_review.py --tiers-csv)")
     ap.add_argument("--audit", default=str(HERE / "audit.csv"))
     ap.add_argument("--reps", type=int, default=1000)
+    ap.add_argument("--dwca", default=None, help="dwca/ of the evaluated export: re-judge changed attributions")
+    ap.add_argument("--before-dwca", default=None, help="dwca/ of the export the audit judged (kg_exports_2026-10-04_text)")
     args = ap.parse_args()
+    after = attribution(args.dwca) if args.dwca and args.before_dwca else {}
+    before = attribution(args.before_dwca) if after else {}
+    rejudged = collections.Counter()
 
     tier = {}
     size = collections.Counter()
@@ -52,8 +128,18 @@ def main() -> None:
         for r in csv.DictReader(h):
             if r["verdict"] not in ("ok", "wrong", "spurious") or r["occurrenceID"] not in tier:
                 continue
-            rows.append({"t": tier[r["occurrenceID"]], "stratum": r["stratum"], "weight": float(r["weight"]),
-                         **{k: int(float(r[k])) for k in ("err_any", "err_occ", "err_place", "err_attr", "geo_known", "err_geo")}})
+            row = {"t": tier[r["occurrenceID"]], "stratum": r["stratum"], "weight": float(r["weight"]),
+                   **{k: int(float(r[k])) for k in ("err_any", "err_occ", "err_place", "err_attr", "geo_known", "err_geo")}}
+            o = r["occurrenceID"]
+            if after and o in before and o in after and before[o] != after[o]:
+                err = rejudge(r, before[o], after[o])
+                rejudged[(row["err_attr"], err)] += 1
+                others = {f for f in r["wrong_fields"].split(";") if f} - ATTR_FIELDS
+                row["err_attr"] = err
+                row["err_any"] = int(err or bool(others) or r["verdict"] == "spurious")
+            rows.append(row)
+    if after:
+        print("attribution re-judged (before -> after: n):", {f"{a}->{b}": n for (a, b), n in sorted(rejudged.items())})
     by_stratum = collections.defaultdict(list)
     for r in rows:
         by_stratum[r["stratum"]].append(r)

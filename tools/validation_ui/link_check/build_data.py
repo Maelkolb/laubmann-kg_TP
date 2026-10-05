@@ -64,7 +64,7 @@ ap.add_argument("--rounds", nargs="*", default=[str(D1 / "machine_review"), str(
 ap.add_argument("--round-labels", nargs="*", default=["R1", "R3", "R3 Orte (Einzelnennungen)", "R3 Personen (Nachsuche)"])
 ap.add_argument("--arbeit", nargs="*", default=[str(D1 / "arbeit"), str(D3 / "arbeit" / "r3"), str(D3 / "arbeit" / "r3_orte_einzelnennungen"),
                                                 str(D3 / "arbeit" / "r3_personen_nachsuche")])
-ap.add_argument("--export-review", default=str(REPO / "data" / "exports" / "kg_exports_2026-10-04_text" / "review"))
+ap.add_argument("--export-review", default=str(REPO / "data" / "exports" / "kg_exports_2026-10-05_attribution" / "review"))
 ap.add_argument("--reviewed-merges", default=str(REPO / "data" / "review"))
 ap.add_argument("--drive", nargs="*", default=[str(HERE.parent / "drive_pages.json"), str(REPO / "configs" / "drive_scan_files.json")])
 ap.add_argument("--out", default=str(REPO / "data" / "exports" / "link_check" / "data"))

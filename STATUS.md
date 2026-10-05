@@ -7,7 +7,16 @@
 | `kg_exports_2026-10-01` (pipeline only) | 9,901 | 86,037 | 1,986,310 | 0 violations, 450 warnings | 0 errors |
 | `kg_exports_2026-10-01_machine` (+ machine review rounds 1–3) | 9,901 | 85,636 | 1,979,656 | 0 violations, 464 warnings | 0 errors |
 | `kg_exports_2026-10-01_checked` (+ round 4) | 9,901 | 85,631 | 1,979,492 | 0 violations, 464 warnings | 0 errors |
-| `kg_exports_2026-10-04_text` (+ machine text layer, current) | 9,901 | 85,896 | 1,987,196 | 0 violations, 461 warnings | 0 errors |
+| `kg_exports_2026-10-04_text` (+ machine text layer) | 9,901 | 85,896 | 1,987,196 | 0 violations, 461 warnings | 0 errors |
+| `kg_exports_2026-10-05_attribution` (+ attribution of pasted reports, person label fix, current) | 9,901 | 85,894 | 1,989,896 | 0 violations, 461 warnings | 0 errors |
+
+**Attribution** (2026-10-05, `tools/validation_ui/machine_review/attribution_check.py`, CHANGELOG): pasted reports
+and letters of Walter Wüst, Werner Rathmayer, Einhard Bezzel and others that the extraction credited to Laubmann
+are re-attributed where Gemini and Claude agree: 4,259 records in 135 entries (1,658 with the author unknown),
+76 entries become correspondence; Laubmann as observer 50,462 → 46,204 records. The person cluster of Walter Wüst
+is labelled by usage (it was "Heinrich Wüst", 4,939 records). Gemini record check re-run for the 637 changed
+entries ($4.10): 89.9 % right. Corpus tiers 85,894 / 61,304 / 29,066 / 17,585 records, estimated error shares
+29.2 / 22.2 / 9.5 / 9.0 % (changed attributions judged against the audit's reading).
 
 **Text layer** (2026-10-04, `review/better_readings.py`, CHANGELOG): the checks' better readings and the scan
 agent's corrections go into the text, 2,416 changes in 1,907 entries patched after the extraction, 1,894 in

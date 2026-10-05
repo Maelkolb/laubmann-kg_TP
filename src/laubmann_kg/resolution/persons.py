@@ -23,9 +23,12 @@ row per pair of clusters, both sides named by their cluster's canonical
 spelling (stable across runs) — and applied only after a reviewer accepts
 them; an accepted cluster takes all its spellings along ("Dr Wüst" → "Wüst" →
 "Walter Wüst"). Decisions are matched per pair; a decision recorded under an
-older label of either side still counts. The canonical name is the most
-complete spelling (most name tokens, then most uses, diacritics preferred);
-the diarist (``model.DIARIST``) is never merged into anything else.
+older label of either side still counts. The canonical name is a full name
+(first name and surname) whose first names the cluster uses most — when
+spellings carry conflicting first names ("Walter" / "Heinrich"), the majority
+wins — and among compatible spellings the most complete one (most name tokens,
+then most uses, diacritics preferred); the diarist (``model.DIARIST``) is never
+merged into anything else.
 """
 
 from __future__ import annotations
@@ -75,6 +78,26 @@ def _parts(key: str) -> tuple[list[str], list[str], str]:
 
 def _is_gendered(key: str) -> bool:
     return bool(key) and key.split()[0] in _GENDERED
+
+
+def _compatible_firsts(a: list[str], b: list[str]) -> bool:
+    """One list of first names extends the other ("Adolf" / "Adolf Johann",
+    "Ed." / "Eduard"); "Walter" / "Heinrich" conflict."""
+    short, long_ = sorted((a, b), key=len)
+    return all(any(f == s or f.startswith(s) or s.startswith(f) for f in long_) for s in short)
+
+
+def _first_name_support(n: str, members, keys, usage) -> int:
+    """Uses of the cluster's full names whose first names fit ``n``'s. Among
+    compatible spellings this is the same number, so the most complete one wins;
+    when first names conflict, the one the diary uses most wins ("Heinrich Wüst",
+    a first name the extraction made up for "H. Wüst" twice, against 1,391 uses
+    of "Walter Wüst")."""
+    firsts = _parts(keys[n])[1]
+    if not firsts:
+        return 0
+    return sum(usage[m] for m in members
+               if _parts(keys[m])[1] and _compatible_firsts(firsts, _parts(keys[m])[1]))
 
 
 def _dominant(clusters, usage, min_uses: int, ratio: float):
@@ -219,15 +242,17 @@ def merge_persons(result, cfg: dict, decisions: Decisions) -> tuple[int, list[Me
     clusters: dict[str, list[str]] = defaultdict(list)
     for n in names:
         clusters[find(n)].append(n)
-    def completeness(n):
+    def completeness(n, members):
         k = keys[n]; init, firsts, _ = _parts(k)
         toks = k.split()
-        return (not _is_gendered(k), not any(w in _NON_NAME for w in toks), len(firsts),
+        return (not _is_gendered(k), not any(w in _NON_NAME for w in toks), bool(firsts),
+                _first_name_support(n, members, keys, usage), len(firsts),
                 sum(len(f) for f in firsts) + len(init), usage[n],
                 sum(1 for ch in n if ch in "äöüÄÖÜß"),
                 not re.search(r"\.[^\s.]", n),         # "Dr. H. Noll" over the glued "Dr.H. Noll"
                 -len(n))
-    canon_of: dict[str, str] = {root: (DIARIST.name if DIARIST.name in members else max(members, key=completeness))
+    canon_of: dict[str, str] = {root: (DIARIST.name if DIARIST.name in members
+                                       else max(members, key=lambda n, ms=members: completeness(n, ms)))
                                 for root, members in clusters.items()}
     rows: list[MergeRow] = []
     mapping: dict[str, str] = {}

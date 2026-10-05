@@ -219,3 +219,28 @@ def test_person_candidates_are_cluster_level_and_accepted_chains_follow() -> Non
     walter = next(p for p in e[0].persons if p.name == "Walter Wüst")
     assert set(walter.alt_names) == {"Wüst", "Dr Wüst", "Herr Wüst", "Dr. Walter Wüst"}   # the whole cluster followed
     assert [p.name for p in e[0].persons] == ["Walter Wüst", "Karl Wüst"]
+
+
+def test_person_label_is_the_first_name_the_diary_uses_most() -> None:
+    # export 2026-10-04: the extraction expanded "H. Wüst" to "Heinrich Wüst" twice; the cluster
+    # (joined by a reviewer's merge) was labelled "Heinrich Wüst" because the longer first name won
+    e = [_entry("e1", persons=[Person("Walter Wüst"), Person("Dr. Walter Wüst"), Person("W. Wüst")]),
+         _entry("e2", persons=[Person("Walter Wüst"), Person("Heinrich Wüst")]),
+         _entry("e3", persons=[Person("Walter Wüst"), Person("Heinrich Wüst")])]
+    dec = Decisions(); dec.by_id["persons: Heinrich Wüst -> Walter Wüst"] = "y"   # reviewer-added merge
+    merge_persons(ExtractionResult(entries=e), {}, dec)
+    assert {p.name for x in e for p in x.persons} == {"Walter Wüst"}
+    assert "Heinrich Wüst" in e[1].persons[0].alt_names
+    # the same cluster with the merge written the other way round keeps the label
+    e2 = [_entry("e1", persons=[Person("Walter Wüst"), Person("Walter Wüst"), Person("Heinrich Wüst")])]
+    dec2 = Decisions(); dec2.by_id["persons: Walter Wüst -> Heinrich Wüst"] = "y"
+    merge_persons(ExtractionResult(entries=e2), {}, dec2)
+    assert [p.name for p in e2[0].persons] == ["Walter Wüst"]
+
+
+def test_person_label_keeps_the_most_complete_of_compatible_first_names() -> None:
+    e = [_entry("e1", persons=[Person("Adolf Müller"), Person("Adolf Johann Müller")]),
+         _entry("e2", persons=[Person("Adolf Müller")]), _entry("e3", persons=[Person("Adolf Müller")])]
+    dec = Decisions(); dec.by_id["persons: Adolf Müller -> Adolf Johann Müller"] = "y"
+    merge_persons(ExtractionResult(entries=e), {}, dec)
+    assert {p.name for x in e for p in x.persons} == {"Adolf Johann Müller"}

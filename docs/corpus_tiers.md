@@ -64,18 +64,29 @@ locality, coordinates, observer, record type, status; per entry: date, place, bo
 quality. 723 records were judged, 11 were unclear. Two species verdicts were checked by hand against the
 scans; both held.
 
-**Result** (`evaluation/corpus_tiers/evaluate_tiers.py <record_tiers.csv>`): weighted share of records with an
-error; *occurrence* = species, count, date or status wrong, or no such record. Export `kg_exports_2026-10-04_text`
-(with the machine layer of the text). 691 of the 723 judged records are in it; 32 have a new IRI, their entry was
-read anew or their species corrected. The verdicts are those of the records of 1 October: a record the text layer
-has corrected since still counts as wrong.
+**Result** (`evaluation/corpus_tiers/evaluate_tiers.py <record_tiers.csv> --dwca <export>/dwca --before-dwca
+<kg_exports_2026-10-04_text>/dwca`): weighted share of records with an error; *occurrence* = species, count, date or
+status wrong, or no such record. Export `kg_exports_2026-10-05_attribution` (the machine layer of the text, the
+attribution of pasted reports and the person label fix of 5 October). 691 of the 723 judged records are in it; 32
+have a new IRI, their entry was read anew or their species corrected. The verdicts are those of the records of
+1 October, with one exception: where the export of 5 October changed a record's observer or record type, that
+attribution is judged again against what the auditor gave as right (55 attribution errors are fixed, 6 remain, 2
+records the auditor accepted as Laubmann's own are now credited to somebody else). A record the text layer has
+corrected since still counts as wrong.
 
 | Corpus | Records | Any field | Occurrence | Place | Observer / type | Coordinates | 90 % interval, any |
 |---|---|---|---|---|---|---|---|
-| full | 85,896 | 35.3 % | 13.8 % | 11.5 % | 15.4 % | 21.2 % | 31.3–39.5 % |
-| core | 60,793 | 27.5 % | 7.4 % | 11.1 % | 13.3 % | 20.9 % | 22.7–32.8 % |
-| strict core | 27,464 | 9.2 % | 1.8 % | 3.7 % | 4.7 % | 9.7 % | 5.8–13.0 % |
-| strict core with coordinates | 16,834 | 6.9 % | 1.5 % | 1.9 % | 3.5 % | 6.8 % | 2.6–12.2 % |
+| full | 85,894 | 29.2 % | 13.8 % | 11.5 % | 7.4 % | 21.2 % | 25.3–33.4 % |
+| core | 61,304 | 22.2 % | 7.2 % | 10.9 % | 7.5 % | 20.1 % | 17.7–27.4 % |
+| strict core | 29,066 | 9.5 % | 3.6 % | 3.4 % | 3.2 % | 9.6 % | 5.7–14.2 % |
+| strict core with coordinates | 17,585 | 9.0 % | 4.1 % | 1.7 % | 3.2 % | 6.1 % | 3.6–15.7 % |
+
+On `kg_exports_2026-10-04_text` (before the attribution fix): full 85,896 records, 35.3 %; core 60,793, 27.5 %;
+strict core 27,464, 9.2 %; with coordinates 16,834, 6.9 % (observer / type wrong 15.4, 13.3, 4.7, 3.5 %). The fix
+halves the attribution errors of the full graph and the core. The strict corpora grow by records the rule
+`attribution` kept out until now; 11 of them were audited, 9 are right now, and one of the two that are not
+(L34-e0203, a wagtail with the wrong species) carries the weight 490 alone: the small rise of the two strict
+estimates is a sampling effect inside wide intervals, not a loss of quality.
 
 The same tiers on the export of 1 October (`kg_exports_2026-10-01_checked`, all 723 judged records): full 85,631
 records, 34.5 %; core 59,755, 25.5 %; strict core 27,408, 8.7 %; with coordinates 16,677, 6.4 %. On the 691
@@ -96,17 +107,20 @@ still have an error.
 
 ## What the audit found
 
-- **Pasted reports credited to Laubmann.** Walter Wüst's numbered "Speichersee-Begehung" reports, Einhard
-  Bezzel's and Werner Rathmayer's typed sheets and letters are transcribed as part of the entry and their
-  records carry Laubmann as observer and `field-observation`. The rule `attribution` catches them through the
-  separately dated report entries (ids with a letter suffix; 78 % of the audited records credited to
-  Laubmann there are wrong in attribution), typed inserts and numbered typed lists (all audited ones wrong) and
-  the report abbreviations Wb, Vkl, Ft, SD … (44 %).
-- **"Heinrich Wüst".** Entity resolution merged Walter Wüst, W. Wüst, Dr. W. Wüst, H. Wüst and Wüst
-  into one person labelled "Heinrich Wüst" (`resolution/persons.py` prefers the longest first name
-  over usage: two mentions of "Heinrich Wüst" beat 1,218 of "Walter Wüst"). About 4,900 records carry this
-  label; the rule `attribution` catches them where the text gives other initials (73 % of the audited
-  records it flags are wrong in the observer). The label is a pipeline bug, to be fixed with the next export.
+- **Pasted reports credited to Laubmann** (fixed for most records on 5 October). Walter Wüst's numbered
+  "Speichersee-Begehung" reports, Einhard Bezzel's and Werner Rathmayer's typed sheets and letters are
+  transcribed as part of the entry and their records carried Laubmann as observer and `field-observation`. The
+  rule `attribution` catches them through the separately dated report entries (ids with a letter suffix; 78 % of
+  the audited records credited to Laubmann there were wrong in attribution), typed inserts and numbered typed
+  lists (all audited ones wrong) and the report abbreviations Wb, Vkl, Ft, SD … (44 %). Since 5 October the
+  attribution check (`tools/validation_ui/machine_review/attribution_check.py`, Gemini and Claude agreeing)
+  credits 4,259 such records to their author or, where no author can be named, to nobody; the rule still keeps
+  out what stays credited to Laubmann inside a report.
+- **"Heinrich Wüst"** (fixed on 5 October). Entity resolution merged Walter Wüst, W. Wüst, Dr. W. Wüst, H. Wüst
+  and Wüst into one person labelled "Heinrich Wüst" (`resolution/persons.py` preferred the longest first name
+  over usage: two mentions of "Heinrich Wüst", a first name the extraction made up for "H. Wüst", beat 1,218
+  of "Walter Wüst"). 4,939 records carried the label. The label now follows usage among conflicting first
+  names ("Walter Wüst").
 - **Dates of quoted records.** Literature records carry the date of the diary entry that quotes them
   (79 % wrong in the audit), so do records from cumulative species lists and retrospectives.
 - **Misread names and places.** The transcription, and in a few cases the visual reading correction,

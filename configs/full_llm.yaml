@@ -83,6 +83,8 @@ review:                       # validation UI decisions (tools/validation_ui, "A
                                              #   patched into the extracted entry, apply=before goes in before the extraction (read anew);
                                              #   a reviewer's decision wins, an entry with one is read anew
     text_values: data/review/machine/value_corrections_text_machine.csv   # the species and places the after-changes correct
+    attribution: data/review/machine/attribution_machine.csv   # records of pasted reports and letters credited to the diarist:
+                                             #   observer and record type where Gemini and Claude agree (attribution_check.py, 2026-10-05)
     min_correction_confidence: 0.9    #   (rows with an agreement column also need min_agreement)
 
 qa:

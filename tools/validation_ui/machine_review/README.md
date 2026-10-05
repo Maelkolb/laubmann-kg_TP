@@ -86,6 +86,49 @@ findings once a reviewer has checked a sample of it in the graph validation page
 Medium thinking finds more of what the agents flag (59 % instead of 44 %) but flags twice as many
 records, agrees less often (49 %) and costs 4.5 times as much; the run used `low`.
 
+## Round 6: who observed the records credited to Laubmann (2026-10-05)
+
+The blind scan audit of 3 October (`docs/corpus_tiers.md`) found pasted reports credited to the
+diarist: Walter Wüst's numbered "Speichersee-Begehung" reports, Werner Rathmayer's and Einhard
+Bezzel's typed sheets, written in the first person and transcribed as part of the entry, carry
+Alfred Laubmann as observer and field-observation as record type. The record check of round 4
+missed most of them. `attribution_check.py` asks one question per entry, "who made each record the
+graph credits to Laubmann?":
+
+1. `candidates`: entries with records credited to the diarist (alone or with companions) and a
+   sign of a report: the entry-boundary review called it correspondence, a separately dated split
+   entry, a heading of its own, typed "Art: …" lists, names in capitals, weekday/time-span heads,
+   compact date heads ("6.Nov.55."), the Ismaning abbreviations, "Mit Heinz", report words. 1,402
+   entries, 19,204 records of the 10-04 export; they hold 42 of the 47 records the audit found
+   wrongly credited to Laubmann (the other five are companions left out, not reports).
+2. `pages`: the scans of those entries (Drive thumbnails, 2,000 px JPEG) into `data/pages_jpg`.
+3. `run`: Gemini 3.8 Flash per entry with the scans, the entry text, the end of the previous entry
+   (where Laubmann writes "Werner Rathmayer schickt mir die nachfolgenden Berichte:") and the start
+   of the next, the persons and the records (cache `data/cache/attribution_check_v1`; $5.21).
+4. `dossiers`: the same material, blind to Gemini's answer, for the entries where Gemini moves
+   records away from Laubmann (150 entries), in batches for Claude Sonnet subagents (24 batches,
+   `claude/INSTRUCTIONS.md`).
+5. `merge`: applies a record only where both say it is somebody else's (confidence
+   1 − (1 − c1)(1 − c2), agreement 2): record type `third-party-report` (or `literature-record`),
+   the observer where both name the same person (the spelling the diary uses most, or the spelling
+   the entry's persons already have, so entity resolution keeps one node), else no observer
+   ("author unknown", no `recordedBy`); where one names the author and the other does not, the
+   name only when the diary's own cover note, signature or Wüst's numbered series names the same
+   person, and where they name different persons, no observer either; the author is dropped from
+   Laubmann's companions; an entry that both call one whole report becomes `correspondence`. Where
+   one judge says Laubmann and the other somebody else, the record stays as it is; every verdict
+   is listed in `attribution_judgements.csv` for the reviewer.
+
+Result: 4,259 records in 135 entries re-attributed (Werner Rathmayer 1,179, Walter Wüst 606,
+Einhard Bezzel 324, Chr. D. Erdt 213, Heinz Remold 153, … ; 1,658 with the author unknown), 76
+entries set to correspondence; 56 records where one judge says Laubmann stay with him.
+Against the audit: 37 of the 41 audited records that are reports of somebody else are fixed, 2 of
+106 audited records that the auditor accepted as Laubmann's own were moved (one a report signed
+"W. Rathmayer", the other a copied list of Wertach records 1901–1917 that could also be the young
+Laubmann's own notes). Rows: `data/review/machine/attribution_machine.csv` (contract of
+`review/observation_corrections.csv`), pipeline key `review.machine.attribution`, applied before the
+reviewer's own observation corrections.
+
 ## Running
 
 ```bash

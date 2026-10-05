@@ -28,13 +28,13 @@ Die Seite ist ein **Fork des Graph-Explorers** (`tools/explorer/`): gleiche Date
 
 # 2. Seite: Graph-Prüfung (entscheiden, exportieren)
 .venv\Scripts\python.exe tools\validation_ui\graph_check\build_graph_check.py `
-    data\exports\kg_exports_2026-10-04_text\rdf\laubmann_sample.ttl `
+    data\exports\kg_exports_2026-10-05_attribution\rdf\laubmann_sample.ttl `
     data\cache\graph_check\review.json `
     data\exports\graph_check\Laubmann_Graphpruefung.html
 
 # 3. dieselbe Anwendung als Graph-Explorer (nur lesen): --mode explorer
 .venv\Scripts\python.exe tools\validation_ui\graph_check\build_graph_check.py `
-    data\exports\kg_exports_2026-10-04_text\rdf\laubmann_sample.ttl `
+    data\exports\kg_exports_2026-10-05_attribution\rdf\laubmann_sample.ttl `
     data\cache\graph_check\review.json `
     data\exports\graph_check\Laubmann_Graph_Explorer.html --mode explorer
 #   --mode review|explorer   review (Standard) = Graph-Prüfung; explorer = dieselbe Anzeige ohne Entscheidungen

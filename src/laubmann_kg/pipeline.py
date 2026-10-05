@@ -397,13 +397,23 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
     # so a record is addressed by the name the graph shows for it
     from laubmann_kg.normalization.observation_corrections import (
         apply_observation_corrections, load_observation_corrections)
-    if corr_cfg.get("enabled", True) and corr_cfg.get("observations"):
-        correction_flags += apply_observation_corrections(
-            result.entries, load_observation_corrections(corr_cfg["observations"]))[1]
+    # machine layers first, the reviewer's rows last (a human decision always wins): the record checks of
+    # round 4, then the attribution check, which asks the one question who made the records credited to the
+    # diarist and wins over a record check's record type for the same record (L28-e0133a: round 4 read the
+    # "ich" of Wüst's 544th Begehung report as Laubmann)
     if machine_cfg.get("enabled", True) and machine_cfg.get("observation_corrections"):
         correction_flags += apply_observation_corrections(result.entries, load_observation_corrections(
             machine_cfg["observation_corrections"], float(machine_cfg.get("min_correction_confidence", 0.9)),
             int(machine_cfg.get("min_agreement", 2))))[1]
+    if machine_cfg.get("enabled", True) and machine_cfg.get("attribution"):
+        # records of pasted reports and letters the extraction credited to the diarist
+        # (attribution_check.py: Gemini and Claude agree)
+        correction_flags += apply_observation_corrections(result.entries, load_observation_corrections(
+            machine_cfg["attribution"], float(machine_cfg.get("min_correction_confidence", 0.9)),
+            int(machine_cfg.get("min_agreement", 2))))[1]
+    if corr_cfg.get("enabled", True) and corr_cfg.get("observations"):
+        correction_flags += apply_observation_corrections(
+            result.entries, load_observation_corrections(corr_cfg["observations"]))[1]
 
     qa_cfg = dict(config.get("qa", {}) or {})
     # Volume coverage: misfiled scans -> home volume, OCR years repaired against

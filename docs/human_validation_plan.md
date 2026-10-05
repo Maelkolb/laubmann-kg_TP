@@ -2,11 +2,15 @@
 
 ## 0. Where things stand (5 October 2026), start here
 
-**Graph:** `kg_exports_2026-10-04_text`, 9,901 entries, 85,896 records. It carries the machine layer of the
-text: where the scan check of round 4 gave a better reading of a reading correction, and for the scan agent's
+**Graph:** `kg_exports_2026-10-05_attribution`, 9,901 entries, 85,894 records. It carries the machine layer of
+the text: where the scan check of round 4 gave a better reading of a reading correction, and for the scan agent's
 corrections of round 3, that reading is in the text (4,310 changes in 3,076 entries). 830 better readings were
-left to the reviewer (not placeable on their correction, a doubt, a word they would double). The Gemini record
-check ran again for the 1,563 entries whose records changed. No human decision has been made yet.
+left to the reviewer (not placeable on their correction, a doubt, a word they would double). Since 5 October it
+also carries the attribution of pasted reports: 4,259 records in 135 entries that the extraction credited to
+Laubmann are credited to the report's author (Werner Rathmayer, Walter Wüst, Einhard Bezzel, …) or, where no
+author can be named, to nobody (`tools/validation_ui/machine_review/README.md`, round 6), and Walter Wüst is no
+longer labelled "Heinrich Wüst". The Gemini record check ran again for every entry whose records changed. No
+human decision has been made yet.
 
 **Pages** (Drive `HistOrniGraph_Final_Graph_NoVal`, open from disk in Edge or Chrome):
 
@@ -20,17 +24,22 @@ Keys and export files: `validation/LIESMICH.txt`. Numbers and limits: `Documenta
 
 **Order of work**
 
-1. Link page, species first: 613 entities; the 359 the machine changed or confirmed cover 70,498 of 85,989
+1. Link page, species first: 613 entities; the 359 the machine changed or confirmed cover 70,496 of 85,987
    mentions, so a few hundred decisions settle most of the graph. Then places with many mentions.
 2. Graph page, queue *Stichprobe* (299 entries, fixed random sample): measures how often each check and each
    class of automatic change is right (section 1: release a class when the Wilson lower bound is ≥ 90 %,
    otherwise review it item by item or revert it). The text layer is one more class: in the Text tab its
    readings are orange; on a reading-correction card `J` takes the check's better reading, `K` keeps the
    machine's correction, `N` the old text, `E` an own reading.
-3. The remaining findings, gravest first. Open in the full graph: 1,831 schwer, 9,372 mittel, 5,142 leicht; in
-   the core 22, 3,209 and 3,252. The corpus bar (full, core, strict core, strict core with coordinates:
-   85,896, 60,793, 27,464, 16,834 records) narrows every list and count; `docs/corpus_tiers.md` says what each
-   tier excludes and how many errors it is estimated to hold (35.3, 27.5, 9.2, 6.9 %).
+   The attribution of pasted reports is a class the sample hardly reaches (3 of its entries): check it in the
+   135 entries themselves, queue *Automatisch geändert* (record type and observer cards, 3,959 cards, most of
+   them `leicht`); a report has one author, so one look at the page usually decides the whole entry. Where the
+   author is unknown, the observer field stays empty unless the page or a cover note names the author.
+3. The remaining findings, gravest first. Open in the full graph: 1,823 schwer, 8,621 mittel, 8,928 leicht
+   (the `leicht` ones include the attribution cards); in the core 25, 3,026 and 6,100. The corpus bar (full,
+   core, strict core, strict core with coordinates: 85,894, 61,304, 29,066, 17,585 records) narrows every list
+   and count; `docs/corpus_tiers.md` says what each tier excludes and how many errors it is estimated to hold
+   (29.2, 22.2, 9.5, 9.0 %).
 4. Queue *Lesung an Art/Zahl/Ort* for the reading corrections that touch a record, including the better
    readings the layer left open.
 
@@ -174,9 +183,13 @@ python tools/validation_ui/graph_check/build_graph_check.py $X/rdf/laubmann_samp
 python tools/validation_ui/graph_check/build_graph_check.py $X/rdf/laubmann_sample.ttl data/cache/graph_check/review.json data/exports/graph_check/Laubmann_Graph_Explorer.html --mode explorer
 python tools/validation_ui/link_check/build_data.py --export-review $X/review
 python tools/validation_ui/link_check/assemble.py
+# estimated error share of the corpora; attributions the new export changed are judged against the audit's reading
+python evaluation/corpus_tiers/evaluate_tiers.py data/cache/graph_check/record_tiers.csv --dwca $X/dwca --before-dwca data/exports/kg_exports_2026-10-04_text/dwca
 ```
 
 Without a local `data/cache/machine_review_r5`, `--record-check $R` reads the merged checks on Drive.
+The attribution of pasted reports (`data/review/machine/attribution_machine.csv`, `review.machine.attribution`) is applied by
+`export-all` like the other machine files; a reviewer's row in `review/observation_corrections.csv` wins over it.
 `changed_ids.txt` and `sonnet_checks_stale.txt` list the entries whose records (occurrence id, species, count,
 locality, observer, date) differ from the export they were checked on. The text layer itself is fixed against
 `kg_exports_2026-10-01_checked`: `build_review.py --machine-text-layer` is not run again (it refuses an export
