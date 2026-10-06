@@ -3,6 +3,13 @@
 # Project Ontology  /  ontologies/laubmann.ttl
 # Namespace: https://w3id.org/laubmann-kg/ontology#   (w3id folder prepared in w3id/laubmann-kg/, PR pending)
 #
+# v0.7.1 (2026-10-06) — cleaned image and insert regions
+#   - New lkg:regionCompleteness on lkg:MultimodalRegion: "complete" or "cut off"
+#     (lkg:regionCompletenessScheme), set where two scan checks agree
+#     (region_check.py). Regions that only repeat an object another region of
+#     the entry shows better, blank paper and fragments are no longer in the
+#     graph; a region its box cut off is cut anew from its page scan.
+#
 # v0.7.0 (2026-09-30) — final review before the full re-extraction (prompt v4)
 #   - Only what the text states: the template-driven lkg:observationRadiusMeters,
 #     lkg:spatialConfidence, lkg:observationDurationMinutes and dwc:samplingProtocol
@@ -140,9 +147,9 @@
     rdfs:label "Laubmann Knowledge Graph Ontology"@en , "Laubmann-Wissensgraph-Ontologie"@de ;
     dcterms:description "Project ontology for the HistOrniGraph knowledge graph built from the ornithological field diaries of Alfred Laubmann (Bavaria, 1917–1965, 34 volumes). Two grouping classes structure the model: archival units (volume, page, entry, layout region — body-text regions and multimodal regions such as drawings, photographs, mounted objects and inserted texts) and entry records (what the extraction model reads out of one entry: observations as Darwin Core occurrences, travel events and their legs, weather reports); the partonomy between them is explicit (dcterms:isPartOf / hasPart). Taxa, places and persons are shared referents; habitats are NOT a class of this ontology but shared skos:Concepts of lkg:habitatScheme (see the controlled vocabularies), reached from an Observation via dwciri:habitat. Every link to an external authority — GBIF (taxa), EUNIS (habitats), GeoNames and Wikidata (places), Wikidata and GND (persons) — uses the same pattern (ontology 0.6.0): skos:exactMatch / skos:closeMatch / skos:broadMatch to the authority's IRI, which is described as a skos:Concept with skos:inScheme lkg:authority_<name>, skos:notation and skos:prefLabel. Observations carry the spatial and temporal detail the text states (vantage point, microhabitat, flight height, own elevation, qualitative time of day, clock time, own date or date range). The ontology is Darwin-Core-first: wherever a dwc/dwciri, DCTERMS, PROV-O, SKOS, GeoSPARQL or schema.org term exists, the data graph uses that term alone; lkg: terms carry only project-specific meaning (record type, count qualifier, breeding evidence, movement, evidence kind, call type, entry kind, weather, travel, mention roles, spatial/temporal qualification, region kind). Controlled values are literals: each is the skos:notation of a concept in a SKOS concept scheme of the same namespace (the property's rdfs:seeAlso); the data graph is validated with SHACL."@en ;
     rdfs:comment "Project ontology for the HistOrniGraph KG (diary entries, ornithological observations, travel, weather, persons, sources from Alfred Laubmann's field journals). Darwin-Core-first: standard terms are used wherever they exist; lkg: adds only project-specific terms. Grouping classes ArchivalUnit / EntryRecord plus an explicit dcterms partonomy. Habitats are skos:Concepts in lkg:habitatScheme (dwciri:habitat). External links (GBIF, EUNIS, GeoNames, Wikidata, GND) all use skos:exactMatch / closeMatch / broadMatch to an authority record in one of the lkg:authority_* schemes."@en ;
-    owl:versionInfo "0.7.0" ;
-    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.7.0> ;
-    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.6.0> ;
+    owl:versionInfo "0.7.1" ;
+    owl:versionIRI <https://w3id.org/laubmann-kg/ontology/0.7.1> ;
+    owl:priorVersion <https://w3id.org/laubmann-kg/ontology/0.7.0> ;
     vann:preferredNamespacePrefix "lkg" ;
     vann:preferredNamespaceUri "https://w3id.org/laubmann-kg/ontology#" ;
     dcterms:creator [ a foaf:Agent ; foaf:name "Laubmann KG Project" ; foaf:homepage <https://github.com/Maelkolb/laubmann-kg_TP> ] ;   # TODO: replace with the author's name/ORCID before publication
@@ -330,6 +337,14 @@ lkg:visibleText
     rdfs:comment "Text on a multimodal region as transcribed (caption, label, the text of a clipping or letter). Not part of any entry's dwc:fieldNotes and not read by the extraction model."@en ;
     rdfs:domain lkg:MultimodalRegion ;
     rdfs:range rdf:langString .
+
+lkg:regionCompleteness
+    a owl:DatatypeProperty ;
+    rdfs:seeAlso lkg:regionCompletenessScheme ;
+    rdfs:label "region completeness"@en , "Vollständigkeit der Region"@de ;
+    rdfs:comment "Whether the region's image shows its whole object (complete) or cuts it off (cut off: the object continues beyond the scanned page, e.g. a fold-out, or the layout box was too tight and the page shows no more of it). Set where two scan checks agree (lkg:regionCompletenessScheme); absent where they do not."@en ;
+    rdfs:domain lkg:MultimodalRegion ;
+    rdfs:range xsd:string .
 
 # --- Entry-level reading ----------------------------------------------------
 # Standard terms used on the entry (not redeclared here): dwc:eventDate

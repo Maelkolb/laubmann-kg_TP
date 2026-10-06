@@ -60,10 +60,12 @@ import build_graph_explorer as X  # noqa: E402  (packing, ontology labels, blob 
 
 # page sources, concatenated in this order into one script (one shared function scope)
 JS_FILES = ["gc_explorer.js", "gc_i18n.js", "gc_state.js", "gc_severity.js", "gc_quality.js", "gc_props.js", "gc_scan.js", "gc_media.js", "gc_archive.js", "gc_cards.js", "gc_views.js", "gc_table.js", "gc_export.js",
-            "gc_boot.js"]
-CSS_FILES = ["gc_explorer.css", "gc_review.css", "gc_levels.css"]
+            "gc_outreach.js", "gc_boot.js"]
+CSS_FILES = ["gc_explorer.css", "gc_review.css", "gc_levels.css", "gc_outreach.css"]
 TEMPLATE = "graph_check_template.html"
-TITLES = {"review": "Laubmann-KG · Graph-Prüfung", "explorer": "Laubmann-KG · Graph-Explorer"}
+TITLES = {"review": "Laubmann-KG · Graph-Prüfung", "explorer": "Laubmann Knowledge Graph"}
+LANGS = {"review": "de", "explorer": "en"}
+LOADING = {"review": "Graph wird geladen …", "explorer": "Loading the graph …"}
 SAMPLE_MOD = 33
 
 
@@ -293,6 +295,8 @@ def main(argv=None) -> int:
     lf_css = (REPO / "tools" / "validation_ui" / "leaflet.css").read_text(encoding="utf-8")
     page_meta = json.dumps({"mode": args.mode, "title": args.title}, ensure_ascii=False).replace("<", "\\u003c")
     html = (tpl.replace("{{TITLE}}", args.title.replace("<", "&lt;"))
+               .replace("{{LANG}}", LANGS[args.mode])
+               .replace("{{LOADING}}", LOADING[args.mode])
                .replace("{{MODE}}", args.mode)
                .replace("{{META}}", page_meta)
                .replace("/*{{LEAFLET_CSS}}*/", lf_css)

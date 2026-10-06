@@ -24,7 +24,7 @@
     dcterms:description "SKOS concept schemes of the controlled values used by the Laubmann Knowledge Graph ontology (the literal in the data is the concept's skos:notation) and the authority schemes of its external links."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:modified "2026-09-30"^^xsd:date ;
-    owl:versionInfo "0.7.0" ;
+    owl:versionInfo "0.7.1" ;
     rdfs:seeAlso <https://w3id.org/laubmann-kg/ontology> .
 
 # --- Transport modes (TravelLeg.transportMode) ---------------
@@ -191,6 +191,13 @@ lkg:region_print      a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos
 lkg:region_object     a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "object"@en, "Objekt (Feder, Blatt, Etikett …)"@de ; skos:notation "object" .
 lkg:region_text_insert a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "text-insert"@en, "Texteinlage (Zeitungsausschnitt, Bericht, Brief, Beschriftung)"@de ; skos:notation "text-insert" .
 lkg:region_list       a skos:Concept ; skos:inScheme lkg:regionKindScheme ; skos:prefLabel "list"@en, "Liste / Tabelle (Einlage)"@de ; skos:notation "list" .
+
+lkg:regionCompletenessScheme a skos:ConceptScheme ;
+    skos:prefLabel "Completeness of multimodal regions"@en , "Vollständigkeit multimodaler Regionen"@de .
+
+lkg:region_complete a skos:Concept ; skos:inScheme lkg:regionCompletenessScheme ; skos:prefLabel "complete"@en, "vollständig"@de ; skos:notation "complete" .
+lkg:region_cut_off  a skos:Concept ; skos:inScheme lkg:regionCompletenessScheme ; skos:prefLabel "cut off"@en, "abgeschnitten"@de ; skos:notation "cut off" ;
+    skos:definition "The object continues beyond the scanned page (a fold-out, an insert sticking out), or the layout box cut it off."@en .
 
 # --- External authorities (targets of skos:exactMatch / closeMatch / broadMatch, since 0.6.0) --
 # Every external link of the graph points at a record of one of these

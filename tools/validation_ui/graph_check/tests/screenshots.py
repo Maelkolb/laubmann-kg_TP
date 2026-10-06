@@ -85,43 +85,65 @@ async def archive_shots(pg, tag):
     print("shots 20", tag)
 
 
+OUTREACH_ENTRY = "L17-e0132"     # machine changes of every kind, five records of all reliability levels, two pages
+FIGURES_ENTRY = "L06-e0113"      # four photographs
+
+
 async def explorer_shots(p):
-    """The explorer build of the same app: overview, the same entry as the review build, reliability bar, notes off."""
+    """The explorer build, the outreach file: overview, the entry with its Text tab (light, dark), hover cards on a machine
+    change and on a bird name, the records, the Notes tab, the reliability filter, 1280 × 800, images, the original
+    transcription. Written to shots_outreach next to the shots folder; the archive images to the shots folder."""
     if not check(EXPLORER_PAGE.exists(), f"the explorer build exists ({EXPLORER_PAGE.name})"):
         return []
+    out = SHOTS.parent / "shots_outreach"
+    out.mkdir(parents=True, exist_ok=True)
     b, pg, errs = await open_page(p, viewport=(1440, 900), url=EXPLORER_PAGE.as_uri())
     await pg.wait_for_timeout(500)
-    await pg.screenshot(path=str(SHOTS / "19a_explorer_uebersicht.png"))
-    await entry_shot(pg, "18b_explorer_eintrag_L17-e0132.png")
-    await pg.keyboard.press("g")
+    await pg.screenshot(path=str(out / "01_overview.png"))
+    await goto_entry(pg, OUTREACH_ENTRY, 1200)
+    await pg.screenshot(path=str(out / "02_entry_text.png"))
+    await pg.hover("#fnotes .xc >> nth=0")
+    await pg.wait_for_timeout(300)
+    await pg.screenshot(path=str(out / "04_hover_machine_change.png"))
+    await pg.hover("#fnotes .xb >> nth=0")
+    await pg.wait_for_timeout(300)
+    await pg.screenshot(path=str(out / "05_hover_bird_name.png"))
+    await pg.click("#fnotes .xb >> nth=0")
+    await pg.mouse.move(700, 880)
+    await pg.wait_for_timeout(600)
+    await pg.evaluate("(() => { const b = document.querySelector('#pbody'); b.scrollTop = document.querySelector('#pbody .xrecs').offsetTop - 120; })()")
+    await pg.wait_for_timeout(300)
+    await pg.screenshot(path=str(out / "06_records.png"))
+    await pg.click('#ptabs [data-tab="check"]')
     await pg.wait_for_timeout(400)
-    await pg.screenshot(path=str(SHOTS / "19d_explorer_tabelle.png"))
-    await pg.keyboard.press("g")
+    await pg.screenshot(path=str(out / "07_notes_tab.png"))
+    await pg.click('#ptabs [data-tab="text"]')
     await pg.click('#qbar [data-qt="2"]')
-    await pg.wait_for_timeout(700)
-    await pg.screenshot(path=str(SHOTS / "19b_explorer_eintrag_unter_25.png"))
-    await pg.evaluate("LKGC.go('/')")
-    await pg.wait_for_timeout(700)
-    await pg.screenshot(path=str(SHOTS / "19e_explorer_uebersicht_unter_25.png"))
+    await pg.wait_for_timeout(800)
+    await pg.screenshot(path=str(out / "08_reliability_below_25.png"))
     await pg.click('#qbar [data-qt="0"]')
     await pg.wait_for_timeout(500)
-    await entry_shot(pg, "19f_explorer_eintrag_vor_schalter.png")
-    await pg.locator("#qbar #notesw").uncheck()
-    await pg.wait_for_timeout(700)
-    await pg.screenshot(path=str(SHOTS / "19c_explorer_ohne_pruefhinweise.png"))
-    await pg.locator("#qbar #notesw").check()
-    (SHOTS / "19f_explorer_eintrag_vor_schalter.png").unlink(missing_ok=True)
+    await pg.click('#pbody [data-act="tlayer"][data-layer="orig"]')
+    await pg.wait_for_timeout(300)
+    await pg.screenshot(path=str(out / "11_original_transcription.png"))
+    await pg.click('#pbody [data-act="tlayer"][data-layer="final"]')
+    await goto_entry(pg, FIGURES_ENTRY, 1200)
+    await pg.evaluate("(() => { const b = document.querySelector('#pbody'); b.scrollTop = document.querySelector('#pbody .xmedia').offsetTop - 60; })()")
+    await pg.wait_for_timeout(1200)
+    await pg.screenshot(path=str(out / "10_images_and_inserts.png"))
+    await pg.click("#btn-theme")
+    await goto_entry(pg, OUTREACH_ENTRY, 1000)
+    await pg.screenshot(path=str(out / "03_entry_text_dark.png"))
+    await pg.evaluate("LKGC.go('/')")
+    await pg.wait_for_timeout(600)
+    await pg.screenshot(path=str(out / "12_overview_dark.png"))
+    await pg.click("#btn-theme")
+    await pg.set_viewport_size({"width": 1280, "height": 800})
+    await goto_entry(pg, OUTREACH_ENTRY, 1000)
+    await pg.screenshot(path=str(out / "09_entry_1280x800.png"))
+    await pg.set_viewport_size({"width": 1440, "height": 900})
+    print("outreach shots in", out)
     await archive_shots(pg, "explorer")
-    # 18c: both builds side by side for the same entry
-    page = SHOTS / "_nebeneinander.html"
-    page.write_text('<!doctype html><meta charset="utf-8"><body style="margin:0;background:#888;display:flex;gap:6px">'
-                    '<img src="18a_pruefung_eintrag_L17-e0132.png" width="1440" height="900"><img src="18b_explorer_eintrag_L17-e0132.png" width="1440" height="900"></body>', encoding="utf-8")
-    pg2 = await b.new_page(viewport={"width": 2886, "height": 900})
-    await pg2.goto(page.as_uri())
-    await pg2.wait_for_timeout(400)
-    await pg2.screenshot(path=str(SHOTS / "18c_pruefung_und_explorer_nebeneinander.png"))
-    page.unlink(missing_ok=True)
-    print("shots 18b, 18c, 19a-e")
     await b.close()
     return errs
 

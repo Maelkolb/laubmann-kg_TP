@@ -57,6 +57,7 @@
     },
     "regionKind": "lkg:regionKind",
     "visibleText": "lkg:visibleText",
+    "regionCompleteness": "lkg:regionCompleteness",
     "description": "dcterms:description",
     "dcType": {
       "@id": "dcterms:type",

@@ -117,7 +117,7 @@ def _full_entry() -> DiaryEntry:
         region_uid="r_rdf_map", page_uid="p_rdf2", page_id="L03-p013", volume=3, scan="0013",
         entry_uid="e_rdf1", kind="map", description="A hand-drawn map of the Dechsendorfer Weiher.",
         visible_text="Dechsendorfer Weiher", crop="regions/L03-p013/r03_ImageRegion.png",
-        region_type="ImageRegion")]
+        region_type="ImageRegion", completeness="complete")]
     return entry
 
 
@@ -476,8 +476,8 @@ def test_hand_written_fixture_conforms() -> None:
 def test_ontology_axioms_and_vocabularies_parse() -> None:
     onto = Graph().parse(str(ONTOLOGY), format="turtle")
     onto_iri = URIRef("https://w3id.org/laubmann-kg/ontology")
-    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.7.0")
-    assert onto.value(onto_iri, OWL.priorVersion) == URIRef("https://w3id.org/laubmann-kg/ontology/0.6.0")
+    assert onto.value(onto_iri, OWL.versionInfo) == Literal("0.7.1")
+    assert onto.value(onto_iri, OWL.priorVersion) == URIRef("https://w3id.org/laubmann-kg/ontology/0.7.0")
     # grouping hierarchy (0.7.0: Records in Contexts alignment)
     RICO = "https://www.ica.org/standards/RiC/ontology#"
     assert (LKG.ArchivalUnit, RDFS.subClassOf, URIRef(RICO + "RecordResource")) in onto
@@ -537,7 +537,7 @@ def test_ontology_axioms_and_vocabularies_parse() -> None:
     vocabs = Graph().parse(str(REPO_ROOT / "ontologies" / "controlled_vocabularies.ttl"),
                            format="turtle")
     assert vocabs.value(URIRef("https://w3id.org/laubmann-kg/vocabularies"), OWL.versionInfo) == \
-        Literal("0.7.0")
+        Literal("0.7.1")
 
     def _values(scheme: URIRef) -> set[str]:
         """The literal values of a scheme: the skos:notation of its concepts."""
@@ -584,7 +584,7 @@ def test_shapes_encode_relaxed_constraints() -> None:
 
     from laubmann_kg.normalization.vocabularies import TIME_OF_DAY
     shapes = Graph().parse(str(SHAPES), format="turtle")
-    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.7.0")
+    assert shapes.value(URIRef("https://w3id.org/laubmann-kg/shapes"), OWL.versionInfo) == Literal("0.7.1")
 
     def _prop(shape: URIRef, path: URIRef) -> URIRef:
         return next(p for p in shapes.objects(shape, SH.property) if shapes.value(p, SH.path) == path)

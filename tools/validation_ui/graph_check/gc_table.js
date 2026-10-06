@@ -102,7 +102,7 @@ function rvRenderTable() {
   }
   const hidden = all.filter(c => !c.on).length; const outN = outCount(m);
   box.innerHTML = s + `</tbody></table>${rows.length ? '' : `<p class="muted" style="padding:12px">${t(RVU.tflag ? 't_none_flagged' : 'no_records')}</p>`}` +
-    `<p class="muted tfoot">${esc(t('t_cols_foot', fmt(cols.length), fmt(all.length)))}${hidden ? ' · ' + esc(t('t_cols_hidden', fmt(hidden))) : ''}${outN && !RVU.showOut ? ' · ' + esc(t('out_cards', fmt(outN), qfName())) : ''}</p>`;
+    `<p class="muted tfoot">${esc(t('t_cols_foot', fmt(cols.length), fmt(all.length)))}${hidden ? SEP + esc(t('t_cols_hidden', fmt(hidden))) : ''}${outN && !RVU.showOut ? SEP + esc(t('out_cards', fmt(outN), qfName())) : ''}</p>`;
   box.dataset.e = String(m.e); box.scrollTop = keep[0]; box.scrollLeft = keep[1];
   if (TCOLS.open) drawColChooser();
 }

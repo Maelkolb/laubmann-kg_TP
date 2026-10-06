@@ -45,7 +45,7 @@ function scanBar() {
   const p = SC.pages[SC.pi]; const src = p ? scanSources(p.pid) : null;
   $('#scanbar').classList.toggle('many', SC.pages.length > 3);   // many pages: the page tabs get a row of their own
   $('#scanbar').innerHTML = `<span class="scanpages">${SC.pages.map((x, i) => `<button class="zbtn${i === SC.pi ? ' on' : ''}" data-sc="p${i}" title="${esc(pageNode(x.pid) >= 0 ? label(pageNode(x.pid)) : x.pid)}">${esc(i && SC.pages.length > 3 ? pageShort(x.pid).replace(/^\D+/, '') : pageShort(x.pid))}</button>`).join('')}</span>
-    <span class="sp"></span>${SC.hl && SC.hl.none ? `<span class="muted">${t(SC.hl.media ? 'scan_noregion' : 'scan_noline')}</span>` : ''}
+    <span class="sp"></span>${SC.hl && SC.hl.none ? `<span class="muted nopos" title="${esc(t(SC.hl.media ? 'scan_noregion_t' : 'scan_noline_t'))}">${t(SC.hl.media ? 'scan_noregion' : 'scan_noline')}</span>` : ''}
     ${EM && (EM.rv.media || []).length ? `<button class="zbtn mtoggle${RVU.media ? ' on' : ''}" data-sc="media" title="${t('scan_media_t')}">▣ ${t('scan_media')}</button>` : ''}
     <button class="zbtn" data-sc="zout" title="−">−</button><button class="zbtn" data-sc="zin" title="+">+</button>
     <button class="zbtn" data-sc="entry" title="${t('scan_fit_entry_t')}">${t('scan_fit_entry')}</button><button class="zbtn" data-sc="page" title="${t('scan_fit_page_t')}">${t('scan_fit_page')}</button>
@@ -134,15 +134,16 @@ function scanMediaAt(clientX, clientY) {   // the multimodal region under a poin
   const hit = (RVU.media ? scanMedia() : []).filter(x => fx >= x[3] && fx <= x[5] && fy >= x[4] && fy <= x[6]);
   hit.sort((a, b) => (a[5] - a[3]) * (a[6] - a[4]) - (b[5] - b[3]) * (b[6] - b[4])); return hit[0] || null;
 }
-function selectMedia(uid) {   // open the card of a region (click on its outline)
-  const m = EM; if (!m) return; const i = visibleItems(m).findIndex(it => it.type === 'media' && it.x[0] === uid); if (i < 0) return;
+function selectMedia(uid) {   // open the card of a region (click on its outline); explorer build: its figure in the Text tab
+  const m = EM; if (!m) return;
+  if (EXPLORER) { xSelectMedia(uid); return; } const i = visibleItems(m).findIndex(it => it.type === 'media' && it.x[0] === uid); if (i < 0) return;
   S.tab = 'check'; RVU.card = i; renderPanel(); focusCard(i);
 }
 function scanToggle(on) {
   RVU.scan = on == null ? !RVU.scan : on; store('scan', RVU.scan ? '1' : '0');
   $('#scanpane').hidden = !RVU.scan; $('#hsplit').hidden = !RVU.scan;
   if (RVU.scan && EM) { if (!SC.pages.length) SC.pages = scanPagesOf(EM); scanShowPage(true); }
-  if (S.view === 'entry') renderEntryHead();
+  if (S.view === 'entry') { renderEntryHead(); if (EXPLORER) fitView(); }   // explorer: the scan shares its column with the graph
 }
 function scanWire() {
   const view = $('#scanview'); let drag = null;
@@ -164,7 +165,8 @@ function scanWire() {
   });
   const hs = $('#hsplit'); let sp = null;
   hs.addEventListener('pointerdown', ev => { sp = { y: ev.clientY, h: $('#scanpane').getBoundingClientRect().height }; hs.setPointerCapture(ev.pointerId); });
-  hs.addEventListener('pointermove', ev => { if (!sp) return; const h = clamp(sp.h + ev.clientY - sp.y, 120, $('#panel').clientHeight - 160); $('#panel').style.setProperty('--scan-h', h + 'px'); });
-  hs.addEventListener('pointerup', () => { if (sp) { sp = null; store('scanh', $('#panel').style.getPropertyValue('--scan-h')); scanFit(SC.mode); } });
-  const sh = store('scanh'); if (sh) $('#panel').style.setProperty('--scan-h', sh);
+  const box = () => $('#scanpane').parentElement;   // the panel; in the explorer build the middle column
+  hs.addEventListener('pointermove', ev => { if (!sp) return; const h = clamp(sp.h + ev.clientY - sp.y, 120, box().clientHeight - 160); box().style.setProperty('--scan-h', h + 'px'); });
+  hs.addEventListener('pointerup', () => { if (sp) { sp = null; store('scanh', box().style.getPropertyValue('--scan-h')); scanFit(SC.mode); if (EXPLORER && S.view === 'entry') fitView(); } });
+  const sh = store('scanh'); if (sh) box().style.setProperty('--scan-h', sh);
 }

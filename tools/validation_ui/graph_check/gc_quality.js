@@ -145,8 +145,7 @@ function renderQBar() {   // always visible under the header, in every view
   const seg = [0, 1, 2, 3].map(i => `<button type="button" class="qb${i === k ? ' on' : ''}" data-qt="${i}" aria-pressed="${i === k}" title="${esc(i ? t('qf_bt', t('qf_b_' + i).replace('< ', ''), t('qf_ms_' + m)) + (m === 'pc' ? t('qf_bt_pc') : '') : t('qf_bt_0'))}"><span class="qbn">${esc(t('qf_b_' + i))}</span><span class="qbc num">${fmt(QF.cnt[m][i])}</span></button>`).join('');
   bar.classList.toggle('active', corpusOn());
   bar.innerHTML = `<span class="qbl" title="${esc(t('qf_label_t'))}">${t('qf_label')}</span>${sel}<span class="qseg" role="group" aria-label="${esc(t('qf_label'))}">${seg}</span>` +
-    `<span class="qest" title="${esc(t('qf_est_t'))}">${esc(qfLine())}</span>` +
-    (EXPLORER ? `<label class="cnotes${RVU.notes ? ' on' : ''}" title="${esc(t('notes_t'))}"><input type="checkbox" id="notesw"${RVU.notes ? ' checked' : ''}>${t('notes_on')}</label>` : '');
+    `<span class="qest" title="${esc(t('qf_est_t'))}">${esc(qfLine())}</span>`;
 }
 function qBarWire() {
   const bar = $('#qbar');

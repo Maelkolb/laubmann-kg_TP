@@ -1,4 +1,4 @@
-"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.7.0.
+"""Build and serialize the knowledge graph as RDF, conforming to laubmann.ttl 0.7.1.
 
 Design notes
 - The data contract is ``kg/model.py``; this module only maps it onto triples.
@@ -530,6 +530,8 @@ def _add_multimodal_region(graph: Graph, entry_node: URIRef, region: MultimodalR
         graph.add((node, DCTERMS.description, Literal(region.description, lang="en")))
     if region.visible_text:
         graph.add((node, LKG.visibleText, Literal(region.visible_text, lang=DE)))
+    if region.completeness:
+        graph.add((node, LKG.regionCompleteness, Literal(region.completeness)))
     if region.crop:
         graph.add((node, DCTERMS.identifier, Literal(region.crop)))
     url = image_url(base_url, region.crop)

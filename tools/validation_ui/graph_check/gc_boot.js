@@ -4,6 +4,7 @@
 async function rvBoot() {
   if (EXPLORER) $$('.rv-only').forEach(el => el.remove());   // reviewer name, progress, save / load: not part of the explorer build
   await loadReview();
+  if (EXPLORER) xBoot();
   if ((R.meta || {}).mode && R.meta.mode !== GC_META.mode) console.warn('review layer built for mode', R.meta.mode);
   loadState();
   mediaIndex();
@@ -15,7 +16,7 @@ async function rvBoot() {
   RVU.list = listRows(); RVU.listPos = new Map(RVU.list.map((r, i) => [r.n, i])); $('#elist-body').dataset.lang = '';
 }
 function rvWire() {
-  scanWire(); mediaWire(); archiveWire();
+  scanWire(); mediaWire(); archiveWire(); if (EXPLORER) xWire();
   $('#pbody').addEventListener('click', rvPanelClick);
   $('#pbody').addEventListener('mousedown', ev => { if (ev.target.closest('[data-act="txtedit"]')) ev.preventDefault(); });   // keep the text selection
   $('#rtable').addEventListener('click', tableClick);
@@ -31,7 +32,8 @@ function rvWire() {
   Object.assign(window.LKGC, { R, RV, RVU, RVS, SC, QUEUES, entryModel, buildModel, visibleItems, entCur, entProposal, makeZip, exportFiles, auditRows, importState, setQueue, decide, undo, cardAct, focusCard, countQueues, progressJSON,
     go, entryHash, proposal, mergedProposal, recVals, listRows, t, UI, MEDIA, cropErr, cutErr, cropSources, openCrop, closeCrop, selectMedia, scanMediaAt,
     SEV, QF, Q_MEASURES, LEVELS, openLevels, openByLevel, levelTotals, setQFilter, qfApply, qfName, qOf, qPass, setLevelFilter, setPreset, sevDoc, tableCols, nodeProps, stats, itemLevel, inCorpus, openFindings, itemDecided, usageRows, propMode, entryInCorpus, setNotes, queueList, META: GC_META, EXPLORER,
-    pageErr, pageLoaded, openPage, pageRegions, pageIndex, regionBox, scanSources, pageEntries, regionEntries, thumbsSync, ARCH, pageNode, regionNode, pageTitle, kindOf, betterOf });
+    pageErr, pageLoaded, openPage, pageRegions, pageIndex, regionBox, scanSources, pageEntries, regionEntries, thumbsSync, ARCH, pageNode, regionNode, pageTitle, kindOf, betterOf,
+    xNames, xChanges, xChangeSteps, xDate, xRecordRows, label, Z });
   Object.defineProperty(window.LKGC, 'SUB', { get: () => SUB });
   Object.defineProperty(window.LKGC, 'EM', { get: () => EM });
   Object.defineProperty(window.LKGC, 'LANG', { get: () => LANG });

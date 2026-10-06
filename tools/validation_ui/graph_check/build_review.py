@@ -168,6 +168,8 @@ def main() -> None:
     ap.add_argument("--drive-regions", default=None, help="drive_ids.py --regions: crop path -> Drive file id")
     ap.add_argument("--dwca", default=None, help="the export's dwca/ (occurrence.txt, event.txt): needed for the corpus tiers")
     ap.add_argument("--tiers-csv", default=None, help="also write the corpus tier of every occurrence (record_tiers.csv)")
+    ap.add_argument("--region-decisions", default=None, help="region_quality_machine.csv: regions the graph no longer has are left "
+                                                              "out, a region cut anew shows the new box (cut out of the page scan)")
     ap.add_argument("--quality", default=None, help="record_quality.py output folder (record_quality.csv, quality_summary.json): "
                                                      "every record gets its estimated quality q, the corpus tiers t / tw are left out")
     ap.add_argument("--text-layer", default=None,
@@ -376,6 +378,7 @@ def main() -> None:
     crops: dict = {}
     drive_regions = json.loads(Path(args.drive_regions).read_text(encoding="utf-8")) if args.drive_regions else {}
     mm_path = corpus / "multimodal_regions.jsonl"
+    new_box: dict = {}
     if mm_path.exists():
         ids = {e[1]: e[0] for e in E}
         orig = {}
@@ -391,18 +394,27 @@ def main() -> None:
             w = words(text)
             for i in range(len(w) - 4):
                 index[" ".join(w[i:i + 5])].add(uid)
+        mm_in_graph = {str(n).rsplit("region_", 1)[-1] for n, ts in G.typ.items() if "MultimodalRegion" in ts}
+        if args.region_decisions:
+            for d in csv.DictReader(open(args.region_decisions, encoding="utf-8", newline="")):
+                if d.get("crop") and d.get("box"):
+                    x0, y0, x1, y1 = json.loads(d["box"])
+                    new_box[d["region_uid"]] = [max(0.0, x0 - 0.01), max(0.0, y0 - 0.01), min(1.0, x1 + 0.01), min(1.0, y1 + 0.01)]
         for line in mm_path.read_text(encoding="utf-8").splitlines():
             r = json.loads(line) if line.strip() else None
             uid = (r or {}).get("entry_uid") or ""
-            if not r or uid not in ids:
+            if not r or uid not in ids or (mm_in_graph and r["region_uid"] not in mm_in_graph):
                 continue
             # every region of the entry with its crop: box on the page scan (the layout region the crop
-            # was cut from, rNN in the crop's file name) and the Drive id of the crop image
+            # was cut from, rNN in the crop's file name) and the Drive id of the crop image; a region the
+            # region check cut anew shows its new box, cut out of the page scan
             m = re.search(r"/(r\d+)_", r.get("crop") or "")
             box = geo.get(r["page_id"], {}).get("r", {}).get(m.group(1)) if m else None
             f = frac(r["page_id"], box) if box else None
+            if r["region_uid"] in new_box:
+                f = [round(x, 4) for x in new_box[r["region_uid"]]]
             media[uid].append([r["region_uid"], r["kind"], page(r["page_id"])] + (f or []))
-            if drive_regions.get(r.get("crop") or ""):
+            if drive_regions.get(r.get("crop") or "") and r["region_uid"] not in new_box:
                 crops[r["region_uid"]] = drive_regions[r["crop"]]
             if r.get("kind") not in ("text-insert", "list") or not (r.get("visible_text") or "").strip():
                 continue
@@ -427,7 +439,7 @@ def main() -> None:
     for pg in corpus_pages:
         for r in pg["regions"]:
             uid = r.get("region_uid")
-            if uid not in in_graph or uid in crops:
+            if uid not in in_graph or uid in crops or uid in new_box:
                 continue
             box = geo.get(pg["page_id"], {}).get("r", {}).get(r["id"])
             f = frac(pg["page_id"], box) if box else None

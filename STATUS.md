@@ -8,7 +8,16 @@
 | `kg_exports_2026-10-01_machine` (+ machine review rounds 1–3) | 9,901 | 85,636 | 1,979,656 | 0 violations, 464 warnings | 0 errors |
 | `kg_exports_2026-10-01_checked` (+ round 4) | 9,901 | 85,631 | 1,979,492 | 0 violations, 464 warnings | 0 errors |
 | `kg_exports_2026-10-04_text` (+ machine text layer) | 9,901 | 85,896 | 1,987,196 | 0 violations, 461 warnings | 0 errors |
-| `kg_exports_2026-10-05_attribution` (+ attribution of pasted reports, person label fix, current) | 9,901 | 85,894 | 1,989,896 | 0 violations, 461 warnings | 0 errors |
+| `kg_exports_2026-10-05_attribution` (+ attribution of pasted reports, person label fix) | 9,901 | 85,894 | 1,989,896 | 0 violations, 461 warnings | 0 errors |
+| `kg_exports_2026-10-06_regions` (+ cleaned image regions, ontology 0.7.1, current) | 9,901 | 85,896 | 1,990,526 | 0 violations, 461 warnings | 0 errors |
+
+**Image and insert regions cleaned** (2026-10-06, `docs/region_cleaning.md`, CHANGELOG): the 1,626 regions placed
+with an entry were checked in 824 groups of neighbouring scans by Gemini 3.8 and 3.7 Flash independently
+(`machine_review/region_check.py`, $7.39), combined where both agree (`region_check_combine.py`), every duplicate
+checked once more as a pair (`region_duplicate_check.py`). 77 regions leave the graph (60 repeats: repeat scans,
+cut-off strips of fold-outs, mirror images through the paper; 10 blank; 7 fragments), 202 regions their box cut off
+are cut anew from the page scan (`recrop.py`), completeness recorded (`lkg:regionCompleteness`, ontology 0.7.1).
+Export `kg_exports_2026-10-06_regions` (see the table above).
 
 **Quality of every record** (2026-10-06, `docs/record_quality.md`, CHANGELOG): the four corpus tiers are replaced
 by an estimated error per record and field. A blind second check (`machine_review/blind_check.py`, Gemini 3.7

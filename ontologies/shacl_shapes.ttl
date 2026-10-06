@@ -1,8 +1,10 @@
 # =============================================================
 # HistOrniGraph / Laubmann Knowledge Graph
 # SHACL Validation Shapes  –  ontologies/shacl_shapes.ttl
-# Validates instance data against ontologies/laubmann.ttl (v0.7.0)
+# Validates instance data against ontologies/laubmann.ttl (v0.7.1)
 #
+# v0.7.1 (2026-10-06) — MultimodalRegion: lkg:regionCompleteness höchstens
+#        einmal, "complete" oder "cut off".
 # v0.7.0 (2026-09-30) — Observation: dwc:eventDate Pflicht (xsd:date oder
 #        Intervall), recordType/basisOfRecord/occurrenceStatus Pflicht,
 #        recordedBy mehrwertig (Diarist + Begleiter), timeOfDay mit dawn/dusk;
@@ -83,7 +85,7 @@
     dcterms:description "Validation shapes for the Laubmann KG data graph (https://w3id.org/laubmann-kg/ontology 0.7.0). Run with inference=none: shapes target the concrete classes only (grouping superclasses are not materialised in the data). Every child node must carry dcterms:isPartOf (partonomy). Vocabulary/completeness checks are sh:Warning; datatype, cardinality and target-class checks sh:Violation."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:modified "2026-09-30"^^xsd:date ;
-    owl:versionInfo "0.7.0" ;
+    owl:versionInfo "0.7.1" ;
     rdfs:seeAlso <https://w3id.org/laubmann-kg/ontology> .
 
 
@@ -191,6 +193,13 @@ lkg:MultimodalRegionShape
         sh:path lkg:visibleText ;
         sh:maxCount 1 ;
         sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path lkg:regionCompleteness ;
+        sh:maxCount 1 ;
+        sh:in ( "complete" "cut off" ) ;
+        sh:message "lkg:regionCompleteness ist höchstens einmal \"complete\" oder \"cut off\" (lkg:regionCompletenessScheme)." ;
         sh:severity sh:Warning ;
     ] ;
     sh:property [

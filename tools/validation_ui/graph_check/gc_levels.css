@@ -71,9 +71,6 @@
 :root[data-theme="dark"] #qbar .qb.on, :root[data-theme="dark"] #qbar .qb.on .qbc { color: #0C1710; }
 #qbar .qest { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink2); font-variant-numeric: tabular-nums; }
 #qbar.active .qest { color: var(--ink); }
-#qbar .cnotes { flex: none; display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px 2px 7px; background: var(--surface); cursor: pointer; font-size: .76rem; color: var(--ink2); user-select: none; }
-#qbar .cnotes.on { border-color: var(--lv2); color: var(--ink); }
-#qbar .cnotes input { margin: 0; accent-color: var(--lv2); }
 @media (max-width: 1180px) { #qbar { flex-wrap: wrap; } #qbar .qest { flex-basis: 100%; } }
 header#top > .hsp { flex: 1 1 0; min-width: 0; }
 /* explorer build: read-only cards, chips are labels */
@@ -236,10 +233,6 @@ header#top > #searchbox { flex: 1 1 110px; }
 #lvchips { flex-wrap: wrap; }
 .lvchip { padding: 1px 5px 1px 4px; font-size: .7rem; }
 .lvchip .num { margin-left: 3px; font-size: .66rem; }
-:root[data-theme="dark"] .nd.k-entry text { fill: #0C1710; }
-:root[data-theme="dark"] .nd.k-entry text.s { fill: #1D3324; }
-:root[data-theme="dark"] .nd.k-entry text.pr { fill: #0C1710; } :root[data-theme="dark"] .nd.k-entry text.pr .pk { fill: #24402D; } :root[data-theme="dark"] .nd.k-entry text.pr.plink { fill: #0B3157; }
-:root[data-theme="dark"] .nd.k-entry line.psep { stroke: rgba(0,0,0,.3); }
 .lvchip { padding: 1px 4px 1px 3px; font-size: .68rem; gap: 1px; }
 .lvchip .lvd { margin-right: 2px; width: 9px; height: 9px; }
 .lvchip .num { margin-left: 2px; font-size: .64rem; }
@@ -283,3 +276,10 @@ svg.cutout { background: var(--surface2); }
 .nthumb image { pointer-events: none; }
 #scanov .areg { stroke: #1E8E3E; stroke-width: 3; fill: rgba(30,142,62,.14); }
 #scanov .areglbl { fill: #156B2E; font-weight: 600; }
+
+/* dark mode: the entry node keeps a deep fill under light labels (contrast >= 4.5:1, tests/smoke.py) */
+:root[data-theme="dark"] .nd.k-entry rect.b { fill: #1C442A; stroke: var(--c-entry); }
+:root[data-theme="dark"] .nd.k-entry text { fill: #EEF6F0; }
+:root[data-theme="dark"] .nd.k-entry text.s { fill: #B7D2BF; }
+:root[data-theme="dark"] .nd.k-entry text.pr { fill: #EEF6F0; } :root[data-theme="dark"] .nd.k-entry text.pr .pk { fill: #A9C9B3; } :root[data-theme="dark"] .nd.k-entry text.pr.plink { fill: #A9D0FF; }
+:root[data-theme="dark"] .nd.k-entry line.psep { stroke: rgba(255,255,255,.25); }

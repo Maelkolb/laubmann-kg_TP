@@ -108,7 +108,7 @@ function nameCard(m, it) {
     if (x.kind !== 'suggest' && !r.auto && (info.rows || []).some(q => q.auto)) continue;
     body += `<div class="src src-m"><div class="src-h"><span class="who">${esc(t('src_round', r.rnd || '?'))}</span><span class="vd vd-${r.auto ? 'auto' : 'sugg'}">${t(r.auto ? 'row_applied' : 'row_suggest')}</span>` +
       String(r.src || '').split('+').filter(Boolean).map(sname => `<span class="fchip" title="${t('src_t')}">${esc(sname)}</span>`).join('') +
-      `<span class="conf" title="${t('conf_t')}">${fmtConf(r.c || 0)} · ${esc(t(+r.ag === 1 ? 'n_source1' : 'n_sources', r.ag || 0))}</span></div>` +
+      `<span class="conf" title="${t('conf_t')}">${fmtConf(r.c || 0)}${SEP}${esc(t(+r.ag === 1 ? 'n_source1' : 'n_sources', r.ag || 0))}</span></div>` +
       `<div class="diff"><span class="fl">${t(r.auto ? 'row_decides' : 'row_proposes')}</span><span class="to">${rowHtml(sec, r)}</span></div>` +
       (r.why ? `<div class="why">${esc(r.why)}</div>` : '') + (r.note ? `<div class="why muted">${esc(r.note)}</div>` : '') +
       (!r.auto ? `<div class="hint">${esc(t('below_threshold', fmtConf((R.meta.thresholds || {}).confidence || 0.9), (R.meta.thresholds || {}).agreement || 2))}</div>` : '') + '</div>';
@@ -116,7 +116,7 @@ function nameCard(m, it) {
   if (x.detail) body += `<div class="why">${esc(x.detail)}</div>`;
   const n = mentionCount(sec, x.form, x.nodes);
   if (EXPLORER) { if (n) body += `<div class="scope">${esc(t(sec === 'taxa' ? 'name_mentions' : 'name_uses', fmt(n)))}</div>`; }
-  else body += `<div class="scope">${t('name_scope')}${n ? ' · ' + esc(t(sec === 'taxa' ? 'name_mentions' : 'name_uses', fmt(n))) : ''}${x.kind !== 'suggest' && x.kind !== 'confirmed' ? '' : ' · ' + t('name_linkpage')}</div>`;
+  else body += `<div class="scope">${t('name_scope')}${n ? SEP + esc(t(sec === 'taxa' ? 'name_mentions' : 'name_uses', fmt(n))) : ''}${x.kind !== 'suggest' && x.kind !== 'confirmed' ? '' : SEP + t('name_linkpage')}</div>`;
   const mine = d && d.d ? mineHtml('name', d) : '';
   const acts = x.kind === 'suggest' ? abtn('j', 'J', t('a_apply'), 'a-j') + abtn('n', 'N', t('a_reject'), 'a-n')
     : x.kind === 'confirmed' ? abtn('j', 'J', t('a_confirm'), 'a-j') + abtn('n', 'N', t('a_wrong'), 'a-n')
@@ -213,8 +213,8 @@ function cardHtml(m, it, i) {
 }
 function secHead(m, sec, all, shown) {   // heading of a section of the check tab
   const open = all.filter(it => !itemDecided(it)).length;
-  if (sec === 'l3' || sec === 'l2' || sec === 'l1') { const lv = +sec[1]; return `<h3 class="sec gsec lvh">${lvDot(lv)}${lvName(lv)}<span class="cnt"${EXPLORER ? '' : ` title="${t('sec_cnt_t')}"`}>${EXPLORER ? fmt(all.length) : fmt(open) + ' / ' + fmt(all.length)}</span></h3>`; }
-  if (sec === 'hint') return `<h3 class="sec gsec lvh">${lvDot(0)}${lvName(0)}<span class="cnt">${fmt(all.length)}</span><span class="link" data-act="hints" title="${t('hints_t')}">${RVU.hints ? t('hints_less') : esc(t('hints_more', fmt(all.length)))}</span></h3>`;
+  if (sec === 'l3' || sec === 'l2' || sec === 'l1') { const lv = +sec[1]; return `<h3 class="sec gsec lvh">${lvDot(lv)}${EXPLORER ? cap(lvName(lv)) : lvName(lv)}<span class="cnt"${EXPLORER ? '' : ` title="${t('sec_cnt_t')}"`}>${EXPLORER ? fmt(all.length) : fmt(open) + ' / ' + fmt(all.length)}</span></h3>`; }
+  if (sec === 'hint') return `<h3 class="sec gsec lvh">${lvDot(0)}${EXPLORER ? cap(lvName(0)) : lvName(0)}<span class="cnt">${fmt(all.length)}</span><span class="link" data-act="hints" title="${t('hints_t')}">${RVU.hints ? t('hints_less') : esc(t('hints_more', fmt(all.length)))}</span></h3>`;
   if (sec === 'done') return '';
   return `<h3 class="sec gsec">${t('g_' + sec)}<span class="cnt">${sec === 'ent' ? '' : fmt(all.length)}</span></h3>`;
 }
@@ -222,7 +222,7 @@ function rvRenderCheck(body) {
   const m = entryModel(S.e); const items = visibleItems(m); RVU.items = items; const keep = body.dataset.e === String(S.e) && body.dataset.tab === 'check' ? body.scrollTop : 0;
   RVU.card = clamp(RVU.card, 0, items.length - 1);
   const chk = m.rv.chk || ''; const nFl = m.obs.filter(o => flagged(o.rec)).length;
-  let s = !RVU.notes ? `<div class="chead"><span class="muted">${esc(t('notes_off_note', fmt(m.obs.length)))}</span></div>`
+  let s = EXPLORER ? xNotesHead(m)
     : `<div class="chead"><span>${chk ? esc(t('chk_by', [chk.includes('g') ? srcName('g') : '', chk.includes('s') ? srcName('s') : ''].filter(Boolean).join(' + '))) : `<span class="vd vd-off">${t('chk_none')}</span>`}</span>
     <span class="muted">${esc(t('chk_counts', fmt(m.obs.length), fmt(nFl)))}</span><span class="sp"></span>${EXPLORER ? '' : `<button class="btn" data-act="addrec">${t('a_add_rec')}</button>`}</div>`;
   if (RVU.form && RVU.form.key === 'new') s += `<div class="rcard t-miss focus"><div class="rc-head"><span class="rc-kind k-miss">${t('c_new')}</span></div>${formHtml(m, { type: 'miss', key: 'new', x: { kind: 'observation', src: 'h' } })}</div>`;
@@ -232,10 +232,9 @@ function rvRenderCheck(body) {
   }
   const hiddenOut = outCount(m);
   if (hiddenOut) s += `<p class="gnote qfnote">${esc(t(RVU.showOut ? 'out_cards_shown' : 'out_cards', fmt(hiddenOut), qfName()))} <span class="link" data-act="showout">${t(RVU.showOut ? 'out_hide_s' : 'out_show_s')}</span></p>`;
-  if (RVU.notes && !m.items.some(it => it.lv >= 1)) s += `<p class="muted gnote">${t('no_flags')}</p>`;
-  if (!RVU.notes && !items.length) s += `<p class="muted gnote">${t('no_media')}</p>`;
+  if (!m.items.some(it => it.lv >= 1 && !(EXPLORER && it.type === 'media'))) s += `<p class="muted gnote">${t('no_flags')}</p>`;
   for (const sec of SEC_ORDER) {   // schwer, mittel, leicht first; hints collapsed; then own changes, entry header, images, finish
-    const all = m.items.filter(it => it.sec === sec && (RVU.notes || it.type === 'media') && !(it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n))); if (!all.length) continue;
+    const all = m.items.filter(it => it.sec === sec && !(EXPLORER && it.type === 'media') && !(it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n))); if (!all.length) continue;
     s += secHead(m, sec, all);
     for (const it of all) { const i = items.indexOf(it); if (i >= 0) s += cardHtml(m, it, i); }
   }
@@ -289,7 +288,9 @@ function rvNodeClick(v, ev) {
     if (S.propOpen.has(v.key)) S.propOpen.delete(v.key); else S.propOpen.add(v.key); renderGraph(true); return;
   }
   const ci = cardIndexFor(v.key);
-  selectKey(v.key, { tab: ci >= 0 ? 'check' : v.kind === 'entry' ? 'text' : 'node' });
+  // explorer build: a record or the entry is read in the Text tab, other nodes in the Node tab; the Notes tab only when it is open
+  const tab = EXPLORER ? (ci >= 0 && S.tab === 'check' ? 'check' : v.kind === 'obs' || v.kind === 'entry' ? 'text' : 'node') : ci >= 0 ? 'check' : v.kind === 'entry' ? 'text' : 'node';
+  selectKey(v.key, { tab });
   if (ci >= 0) { const el = $(`.rcard[data-ci="${RVU.card}"]`); if (el) el.scrollIntoView({ block: 'nearest' }); }
 }
 function advance() {   // after a decision: the next undecided card (the final button when none is left)
@@ -506,7 +507,7 @@ function submitForm(f) {
 function rvPanelClick(ev) {
   const card = ev.target.closest('.rcard'); const act = ev.target.closest('[data-act]');
   if (ev.target.closest('.rform') && (!act || act.dataset.act === 'gbif')) return;
-  if (EXPLORER && act && !['hints', 'showout'].includes(act.dataset.act)) return;   // nothing decides in the explorer build
+  if (EXPLORER && act && !['hints', 'showout', 'tlayer'].includes(act.dataset.act)) return;   // nothing decides in the explorer build
   if (act && act.dataset.act === 'addrec') { openForm('new', 'add'); return; }
   if (act && act.dataset.act === 'hints') { RVU.hints = !RVU.hints; renderPanel(); return; }
   if (act && act.dataset.act === 'showout') { rvHeadAct('showout'); return; }

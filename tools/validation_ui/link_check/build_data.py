@@ -55,7 +55,7 @@ D1 = Path(r"G:\My Drive\Laubmann_KG_Maschinenpruefung_2026-09-30")
 D3 = Path(r"G:\My Drive\Laubmann_KG_Maschinenpruefung_2026-10-01")
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-ap.add_argument("--payload", default=str(IN / "payload_final.b64"))
+ap.add_argument("--payload", default=str(IN / "payload_regions.b64"))
 ap.add_argument("--payload-pipeline", default=str(IN / "payload_pipeline.b64"))
 ap.add_argument("--payload-r1", default=str(D1 / "Laubmann_Abgleich.html"))
 ap.add_argument("--identities", default=str(REPO / "data" / "review" / "machine" / "identities_machine.csv"))
@@ -64,14 +64,14 @@ ap.add_argument("--rounds", nargs="*", default=[str(D1 / "machine_review"), str(
 ap.add_argument("--round-labels", nargs="*", default=["R1", "R3", "R3 Orte (Einzelnennungen)", "R3 Personen (Nachsuche)"])
 ap.add_argument("--arbeit", nargs="*", default=[str(D1 / "arbeit"), str(D3 / "arbeit" / "r3"), str(D3 / "arbeit" / "r3_orte_einzelnennungen"),
                                                 str(D3 / "arbeit" / "r3_personen_nachsuche")])
-ap.add_argument("--export-review", default=str(REPO / "data" / "exports" / "kg_exports_2026-10-05_attribution" / "review"))
+ap.add_argument("--export-review", default=str(REPO / "data" / "exports" / "kg_exports_2026-10-06_regions" / "review"))
 ap.add_argument("--reviewed-merges", default=str(REPO / "data" / "review"))
 ap.add_argument("--drive", nargs="*", default=[str(HERE.parent / "drive_pages.json"), str(REPO / "configs" / "drive_scan_files.json")])
 ap.add_argument("--out", default=str(REPO / "data" / "exports" / "link_check" / "data"))
 ap.add_argument("--built", default=None)
-ap.add_argument("--review-layer", default=str(REPO / "data" / "cache" / "graph_check" / "review_quality.json"),
+ap.add_argument("--review-layer", default=str(REPO / "data" / "cache" / "graph_check" / "review_regions.json"),
                 help="review layer of graph_check/build_review.py --quality: q.p (estimated probability that a field is wrong) of every record")
-ap.add_argument("--triples", default=str(IN / "triples_final.pkl"), help="pickled triples of the graph under review (load.py): which record a person, place or habitat mention belongs to")
+ap.add_argument("--triples", default=str(IN / "triples_regions.pkl"), help="pickled triples of the graph under review (load.py): which record a person, place or habitat mention belongs to")
 ap.add_argument("--max-ev", type=int, default=6, help="diary passages per entity")
 ap.add_argument("--min-confidence", type=float, default=0.9)
 ap.add_argument("--min-agreement", type=int, default=2)

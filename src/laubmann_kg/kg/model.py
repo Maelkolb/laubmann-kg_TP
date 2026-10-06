@@ -1,4 +1,4 @@
-"""Knowledge graph domain model mirroring ontologies/laubmann.ttl (0.7.0).
+"""Knowledge graph domain model mirroring ontologies/laubmann.ttl (0.7.1).
 
 The dataclasses are the contract between extraction and emission. Not every
 dataclass is a node in the graph: ``Evidence``, ``Behaviour`` and ``Habitat``
@@ -306,6 +306,7 @@ class MultimodalRegion:
     visible_text: Optional[str] = None        # text on the region as transcribed
     crop: Optional[str] = None                # regions/<page_id>/<file>.png
     region_type: Optional[str] = None         # layout type (ImageRegion, ObjectRegion, ParagraphRegion …)
+    completeness: Optional[str] = None        # vocab.REGION_COMPLETENESS, where two scan checks agree
 
     @property
     def uid(self) -> str:

@@ -54,20 +54,21 @@ Levels for display: 1 under 10 %, 2 from 10 to 25 %, 3 from 25 to 50 %, 4 from 5
 
 ## Results
 
-Export `kg_exports_2026-10-05_attribution`; blind check of 9,145 entries (85,787 records; 9 entries without a page
+Export `kg_exports_2026-10-06_regions` (computed first on `kg_exports_2026-10-05_attribution`; the three very long entries the
+new export read anew were checked again by both checks); blind check of 9,145 entries (85,787 records; 9 entries without a page
 scan and 75 records the check did not answer keep the record check alone), $50.52. Summary:
 `data/cache/graph_check/quality/quality_summary.json` (Drive `HistOrniGraph_Final_Graph_NoVal/quality/`).
 
 | Estimated error of the record | Records | Share | Estimated for the audited records | Found in the audit (audited records) |
 |---|---|---|---|---|
 | under 10 % | 24,283 | 28.3 % | 8.2 % | 8.6 % (238) |
-| 10 to 25 % | 35,550 | 41.4 % | 23.3 % | 32.5 % (120) |
-| 25 to 50 % | 8,922 | 10.4 % | 29.3 % | 29.5 % (197) |
-| 50 % and more | 17,139 | 20.0 % | 71.0 % | 62.1 % (136) |
+| 10 to 25 % | 35,547 | 41.4 % | 23.3 % | 32.5 % (120) |
+| 25 to 50 % | 8,921 | 10.4 % | 29.3 % | 29.5 % (197) |
+| 50 % and more | 17,145 | 20.0 % | 71.0 % | 62.1 % (136) |
 
 Cross-validated (five folds by entry): 28.2 % of the audited records estimated with an error, 29.1 % found; for the
-occurrence 13.7 % against 13.8 %; weighted AUC 0.72. Over the graph the estimate expects 26,230 records (30.5 %)
-with a wrong field, 13,123 (15.3 %) with a wrong occurrence, 20.5 % wrong coordinates.
+occurrence 13.7 % against 13.8 %; weighted AUC 0.72. Over the graph the estimate expects 26,233 records (30.5 %)
+with a wrong field, 13,127 (15.3 %) with a wrong occurrence, 20.5 % wrong coordinates.
 
 Share of the field wrong in the audit, per status (audited records):
 
@@ -109,11 +110,11 @@ audited ones) and conservative in the fourth (62.1 % against 71.0 %).
 ## Reproduce
 
 ```
-X=data/exports/kg_exports_2026-10-05_attribution; I=data/cache/graph_check/in
+X=data/exports/kg_exports_2026-10-06_regions; I=data/cache/graph_check/in
 R="G:/My Drive/HistOrniGraph_Final_Graph_NoVal/machine_review"
-python tools/validation_ui/machine_review/blind_check.py $I/payload_final.b64 $I/triples_final.pkl \
+python tools/validation_ui/machine_review/blind_check.py $I/payload_regions.b64 $I/triples_regions.pkl \
     --out data/cache/blind_check_r1 --dwca $X/dwca --budget 80
-python tools/validation_ui/machine_review/blind_compare.py $I/triples_final.pkl \
+python tools/validation_ui/machine_review/blind_compare.py $I/triples_regions.pkl \
     --work data/cache/blind_check_r1/blind_check --dwca $X/dwca
 python tools/validation_ui/graph_check/record_quality.py --dwca $X/dwca \
     --blind data/cache/blind_check_r1/blind_check/blind_checks.csv --record-check "$R/record_checks.csv" \

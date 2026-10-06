@@ -20,6 +20,7 @@ function listRows() {   // entries of the queue and the corpus, filtered by leve
 }
 function renderChips() {
   const c = RVU.counts;
+  if (EXPLORER) { $('#qchips').innerHTML = xListOptionHtml(); $('#lvchips').innerHTML = ''; return; }
   // explorer build: the queues are filters — the number of entries, nothing "open"
   $('#qchips').innerHTML = queueList().map(q => `<button class="qchip${q === RVU.queue ? ' on' : ''}" data-q="${q}" title="${esc(t('qt_' + q))}"><i class="qd qd-${q}"></i><span class="ql">${t('q_' + q)}</span><span class="qn num">${q === 'done' || EXPLORER ? fmt(c[q].n) : fmt(c[q].open)}</span>${q === 'done' || EXPLORER ? '' : `<span class="qt num">/ ${fmt(c[q].n)}</span>`}</button>`).join('');
   renderLvChips();
@@ -39,10 +40,11 @@ function rvRenderList(keep) {
   const body = $('#elist-body'); body.dataset.lang = LANG;
   RVU.list = listRows(); RVU.listPos = new Map(RVU.list.map((r, i) => [r.n, i]));
   $('#elist-pad').style.height = RVU.list.length * ROW_H + 'px';
-  if (!keep) { const i = RVU.listPos.get(S.e); body.scrollTop = i === undefined ? 0 : Math.max(0, i * ROW_H - body.clientHeight / 2 + ROW_H); }
+  if (!keep) { const i = RVU.listPos.get(S.e); body.scrollTop = i === undefined ? 0 : rowTop(i, body); }
   drawList(); listFoot();
 }
 function listRowHtml(r, i) {
+  if (EXPLORER) return xListRowHtml(r, i);
   const s = RVS.get(r.n); const chk = isChecked(s.uid); const c = openLevels(s); let b = '';
   if (RVU.notes) for (const lv of LEVELS) if (c[lv]) b += lvPill(lv, fmt(c[lv]), t('bt_lv', fmt(c[lv]), lvName(lv)));
   if (!EXPLORER && !chk && !c[1] && !c[2] && !c[3] && s.lv.some(keyInCorpus)) b += `<span class="bdg off" title="${esc(t('bt_alldone'))}">✓</span>`;
@@ -60,13 +62,15 @@ function drawList() {
   for (let i = a; i < b; i++) s += listRowHtml(RVU.list[i], i);
   $('#elist-pad').innerHTML = s || `<div class="muted" style="padding:12px">${t(RVU.lvf.size ? 'list_empty_lv' : 'list_empty')}</div>`;
 }
+const rowTop = (i, body) => Math.max(0, Math.round((i * ROW_H - body.clientHeight / 2 + ROW_H) / ROW_H) * ROW_H);   // the selected row in the middle, the list on whole rows
 function markList() {
   const body = $('#elist-body'); const i = RVU.listPos ? RVU.listPos.get(S.e) : undefined;
-  if (i !== undefined) { const y = i * ROW_H; if (y < body.scrollTop || y + ROW_H > body.scrollTop + body.clientHeight) body.scrollTop = Math.max(0, y - body.clientHeight / 2 + ROW_H); }
+  if (i !== undefined) { const y = i * ROW_H; if (y < body.scrollTop || y + ROW_H > body.scrollTop + body.clientHeight) body.scrollTop = rowTop(i, body); }
   drawList();
 }
 function renderVolSelect() {
   const sel_ = $('#volsel');
+  if (EXPLORER) { xRenderVolSelect(sel_); return; }
   sel_.innerHTML = `<option value="all">${t('vol_all')}</option>` + G.vols.concat(G.entByVol.has(-1) ? [-1] : []).map(v => `<option value="${v}">${esc(volLabel(v).replace(/^Laubmann\s*·\s*/, ''))} · ${esc(pref(v, 'dcterms:temporal') || '')}</option>`).join('');
   sel_.value = RVU.vol;
   $('#qsort').innerHTML = (EXPLORER ? ['score', 'diary'] : ['score', 'risk', 'diary']).map(k => `<option value="${k}"${k === RVU.sort ? ' selected' : ''}>${t('sort_' + k)}</option>`).join('');
@@ -89,6 +93,7 @@ function setLevelFilter(lv) {
 }
 function rvWireList() {
   $('#qchips').addEventListener('click', ev => { const b = ev.target.closest('[data-q]'); if (b) setQueue(b.dataset.q, true); });
+  $('#qchips').addEventListener('change', ev => { if (ev.target.id === 'onlyimg') setQueue(ev.target.checked ? 'img' : 'all', false); });
   $('#lvchips').addEventListener('click', ev => { const b = ev.target.closest('[data-lv]'); if (b) setLevelFilter(+b.dataset.lv); });
   $('#volsel').addEventListener('change', ev => { RVU.vol = ev.target.value; rvRenderList(); if (S.view === 'entry') renderEntryHead(); });
   $('#qsort').addEventListener('change', ev => { RVU.sort = ev.target.value; store('qsort', RVU.sort); rvRenderList(); if (S.view === 'entry') renderEntryHead(); });
@@ -101,7 +106,7 @@ function rvWireList() {
 
 // ------------------------------------------------------------------ entering an entry, head, tools, legend
 function rvEnterEntry(e, changed) {
-  if (changed) { EM = null; RVU.form = null; RVU.card = 0; RVU.armed = false; RVU.hints = false; RVU.showOut = false; RVU.enter = !S.sel; S.tab = 'check'; S.propOpen.clear(); PCACHE.clear(); $('#gtip').hidden = true; }   // a new entry starts with its cards
+  if (changed) { EM = null; RVU.form = null; RVU.card = 0; RVU.armed = false; RVU.hints = false; RVU.showOut = false; RVU.enter = !S.sel; S.tab = EXPLORER && S.tab !== 'check' ? 'text' : 'check'; S.propOpen.clear(); PCACHE.clear(); $('#gtip').hidden = true; }   // a new entry starts with its cards
   const m = entryModel(e);
   if (changed) { const items = visibleItems(m); RVU.card = Math.max(0, items.findIndex(it => !itemDecided(it) && it.type !== 'media' && (it.type !== 'ent' || it.lv >= 1))); }   // the gravest open item
   if (!RVU.listPos || $('#elist-body').dataset.lang !== LANG) { renderVolSelect(); renderChips(); rvRenderList(); } else markList();
@@ -133,6 +138,7 @@ function rvHeadAct(a, el) {
   else if (a === 'preset-std' || a === 'preset-all') setPreset(a === 'preset-all');
   else if (a === 'showout') { RVU.showOut = !RVU.showOut; renderTools(); renderGraph(false); rvRenderTable(); renderPanel(); }
   else if (a === 'cols') colChooser(el);
+  else if (a === 'xlayers') { XT.layers = !XT.layers; renderTools(); }
 }
 function rvToolsHtml() {
   if (RVU.mid !== 'table') return false;
@@ -148,7 +154,7 @@ function rvLegendHtml() {   // colour = level, marker = kind; the pill of a reco
   return (RVU.notes ? markLegendHtml() : '') + `<span class="li" title="${esc(t('lg_q_t'))}">${[1, 2, 3, 4].map(lv => `<span class="qlv ql${lv}">${esc(t('ql_r_' + lv))}</span>`).join('')}${t('lg_q')}</span>` +
     `<span class="li muted" title="${esc(t('lg_click') + ' · ' + t('zoom_hint'))}">ⓘ</span>`;
 }
-function rvHelpHtml() { return t('help') + `<p>${t('ar_help')}</p><h3>${t('help_q')}</h3><p>${t('help_q_body')}</p>` + (RVU.notes ? `<h3>${t('help_sev')}</h3>` + sevTableHtml() + `<p class="muted" style="font-size:.8rem">${t('sev_note')}</p>` : ''); }
+function rvHelpHtml() { if (EXPLORER) return t('help'); return t('help') + `<p>${t('ar_help')}</p><h3>${t('help_q')}</h3><p>${t('help_q_body')}</p>` + (RVU.notes ? `<h3>${t('help_sev')}</h3>` + sevTableHtml() + `<p class="muted" style="font-size:.8rem">${t('sev_note')}</p>` : ''); }
 function rvFilterNote(block) {   // node view, class view: the counts follow the reliability filter
   if (!corpusOn()) return ''; const s = esc(t('filter_note', qfName(), fmt(QF.shown), fmt(QF.total)));
   return block ? `<div class="note qfnote">${s}</div>` : ` <span class="qftag">${s}</span>`;
@@ -202,7 +208,7 @@ function rvRingSvg(v, an) {   // the ring carries the level; hints (level 0) hav
 function rvBadgeSvg(v, an) { const w = an.mk.length > 1 ? 11 : 8; return `<g class="abadge ${an.cls}" transform="translate(${v.w - 3},-2)"><rect x="${-w}" y="-8" width="${2 * w}" height="16" rx="8"/><text y="3.6" text-anchor="middle">${esc(an.mk)}</text></g>`; }
 function rvTipHtml(v) {
   const an = rvAnn(v); let s = archiveTip(v);
-  if (an) s += `<div class="antip ${an.cls}">${an.lv != null ? lvDot(an.lv) + esc(lvName(an.lv)) + ' · ' : ''}${esc(t(an.tip))}</div>`;
+  if (an) s += `<div class="antip ${an.cls}">${an.lv != null ? lvDot(an.lv) + esc(lvName(an.lv)) + SEP : ''}${esc(t(an.tip))}</div>`;
   if (v.kind === 'obs') s += qualLine(v.n);
   if (SUB && SUB.propMode === 'compact' && S.sel !== v.key) s += propsTip(v);
   return s;
@@ -402,7 +408,8 @@ function levelTableHtml() {   // open items per level and per kind (entries the 
   return s;
 }
 function rvRenderOverview() {
-  const box = $('#rv-ov'); if (!box) return; const c = countQueues(); const st = layerStats(); const p = progressStats(); const meta = R.meta || {};
+  const box = $('#rv-ov'); if (!box) return;
+  if (EXPLORER) { xRenderOverview(box); return; } const c = countQueues(); const st = layerStats(); const p = progressStats(); const meta = R.meta || {};
   const pct = (a, b) => (b ? (100 * a / b).toFixed(1).replace('.', LANG === 'de' ? ',' : '.') + ' %' : '–');
   // explorer build: the queues are filters (entries), there is no progress and no precision of decisions
   const tile = q => `<div class="tile qtile" data-queue="${q}"><div class="v num">${fmt(q === 'done' || EXPLORER ? c[q].n : c[q].open)}</div><div class="l"><i class="qd qd-${q}"></i>${t('q_' + q)}</div><div class="s">${EXPLORER ? esc(t('ov_entries')) : q === 'done' ? esc(t('ov_done_of', fmt(c.all.n))) : esc(t('ov_open_of', fmt(c[q].n)))}</div></div>`;

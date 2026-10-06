@@ -82,14 +82,14 @@ function rvNodeExtra(n) {   // what the node view and the node tab show above th
   if (k === 'obs') return qualLine(n);
   if (k === 'page') {
     const pid = pageIdOf(n); const pi = pageIndex(pid); const regs = pi >= 0 ? pageRegions(pi) : []; const ents = pageEntries(n).filter(rvSrcOk);
-    return `<div class="pagefig">${pageFigHtml(pid)}</div><div class="muted arhint"><span class="link" data-page-open="${esc(pid)}">⤢ ${t('ar_open_page')}</span> · ${esc(t('ar_regions', fmt(regs.filter(r => !r.media).length), fmt(regs.filter(r => r.media).length)))} · ${t('ar_hint')}</div>` +
+    return `<div class="pagefig">${pageFigHtml(pid)}</div><div class="muted arhint"><span class="link" data-page-open="${esc(pid)}">⤢ ${t('ar_open_page')}</span>${SEP}${esc(t('ar_regions', fmt(regs.filter(r => !r.media).length), fmt(regs.filter(r => r.media).length)))}${SEP}${t('ar_hint')}</div>` +
       `<h3 class="sec">${esc(t('ar_entries_page', fmt(ents.length)))}</h3>${ents.length ? entryRowsHtml(ents) : `<p class="muted">${t('ar_no_entries')}</p>`}`;
   }
   if (k === 'region' || k === 'mmregion') {
     const uid = regionUid(n); const mm = MEDIA.get(uid); const pg = regionPageNode(n); const pid = regionPageId(n); const ents = regionEntries(n).filter(rvSrcOk); const b = regionBox(uid);
     return `<div class="nodecrop" data-crop-open="${esc(uid)}" title="${esc(t('crop_open'))}">${cropHtml(uid, 'node', 1000)}</div>` +
-      `<div class="muted arhint">${esc(k === 'mmregion' ? mediaKind(mm ? mm.x[1] : '') : t('ar_textregion'))} · ${t('ar_page')}: ${pg >= 0 ? `<span class="link" data-n="${pg}">${esc(pageTitle(pg))}</span>` : esc(pid || '–')}` +
-      `${pid && b ? ` · <span class="link" data-page-open="${esc(pid)}" data-on="${esc(uid)}">${t('ar_on_page')}</span>` : ''}${b ? '' : ` · ${t('media_nobox')}`}</div>` +
+      `<div class="muted arhint">${esc(k === 'mmregion' ? mediaKind(mm ? mm.x[1] : '') : t('ar_textregion'))}${SEP}${t('ar_page')}: ${pg >= 0 ? `<span class="link" data-n="${pg}">${esc(pageTitle(pg))}</span>` : esc(pid || '–')}` +
+      `${pid && b ? `${SEP}<span class="link" data-page-open="${esc(pid)}" data-on="${esc(uid)}">${t('ar_on_page')}</span>` : ''}${b ? '' : `${SEP}${t('media_nobox')}`}</div>` +
       `<h3 class="sec">${esc(t(k === 'mmregion' ? 'ar_entries_mm' : 'ar_entries_region', fmt(ents.length)))}</h3>${ents.length ? entryRowsHtml(ents, 20) : `<p class="muted">${t('ar_no_entries')}</p>`}`;
   }
   if (k === 'volume') {

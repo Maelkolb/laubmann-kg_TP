@@ -138,7 +138,7 @@ def test_versions_agree() -> None:
     onto = Graph().parse(str(ONTOLOGY), format="turtle")
     shapes = Graph().parse(str(SHAPES), format="turtle")
     version = str(onto.value(ONTO_IRI, OWL.versionInfo))
-    assert version == "0.7.0"
+    assert version == "0.7.1"
     assert str(shapes.value(SHAPES_IRI, OWL.versionInfo)) == version
     vocab = Graph().parse(str(VOCABS), format="turtle")
     assert str(vocab.value(URIRef("https://w3id.org/laubmann-kg/vocabularies"), OWL.versionInfo)) == version

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="light" data-mode="{{MODE}}">
+<html lang="{{LANG}}" data-theme="light" data-mode="{{MODE}}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,7 +34,7 @@
   <button id="btn-help" class="pill" data-i18n-title="help_t" title="Hilfe">?</button>
 </header>
 <div id="qbar"></div>
-<div id="loading"><div class="spinner"></div><div id="loadmsg">Graph wird geladen …</div></div>
+<div id="loading"><div class="spinner"></div><div id="loadmsg">{{LOADING}}</div></div>
 <main id="app" hidden>
   <section id="v-overview" class="view"><div id="rv-ov"></div><div id="x-ov"></div></section>
   <section id="v-entry" class="view">
@@ -58,13 +58,13 @@
       <div id="rtable" hidden></div>
       <div id="legend"></div>
     </div>
-    <div id="split" title="Breite ziehen"></div>
+    <div id="split" data-i18n-title="split_t"></div>
     <aside id="panel">
       <div id="scanpane">
         <div id="scanbar"></div>
         <div id="scanview"><div id="scanstage"><img id="scanimg" alt="" draggable="false"><svg id="scanov" xmlns="http://www.w3.org/2000/svg"></svg></div><div id="scanmsg" hidden></div></div>
       </div>
-      <div id="hsplit" title="Höhe ziehen"></div>
+      <div id="hsplit" data-i18n-title="hsplit_t"></div>
       <div class="tabs" id="ptabs">
         <button data-tab="check" data-i18n="tab_check">Prüfen</button>
         <button data-tab="text" data-i18n="tab_text">Text</button>

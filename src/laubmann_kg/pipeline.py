@@ -8,6 +8,8 @@ to the deduped corpus is a path change in the config, not a code change.
 
 from __future__ import annotations
 
+import collections
+
 import datetime as _dt
 import hashlib
 import json
@@ -492,16 +494,34 @@ def run_pipeline(config: dict, input_dir: Optional[Path] = None) -> ExtractionRe
 
     if multimodal_path is not None:
         # every region goes to the entry it sits in (lkg:hasMultimodalRegion);
-        # regions of entries that QA excluded are dropped with them
+        # regions of entries that QA excluded are dropped with them, and so are the regions
+        # the region check drops (another region of the entry shows the object better, blank
+        # paper, fragments); the others carry their completeness and, where the box cut the
+        # object off, the new crop (review/regions.py)
+        from laubmann_kg.review.regions import load_region_decisions
+        decisions = load_region_decisions(
+            machine_cfg.get("regions") if machine_cfg.get("enabled", True) else None,
+            review_cfg.get("regions"), min_agreement=int(machine_cfg.get("min_agreement", 2)))
+        dropped = collections.Counter()
         by_uid = {e.entry_uid: e for e in result.entries}
         for record in read_multimodal(multimodal_path):
             entry = by_uid.get(record.get("entry_uid") or "")
             if entry is None:
                 continue
             region = to_region(record, entry.volume)
-            if region is not None:
-                entry.multimodal.append(region)
-                result.multimodal.append(region)
+            if region is None:
+                continue
+            decision = decisions.get(region.region_uid)
+            if decision is not None and decision.drop:
+                dropped[decision.reason or "dropped"] += 1
+                continue
+            if decision is not None:
+                region.completeness = decision.completeness
+                region.crop = decision.crop or region.crop
+            entry.multimodal.append(region)
+            result.multimodal.append(region)
+        if dropped:
+            logger.info("regions dropped by the region check: %s", dict(dropped))
 
     logger.info("pipeline: %d entries (%d empty, %d failed), %d observations, "
                 "%d travel events, %d persons, %d places, %d media",

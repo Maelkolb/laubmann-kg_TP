@@ -2,6 +2,7 @@
    tests/smoke.py checks that both languages have the same keys. */
 
 const GC_DE = {
+  split_t: 'Breite ziehen', hsplit_t: 'Höhe ziehen',
   app_title: 'Laubmann-KG · Graph-Prüfung', nav_entry: 'Prüfen', tab_check: 'Prüfen', filter_ph: 'Liste filtern: Datum, Ort, Kennung …', toggle_list: 'Arbeitsliste ein/aus',
   labels_short: 'Kanten', prev: 'voriger Eintrag der Liste (←)', next: 'nächster Eintrag der Liste (→)', of_queue: '{0} / {1} in „{2}“',
   who_ph: 'Name (Prüfer/in)', who_t: 'steht als reviewed_by in jeder exportierten Zeile', btn_save: 'Sichern & Export', btn_save_t: 'Sicherungsdatei, Export-ZIP für die Pipeline', btn_load: 'Laden', btn_load_t: 'graph_progress.json oder Export-ZIP dieser Seite einlesen',
@@ -69,14 +70,14 @@ const GC_DE = {
   mkind_drawing: 'Zeichnung', mkind_map: 'Karte', mkind_photograph: 'Foto', mkind_print: 'Druck', mkind_object: 'Objekt', 'mkind_text-insert': 'Texteinlage', mkind_list: 'Liste',
   crop_fail: 'Bild nicht ladbar', crop_cutout: 'Ausschnitt aus dem Seitenscan', crop_open: 'groß ansehen', crop_fit: 'einpassen', crop_hint: 'Rad = Zoom · Ziehen = verschieben · Doppelklick = einpassen · Esc schließt',
   media_nobox: 'nicht verortet', media_nobox_t: 'Die Seitengeometrie kennt diese Region nicht: kein Rahmen auf dem Scan', media_nodesc: 'ohne Beschreibung im Graph',
-  scan_media: 'Bilder', scan_media_t: 'Rahmen der Bilder und Einlagen auf dem Scan ein-/ausblenden (Klick auf einen Rahmen öffnet die Karte)', scan_noregion: 'Region nicht verortet',
+  scan_media: 'Bilder', scan_media_t: 'Rahmen der Bilder und Einlagen auf dem Scan ein-/ausblenden (Klick auf einen Rahmen öffnet die Karte)', scan_noregion: 'Region nicht verortet', scan_noregion_t: 'Diese Region hat keinen Rahmen auf dem Scan',
   // text
   txt_edit: 'Auswahl korrigieren', txt_edit_t: 'Textstelle markieren, dann hier klicken: eigene Lesung für diese Stelle', txt_old: 'Text wie transkribiert', txt_new: 'richtige Lesung', txt_own: 'Eigene Textkorrekturen',
   txt_select: 'Erst eine Textstelle im Eintragstext markieren.', txt_overlap: 'Die Auswahl berührt eine Lesekorrektur — bitte deren Karte benutzen (E = eigene Lesung).', tc_was: 'Transkription vor der Korrektur',
   tc_unlocated: '{0} angewendete Lesekorrekturen lassen sich im Text nicht verorten; sie stehen nur im Reiter Prüfen.', tl_corr: 'Korrektur der Lesung', tl_wrong: 'beanstandet, offen', tl_check: 'von der Prüfung verbessert ({0})', tl_mine: 'von dir entschieden ({0} geändert)', tc_before: 'vorher', tlayer_final: 'korrigiert', tlayer_orig: 'Original', tlayer_t: 'korrigiert: der Text mit den Korrekturen der Lesung, den Verbesserungen der Prüfungen und deinen Entscheidungen; Original: die Transkription vor der Lesung', tc_scan: 'Vorschlag des Scan-Agenten', tc_scan_in: 'Vorschlag des Scan-Agenten, steht im Text', tc_better_in: 'bessere Lesung, steht im Text', tl_rec: 'Belegstelle',
   // scan
   scan_n: 'Scan {0}', scan_fit_entry: 'Eintrag', scan_fit_entry_t: 'auf den Eintrag einpassen (Doppelklick)', scan_fit_page: 'Seite', scan_fit_page_t: 'ganze Seite zeigen', scan_hide_t: 'Scan ausblenden (S)', scan_loading: 'Scan wird geladen …',
-  scan_approx: 'ungefähr', scan_noline: 'Zeile dieses Datensatzes nicht verortet',
+  scan_approx: 'ungefähr', scan_noline: 'Zeile nicht verortet', scan_noline_t: 'Die Zeile dieses Datensatzes ist auf dem Scan nicht verortet',
   // state, export
   undo_none: 'nichts rückgängig zu machen', undone: 'rückgängig gemacht', ls_full: 'Browser-Speicher voll: bitte unter „Sichern & Export“ eine Sicherungsdatei verbinden.', backup_fail: 'Sicherungsdatei konnte nicht geschrieben werden',
   saved_browser: '✓ {0}', saved_file: '✓ Datei {0}', saved_t: 'Stand zuletzt gesichert (im Browser; „Datei“ = auch in der verbundenen Sicherungsdatei)', prog: '{0} geprüft · {1} Entscheidungen', prog_t: 'Einträge als geprüft markiert · Entscheidungen insgesamt',
@@ -111,8 +112,7 @@ const GC_DE = {
   ar_entries_page: 'Einträge auf dieser Seite ({0})', ar_entries_region: 'Einträge, deren Text durch diese Region läuft ({0})', ar_entries_mm: 'Einträge mit dieser Region ({0})', ar_no_entries: 'kein Eintrag',
   ar_textregion: 'Textregion', ar_page: 'Seite', ar_on_page: 'auf der Seite zeigen', ar_table: 'Tabelle', ar_images: 'Bilder', ar_mode_t: 'Tabelle oder Bilder (Vorschaubilder laden erst, wenn sie sichtbar sind)', ar_vol_pages: 'Seiten dieses Bandes ({0})',
   // ---- explorer build, help
-  notes_on: 'Prüfhinweise zeigen', notes_t: 'Befunde der Scanprüfungen, automatische Änderungen, Vorschläge und Entferntes als Markierungen und Karten zeigen',
-  notes_off_note: '{0} Datensätze, Prüfhinweise sind ausgeblendet (Schalter in der Leiste unter der Kopfzeile)', no_media: 'Dieser Eintrag hat keine Bilder oder Einlagen.', list_foot_x: '{0} Einträge', ov_entries: 'Einträge',
+    list_foot_x: '{0} Einträge', ov_entries: 'Einträge',
   // ---- levels (gravity of flags), markers
   lv_3: 'schwer', lv_2: 'mittel', lv_1: 'leicht', lv_0: 'Hinweis', mk_f: 'Befund einer Prüfung', mk_a: 'automatische Änderung', mk_s: 'Vorschlag · fehlt?', mk_r: 'entfernt', mk_h: 'Hinweis',
   lg_level: 'Farbe = Schwere', lg_kind: 'Zeichen = Art', lg_level_t: 'Die Farbe von Ring, Marke und Kartenrand zeigt die Schwere; ein grüner Haken heißt: von dir entschieden', lg_kind_t: 'Das Zeichen zeigt die Art: ! Befund einer Scanprüfung · M automatische Änderung der Maschine · ? Vorschlag bzw. fehlender Datensatz · × entfernt · ✓ entschieden',
@@ -183,6 +183,7 @@ const GC_DE = {
 </ul>`,
 };
 const GC_EN = {
+  split_t: 'drag to resize', hsplit_t: 'drag to resize',
   app_title: 'Laubmann KG · graph check', nav_entry: 'Review', tab_check: 'Check', filter_ph: 'Filter the list: date, place, id …', toggle_list: 'Show/hide work list',
   labels_short: 'Edges', prev: 'previous entry of the list (←)', next: 'next entry of the list (→)', of_queue: '{0} / {1} in “{2}”',
   who_ph: 'Reviewer name', who_t: 'written as reviewed_by into every exported row', btn_save: 'Save & export', btn_save_t: 'backup file, export ZIP for the pipeline', btn_load: 'Load', btn_load_t: 'read graph_progress.json or an export ZIP of this page',
@@ -245,12 +246,12 @@ const GC_EN = {
   mkind_drawing: 'Drawing', mkind_map: 'Map', mkind_photograph: 'Photo', mkind_print: 'Print', mkind_object: 'Object', 'mkind_text-insert': 'Text insert', mkind_list: 'List',
   crop_fail: 'Image cannot be loaded', crop_cutout: 'cut-out of the page scan', crop_open: 'view large', crop_fit: 'fit', crop_hint: 'wheel = zoom · drag = pan · double-click = fit · Esc closes',
   media_nobox: 'not located', media_nobox_t: 'The page geometry does not know this region: no outline on the scan', media_nodesc: 'no description in the graph',
-  scan_media: 'Images', scan_media_t: 'show/hide the outlines of images and inserts on the scan (click an outline to open its card)', scan_noregion: 'region not located',
+  scan_media: 'Images', scan_media_t: 'show/hide the outlines of images and inserts on the scan (click an outline to open its card)', scan_noregion: 'region not located', scan_noregion_t: 'this region has no outline on the scan',
   txt_edit: 'Correct selection', txt_edit_t: 'select a passage, then click here: your own reading of it', txt_old: 'Text as transcribed', txt_new: 'correct reading', txt_own: 'Own text corrections',
   txt_select: 'First select a passage in the entry text.', txt_overlap: 'The selection touches a reading correction — please use its card (E = own reading).', tc_was: 'transcription before the correction',
   tc_unlocated: '{0} applied reading corrections cannot be located in the text; they are listed in the Check tab only.', tl_corr: 'reading correction', tl_wrong: 'objected to, open', tl_check: 'improved by a check ({0})', tl_mine: 'decided by you ({0} changed)', tc_before: 'before', tlayer_final: 'corrected', tlayer_orig: 'original', tlayer_t: 'corrected: the text with the reading corrections, the checks’ improvements and your decisions; original: the transcription before the reading', tc_scan: 'scan agent’s suggestion', tc_scan_in: 'scan agent’s suggestion, now in the text', tc_better_in: 'better reading, now in the text', tl_rec: 'record passage',
   scan_n: 'Scan {0}', scan_fit_entry: 'Entry', scan_fit_entry_t: 'fit to the entry (double-click)', scan_fit_page: 'Page', scan_fit_page_t: 'show the whole page', scan_hide_t: 'hide the scan (S)', scan_loading: 'Loading scan …',
-  scan_approx: 'approximate', scan_noline: 'line of this record not located',
+  scan_approx: 'approximate', scan_noline: 'line not located', scan_noline_t: 'the line of this record is not located on the scan',
   undo_none: 'nothing to undo', undone: 'undone', ls_full: 'Browser storage is full: please connect a backup file under “Save & export”.', backup_fail: 'The backup file could not be written',
   saved_browser: '✓ {0}', saved_file: '✓ file {0}', saved_t: 'state last saved (in the browser; “file” = also in the connected backup file)', prog: '{0} checked · {1} decisions', prog_t: 'entries marked as checked · decisions in total',
   ex_title: 'Save & export', ex_state: '{0} entries checked, {1} decisions.', ex_who: 'Reviewer: {0}', ex_noname: 'Please enter your name at the top (reviewed_by).', ex_h_backup: '1 · Save the state',
@@ -283,8 +284,7 @@ const GC_EN = {
   ar_entries_page: 'Entries on this page ({0})', ar_entries_region: 'Entries whose text runs through this region ({0})', ar_entries_mm: 'Entries with this region ({0})', ar_no_entries: 'no entry',
   ar_textregion: 'text region', ar_page: 'page', ar_on_page: 'show on the page', ar_table: 'Table', ar_images: 'Images', ar_mode_t: 'table or images (thumbnails load only when visible)', ar_vol_pages: 'Pages of this volume ({0})',
   // ---- explorer build, help
-  notes_on: 'Show review notes', notes_t: 'show findings of the scan checks, automatic changes, suggestions and removals as markers and cards',
-  notes_off_note: '{0} records, review notes are hidden (switch in the bar below the header)', no_media: 'This entry has no images or inserts.', list_foot_x: '{0} entries', ov_entries: 'entries',
+    list_foot_x: '{0} entries', ov_entries: 'entries',
   // ---- levels (gravity of flags), markers
   lv_3: 'severe', lv_2: 'medium', lv_1: 'minor', lv_0: 'hint', mk_f: 'finding of a check', mk_a: 'automatic change', mk_s: 'suggestion · missing?', mk_r: 'removed', mk_h: 'hint',
   lg_level: 'colour = gravity', lg_kind: 'marker = kind', lg_level_t: 'the colour of ring, badge and card border shows the gravity; a green tick means: decided by you', lg_kind_t: 'the marker shows the kind: ! finding of a scan check · M automatic change by the machine · ? suggestion or missing record · × removed · ✓ decided',
@@ -355,68 +355,43 @@ const GC_EN = {
 </ul>`,
 };
 // ---- the explorer build ("Graph-Explorer"): the same page without decisions; only wording differs
-const GX_DE = {
-  app_title: 'Laubmann-KG · Graph-Explorer', nav_entry: 'Einträge', tab_check: 'Hinweise', toggle_list: 'Liste ein/aus', ov_rv_title: 'Graph-Explorer · Laubmann-Wissensgraph',
-  ov_note: '<b>Lesende Ansicht des Graphen</b> — dieselben Daten und dieselbe Darstellung wie die Graph-Prüfung, ohne Entscheidungen. Die Prüfhinweise (Befunde der Scanprüfungen, automatische Änderungen, Vorschläge, Entferntes) sind Behauptungen von Maschinen und von keinem Menschen geprüft; „Prüfhinweise zeigen“ in der Leiste unter der Kopfzeile blendet sie aus. Entschieden und exportiert wird in der Graph-Prüfung (<code>Laubmann_Graphpruefung.html</code>).',
-  open_lbl: 'Prüfhinweise', open_t: 'Prüfhinweise dieses Eintrags nach Schwere', no_open: 'keine Prüfhinweise', bt_lv: '{0} · {1}', lvf_t: 'Einträge mit Prüfhinweisen dieser Stufe — kombinierbar mit dem Listenfilter',
-  lvf_chip_t: 'nur Einträge mit Prüfhinweisen der Stufe „{0}“ ({1} Einträge in dieser Liste)', list_empty_lv: 'Kein Eintrag dieser Liste hat Prüfhinweise der gewählten Stufe.',
-  sort_t: 'Reihenfolge der Liste: wie im Tagebuch (Band für Band) oder Einträge mit den meisten schweren Prüfhinweisen zuerst', ov_lv: 'Prüfhinweise nach Schwere',
-  ov_lv_lead: 'Jeder Prüfhinweis der Einträge, die der Filter zeigt, nach Stufe und Art. Ein Name zählt in jedem Eintrag, in dem er vorkommt.', lvt_entries: 'Einträge mit Prüfhinweisen der Stufe',
-  no_flags: 'In diesem Eintrag gibt es keinen Prüfhinweis der Stufen schwer, mittel oder leicht.', t_hint: 'Zeile anklicken wählt den Datensatz (Scan, Karte, Knoten)', t_only_flagged: 'nur mit Prüfhinweis', t_none_flagged: 'Kein Datensatz mit Prüfhinweis.',
-  qf_label_t: 'Geschätztes Fehlerrisiko jedes Datensatzes aus zwei Maschinenprüfungen und einem blinden Audit am Scan. Der Filter ist eine Ansicht des Graphen.',
-  help_q_body: 'Jeder Datensatz trägt ein geschätztes Fehlerrisiko. Zwei Maschinenprüfungen urteilen über jedes Feld; ein blindes Audit am Scan sagt, wie oft ein Feld mit diesem Urteil tatsächlich falsch ist. Die Leiste unter der Kopfzeile wählt das Maß und die Schwelle und nennt, wie viele der gezeigten Datensätze vermutlich falsch sind. Die Marken je Feld: grün beide Prüfungen bestätigen, grau nur eine, gelb eine Prüfung zweifelt, rot beide.',
-  sev_note: 'Die Stufe bestimmt Farbe, Reihenfolge und Zählung; das Zeichen (! M ? ×) sagt, welche Art von Markierung es ist.',
-  lg_level_t: 'Die Farbe von Ring, Marke und Kartenrand zeigt die Schwere des Prüfhinweises', lg_kind_t: 'Das Zeichen zeigt die Art: ! Befund einer Scanprüfung · M automatische Änderung der Maschine · ? Vorschlag bzw. fehlender Datensatz · × entfernt',
-  tip_err: 'Eine Scanprüfung hält diesen Datensatz für falsch oder überzählig', tip_auto: 'automatisch korrigiert', tip_group_err: 'Datensätze mit Prüfhinweis in dieser Gruppe (anklicken klappt auf)', tip_gone: 'automatisch aus dem Graph entfernt',
-  bad_format: 'Wert in keinem übernehmbaren Format', bad_kind: 'keine Eintragsart des Vokabulars', tc_unlocated: '{0} angewendete Lesekorrekturen lassen sich im Text nicht verorten; sie stehen nur im Reiter Hinweise.', chip_ro: 'Befund zu einem Feld ohne eigene Spalte',
-  tip_name_changed: 'Verknüpfung maschinell geändert', qt_sample: 'feste Zufallsstichprobe (jeder 33. Eintrag)', q_finding: 'Befund der Maschine', hints_t: 'Stufe 0: bestätigte Verknüpfungen, unstrittige oder nicht angewendete Lesekorrekturen, Vermerke, Vorschläge unter den Schwellen',
-  ov_how: 'So geht es',
-  ov_how_body: `<ol><li><b>Verlässlichkeit wählen</b> (Leiste unter der Kopfzeile): Maß und Schwelle des geschätzten Fehlerrisikos; alles Weitere zeigt nur diese Datensätze, die Leiste nennt, wie viele davon vermutlich falsch sind.</li>
-<li><b>Eintrag wählen:</b> die Liste links führt alle Einträge in der Reihenfolge des Tagebuchs (Band-Filter, Textfilter); die Filter darüber grenzen ein (Befund der Maschine, Automatisch geändert, Texteinlagen, Bilder …), die Suche oben findet Datum, Ort, Art, Person.</li>
-<li><b>Lesen:</b> Mitte = Teilgraph mit allen Eigenschaften der Knoten („Alles zeigen“ schaltet jede Ebene ein) oder Tabelle der Datensätze (<kbd>G</kbd>); rechts der Scan mit Region und Zeile des gewählten Datensatzes, darunter Hinweise, Text und alle Tripel des Knotens.</li>
-<li><b>Prüfhinweise</b> sind farbig nach Schwere markiert und stehen als Karten im Reiter „Hinweise“; der Schalter „Prüfhinweise zeigen“ blendet sie aus.</li>
-<li><b>Entscheiden</b> kann man hier nichts — dafür ist die Graph-Prüfung da (dieselbe Seite mit Entscheidungen und Export).</li></ol>`,
-  help: `<h2>Graph-Explorer · Laubmann-Wissensgraph</h2>
-<p>Die Seite zeigt den exportierten Graphen (alle Tripel) Eintrag für Eintrag, daneben den Scan. Sie ist dieselbe Anwendung wie die Graph-Prüfung, nur lesend: gleiche Daten, gleiche Darstellung, keine Entscheidungen, kein Export.</p>
-<ul>
-<li><b>Verlässlichkeit</b> (Leiste unter der Kopfzeile, in jeder Ansicht): Maß und Schwelle des geschätzten Fehlerrisikos, dazu die Zahl der gezeigten Datensätze und wie viele davon vermutlich falsch sind. Graph, Tabelle, Liste, Knoten- und Klassenansicht und alle Zahlen zeigen nur diese Datensätze; „n außerhalb zeigen“ blendet die übrigen Datensätze eines Eintrags abgeblendet ein. Rechts der Schalter <i>Prüfhinweise zeigen</i>.</li>
-<li><b>Links</b> die Liste der Einträge in Tagebuchfolge; darüber Filter (Befund der Maschine, Automatisch geändert, Lesung, Texteinlagen, Bilder, Hinweise, Stichprobe), Stufen-Chips, Band-Filter, Sortierung. Je Eintrag: farbige Zahlen = Prüfhinweise je Stufe, ¶ = Texteinlage, ▣ = Bild/Karte/Objekt.</li>
-<li><b>Mitte</b> der Teilgraph. Die Ebene <i>Eigenschaften</i> schreibt alle Angaben eines Knotens in seinen Kasten (bei vielen Datensätzen kompakt), <i>Alles zeigen</i> schaltet jede Ebene ein, die Marke am Datensatz nennt sein geschätztes Fehlerrisiko. Prüfhinweise: Farbe = Schwere (rot schwer · orange mittel · gelb leicht · graublau Hinweis), Zeichen = Art (<b>!</b> Befund einer Prüfung · <b>M</b> automatisch geändert · <b>?</b> Vorschlag bzw. fehlender Datensatz · <b>×</b> entfernt). <kbd>G</kbd> schaltet auf die Tabelle der Datensätze (alle Eigenschaften als Spalten, „Spalten ▾“).</li>
-<li><b>Rechts</b> der Scan mit den Regionen des Eintrags, den Rahmen seiner Bilder und Einlagen (violett) und der Zeile des gewählten Datensatzes; darunter die Reiter <i>Hinweise</i> (Karten der Prüfhinweise nach Schwere, Bilder und Einlagen), <i>Text</i> (Eintragstext mit Lesekorrekturen) und <i>Knoten</i> (alle Tripel).</li>
-<li><b>Tasten:</b> <kbd>↑</kbd> <kbd>↓</kbd> Karte · <kbd>←</kbd> <kbd>→</kbd> Eintrag in der Liste · <kbd>S</kbd> Scan · <kbd>G</kbd> Graph/Tabelle · <kbd>/</kbd> Suche · <kbd>Esc</kbd> Großansicht schließen.</li>
-</ul>`,
-};
+// the explorer build (--mode explorer) is English only: its own wording on top of GC_EN
 const GX_EN = {
-  app_title: 'Laubmann KG · graph explorer', nav_entry: 'Entries', tab_check: 'Notes', toggle_list: 'Show/hide list', ov_rv_title: 'Graph explorer · Laubmann Knowledge Graph',
-  ov_note: '<b>A read-only view of the graph</b> — the same data and the same display as the graph check, without decisions. The review notes (findings of the scan checks, automatic changes, suggestions, removals) are claims made by machines and not checked by a human; “Show review notes” in the bar below the header hides them. Decisions and export happen in the graph check (<code>Laubmann_Graphpruefung.html</code>).',
-  open_lbl: 'review notes', open_t: 'review notes of this entry by gravity', no_open: 'no review notes', bt_lv: '{0} · {1}', lvf_t: 'entries with review notes of this level — combines with the list filter',
-  lvf_chip_t: 'only entries with review notes of level “{0}” ({1} entries in this list)', list_empty_lv: 'No entry of this list has review notes of the chosen level.',
-  sort_t: 'order of the list: as in the diary (volume by volume) or entries with the most severe review notes first', ov_lv: 'Review notes by gravity',
-  ov_lv_lead: 'Every review note of the entries the filter shows, by level and kind. A name counts in every entry it occurs in.', lvt_entries: 'entries with review notes of the level',
-  no_flags: 'This entry has no review note of the levels severe, medium or minor.', t_hint: 'click a row to select the record (scan, card, node)', t_only_flagged: 'only with a review note', t_none_flagged: 'No record with a review note.',
-  qf_label_t: 'Estimated error risk of every record from two machine checks and a blind audit against the scans. The filter is a view of the graph.',
-  help_q_body: 'Every record carries an estimated error risk. Two machine checks judge every field; a blind audit against the scans tells how often a field with that verdict is actually wrong. The bar below the header chooses the measure and the threshold and says how many of the records shown are probably wrong. The badges per field: green both checks confirm, grey only one, amber one check doubts, red both.',
-  sev_note: 'The level sets colour, order and counts; the marker (! M ? ×) says what kind of flag it is.',
-  lg_level_t: 'the colour of ring, badge and card border shows the gravity of the review note', lg_kind_t: 'the marker shows the kind: ! finding of a scan check · M automatic change by the machine · ? suggestion or missing record · × removed',
-  tip_err: 'A scan check calls this record wrong or spurious', tip_auto: 'corrected automatically', tip_group_err: 'records with a review note in this group (click to expand)', tip_gone: 'removed from the graph automatically',
-  bad_format: 'value not in an applicable format', bad_kind: 'not an entry kind of the vocabulary', tc_unlocated: '{0} applied reading corrections cannot be located in the text; they are listed in the Notes tab only.', chip_ro: 'finding on a field without a column of its own',
-  tip_name_changed: 'link changed by the machine', qt_sample: 'fixed random sample (every 33rd entry)', q_finding: 'Machine findings', hints_t: 'level 0: confirmed links, uncontested or unapplied reading corrections, notes, suggestions below the thresholds',
-  ov_how: 'How it works',
-  ov_how_body: `<ol><li><b>Choose the reliability</b> (bar below the header): measure and threshold of the estimated error risk; everything else shows these records only, and the bar says how many of them are probably wrong.</li>
-<li><b>Choose an entry:</b> the list on the left holds all entries in diary order (volume filter, text filter); the filters above narrow it down (Machine findings, Changed automatically, Text inserts, Images …), the search finds dates, places, species, persons.</li>
-<li><b>Read:</b> middle = the subgraph with every property of the nodes (“Show everything” switches every layer on) or the records table (<kbd>G</kbd>); right = the scan with region and line of the selected record, below it notes, text and all triples of the node.</li>
-<li><b>Review notes</b> are coloured by gravity and stand as cards in the tab “Notes”; the switch “Show review notes” hides them.</li>
-<li><b>Nothing can be decided</b> here — that is what the graph check is for (the same page with decisions and export).</li></ol>`,
-  help: `<h2>Graph explorer · Laubmann Knowledge Graph</h2>
-<p>The page shows the exported graph (every triple) entry by entry, next to the scan. It is the same application as the graph check, read-only: same data, same display, no decisions, no export.</p>
+  app_title: 'Laubmann Knowledge Graph', nav_overview: 'Overview', nav_entry: 'Entries', nav_classes: 'Classes',
+  tab_text: 'Text', tab_check: 'Notes', tab_node: 'Node', x_tab_notes_t: 'what the machine checks found in this entry',
+  toggle_list: 'Show or hide the list', prev: 'previous entry (←)', next: 'next entry (→)', filter_ph: 'Filter: date, place, id …', list_foot_x: '{0} entries',
+  x_vol_all: 'All volumes', x_vol: 'Volume {0}', x_only_img: 'Only entries with images', x_only_img_t: 'entries with at least one drawing, map, photograph, print or object',
+  x_n_records: '{0} records', x_n_entries: '{0} entries', x_pos: '{0} of {1}',
+  x_months: 'January,February,March,April,May,June,July,August,September,October,November,December',
+  x_records: 'Records', x_media: 'Images and inserts', x_c_species: 'Species', x_c_count: 'Count', x_c_place: 'Place', x_c_date: 'Date', x_c_risk: 'Risk', x_c_risk_t: 'estimated error risk of the record',
+  x_out: '{0} more outside “{1}”', x_out_shown: '{0} outside “{1}”, shown dimmed',
+  tlayer_final: 'corrected', tlayer_orig: 'original', tlayer_t: 'corrected: the text after the machine’s reading and checks; original: the transcription before them',
+  x_lg_chg: 'changed by machine', x_lg_chg_orig: 'later changed by machine', x_lg_recs: 'Records',
+  x_t_title: 'Changed by machine', x_t_transcript: 'Transcription', x_t_reading: 'Visual reading', x_t_agent: 'Scan agent', x_t_check: 'Scan check', x_t_empty: 'nothing',
+  x_and: ' and ', x_notes_sw: 'Mark in the graph', x_notes_sw_t: 'show these notes as rings and markers in the graph and as chips in the table',
+  no_flags: 'No notes of the levels severe, medium or minor.',
+  x_o_title: 'Alfred Laubmann’s ornithological diaries', x_o_lead: '{0} volumes of field notes from Bavaria, {1} to {2}, read by machine and not yet checked by a person.', x_o_start: 'Start reading',
+  x_o_graph: 'The graph', x_o_entries: 'Entries', x_o_records: 'Records', x_o_species: 'Species', x_o_places: 'Places', x_o_persons: 'Persons', x_o_years: 'Years',
+  x_o_per_year: 'Records per year', x_o_year_n: '{0} records',
+  x_o_rel: 'Reliability', x_o_level: 'Level', x_o_risk: 'Error risk', x_o_share: 'Share', x_o_exp: 'Expected wrong', x_o_all: 'All records',
+  x_o_audit: 'Tested on {0} records checked blind against the scans: {1} expected wrong, {2} found wrong.', x_o_vols: 'Volumes', x_layers: 'Layers', per_year: 'Per year',
+  qf_label_t: 'Estimated error risk of every record, from two machine checks and a blind audit against the scans. The filter is a view of the graph.',
+  lg_level_t: 'the colour of ring, badge and card border shows the gravity of the note', lg_kind_t: 'the marker shows the kind: ! finding of a scan check, M automatic change by the machine, ? suggestion or missing record, × removed',
+  sev_note: 'The level sets colour, order and counts; the marker (! M ? ×) says what kind of note it is.',
+  tip_err: 'A scan check calls this record wrong or spurious', tip_auto: 'corrected automatically', tip_group_err: 'records with a note in this group (click to expand)', tip_gone: 'removed from the graph automatically',
+  tip_name_changed: 'link changed by the machine', bad_format: 'value not in an applicable format', bad_kind: 'not an entry kind of the vocabulary', chip_ro: 'finding on a field without a column of its own',
+  tc_unlocated: '{0} reading corrections cannot be located in the text; they are listed in the Notes tab only.', hints_t: 'level 0: confirmed links, uncontested or unapplied reading corrections, remarks, suggestions below the thresholds',
+  t_hint: 'click a row to select the record (scan, text, node)', t_only_flagged: 'only with a note', t_none_flagged: 'No record with a note.',
+  help: `<h2>Laubmann Knowledge Graph</h2>
+<p>Alfred Laubmann’s ornithological diaries from Bavaria (1917–1965) as a knowledge graph: every entry with its scan, its text and the bird records a machine read from it. Transcription, records and checks were all made by machines; no person has checked them yet.</p>
 <ul>
-<li><b>Reliability</b> (bar below the header, in every view): measure and threshold of the estimated error risk, with the number of records shown and how many of them are probably wrong. Graph, table, list, node and class views and all numbers show these records only; “show n outside” brings the other records of an entry back, dimmed. On the right the switch <i>Show review notes</i>.</li>
-<li><b>Left</b> the list of entries in diary order; above it filters (Machine findings, Changed automatically, Reading, Text inserts, Images, Hints, Sample), level chips, volume filter, sorting. Per entry: coloured numbers = review notes per level, ¶ = text insert, ▣ = image/map/object.</li>
-<li><b>Middle</b> the subgraph. The layer <i>Properties</i> writes every statement of a node into its box (compact with many records), <i>Show everything</i> switches every layer on, the pill on a record gives its estimated error risk. Review notes: colour = gravity (red severe · orange medium · yellow minor · grey-blue hint), marker = kind (<b>!</b> finding of a check · <b>M</b> changed automatically · <b>?</b> suggestion or missing record · <b>×</b> removed). <kbd>G</kbd> switches to the records table (every property as a column, “Columns ▾”).</li>
-<li><b>Right</b> the scan with the entry's regions, the outlines of its images and inserts (violet) and the line of the selected record; below it the tabs <i>Notes</i> (cards of the review notes by gravity, images and inserts), <i>Text</i> (entry text with reading corrections) and <i>Node</i> (all triples).</li>
-<li><b>Keys:</b> <kbd>↑</kbd> <kbd>↓</kbd> card · <kbd>←</kbd> <kbd>→</kbd> entry in the list · <kbd>S</kbd> scan · <kbd>G</kbd> graph/table · <kbd>/</kbd> search · <kbd>Esc</kbd> close the large view.</li>
+<li><b>Entries</b>: every entry in diary order. The volume menu and the filter narrow the list; <kbd>←</kbd> <kbd>→</kbd> step through it.</li>
+<li><b>Text</b>: the entry as transcribed. Tinted passages were changed by machine; hovering shows what the transcription had and which step changed it, <i>original</i> shows the text before these changes. Underlined bird names carry a record, coloured by its reliability; hovering shows the record, a click shows it on the scan and in the graph.</li>
+<li><b>Reliability</b>: every record has an estimated error risk, from two machine checks of each field and a blind audit against the scans. The bar below the header keeps only the records below a threshold and estimates how many of those shown are wrong.</li>
+<li><b>Notes</b>: what the machine checks found in the entry, by gravity. <i>Mark in the graph</i> shows them in the graph as well.</li>
+<li><b>Graph</b>: the entry with its records, species, places and persons; <kbd>G</kbd> switches to a table of the records, <kbd>S</kbd> shows or hides the scan, <kbd>/</kbd> searches the whole graph.</li>
 </ul>`,
 };
 
-Object.assign(UI.de, GC_DE, EXPLORER ? GX_DE : {});
+Object.assign(UI.de, GC_DE);
 Object.assign(UI.en, GC_EN, EXPLORER ? GX_EN : {});

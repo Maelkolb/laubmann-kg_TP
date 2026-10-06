@@ -11,10 +11,11 @@
 
 let R = { meta: {}, pages: [], entries: {}, names: {}, obs: {}, sample: [], graph: {} };
 const RV = { v: 1, who: '', dec: {}, log: [] };
-// explorer build: the list starts with all entries in diary order; `notes` = the switch "Prüfhinweise zeigen" (always on in the review build)
-const RVU = { queue: store('queue') || (EXPLORER ? 'all' : 'finding'), sort: store('qsort') || (EXPLORER ? 'diary' : 'score'), notes: !EXPLORER || store('notes') !== '0', vol: 'all', mid: store('mid') === 'table' ? 'table' : 'graph',
+// explorer build: the list holds all entries in diary order (or only those with images); `notes` = the switch "Mark in the graph"
+// of its Notes tab, off by default (always on in the review build)
+const RVU = { queue: EXPLORER ? (store('queue') === 'img' ? 'img' : 'all') : store('queue') || 'finding', sort: EXPLORER ? 'diary' : store('qsort') || 'score', notes: !EXPLORER || store('notes') === '1', vol: 'all', mid: store('mid') === 'table' ? 'table' : 'graph',
   scan: store('scan') !== '0', media: store('media') !== '0', hints: false, qm: ['p', 'po', 'pl', 'ob', 'pc'].includes(store('qm')) ? store('qm') : 'p', qt: clamp(+store('qt') || 0, 0, 3), showOut: false, tsort: 0,
-  lvf: new Set((store('lvf') || '').split(',').filter(Boolean).map(Number)), card: 0, form: null, list: [], counts: {}, lsFail: false, armed: false };
+  lvf: new Set(EXPLORER ? [] : (store('lvf') || '').split(',').filter(Boolean).map(Number)), card: 0, form: null, list: [], counts: {}, lsFail: false, armed: false };
 const LS_STATE = 'laubmann-graphpruefung';
 const HIST = [];
 const cf = s => String(s == null ? '' : s).toLowerCase().replace(/ß/g, 'ss');
@@ -322,7 +323,8 @@ function buildItems(m) {   // everything decidable for the entry, in the order o
 // sections of the check tab: by level (schwer first), then hints (collapsed), own changes, entry header, images, finish
 const SEC_ORDER = ['l3', 'l2', 'l1', 'hint', 'own', 'ent', 'media', 'done'];
 function itemSec(it) { if (it.type === 'done') return 'done'; if (it.lv >= 1) return 'l' + it.lv; if (it.type === 'ent') return 'ent'; if (it.type === 'media') return 'media'; if (it.type === 'rec' || it.type === 'miss') return 'own'; return 'hint'; }
-const itemHidden = it => (!RVU.notes && it.type !== 'media') || (it.sec === 'hint' && !RVU.hints && !isDecided(it.key)) || (it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n));
+// explorer build: the Notes tab lists every note whether or not the graph marks them; images and inserts are in the Text tab
+const itemHidden = it => (EXPLORER && it.type === 'media') || (it.sec === 'hint' && !RVU.hints && !isDecided(it.key)) || (it.type === 'rec' && corpusOn() && !RVU.showOut && !inCorpus(it.o.n));
 function visibleItems(m) { const out = []; for (const sec of SEC_ORDER) for (const it of m.items) if (it.sec === sec && !itemHidden(it)) out.push(it); return out; }
 function openByLevel(m) {   // open items of the entry per level [0, leicht, mittel, schwer]; hidden records of another corpus do not count
   const c = [0, 0, 0, 0]; if (isChecked(m.uid)) return c; const seen = new Set();   // two cards with one key (the same reading correction twice) are one decision

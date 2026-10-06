@@ -54,3 +54,5 @@ data/multimodal_catalogue_v2/
 data/pages_jpg/
 data/batch/
 data/region_crops/
+data/region_crops_v2/
+data/region_crops_orig/

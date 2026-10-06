@@ -69,7 +69,7 @@ async def corpus_filter(pg):
     await pg.keyboard.press("Escape")
     tax = await pg.evaluate("[0,1,2,3].map(c => __lc.ENTS.taxon.filter(e => !e.gone).reduce((a, e) => a + e.nc[c], 0))")
     check(rec == tax, f"species mentions per threshold = records per threshold {tax}")
-    layer = Path(os.environ.get("LC_REVIEW", REPO / "data" / "cache" / "graph_check" / "review_quality.json"))
+    layer = Path(os.environ.get("LC_REVIEW", REPO / "data" / "cache" / "graph_check" / "review_regions.json"))
     if layer.exists():
         want = layer_counts(layer)
         check(rec == want, f"records per threshold as in the review layer of the graph page {want}")

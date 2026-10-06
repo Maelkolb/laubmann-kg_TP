@@ -144,7 +144,8 @@ table.rt td input, table.rt td select { width: 100%; min-width: 90px; padding: 2
 #scanbar.many > .scanpages { flex: 1 1 100%; }
 #scanbar.many > .sp { display: none; }
 #scanbar.many > .muted { flex: 1 1 auto; }
-#scanbar > .muted { flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#scanbar > .muted { flex: none; white-space: nowrap; cursor: help; }
+#scanbar { flex-wrap: wrap; row-gap: 3px; }
 #scanview { flex: 1; min-height: 0; position: relative; overflow: hidden; cursor: grab; background: #6C726D; touch-action: none; }
 #scanview.drag { cursor: grabbing; }
 #scanstage { position: absolute; left: 0; top: 0; transform-origin: 0 0; background: #EDEAE2; box-shadow: 0 2px 14px rgba(0,0,0,.35); }

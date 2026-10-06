@@ -97,7 +97,7 @@ function propsTip(v) {   // all rows of a node for the tooltip (compact mode, tr
   return '<table class="tipprops">' + v.props.slice(0, 26).map(r => `<tr><td>${esc(r.k)}</td><td>${esc(r.v.length > 220 ? r.v.slice(0, 220) + ' …' : r.v)}</td></tr>`).join('') + (v.props.length > 26 ? `<tr><td colspan="2">${esc(t('more', fmt(v.props.length - 26)))}</td></tr>` : '') + '</table>';
 }
 // ---- presets and tools of the graph
-const LAYER_STD = { records: true, taxa: true, places: true, persons: true, habitats: true, archive: false, authorities: false, provenance: false, props: true, links: false };
+const LAYER_STD = { records: true, taxa: true, places: true, persons: true, habitats: true, archive: false, authorities: false, provenance: false, props: !EXPLORER, links: false };   // explorer build: the graph without property rows by default
 function setPreset(all) {
   for (const k of Object.keys(LAYER_STD)) S.layers[k] = all ? true : LAYER_STD[k];
   store('layers', JSON.stringify(S.layers)); renderTools(); renderGraph(false);
@@ -109,8 +109,8 @@ function rvPanHint() {   // the graph is wider than the canvas: say which column
   const W = $('#gcanvas').clientWidth; const heads = { 0: t('col_archive'), 1: t('col_entry'), 2: t('col_records'), 3: t('col_taxa'), 4: t('col_shared'), 5: t('col_auth') };
   const right = SUB.used.filter(c => Z.x + (SUB.colX[c] + colW(c) * 0.5) * Z.k > W), left = SUB.used.filter(c => Z.x + (SUB.colX[c] + colW(c) * 0.5) * Z.k < 0);
   more.hidden = !right.length; less.hidden = !left.length;
-  if (right.length) { more.textContent = right.map(c => heads[c]).join(' · ') + ' ▸'; more.title = t('pan_more', right.map(c => heads[c]).join(', ')) + ' — ' + t('pan_t'); }
-  if (left.length) { less.textContent = '◂ ' + left.map(c => heads[c]).join(' · '); less.title = t('pan_less', left.map(c => heads[c]).join(', ')) + ' — ' + t('pan_t'); }
+  if (right.length) { more.textContent = unDot(right.map(c => heads[c]).join(' · ')) + ' ▸'; more.title = t('pan_more', right.map(c => heads[c]).join(', ')) + ' — ' + t('pan_t'); }
+  if (left.length) { less.textContent = '◂ ' + unDot(left.map(c => heads[c]).join(' · ')); less.title = t('pan_less', left.map(c => heads[c]).join(', ')) + ' — ' + t('pan_t'); }
 }
 function panTo(dir) {   // one canvas width to the right / left, not beyond the graph
   if (!SUB) return; const W = $('#gcanvas').clientWidth; const min = Math.min(8, W - SUB.width * Z.k - 8);

@@ -12,13 +12,17 @@
 // ------------------------------------------------------------------ utilities
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 // [GC] one app, two builds: the embedded meta says which. review = Graph-Prüfung (decide, export);
-// explorer = Graph-Explorer: the same display, nothing that decides (EXPLORER is respected by every module)
+// explorer = Graph-Explorer for external readers: English only, a reading view, nothing that decides (EXPLORER is respected by every module)
 const GC_META = (() => { try { return JSON.parse(document.getElementById('gc-meta').textContent) || {}; } catch (e) { return {}; } })();
 const EXPLORER = GC_META.mode === 'explorer';
 document.documentElement.dataset.mode = EXPLORER ? 'explorer' : 'review';
+// the explorer build separates by layout and commas, never by interpuncts (graph labels and generated lines alike)
+const unDot = EXPLORER ? s => s.replace(/\s*·\s*/g, ', ') : s => s;
+const SEP = EXPLORER ? ', ' : ' · ';
+const escHtml = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const esc = s => escHtml(unDot(String(s == null ? '' : s)));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const LS_PREFIX = EXPLORER ? 'lkge.' : 'lkgc.';   // the two builds keep their view settings apart
 function store(k, v) {
   try { if (v === undefined) return localStorage.getItem(LS_PREFIX + k); localStorage.setItem(LS_PREFIX + k, v); } catch (e) { /* storage unavailable */ }
@@ -33,7 +37,7 @@ function copyText(s) {
 const coll = new Intl.Collator('de', { numeric: true, sensitivity: 'base' });
 
 // ------------------------------------------------------------------ i18n
-let LANG = store('lang') === 'en' ? 'en' : 'de';
+let LANG = EXPLORER || store('lang') === 'en' ? 'en' : 'de';
 const UI = {
   de: {
     nav_overview: 'Übersicht', nav_entry: 'Eintrag', nav_classes: 'Klassen',
@@ -70,7 +74,7 @@ const UI = {
     all_preds: 'alle Prädikate', filter: 'Filter …', page_n: 'Seite {0} / {1}', record: 'Datensatz', entry: 'Eintrag', pred: 'Prädikat',
     no_coords: 'keine Koordinaten', class_list: '{0} ({1})', label: 'Bezeichnung', detail: 'Detail',
     s_entries: 'Einträge', s_text: 'Volltext', s_taxa: 'Taxa', s_places: 'Orte', s_persons: 'Personen', s_habitats: 'Habitate', s_other: 'Weitere Knoten', s_none: 'Keine Treffer.',
-    early_years: '+ {0} vor {2} ({1}), nicht im Diagramm', months: 'Jan,Feb,Mär,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez', no_vol: '(ohne Band)', entry_n: '{0} Einträge',
+    map_topo: 'Topo', map_street: 'Straßen', map_air: 'Luftbild', early_years: '+ {0} vor {2} ({1}), nicht im Diagramm', months: 'Jan,Feb,Mär,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez', no_vol: '(ohne Band)', entry_n: '{0} Einträge',
     help: `<h2>Graph-Explorer · Laubmann-Wissensgraph</h2>
 <p>Alles, was hier erscheint, steht so im exportierten Graphen (Ontologie 0.7.0): die Seite enthält sämtliche Tripel der Exportdatei.</p>
 <ul>
@@ -115,7 +119,7 @@ const UI = {
     all_preds: 'all predicates', filter: 'Filter …', page_n: 'page {0} / {1}', record: 'Record', entry: 'Entry', pred: 'Predicate',
     no_coords: 'no coordinates', class_list: '{0} ({1})', label: 'Label', detail: 'Detail',
     s_entries: 'Entries', s_text: 'Full text', s_taxa: 'Taxa', s_places: 'Places', s_persons: 'Persons', s_habitats: 'Habitats', s_other: 'Other nodes', s_none: 'No matches.',
-    early_years: '+ {0} before {2} ({1}), not in the chart', months: 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec', no_vol: '(no volume)', entry_n: '{0} entries',
+    map_topo: 'Topographic', map_street: 'Streets', map_air: 'Aerial', early_years: '+ {0} before {2} ({1}), not in the chart', months: 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec', no_vol: '(no volume)', entry_n: '{0} entries',
     help: `<h2>Graph explorer · Laubmann Knowledge Graph</h2>
 <p>Everything shown here is stated in the exported graph (ontology 0.7.0): the page contains every triple of the export file.</p>
 <ul>
@@ -126,7 +130,7 @@ const UI = {
 </ul>`,
   },
 };
-const t = (k, ...a) => { let s = UI[LANG][k]; if (s == null) s = UI.de[k]; if (s == null) s = k; a.forEach((v, i) => { s = s.split('{' + i + '}').join(v); }); return s; };
+const t = (k, ...a) => { let s = UI[LANG][k]; if (s == null) s = UI.de[k]; if (s == null) s = k; a.forEach((v, i) => { s = s.split('{' + i + '}').join(v); }); return unDot(s); };
 const fmtCache = {};
 const fmt = n => (fmtCache[LANG] || (fmtCache[LANG] = new Intl.NumberFormat(LANG === 'de' ? 'de-DE' : 'en-GB'))).format(n);
 
@@ -253,6 +257,7 @@ const LC = { de: new Map(), en: new Map() };
 function label(n) { if (n < 0) return ''; const m = LC[LANG]; let s = m.get(n); if (s === undefined) { s = computeLabel(n); m.set(n, s); } return s; }
 function computeLabel(n) {
   const k = kindOf(n);
+  if (EXPLORER && (k === 'entry' || k === 'volume')) return xLabel(n, k);   // [GC] English labels (the graph's are German)
   if (k === 'obs') { const tx = node1(n, 'lkg:observedTaxon'); const c = countStr(n); return (tx >= 0 ? label(tx) : (pref(n, 'rdfs:label') || localName(n))) + (c ? ' · ' + c : ''); }
   if (k === 'leg') return legLabel(n);
   if (k === 'auth') return pref(n, 'skos:prefLabel') || pref(n, 'rdfs:label') || authId(n);
@@ -337,8 +342,8 @@ const entryPlaceLabel = r => (r.place >= 0 ? label(r.place) : (pref(r.n, 'dwc:ve
 
 // ------------------------------------------------------------------ state + routing
 const S = {
-  view: 'overview', e: -1, sel: null, tab: store('tab') || 'check', group: store('group') || 'auto', labels: store('labels') || 'none',   // [GC] defaults
-  layers: Object.assign({ records: true, taxa: true, places: true, persons: true, habitats: true, archive: false, authorities: false, provenance: false, props: true, links: false }, (() => { try { return JSON.parse(store('layers') || '{}'); } catch (e) { return {}; } })()),
+  view: 'overview', e: -1, sel: null, tab: EXPLORER ? 'text' : store('tab') || 'check', group: store('group') || 'auto', labels: store('labels') || 'none',   // [GC] defaults
+  layers: Object.assign({ records: true, taxa: true, places: true, persons: true, habitats: true, archive: false, authorities: false, provenance: false, props: !EXPLORER, links: false }, (() => { try { return JSON.parse(store('layers') || '{}'); } catch (e) { return {}; } })()),
   expanded: new Set(), vol: null, recSort: ['pos', 1], lastEntry: -1, props: store('props') || 'auto', propOpen: new Set(),   // [GC] mode of the properties layer
   list: store('list') ? store('list') === '1' : window.innerWidth >= 1200,
 };
@@ -376,13 +381,17 @@ function setView(v) {
 }
 
 // ------------------------------------------------------------------ static texts
-function applyStatic() {
+function applyTexts() {
   document.documentElement.lang = LANG;
   $$('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   $$('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   $$('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
-  $('#btn-lang').textContent = LANG === 'de' ? 'EN' : 'DE';
+  if ($('#btn-lang')) $('#btn-lang').textContent = LANG === 'de' ? 'EN' : 'DE';
   $('#apptitle').textContent = t('app_title'); document.title = t('app_title');
+  document.documentElement.dataset.ready = '1';
+}
+function applyStatic() {
+  applyTexts();
   rvApplyStatic();   // [GC]
 }
 
@@ -423,8 +432,8 @@ function makeMap(el, pts, opts = {}) { // pts [{la, lo, r, label, go}]
   const map = L.map(el, { scrollWheelZoom: false, preferCanvas: true });
   // [GC] tile.openstreetmap.org answers 403 to pages opened from file:// (no Referer); the Esri services do not need one
   const esri = s => 'https://server.arcgisonline.com/ArcGIS/rest/services/' + s + '/MapServer/tile/{z}/{y}/{x}';
-  const base = { Topo: L.tileLayer(esri('World_Topo_Map'), { maxZoom: 18, attribution: 'Tiles © Esri' }), 'Straßen': L.tileLayer(esri('World_Street_Map'), { maxZoom: 18, attribution: 'Tiles © Esri, HERE, Garmin, OpenStreetMap' }), Luftbild: L.tileLayer(esri('World_Imagery'), { maxZoom: 18, attribution: 'Tiles © Esri, Maxar' }) };
-  base.Topo.addTo(map); L.control.layers(base, null, { collapsed: false }).addTo(map);
+  const base = { [t('map_topo')]: L.tileLayer(esri('World_Topo_Map'), { maxZoom: 18, attribution: 'Tiles © Esri' }), [t('map_street')]: L.tileLayer(esri('World_Street_Map'), { maxZoom: 18, attribution: 'Tiles © Esri, HERE, Garmin, OpenStreetMap' }), [t('map_air')]: L.tileLayer(esri('World_Imagery'), { maxZoom: 18, attribution: 'Tiles © Esri, Maxar' }) };
+  base[t('map_topo')].addTo(map); L.control.layers(base, null, { collapsed: false }).addTo(map);
   const color = getComputedStyle(document.documentElement).getPropertyValue('--c-place').trim() || '#2a78d6';
   const layer = L.featureGroup();
   for (const p of pts) {
@@ -474,6 +483,7 @@ function showOverview() {
   setView('overview');
   rvRenderOverview();   // [GC] the review overview stands above the explorer's
   const v = $('#x-ov');
+  if (EXPLORER) { v.innerHTML = ''; return; }   // [GC] the explorer build has its own overview for external readers (gc_outreach.js)
   if (v.dataset.lang === LANG && v.dataset.theme === document.documentElement.dataset.theme && v.dataset.qf === qfKey()) { const m = $('#ov-map'); if (m && m._map) setTimeout(() => m._map.invalidateSize(), 30); return; }
   v.dataset.lang = LANG; v.dataset.theme = document.documentElement.dataset.theme; v.dataset.qf = qfKey();
   const st = stats();
@@ -552,6 +562,7 @@ function showEntry(e, selKey) {
 // [GC] renderVolSelect, renderEntryList, markEntryList and stepEntry of the explorer are replaced by the work list (gc_views.js)
 function renderEntryHead() {   // [GC] position in the queue, graph/table toggle, checked state
   const e = S.e, r = entryRec(e); const q = rvQueuePos(e);
+  if (EXPLORER) { $('#ehead').innerHTML = xHeadHtml(e, q); return; }
   $('#ehead').innerHTML = `<button class="btn" data-act="list" title="${t('toggle_list')}">☰</button><span class="navb"><button class="btn" data-act="prev" title="${t('prev')}" ${q.pos === 0 ? 'disabled' : ''}>◀</button><button class="btn" data-act="next" title="${t('next')}" ${q.pos >= q.n - 1 ? 'disabled' : ''}>▶</button></span>
     <span class="t" title="${esc(label(e))}">${esc(label(e))}</span><span class="muted mono" style="font-size:.78rem">${esc(r.id)}</span>
     ${rvHeadHtml(e, q.pos >= 0 ? t('of_queue', fmt(q.pos + 1), fmt(q.n), t('q_' + q.queue)) : volLabel(r.vol))}`;
@@ -559,7 +570,8 @@ function renderEntryHead() {   // [GC] position in the queue, graph/table toggle
 function renderTools() {
   if (rvToolsHtml()) return;   // [GC] the records table has its own tool row
   const g = S.group;
-  $('#gtools').innerHTML = LAYERS.map(([l, c]) => `<span class="chip ${S.layers[l] ? 'on' : ''}" data-layer="${l}"><i style="background:var(--c-${c})"></i>${t('l_' + l)}</span>`).join('') +
+  if (EXPLORER) $('#gtools').innerHTML = xToolsHtml();   // [GC] the layers in a menu: one calm row
+  else $('#gtools').innerHTML = LAYERS.map(([l, c]) => `<span class="chip ${S.layers[l] ? 'on' : ''}" data-layer="${l}"><i style="background:var(--c-${c})"></i>${t('l_' + l)}</span>`).join('') +
     `<select id="grpsel" title="${t('group_by')}">${['auto', 'none', 'order', 'family', 'place', 'recordedBy', 'recordType'].map(k => `<option value="${k}" ${k === g ? 'selected' : ''}>${t('grp_short')}: ${t('g_' + k)}</option>`).join('')}</select>
      <button class="zbtn" data-act="expand" title="${t('expand_all')}">▾▾</button><button class="zbtn" data-act="collapse" title="${t('collapse_all')}">▸▸</button>
      <select id="lblsel" title="${t('labels')}">${['auto', 'all', 'none'].map(k => `<option value="${k}" ${k === S.labels ? 'selected' : ''}>${t('labels_short')}: ${t('lb_' + k)}</option>`).join('')}</select>
@@ -572,8 +584,8 @@ function renderTools() {
 
 // ---- subgraph model
 let SUB = null;
-const COLW = { 0: 150, 1: 164, 2: 176, 3: 154, 4: 160, 5: 160 };   // [GC] a little narrower: the graph shares the width with the scan
-const NGAP = 7; const colGap = () => (S.labels === 'none' ? 46 : 80);   // [GC] narrower columns without edge labels
+const COLW = EXPLORER ? { 0: 150, 1: 140, 2: 176, 3: 150, 4: 150, 5: 150 } : { 0: 150, 1: 164, 2: 176, 3: 154, 4: 160, 5: 160 };   // [GC] a little narrower: the graph shares the width with the scan
+const NGAP = 7; const colGap = () => (S.labels === 'none' ? (EXPLORER ? 40 : 46) : 80);   // [GC] narrower columns without edge labels
 function textPos(e) { // position of each observation's verbatim notes in the entry text
   if (textPos.e === e) return textPos.m;
   const fn = pref(e, 'dwc:fieldNotes') || ''; const m = new Map();
@@ -831,7 +843,7 @@ function renderGraph(keepView) {
     if (v.kind !== 'entry') inner += `<circle class="dot" cx="10" cy="${sub_ ? 12 : hh / 2}" r="3.6" fill="var(--c-${kc(v.kind)})"/>`;
     if (v.kind === 'entry') {
       const r = entryRec(v.n);
-      inner += `<text x="${tx}" y="20">${esc(fitText((r.date || '') + ' · ' + entryPlaceLabel(r), v.w - 22, '600 11.5px "Segoe UI", system-ui, sans-serif'))}</text><text class="s" x="${tx}" y="38">${esc(fitText(sub_, v.w - 22, '9.5px "Segoe UI", sans-serif'))}</text>`;
+      inner += `<text x="${tx}" y="20">${esc(fitText((EXPLORER ? xDate(r.date, true) : r.date || '') + ' · ' + entryPlaceLabel(r), v.w - 22, '600 11.5px "Segoe UI", system-ui, sans-serif'))}</text><text class="s" x="${tx}" y="38">${esc(fitText(sub_, v.w - 22, '9.5px "Segoe UI", sans-serif'))}</text>`;
     } else if (sub_ && hh >= 30) {
       inner += `<text x="${tx}" y="15">${esc(fitText(main, tw))}</text><text class="s" x="${tx}" y="${hh - 7}">${esc(fitText(sub_, tw, '9.5px "Segoe UI", sans-serif'))}</text>`;
     } else inner += `<text x="${tx}" y="${hh / 2 + 4}">${esc(fitText(main, tw))}</text>`;
@@ -852,6 +864,7 @@ const Z = { k: 1, x: 0, y: 0 };
 function applyZ() { const vp = $('#vp'); if (vp) vp.setAttribute('transform', `translate(${Z.x.toFixed(1)},${Z.y.toFixed(1)}) scale(${Z.k.toFixed(4)})`); rvPanHint(); thumbsSoon(); }   // [GC]
 function fitView(whole) {   // [GC] whole = the ⤢ button: the complete width, however small
   if (!SUB) return; const c = $('#gcanvas'); const W = c.clientWidth || 800, H = c.clientHeight || 600;
+  if (EXPLORER && whole !== true && !S.layers.props) { xFit(W, H); return; }   // [GC] the explorer: readable labels first
   let k = Math.min(W / SUB.width, H / SUB.height, 1.1);
   if (k < 0.62) k = clamp(Math.min(W / SUB.width, 1), 0.45, 1);
   if (S.layers.props) k = whole === true ? clamp(Math.min(W / SUB.width, 1.1), 0.3, 1.1) : Math.max(k, Math.min(1, 0.8));   // [GC] property rows stay legible; pan for the rest
@@ -911,7 +924,9 @@ function renderPanel() {   // [GC] tabs: check (cards), text, node
   if (!['check', 'text', 'node'].includes(S.tab)) S.tab = 'check';
   $$('#ptabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === S.tab)));
   const body = $('#pbody'); const e = S.e;
+  if (EXPLORER) { xTabs(); xTipHide(); }
   if (S.tab === 'check') rvRenderCheck(body);
+  else if (S.tab === 'text' && EXPLORER) xRenderText(body);
   else if (S.tab === 'text') { const keep = body.dataset.tab === 'text' && body.dataset.e === String(e) ? body.scrollTop : -1; body.innerHTML = panelText(e); rvTextWire(body); const m = $('.fieldnotes .on', body); if (keep >= 0) body.scrollTop = keep; else if (m) m.scrollIntoView({ block: 'center' }); }
   else { const same = body.dataset.tab === 'node' && body.dataset.shown === String(S.sel); body.innerHTML = panelNode(); if (!same) body.scrollTop = 0; }   // [GC] another node starts at its top (crop, label)
   body.dataset.tab = S.tab; body.dataset.e = String(e); body.dataset.shown = String(S.sel);
@@ -1027,7 +1042,7 @@ function nodeDetails(n, opts = {}) {
     if (inc.size) {
       const mx = opts.incomingMax || 12;
       s += `<h3 class="sec">${t('incoming')} (${fmt(G.inOff[n + 1] - G.inOff[n])})</h3><table class="t trip">` +
-        [...inc].map(([p, ss]) => `<tr><td>${esc(pl(p))} <span class="muted">(${fmt(ss.length)})</span></td><td>${ss.slice(0, mx).map(x => `<span class="link" data-n="${x}">${esc(label(x))}</span>`).join(' · ')}${ss.length > mx ? ` <span class="muted">${t('more', fmt(ss.length - mx))}</span>` : ''}</td></tr>`).join('') + '</table>';
+        [...inc].map(([p, ss]) => `<tr><td>${esc(pl(p))} <span class="muted">(${fmt(ss.length)})</span></td><td>${ss.slice(0, mx).map(x => `<span class="link" data-n="${x}">${esc(label(x))}</span>`).join(SEP)}${ss.length > mx ? ` <span class="muted">${t('more', fmt(ss.length - mx))}</span>` : ''}</td></tr>`).join('') + '</table>';
     }
   }
   return s;
@@ -1081,7 +1096,7 @@ function showNode(n) {
       <div class="card star"><h3>${t('neighbourhood')}</h3>${starSvg(n, rows)}</div>
       ${hasMap ? `<div class="card" style="margin-top:16px"><h3>${k === 'place' ? t('map') : t('dist_map', fmt(pts.length))}</h3><div class="map small" id="nv-map"></div></div>` : ''}
       ${yItems.length > 1 ? `<div class="card cols" style="margin-top:16px"><h3>${t('per_year_t')}</h3>${colChart(yItems, kc(k) === 'other' ? 'rec' : kc(k))}${ySpan.note ? `<div class="muted" style="font-size:.74rem">${esc(ySpan.note)}</div>` : ''}</div>` : ''}
-      ${obsRows.length > 1 && k !== 'obs' ? `<div class="card cols" style="margin-top:16px"><h3>${kindLabel('obs')} · ${t('per_month_t')}</h3>${colChart(mCount.map((c, i) => ({ l: mNames[i], v: c })), 'rec', { every: 1 })}</div>` : ''}
+      ${obsRows.length > 1 && k !== 'obs' ? `<div class="card cols" style="margin-top:16px"><h3>${kindLabel('obs')}${SEP}${t('per_month_t')}</h3>${colChart(mCount.map((c, i) => ({ l: mNames[i], v: c })), 'rec', { every: 1 })}</div>` : ''}
     </div></div>
     <div class="card" style="margin-top:16px" id="nv-usage"></div></div>`;
   renderUsage();
@@ -1126,7 +1141,7 @@ function renderUsage() {
   box.innerHTML = `<h3>${t('usage', fmt(usageRows(n).length))}</h3>
     <div class="pager"><select id="nv-pred"><option value="">${t('all_preds')}</option>${preds.map(p => `<option value="${esc(p)}" ${p === NV.pred ? 'selected' : ''}>${esc(pl(p))} (${fmt(usageRows(n).filter(r => r.p === p).length)})</option>`).join('')}</select>
       <input id="nv-q" type="search" placeholder="${t('filter')}" value="${esc(NV.q)}">
-      <button class="btn" data-upage="-1" ${NV.page <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', NV.page + 1, pages)} · ${fmt(rows.length)}</span><button class="btn" data-upage="1" ${NV.page >= pages - 1 ? 'disabled' : ''}>▶</button></div>
+      <button class="btn" data-upage="-1" ${NV.page <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', NV.page + 1, pages)}${SEP}${fmt(rows.length)}</span><button class="btn" data-upage="1" ${NV.page >= pages - 1 ? 'disabled' : ''}>▶</button></div>
     <table class="t"><tr>${th('date', t('date'))}${th('id', t('entry'))}${th('p', t('pred'))}${th('lab', t('record'))}${th('count', t('r_count'))}${th('place', t('place'))}</tr>
     ${slice.map(r => `<tr class="click" data-go="${esc(r.e >= 0 ? entryHash(r.e, r.k === 'entry' ? null : 'n' + r.s) : '/n/' + G.nodes[r.s])}"><td class="num">${esc(r.date)}</td><td class="mono" style="font-size:.76rem">${esc(r.id)}</td><td>${esc(pl(r.p))}</td><td><span class="kbadge k-c-${kc(r.k)}">${esc(kindLabel(r.k))}</span> ${esc(r.lab)}</td><td class="num">${esc(r.count)}</td><td>${esc(r.place)}</td></tr>`).join('')}</table>`;
 }
@@ -1161,7 +1176,7 @@ function renderClassTable(kinds) {
   const hash = r => (k === 'entry' ? entryHash(r.n) : k === 'obs' && entryOf(r.n) >= 0 ? entryHash(entryOf(r.n), 'n' + r.n) : '/n/' + r.iri);
   v.innerHTML = `<div class="page"><h2>${esc(kindLabel(k))}</h2><p class="lead">${esc(KIND_CLASS[k] || '')}${rvFilterNote()}</p>
     <div class="btnrow">${(kinds || []).filter(x => !['term', 'ext', 'other', 'scheme'].includes(x.x)).map(x => `<button class="btn" data-go="/c/${x.x}" ${x.x === k ? 'style="border-color:var(--accent);font-weight:600"' : ''}>${esc(kindLabel(x.x))} (${fmt(x.c)})</button>`).join('')}</div>
-    <div class="pager">${rvClassSwitch(k)}<input id="cv-q" type="search" placeholder="${t('filter')}" value="${esc(CV.q)}"><button class="btn" data-cpage="-1" ${CV.page <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', CV.page + 1, pages)} · ${fmt(rows.length)}</span><button class="btn" data-cpage="1" ${CV.page >= pages - 1 ? 'disabled' : ''}>▶</button></div>
+    <div class="pager">${rvClassSwitch(k)}<input id="cv-q" type="search" placeholder="${t('filter')}" value="${esc(CV.q)}"><button class="btn" data-cpage="-1" ${CV.page <= 0 ? 'disabled' : ''}>◀</button><span>${t('page_n', CV.page + 1, pages)}${SEP}${fmt(rows.length)}</span><button class="btn" data-cpage="1" ${CV.page >= pages - 1 ? 'disabled' : ''}>▶</button></div>
     <div class="card">${grid}<table class="t"${grid ? ' hidden' : ''}><tr>${th('lab', t('label'))}${th('sub', t('detail'))}${th('uses', t('uses'))}${th('iri', 'IRI')}</tr>
     ${(grid ? [] : rows.slice(CV.page * per, CV.page * per + per)).map(r => `<tr class="click" data-go="${esc(hash(r))}"><td>${esc(r.lab)}</td><td class="muted">${esc(r.sub)}</td><td class="num">${fmt(r.uses)}</td><td class="iri">${esc(r.iri)}</td></tr>`).join('')}</table></div></div>`;
   CV.kinds = kinds;
@@ -1206,11 +1221,11 @@ function renderSearch() {
   const box = $('#qres'); const raw = $('#q').value; const r = runSearch(raw);
   if (!r) { box.hidden = true; return; }
   const sec = (title, items) => items.length ? `<h4>${esc(title)}</h4>` + items.join('') : '';
-  const entRow = i => { const e = G.ent[i]; return `<div class="r" data-go="${esc(entryHash(e.n))}"><b class="num">${esc(e.date || e.id)}</b> ${esc(entryPlaceLabel(e))}<span class="sub">${esc(e.id)} · ${esc(volLabel(e.vol))}</span></div>`; };
+  const entRow = i => { const e = G.ent[i]; return `<div class="r" data-go="${esc(entryHash(e.n))}"><b class="num">${esc(e.date || e.id)}</b> ${esc(entryPlaceLabel(e))}<span class="sub">${esc(e.id)}${SEP}${esc(EXPLORER ? xVolName(e.vol) : volLabel(e.vol))}</span></div>`; };
   const textRow = i => { const e = G.ent[i]; const tx = searchIndex().text[i]; const p = tx.indexOf(r.q); const fn = pref(e.n, 'dwc:fieldNotes') || ''; const snip = fn.slice(Math.max(0, p - 40), p + r.q.length + 50);
     return `<div class="r" data-go="${esc(entryHash(e.n))}"><b class="num">${esc(e.date || e.id)}</b><span class="sub" style="max-width:75%">… ${esc(snip)} …</span></div>`; };
   const nodeRows = (k, lim) => (r.byKind[k] || []).map(n => ({ n, u: G.inOff[n + 1] - G.inOff[n] })).sort((a, b) => b.u - a.u).slice(0, lim)
-    .map(x => `<div class="r" data-go="/n/${esc(G.nodes[x.n])}">${esc(label(x.n))}<span class="sub">${esc(k === 'taxon' ? pref(x.n, 'dwc:scientificName') || '' : k === 'auth' ? authId(x.n) : '')} · ${fmt(x.u)}</span></div>`);
+    .map(x => `<div class="r" data-go="/n/${esc(G.nodes[x.n])}">${esc(label(x.n))}<span class="sub">${esc(k === 'taxon' ? pref(x.n, 'dwc:scientificName') || '' : k === 'auth' ? authId(x.n) : '')}${SEP}${fmt(x.u)}</span></div>`);
   const other = ['auth', 'volume', 'page', 'mmregion'].flatMap(k => nodeRows(k, 6));
   const html = sec(t('s_entries'), r.ents.slice(0, 25).map(entRow)) + sec(t('s_taxa'), nodeRows('taxon', 10)) + sec(t('s_places'), nodeRows('place', 10)) + sec(t('s_persons'), nodeRows('person', 10)) +
     sec(t('s_habitats'), nodeRows('habitat', 8)) + sec(t('s_other'), other) + sec(t('s_text'), r.text.slice(0, 25).map(textRow));
@@ -1328,7 +1343,7 @@ function wire() {
     else if (ev.key === 'Escape') { $('#help').hidden = true; if (S.view === 'entry' && S.sel) selectKey(null); }
   });
   // header buttons
-  $('#btn-lang').addEventListener('click', () => { LANG = LANG === 'de' ? 'en' : 'de'; store('lang', LANG); SIDX = null; NV.rows = null; CV.rows = null; applyStatic(); rvLangChanged(); if (!$('#help').hidden) $('#help').innerHTML = rvHelpHtml(); route(); });
+  if ($('#btn-lang')) $('#btn-lang').addEventListener('click', () => { LANG = LANG === 'de' ? 'en' : 'de'; store('lang', LANG); SIDX = null; NV.rows = null; CV.rows = null; applyStatic(); rvLangChanged(); if (!$('#help').hidden) $('#help').innerHTML = rvHelpHtml(); route(); });
   $('#btn-theme').addEventListener('click', () => { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark'; store('theme', d.dataset.theme); if (S.view === 'overview') showOverview(); });
   $('#btn-help').addEventListener('click', () => { const h = $('#help'); h.innerHTML = rvHelpHtml(); h.hidden = !h.hidden; });   // [GC] with the table of levels
   $('#help').addEventListener('click', () => { $('#help').hidden = true; });
@@ -1341,6 +1356,9 @@ function renderPanelIfGroup() { if (S.sel && !S.sel.startsWith('n')) { S.sel = n
 // ------------------------------------------------------------------ boot
 async function boot() {
   const th = store('theme'); if (th === 'dark' || th === 'light') document.documentElement.dataset.theme = th;
+  else if (EXPLORER && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
+  if (EXPLORER) $('#btn-lang').remove();   // [GC] the explorer build is English only
+  applyTexts();
   $('#loadmsg').textContent = t('loading');
   try {
     const t0 = performance.now();
